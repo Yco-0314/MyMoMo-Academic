@@ -106,6 +106,34 @@ class Workspace:
             return []
         return json.loads(self.params_history_path.read_text())
 
+    # --- Dropped scenarios (v2) ---
+
+    def append_dropped_scenario(self, run: int, params: dict, reason: str, action: str = "") -> None:
+        """Record a scenario that was tried and discarded, with the reason why.
+
+        Written as a Markdown table row to dropped_scenarios.md for human readability.
+        """
+        dropped_path = self.path / "dropped_scenarios.md"
+
+        # Write header if file is new
+        if not dropped_path.exists():
+            dropped_path.write_text(
+                "# Dropped Scenarios\n\n"
+                "Scenarios that were run but discarded during optimisation, "
+                "with the reason each was abandoned.\n\n"
+                "| Run | Params | Reason | Action taken |\n"
+                "|-----|--------|--------|--------------|\n",
+                encoding="utf-8",
+            )
+
+        params_str = ", ".join(f"{k}={v}" for k, v in params.items())
+        # Truncate long param strings
+        if len(params_str) > 80:
+            params_str = params_str[:77] + "..."
+
+        with dropped_path.open("a", encoding="utf-8") as f:
+            f.write(f"| {run} | {params_str} | {reason} | {action} |\n")
+
     # --- Report ---
 
     def write_report(self, content: str) -> None:

@@ -55,9 +55,27 @@ class OptimizerAgent(BaseAgent):
 
         new_params = suggestion.get("parameters", {})
         hypothesis = suggestion.get("hypothesis", "")
+        drop_reason = suggestion.get("drop_reason", "")  # optional: why current params discarded
 
         console.print(f"  [dim]Hypothesis: {hypothesis}[/dim]")
         console.print(f"  [dim]New params: {new_params}[/dim]")
+
+        # Record the current run as a dropped scenario before moving on
+        if current_params:
+            reason = drop_reason or (
+                previous_insights[:120].replace("\n", " ").strip()
+                if previous_insights else "optimizer moved to next params"
+            )
+            action = f"→ run {current_run + 1}: " + ", ".join(
+                f"{k}={v}" for k, v in new_params.items()
+                if k in current_params and current_params[k] != v
+            ) or "params unchanged"
+            self.workspace.append_dropped_scenario(
+                run=current_run,
+                params=current_params,
+                reason=reason,
+                action=action,
+            )
 
         # Apply to SimulatorScenarios.csv
         coder.apply_params(new_params)

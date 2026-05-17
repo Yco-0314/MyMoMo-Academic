@@ -19,6 +19,7 @@ from abm_auto.agents.odd_writer import OddWriter
 from abm_auto.agents.salib_optimizer import SensitivityAnalyzer
 from abm_auto.agents.reviewer import ReviewerAgent
 from abm_auto.agents.sanity_checker import SanityChecker
+from abm_auto.agents.viability_checker import ViabilityChecker
 from abm_auto.agents.visualizer import VisualizerAgent
 from abm_auto.analysis.trajectory_analyzer import TrajectoryAnalyzer
 from abm_auto.analysis.results_reader import convergence_cv
@@ -104,6 +105,7 @@ class Pipeline:
         self.odd_writer = OddWriter(self.client, self.workspace, model=model, **agent_kw)
         self.sensitivity_analyzer = SensitivityAnalyzer(self.client, self.workspace, model=model, **agent_kw)
         self.reviewer = ReviewerAgent(self.client, self.workspace, model=strong_model, **agent_kw)
+        self.viability_checker = ViabilityChecker(self.client, self.workspace, model=model, **agent_kw)
 
         self.executor = Executor(self.workspace, timeout=self.timeout_simulation)
 
@@ -121,6 +123,19 @@ class Pipeline:
 
         # Phase 1: Design
         self.designer.run()
+
+        # Phase 1c: Viability Gate — stop early if design is too weak
+        viability = self.viability_checker.check(
+            self.workspace.design_path,
+            self.story_path,
+        )
+        if not viability.ok:
+            console.print(Panel.fit(
+                "[bold red]Pipeline halted: Viability Gate failed.[/bold red]\n"
+                f"See: {self.workspace.path / 'kill_memo.md'}",
+                border_style="red",
+            ))
+            return self.workspace.path
 
         # Phase 1b: ODD Protocol
         self.odd_writer.run()
@@ -308,6 +323,7 @@ class Pipeline:
         # Phase 8: Peer review (optional)
         if self.peer_review:
             self.reviewer.run()
+            self._process_resolution_ledger()
 
         # Package outputs for ARS academic-paper integration
         ars_out = self.workspace.package_for_ars()
@@ -526,6 +542,45 @@ class Pipeline:
                 + "[/dim]"
             )
         return converged
+
+    def _process_resolution_ledger(self) -> None:
+        """Read the Resolution Ledger from peer_review.md and display routing summary.
+
+        In v2 this surfaces the action buckets so the researcher can decide next steps.
+        Future: auto-trigger NEW_ANALYSIS re-runs and FIX code revisions.
+        """
+        peer_review_path = self.workspace.path / "peer_review.md"
+        if not peer_review_path.exists():
+            return
+
+        review_text = peer_review_path.read_text(encoding="utf-8")
+        if "Resolution Ledger" not in review_text:
+            return
+
+        actions = self.reviewer.parse_ledger(review_text)
+
+        # Write machine-readable ledger summary
+        import json as _json
+        ledger_summary_path = self.workspace.path / "resolution_ledger.json"
+        ledger_summary_path.write_text(
+            _json.dumps(actions, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
+
+        # Display routing summary
+        total = sum(len(v) for v in actions.values())
+        if total == 0:
+            return
+
+        console.print("\n[bold magenta]Resolution Ledger summary:[/bold magenta]")
+        colors = {"FIX": "red", "NEW_ANALYSIS": "yellow", "DOWNGRADE": "cyan", "DROP": "dim"}
+        for action, issues in actions.items():
+            if issues:
+                color = colors.get(action, "white")
+                console.print(f"  [{color}]{action}[/{color}] ({len(issues)}): "
+                               + "; ".join(i[:60] for i in issues[:3])
+                               + ("…" if len(issues) > 3 else ""))
+
+        console.print(f"  [dim]Full ledger: {ledger_summary_path.name}[/dim]")
 
     def _record_initial_params(self) -> None:
         """Read SimulatorScenarios.csv and record initial params in history."""

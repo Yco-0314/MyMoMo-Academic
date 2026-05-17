@@ -271,8 +271,61 @@ class ReviewerAgent(BaseAgent):
             "report": report[:2000],
         }
 
+    def _build_resolution_ledger(self, reviews: dict[str, str]) -> str:
+        """Generate a structured Resolution Ledger from all reviewer content.
+
+        Each issue is classified into one of four actions:
+          FIX           — fix the code or model mechanism
+          NEW_ANALYSIS  — re-run simulation with different params / setup
+          DOWNGRADE     — weaken a claim in the report
+          DROP          — issue is out of scope, no action needed
+        """
+        all_reviews = "\n\n".join(
+            f"## {rid}\n{text}" for rid, text in reviews.items()
+        )
+
+        system = (
+            "You are an editorial assistant. Extract every distinct issue raised by the reviewers "
+            "and classify each one. Respond ONLY with a Markdown table, no preamble.\n"
+            "Table columns: Issue | Severity (High/Medium/Low) | Action | Notes\n"
+            "Action must be exactly one of: FIX | NEW_ANALYSIS | DOWNGRADE | DROP\n"
+            "- FIX: code or model mechanism needs to be corrected\n"
+            "- NEW_ANALYSIS: re-run simulation with adjusted parameters or setup\n"
+            "- DOWNGRADE: soften a claim in the report text\n"
+            "- DROP: acknowledged but out of scope for this paper"
+        )
+
+        prompt = (
+            "## Reviewer Comments\n\n"
+            f"{all_reviews[:5000]}\n\n"
+            "Generate the Resolution Ledger table now."
+        )
+
+        try:
+            ledger_body = self.call_llm(system, prompt, max_tokens=1500)
+            # Ensure it starts with a header row
+            if "| Issue" not in ledger_body:
+                ledger_body = (
+                    "| Issue | Severity | Action | Notes |\n"
+                    "|-------|----------|--------|-------|\n"
+                ) + ledger_body
+        except Exception:
+            ledger_body = (
+                "| Issue | Severity | Action | Notes |\n"
+                "|-------|----------|--------|-------|\n"
+                "| (Resolution Ledger generation failed) | — | — | — |\n"
+            )
+
+        return (
+            "\n\n---\n\n"
+            "# Resolution Ledger\n\n"
+            "> Structured action table generated from all reviewer comments.\n"
+            "> Pipeline reads this table: NEW_ANALYSIS → re-run, FIX → code revision.\n\n"
+            + ledger_body
+        )
+
     def _combine_reviews(self, reviews: dict[str, str]) -> str:
-        """Combine all reviews into a single document."""
+        """Combine all reviews into a single document with Resolution Ledger."""
         parts = ["# ABM 同行评议报告\n"]
 
         reviewer_names = {
@@ -287,7 +340,40 @@ class ReviewerAgent(BaseAgent):
             if rid in reviews:
                 parts.append(f"\n---\n\n# {reviewer_names[rid]}\n\n{reviews[rid]}")
 
+        # Append Resolution Ledger at the end
+        parts.append(self._build_resolution_ledger(reviews))
+
         return "\n".join(parts)
+
+    def parse_ledger(self, peer_review_text: str) -> dict[str, list[str]]:
+        """Parse the Resolution Ledger from peer_review.md into action buckets.
+
+        Returns:
+            {
+              "FIX": ["issue text", ...],
+              "NEW_ANALYSIS": [...],
+              "DOWNGRADE": [...],
+              "DROP": [...],
+            }
+        """
+        actions: dict[str, list[str]] = {
+            "FIX": [], "NEW_ANALYSIS": [], "DOWNGRADE": [], "DROP": [],
+        }
+        in_ledger = False
+        for line in peer_review_text.splitlines():
+            if "Resolution Ledger" in line:
+                in_ledger = True
+                continue
+            if not in_ledger:
+                continue
+            if line.startswith("|") and "|" in line[1:]:
+                cols = [c.strip() for c in line.strip("|").split("|")]
+                if len(cols) >= 3:
+                    issue, _, action = cols[0], cols[1], cols[2]
+                    action_key = action.strip().upper().replace(" ", "_")
+                    if action_key in actions and issue and "Issue" not in issue:
+                        actions[action_key].append(issue)
+        return actions
 
     def _show_score(self, review: str, reviewer_id: str) -> None:
         """Extract and display score from a reviewer's output."""
