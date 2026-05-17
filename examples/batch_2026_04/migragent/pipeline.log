@@ -1,0 +1,10 @@
+Workspace: /home/user/Documents/Social Simulation 
+/abm-auto/workspace/20260509_123011_338ebc
+╭───────────────────╮
+│ ABM Auto Pipeline │
+│ Story: story.md   │
+│ Iterations: 3     │
+╰───────────────────╯
+Phase 1: Designing ABM...
+  → LLM (claude-sonnet-4-6, lang=en, max_tokens=4096)
+  ⚠ API error (1/5), retrying in 10s... (Connection error.)

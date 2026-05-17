@@ -1,0 +1,9 @@
+Workspace: /home/user/Documents/Social Simulation 
+/abm-auto/workspace/20260509_124243_a38b7e
+╭───────────────────╮
+│ ABM Auto Pipeline │
+│ Story: story.md   │
+│ Iterations: 3     │
+╰───────────────────╯
+Phase 1: Designing ABM...
+  → LLM (claude-sonnet-4-6, lang=en, max_tokens=4096)

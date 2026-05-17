@@ -1,0 +1,15 @@
+{
+  "identifier": "5302",
+  "title": "TREELIM",
+  "url": "https://www.comses.net/codebases/5302/",
+  "tags": [
+    "alpine tree line",
+    "spatially-explicit model",
+    "forest regeneration",
+    "individual-based model",
+    "land-use change"
+  ],
+  "publication": "Wallentin, G., Tappeiner, U., Strobl, J., Tasser, E. 2008. Alpine tree line dynamics: an individual based model. Ecological Modelling 218(3-4), 235-246.",
+  "peer_reviewed": false,
+  "download_count": 462
+}
