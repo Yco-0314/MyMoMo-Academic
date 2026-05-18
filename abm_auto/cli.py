@@ -35,6 +35,7 @@ def run(
     seed: Optional[int] = typer.Option(None, "--seed", help="Random seed for reproducibility"),
     fetch_citations: bool = typer.Option(False, "--fetch-citations", help="Fetch real citations from Semantic Scholar (requires API key)"),
     baseline: Optional[Path] = typer.Option(None, "--baseline", help="Path to baseline CSV for comparison (time,metric1,metric2,...)"),
+    no_lit_review: bool = typer.Option(False, "--no-lit-review", help="Skip Phase 0 automatic literature search"),
 ):
     """
     Run the full autonomous ABM pipeline from a story description.
@@ -75,6 +76,7 @@ def run(
         seed=seed,
         fetch_citations=fetch_citations,
         baseline_path=baseline,
+        auto_lit_review=not no_lit_review,
     )
     workspace_path = pipeline.run()
     console.print(f"\n[bold]Output directory:[/bold] {workspace_path}")

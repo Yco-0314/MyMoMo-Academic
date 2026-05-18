@@ -20,6 +20,7 @@ from abm_auto.agents.salib_optimizer import SensitivityAnalyzer
 from abm_auto.agents.reviewer import ReviewerAgent
 from abm_auto.agents.sanity_checker import SanityChecker
 from abm_auto.agents.viability_checker import ViabilityChecker
+from abm_auto.agents.lit_reviewer import LitReviewAgent
 from abm_auto.agents.visualizer import VisualizerAgent
 from abm_auto.analysis.trajectory_analyzer import TrajectoryAnalyzer
 from abm_auto.analysis.results_reader import convergence_cv
@@ -52,6 +53,7 @@ class Pipeline:
         seed: int | None = None,
         fetch_citations: bool = False,
         baseline_path: Path | None = None,
+        auto_lit_review: bool = True,
     ):
         self.story_path = Path(story_path)
         self.iterations = iterations
@@ -73,6 +75,7 @@ class Pipeline:
         self.seed = seed
         self.fetch_citations = fetch_citations
         self.baseline_path = Path(baseline_path) if baseline_path else None
+        self.auto_lit_review = auto_lit_review
 
         if not config.ANTHROPIC_API_KEY:
             raise ValueError("ANTHROPIC_API_KEY is not set. Add it to .env or environment.")
@@ -106,6 +109,7 @@ class Pipeline:
         self.sensitivity_analyzer = SensitivityAnalyzer(self.client, self.workspace, model=model, **agent_kw)
         self.reviewer = ReviewerAgent(self.client, self.workspace, model=strong_model, **agent_kw)
         self.viability_checker = ViabilityChecker(self.client, self.workspace, model=model, **agent_kw)
+        self.lit_reviewer = LitReviewAgent(self.client, self.workspace, model=model, **agent_kw)
 
         self.executor = Executor(self.workspace, timeout=self.timeout_simulation)
 
@@ -120,6 +124,10 @@ class Pipeline:
             f"Iterations: {self.iterations}",
             border_style="blue",
         ))
+
+        # Phase 0: Automatic literature review (before design)
+        if self.auto_lit_review:
+            self.lit_reviewer.run()
 
         # Phase 1: Design
         self.designer.run()
