@@ -92,14 +92,26 @@ class BayesianCalibrator(BaseAgent):
         obs_stats = summary_stats(observed, targets)
 
         # ── Pick backend, run inference ──
-        if backends.HAS_PYMC:
+        # Preference order: RF > PyMC > ABC.
+        # RF (Carrella 2021): consistently best in cross-validated benchmarks
+        #   for ABM calibration; uses ALL successful sims (not top 20% like ABC).
+        # PyMC SMC: theoretically principled but expensive (particle filter).
+        # ABC rejection: simple fallback, always available (numpy only).
+        result = None
+        if backends.HAS_SKLEARN:
             try:
+                console.print("  [dim]Using Random Forest regression backend[/dim]")
+                result = backends.run_rf(prior_dict, targets, obs_stats, simulator, max_sims)
+            except Exception as e:
+                console.print(f"  [yellow]⚠ RF backend failed ({e}) — trying next[/yellow]")
+        if result is None and backends.HAS_PYMC:
+            try:
+                console.print("  [dim]Using PyMC SMC backend[/dim]")
                 result = backends.run_pymc(prior_dict, targets, obs_stats, simulator, max_sims)
             except Exception as e:
-                console.print(f"  [yellow]⚠ PyMC backend failed ({e}) — falling back to ABC[/yellow]")
-                result = backends.run_abc(prior_dict, targets, obs_stats, simulator, max_sims)
-        else:
-            console.print("  [dim]PyMC not installed — using ABC rejection sampling[/dim]")
+                console.print(f"  [yellow]⚠ PyMC backend failed ({e}) — trying next[/yellow]")
+        if result is None:
+            console.print("  [dim]Using ABC rejection sampling backend[/dim]")
             result = backends.run_abc(prior_dict, targets, obs_stats, simulator, max_sims)
 
         # ── Post-processing ──

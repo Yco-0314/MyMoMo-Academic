@@ -39,6 +39,13 @@ try:
 except Exception:
     HAS_PYMC = False
 
+# Optional sklearn — used by the Random Forest backend (Carrella 2021).
+try:
+    from sklearn.ensemble import RandomForestRegressor  # type: ignore
+    HAS_SKLEARN = True
+except Exception:
+    HAS_SKLEARN = False
+
 
 # Acceptance fraction for ABC rejection sampling (top K by distance).
 _ABC_TOP_FRACTION = 0.20
@@ -100,6 +107,98 @@ def run_abc(
         ok=True,
         backend="abc-rejection",
         n_simulator_calls=len(all_samples),
+        best_params=best_params,
+        posterior_summary=summary,
+    )
+
+
+# ── Random Forest regression (optional) ─────────────────────────────────────
+
+
+def run_rf(
+    priors: dict[str, dict],
+    targets: list[str],
+    obs_stats: np.ndarray,
+    simulator: "SimulatorWrapper",
+    max_sims: int,
+) -> CalibrationResult:
+    """Posterior-mean inference via Random Forest regression.
+
+    Adapted from Carrella 2021 "No Free Lunch in ABM Calibration" — RF
+    consistently outperformed ABC in his cross-validated study. Method:
+
+      1. Draw N parameter vectors from the priors (uniform).
+      2. Run the simulator at each, get a summary-stat vector.
+      3. Train a RandomForestRegressor: features = stats, targets = params.
+      4. Predict params from the OBSERVED stats → point estimate.
+      5. Quantify uncertainty via per-tree predictions (the RF ensemble
+         gives a sample over predictions; report its mean/std/CI).
+
+    Advantages over ABC rejection:
+      - No acceptance threshold to tune (no top-K cutoff).
+      - Uses ALL successful simulator calls, not just top 20%.
+      - Naturally handles non-monotonic param→stat relationships.
+
+    Raises ImportError when sklearn unavailable — orchestrator should check
+    HAS_SKLEARN first and fall back to run_abc.
+    """
+    if not HAS_SKLEARN:
+        raise ImportError("scikit-learn not installed")
+
+    param_names = list(priors.keys())
+    X: list[np.ndarray] = []   # summary stats per successful sim
+    Y: list[list[float]] = []  # corresponding params
+
+    for _ in range(max_sims):
+        params = {
+            name: float(np.random.uniform(p["min"], p["max"]))
+            for name, p in priors.items()
+        }
+        sim_stats = simulator.simulate(params, targets)
+        if sim_stats is None:
+            continue
+        X.append(sim_stats)
+        Y.append([params[n] for n in param_names])
+
+    if len(X) < max(5, len(param_names) + 1):
+        return CalibrationResult(
+            ok=False,
+            backend="rf-regression",
+            n_simulator_calls=len(X),
+            best_params={},
+            posterior_summary=pd.DataFrame(),
+            reason=f"Too few successful sims ({len(X)}) to train RF",
+        )
+
+    X_arr = np.array(X)
+    Y_arr = np.array(Y)
+
+    # Train one RF regressor per parameter (avoids correlated multi-output).
+    # 100 trees is a sane default; min_samples_leaf=2 prevents overfit on small N.
+    posteriors_per_param: dict[str, np.ndarray] = {}
+    for j, name in enumerate(param_names):
+        rf = RandomForestRegressor(
+            n_estimators=100,
+            min_samples_leaf=2,
+            random_state=None,  # let calling RNG drive
+            n_jobs=1,
+        )
+        rf.fit(X_arr, Y_arr[:, j])
+        # Per-tree predictions on observed stats → posterior sample
+        per_tree = np.array([t.predict(obs_stats.reshape(1, -1))[0] for t in rf.estimators_])
+        posteriors_per_param[name] = per_tree
+
+    # Build posterior summary in the same shape as ABC / PyMC for downstream code
+    post_df = pd.DataFrame(posteriors_per_param)
+    summary = post_df.describe(percentiles=[0.025, 0.5, 0.975]).T
+
+    # Point estimate: posterior mean across trees
+    best_params = {n: float(posteriors_per_param[n].mean()) for n in param_names}
+
+    return CalibrationResult(
+        ok=True,
+        backend="rf-regression",
+        n_simulator_calls=len(X),
         best_params=best_params,
         posterior_summary=summary,
     )
