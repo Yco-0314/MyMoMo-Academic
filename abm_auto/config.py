@@ -12,11 +12,39 @@ PROMPTS_DIR = PROJECT_ROOT / "abm_auto" / "prompts"
 KNOWLEDGE_DIR = PROJECT_ROOT / "abm_auto" / "knowledge"
 WORKSPACE_DIR = PROJECT_ROOT / "workspace"
 
-# Claude API
+# LLM provider selection — controls which SDK + API key is used.
+# Set in .env:  LLM_PROVIDER=anthropic  (default)  OR  LLM_PROVIDER=deepseek
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "anthropic").lower()
+
+# Anthropic
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 ANTHROPIC_BASE_URL = os.getenv("ANTHROPIC_BASE_URL", None)
-DEFAULT_MODEL = os.getenv("ABM_MODEL", "claude-sonnet-4-6")
-STRONG_MODEL = os.getenv("ABM_STRONG_MODEL", "claude-opus-4-6")
+
+# DeepSeek (OpenAI-compatible)
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
+DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com/v1")
+
+# Default models — provider-dependent. Override per-call via ABM_MODEL / ABM_STRONG_MODEL.
+if LLM_PROVIDER == "deepseek":
+    DEFAULT_MODEL = os.getenv("ABM_MODEL", "deepseek-chat")
+    STRONG_MODEL = os.getenv("ABM_STRONG_MODEL", "deepseek-reasoner")
+else:
+    DEFAULT_MODEL = os.getenv("ABM_MODEL", "claude-sonnet-4-6")
+    STRONG_MODEL = os.getenv("ABM_STRONG_MODEL", "claude-opus-4-6")
+
+
+def get_api_key() -> str:
+    """Return the API key for the active provider."""
+    if LLM_PROVIDER == "deepseek":
+        return DEEPSEEK_API_KEY
+    return ANTHROPIC_API_KEY
+
+
+def get_base_url() -> str | None:
+    """Return the base URL for the active provider (None = SDK default)."""
+    if LLM_PROVIDER == "deepseek":
+        return DEEPSEEK_BASE_URL
+    return ANTHROPIC_BASE_URL
 
 # Simulation defaults
 DEFAULT_ITERATIONS = 3

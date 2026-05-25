@@ -7,6 +7,7 @@ from rich.panel import Panel
 
 from abm_auto import config
 from abm_auto.agents.base import SECTION_LABELS
+from abm_auto.llm import make_client
 from abm_auto.runner.workspace import Workspace
 from abm_auto.runner.executor import Executor
 from abm_auto.agents.designer import DesignAgent
@@ -21,6 +22,11 @@ from abm_auto.agents.reviewer import ReviewerAgent
 from abm_auto.agents.sanity_checker import SanityChecker
 from abm_auto.agents.viability_checker import ViabilityChecker
 from abm_auto.agents.lit_reviewer import LitReviewAgent
+from abm_auto.agents.mode_detector import ModeDetector, ResearchSpec
+from abm_auto.agents.hypothesis_agent import HypothesisAgent
+from abm_auto.agents.what_if_oracle import WhatIfOracle
+from abm_auto.agents.bayesian_calibrator import BayesianCalibrator
+from abm_auto.refinement import refine, ValidationOutcome
 from abm_auto.agents.visualizer import VisualizerAgent
 from abm_auto.analysis.trajectory_analyzer import TrajectoryAnalyzer
 from abm_auto.analysis.results_reader import convergence_cv
@@ -54,6 +60,7 @@ class Pipeline:
         fetch_citations: bool = False,
         baseline_path: Path | None = None,
         auto_lit_review: bool = True,
+        mode_override: str | None = None,
     ):
         self.story_path = Path(story_path)
         self.iterations = iterations
@@ -76,15 +83,20 @@ class Pipeline:
         self.fetch_citations = fetch_citations
         self.baseline_path = Path(baseline_path) if baseline_path else None
         self.auto_lit_review = auto_lit_review
+        self.mode_override = mode_override
 
-        if not config.ANTHROPIC_API_KEY:
-            raise ValueError("ANTHROPIC_API_KEY is not set. Add it to .env or environment.")
+        api_key = config.get_api_key()
+        if not api_key:
+            key_name = "DEEPSEEK_API_KEY" if config.LLM_PROVIDER == "deepseek" else "ANTHROPIC_API_KEY"
+            raise ValueError(f"{key_name} is not set. Add it to .env or environment.")
 
-        self.client = anthropic.Anthropic(
-            api_key=config.ANTHROPIC_API_KEY,
-            base_url=config.ANTHROPIC_BASE_URL,
-            timeout=self.timeout_llm
+        self.client = make_client(
+            provider=config.LLM_PROVIDER,
+            api_key=api_key,
+            base_url=config.get_base_url(),
+            timeout=self.timeout_llm,
         )
+        console.print(f"[dim]LLM provider: {config.LLM_PROVIDER}, model: {model}[/dim]")
 
         # Workspace
         self.workspace = Workspace.create(workspace_name)
@@ -110,6 +122,12 @@ class Pipeline:
         self.reviewer = ReviewerAgent(self.client, self.workspace, model=strong_model, **agent_kw)
         self.viability_checker = ViabilityChecker(self.client, self.workspace, model=model, **agent_kw)
         self.lit_reviewer = LitReviewAgent(self.client, self.workspace, model=model, **agent_kw)
+        self.mode_detector = ModeDetector(self.client, self.workspace, model=model, **agent_kw)
+        self.hypothesis_agent = HypothesisAgent(self.client, self.workspace, model=strong_model, **agent_kw)
+        self.what_if_oracle = WhatIfOracle(self.client, self.workspace, model=strong_model, **agent_kw)
+        self.bayesian_calibrator = BayesianCalibrator(self.client, self.workspace, model=model, **agent_kw)
+        self._spec: ResearchSpec | None = None  # set by Phase -1, read by downstream agents
+        self._used_bayesian_calibration: bool = False  # set after Phase 6 fork
 
         self.executor = Executor(self.workspace, timeout=self.timeout_simulation)
 
@@ -125,25 +143,76 @@ class Pipeline:
             border_style="blue",
         ))
 
+        # Phase -1: Detect research mode (reproduce vs. originate)
+        # Must run before everything — sets thresholds and behaviour for all
+        # downstream agents. Auto-detect from story.md unless --mode override given.
+        self._spec = self.mode_detector.run(mode_override=self.mode_override)
+
         # Phase 0: Automatic literature review (before design)
         if self.auto_lit_review:
             self.lit_reviewer.run()
 
-        # Phase 1: Design
-        self.designer.run()
+        # Phase 0.5: Hypothesis generation (originate mode only)
+        # Produces hypothesis.md with 3 competing hypotheses + recommendation.
+        # DesignAgent reads this as its theoretical anchor — without it, an
+        # originate-mode design has no mechanistic grounding and over-generalises.
+        if self._spec and self._spec.mode == "originate":
+            self.hypothesis_agent.run()
 
-        # Phase 1c: Viability Gate — stop early if design is too weak
-        viability = self.viability_checker.check(
-            self.workspace.design_path,
-            self.story_path,
+        # Phase 1 + 1c: Design + Viability Gate, wired through GVR (refine) loop.
+        # If the first design fails the gate, refine() feeds the failure reasons
+        # back into DesignAgent and tries again (default 3 iters). This is the
+        # first non-VerifierAgent adapter of the Generate-Validate-Refine pattern.
+        def _design_gen(feedback: str | None) -> str:
+            return self.designer.run(extra_feedback=feedback)
+
+        def _viability_val(_design_text: str) -> ValidationOutcome:
+            # ViabilityChecker reads DESIGN.md from workspace, not from arg.
+            # The artifact path through refine() is `design_text` only for
+            # symmetry; the validator uses the workspace state.
+            result = self.viability_checker.check(
+                self.workspace.design_path, self.story_path, spec=self._spec,
+            )
+            return ValidationOutcome(
+                ok=result.ok,
+                reasons=result.reasons,
+                severity="soft",   # let the pipeline decide halt vs continue
+                structured={
+                    "assumption_count": result.assumption_count,
+                    "missing_elements": list(result.missing_elements),
+                    "llm_verdict": result.llm_verdict,
+                },
+            )
+
+        gvr = refine(
+            generator=_design_gen,
+            validator=_viability_val,
+            max_iters=3,
+            on_exhaust="continue_best",
+            audit=self.workspace.audit,
+            actor="DesignerViability",
+            phase="Phase 1+1c",
         )
-        if not viability.ok:
+
+        if not gvr.accepted:
+            # Exhausted. on_exhaust="continue_best" means the best-so-far DESIGN.md
+            # is in workspace; pipeline continues but a HIGH audit issue is open.
             console.print(Panel.fit(
-                "[bold red]Pipeline halted: Viability Gate failed.[/bold red]\n"
-                f"See: {self.workspace.path / 'kill_memo.md'}",
-                border_style="red",
+                "[bold yellow]Viability not accepted after refinement; "
+                "continuing with best-so-far design.[/bold yellow]\n"
+                f"See: {self.workspace.path / 'audit_ledger.md'}",
+                border_style="yellow",
             ))
-            return self.workspace.path
+            # Optional hard-halt override: if best attempt was REALLY broken
+            # (e.g. ≥6 reasons including missing-element failures), halt.
+            best_outcome = gvr.attempts[-1].outcome
+            if len(best_outcome.reasons) >= 4:
+                console.print(Panel.fit(
+                    "[bold red]Pipeline halted: best-so-far design too broken.[/bold red]\n"
+                    f"See: {self.workspace.path / 'kill_memo.md'}",
+                    border_style="red",
+                ))
+                return self.workspace.path
 
         # Phase 1b: ODD Protocol
         self.odd_writer.run()
@@ -151,9 +220,49 @@ class Pipeline:
         # Phase 2: Code generation
         self.coder.run()
 
-        # Phase 3: Verify & fix
-        ok = self.verifier.run(self.executor, max_retries=self.max_retries)
-        if not ok:
+        # Phase 3: Verify & fix — wired through GVR (second adapter).
+        # On iter 1 the generator is a no-op (CoderAgent already wrote files);
+        # validator runs (a) executor.dry_run() to check imports AND
+        # (b) schema contract check to ensure calibration_params actually exist
+        # as columns in SimulatorScenarios.csv.
+        # On failure, refine() feeds reasons back into verifier.fix().
+        def _verifier_gen(feedback: str | None) -> None:
+            if feedback is not None:
+                # Subsequent attempts: feedback IS the error/reasons string
+                self.verifier.fix(feedback)
+            return None
+
+        def _verifier_val(_ignored) -> "ValidationOutcome":
+            reasons: list[str] = []
+            # (a) Import / runtime check
+            error = self.executor.dry_run()
+            if error is not None:
+                reasons.append(error[:1000])
+            # (b) Calibration contract check — only when calibration is requested
+            schema_violations = self._check_calibration_contract()
+            reasons.extend(schema_violations)
+
+            if not reasons:
+                return ValidationOutcome(ok=True)
+            return ValidationOutcome(
+                ok=False,
+                reasons=reasons,
+                severity="fatal" if error else "soft",
+                structured={"import_error": error is not None,
+                            "schema_violations": len(schema_violations)},
+            )
+
+        verify_gvr = refine(
+            generator=_verifier_gen,
+            validator=_verifier_val,
+            max_iters=self.max_retries,
+            on_exhaust="halt",   # broken imports cannot be worked around
+            audit=self.workspace.audit,
+            actor="CoderVerifier",
+            phase="Phase 3",
+        )
+
+        if not verify_gvr.accepted:
             console.print("[red]Pipeline halted: could not produce working code.[/red]")
             return self.workspace.path
 
@@ -168,6 +277,13 @@ class Pipeline:
         )
         for w in pre_warnings:
             console.print(f"  [bold yellow]{w}[/bold yellow]")
+            # Audit: pre-run warnings are MEDIUM by default
+            self.workspace.audit.raise_issue(
+                phase="Phase 3 pre-run",
+                severity="MEDIUM",
+                text=w,
+                actor="SanityChecker",
+            )
 
         # Record initial params
         self._record_initial_params()
@@ -179,13 +295,11 @@ class Pipeline:
         for i in range(1, self.iterations + 1):
             console.print(f"\n[bold]--- Iteration {i}/{self.iterations} ---[/bold]")
 
-            # Phase 4+5: Run simulation + analyze (with fix-retry loop)
+            # Phase 4+5: Run simulation. If it crashes, GVR retries with fix.
             success, output = self.executor.run(i)
             if not success:
-                success, output = self.verifier.fix_and_rerun(
-                    self.executor, output, i,
-                    max_retries=self.max_retries,
-                    label="Simulation fix",
+                success, output = self._fix_and_rerun_via_gvr(
+                    initial_error=output, run_number=i, label="Simulation fix",
                 )
             if not success:
                 console.print("  [red]Skipping this iteration.[/red]")
@@ -197,13 +311,19 @@ class Pipeline:
                 design = self.workspace.read_design()
                 sanity_warnings = SanityChecker.check_run(csvs, design)
                 if sanity_warnings:
+                    sanity_issue_ids = []
                     for w in sanity_warnings:
                         console.print(f"  [bold red]{w}[/bold red]")
+                        iid = self.workspace.audit.raise_issue(
+                            phase="Phase 4 post-run",
+                            severity="HIGH",
+                            text=w,
+                            actor="SanityChecker",
+                        )
+                        sanity_issue_ids.append(iid)
                     error_msg = SanityChecker.format_warnings(sanity_warnings)
-                    success, output = self.verifier.fix_and_rerun(
-                        self.executor, error_msg, i,
-                        max_retries=self.max_retries,
-                        label="Sanity fix",
+                    success, output = self._fix_and_rerun_via_gvr(
+                        initial_error=error_msg, run_number=i, label="Sanity fix",
                     )
                     if success:
                         new_warnings = SanityChecker.check_run(
@@ -211,10 +331,27 @@ class Pipeline:
                         )
                         if not new_warnings:
                             console.print("  [green]✓ Sanity check passed after fix[/green]")
+                            # Resolve every sanity issue we raised
+                            for iid in sanity_issue_ids:
+                                self.workspace.audit.resolve(
+                                    iid, note="Fixed by Verifier", actor="VerifierAgent",
+                                )
                         else:
                             console.print("  [red]⚠ Sanity issues persist — continuing anyway[/red]")
+                            self.workspace.audit.raise_issue(
+                                phase="Phase 4 post-fix",
+                                severity="HIGH",
+                                text="Sanity issues persist after Verifier fix attempt",
+                                actor="Pipeline",
+                            )
                     else:
                         console.print("  [red]⚠ Sanity fix failed — continuing anyway[/red]")
+                        self.workspace.audit.raise_issue(
+                            phase="Phase 4 post-fix",
+                            severity="HIGH",
+                            text="Verifier could not fix sanity issues",
+                            actor="Pipeline",
+                        )
 
             insights = self.analyzer.run(self.executor, i)
             all_insights.append(insights)
@@ -231,9 +368,29 @@ class Pipeline:
                     converged_at = i
                     break
 
-            # Phase 6: Optimize (not after last iteration, not after convergence)
+            # Phase 6: Optimize OR Calibrate (not after last iteration, not after convergence)
             if i < self.iterations and converged_at is None:
-                self.optimizer.run(i, insights, self.coder, memory_context=self.memory.retrieve_context())
+                if self._should_calibrate() and not self._used_bayesian_calibration:
+                    # Bayesian calibration replaces the iterative optimizer.
+                    # Runs only once (first chance) because it fits the posterior
+                    # in a single batch of simulator calls.
+                    cal_result = self.bayesian_calibrator.run(self.executor, spec=self._spec)
+                    self._used_bayesian_calibration = True
+                    if cal_result.ok:
+                        console.print(
+                            f"  [green]✓ Calibrated {len(cal_result.best_params)} params "
+                            f"via {cal_result.backend}[/green]"
+                        )
+                    else:
+                        console.print(
+                            f"  [yellow]Calibration skipped ({cal_result.reason}) — "
+                            f"falling back to heuristic optimizer[/yellow]"
+                        )
+                        self.optimizer.run(i, insights, self.coder,
+                                           memory_context=self.memory.retrieve_context())
+                else:
+                    self.optimizer.run(i, insights, self.coder,
+                                       memory_context=self.memory.retrieve_context())
                 self._print_memory_summary(i)
 
         # Phase 6b: Sensitivity analysis (optional)
@@ -274,6 +431,15 @@ class Pipeline:
                     stat_path.write_text(stat_report.to_markdown(), encoding="utf-8")
             except Exception as e:
                 console.print(f"  [yellow]⚠ Statistical analysis failed: {e}[/yellow]")
+
+        # Phase 6.5: What-If scenario analysis (originate mode only)
+        # Maps the model's behavioural envelope — 6 counterfactual scenarios
+        # (best/likely/worst/wildcard/contrarian/second-order). Skipped in
+        # reproduce mode because fidelity, not exploration, is the goal.
+        if self._spec and self._spec.mode == "originate" and all_insights:
+            what_if_text = self.what_if_oracle.run(all_insights, spec=self._spec)
+            if what_if_text:
+                all_insights.append(what_if_text)
 
         # Phase 6e: Citation fetching (optional)
         citations_text = None
@@ -328,9 +494,10 @@ class Pipeline:
                     encoding="utf-8",
                 )
 
-        # Phase 8: Peer review (optional)
+        # Phase 8: Peer review (optional) — pass spec so R1/R3/R4/EiC use the
+        # correct evaluation criteria for the detected research mode.
         if self.peer_review:
-            self.reviewer.run()
+            self.reviewer.run(spec=self._spec)
             self._process_resolution_ledger()
 
         # Package outputs for ARS academic-paper integration
@@ -589,6 +756,115 @@ class Pipeline:
                                + ("…" if len(issues) > 3 else ""))
 
         console.print(f"  [dim]Full ledger: {ledger_summary_path.name}[/dim]")
+
+    def _fix_and_rerun_via_gvr(
+        self, initial_error: str, run_number: int, label: str,
+    ) -> tuple[bool, str]:
+        """GVR-driven version of VerifierAgent.fix_and_rerun.
+
+        Same external contract as the legacy `verifier.fix_and_rerun()`:
+        returns (success, output_or_error). Internally uses refine() so the
+        retry policy / feedback / audit logging matches Phase 1+1c and Phase 3.
+
+        First attempt is special: the user already saw an error (passed as
+        `initial_error`) and we want to fix BEFORE re-running. So iter 1's
+        generator calls fix() with initial_error, then validator re-runs.
+        Iter ≥2 uses GVR's normal feedback flow (validator's failure becomes
+        next attempt's feedback).
+        """
+        last_output_capture = {"value": ""}
+
+        def _gen(feedback: str | None) -> None:
+            # On the very first attempt we have no GVR feedback yet, but we
+            # DO have the original error that triggered this call.
+            err_to_fix = feedback if feedback is not None else initial_error
+            self.verifier.fix(err_to_fix)
+            return None
+
+        def _val(_ignored) -> ValidationOutcome:
+            success, output = self.executor.run(run_number)
+            last_output_capture["value"] = output
+            if success:
+                return ValidationOutcome(ok=True, structured={"output_preview": output[:300]})
+            return ValidationOutcome(
+                ok=False, reasons=[output[:1000]], severity="soft",
+                structured={"error_preview": output[:500]},
+            )
+
+        gvr = refine(
+            generator=_gen,
+            validator=_val,
+            max_iters=self.max_retries,
+            on_exhaust="halt",
+            audit=self.workspace.audit,
+            actor=f"CoderVerifier-{label.replace(' ', '_')}",
+            phase=f"Phase 4-6 ({label})",
+        )
+
+        if gvr.accepted:
+            return True, last_output_capture["value"]
+        # Exhausted: return the last failure output (caller skips the iteration)
+        last_reason = gvr.attempts[-1].outcome.reasons[0] if gvr.attempts[-1].outcome.reasons else "exhausted"
+        return False, last_reason
+
+    def _check_calibration_contract(self) -> list[str]:
+        """Verify the generated SimulatorScenarios.csv exposes every requested
+        calibration param as a column with the EXACT name.
+
+        Returns an empty list if the contract holds (or no calibration
+        requested). Otherwise returns a list of human-readable violations
+        suitable for feeding back into CoderAgent via GVR.
+        """
+        if self._spec is None or not self._spec.calibration_params:
+            return []
+        csv_path = self.workspace.model_dir / "data" / "input" / "SimulatorScenarios.csv"
+        if not csv_path.exists():
+            return [
+                f"data/input/SimulatorScenarios.csv is missing — calibration cannot run. "
+                f"Required calibration params: {self._spec.calibration_params}"
+            ]
+        try:
+            import pandas as pd
+            df = pd.read_csv(csv_path)
+        except Exception as e:
+            return [f"Could not read SimulatorScenarios.csv: {e}"]
+
+        existing_cols = set(c.lower() for c in df.columns)
+        missing = [
+            p for p in self._spec.calibration_params
+            if p.lower() not in existing_cols
+        ]
+        if not missing:
+            return []
+        return [
+            f"CALIBRATION CONTRACT VIOLATION: data/input/SimulatorScenarios.csv is missing "
+            f"required column(s): {missing}. "
+            f"BayesianCalibrator needs these EXACT column names to tune the requested params. "
+            f"Current columns: {list(df.columns)}. "
+            f"Fix: add the missing column(s) to SimulatorScenarios.csv with sensible default values, "
+            f"AND ensure core/scenario.py declares them as attributes with the same names, "
+            f"AND ensure agent/environment code reads them as self.scenario.<exact_name>."
+        ]
+
+    def _should_calibrate(self) -> bool:
+        """True if BayesianCalibrator should replace OptimizerAgent.
+
+        Conditions:
+          - spec exists and has_calibration_data is True
+          - The observed data file exists somewhere we can read
+        """
+        if self._spec is None or not self._spec.has_calibration_data:
+            return False
+        # Check the path declared in spec, or the conventional fallback
+        if self._spec.calibration_data_path:
+            p = self.workspace.path / self._spec.calibration_data_path
+            if p.exists():
+                return True
+            p_abs = Path(self._spec.calibration_data_path)
+            if p_abs.exists():
+                return True
+        # Conventional fallback
+        return (self.workspace.path / "data" / "observed.csv").exists()
 
     def _record_initial_params(self) -> None:
         """Read SimulatorScenarios.csv and record initial params in history."""

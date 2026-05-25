@@ -13,6 +13,30 @@ The following Python simulation code produced an error when executed. Analyze th
 ## Current Code Files
 {{ code_files }}
 
+## ⚠ DO NOT INVENT THESE CLASSES — they do not exist in `abm_auto.runtime`
+
+If the error is `cannot import name 'XXX' from 'abm_auto.runtime'` or `name 'XXX' is not defined`,
+the LLM (you, in a previous attempt) likely **hallucinated a class name**. Check this list of
+**hallucinations actually observed in past failed runs**:
+
+| ❌ Hallucinated | ✓ Use instead |
+|---|---|
+| `NetworkGrid`, `NetworkModel`, `GridNetwork` | `Network` (separate from `Grid`) |
+| `WattsStrogatzNetwork`, `BarabasiAlbertGraph` | `Network` + set `network_type` parameter |
+| `GridModel`, `NetworkAgentModel` | `Model` (only one base class) |
+| `SIRAgent`, `EpidemicAgent`, `BuyerAgent` | You DEFINE these — they're not in runtime |
+| `AgentScheduler`, `EventLoop` | Just use `for t in self.iterator(periods):` |
+| `agent.gen_num`, `agent.generation_num` | NEITHER exists — drop the reference entirely |
+| `data_collector.add_property("name")` | Use `add_agent_property("container", "attr")` or `add_environment_property("attr")` |
+
+**All importable classes from `abm_auto.runtime`** (the FULL list — anything else is hallucinated):
+```
+Agent, AgentList, GridAgent, NetworkAgent,
+Model, Environment, Scenario, DataCollector,
+Grid, Network,
+Config, Simulator, Calibrator, Trainer
+```
+
 ## Fix Instructions
 
 1. Identify the root cause of the error
@@ -37,6 +61,28 @@ The following Python simulation code produced an error when executed. Analyze th
    - When `range()` gets a float: cast to int with `int(self.scenario.some_param)`.
    - **The runtime calls `agent.setup()` AFTER loading CSV attributes** — `setup()` overwrites CSV values! Use `getattr(self, "state", 0)` to preserve CSV-loaded attributes, or set initial states in `model.setup()` instead.
    - If simulation output shows all agents stuck in initial state (e.g., count_i=0 throughout), check if `agent.setup()` is overwriting CSV-loaded `state` attribute.
+
+4. **Network-specific errors** (most common codegen failure mode):
+   - `AttributeError: module 'networkx' has no attribute 'watts_strogatz'`
+     → **FIX**: `network_type` must include the `_graph` suffix. Correct names:
+        - `"watts_strogatz_graph"` (small-world; params `{"k": int, "p": float}`, k must be EVEN)
+        - `"barabasi_albert_graph"` (scale-free; params `{"m": int}` — edges per new node)
+        - `"erdos_renyi_graph"` (random; params `{"p": float}`)
+   - `network.k`, `network.p` not attributes → pass via `network_params={"k": ..., "p": ...}` in `setup_agent_connections()`
+   - `get_neighbors()` returns NetworkAgent objects (NOT (category, id) tuples — that's Grid). Access `.state` etc. directly.
+   - `set_category()` MUST be implemented on every NetworkAgent subclass (same rule as GridAgent): `def set_category(self): self.category = 0`
+
+5. **Import errors inside the `core/` package**:
+   - `ModuleNotFoundError: No module named 'core.model'` from a file INSIDE `core/`
+     → **FIX**: use relative imports — `from .model import X`, not `from core.model import X`
+   - `ModuleNotFoundError: No module named 'core'` from `main.py`
+     → **FIX**: main.py's parent dir must be on sys.path; Melodie's Config handles this if `project_root=os.path.dirname(__file__)`
+
+6. **Calibrator-specific** (only if using Calibrator, not Simulator):
+   - Calibrator uses `CalibratorScenarios.csv` + `CalibratorParams.csv` — different from Simulator
+   - There is NO `gen_num`, `generation_num`, or `generation` attribute on agents. If you see this, the previous attempt invented a Calibrator/Trainer concept that doesn't exist for plain `Simulator`. Remove the reference.
+
+7. **`data_collector.collect()` signature**: MUST pass period as argument → `self.data_collector.collect(t)`. Without `t`, raises TypeError.
 
 ## Output Format
 

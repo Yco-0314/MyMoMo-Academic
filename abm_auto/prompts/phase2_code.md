@@ -226,9 +226,14 @@ self.network = self.create_network()
 self.agents.setup_agents(agents_num=self.scenario.agent_num)
 self.network.setup_agent_connections(
     agent_lists=[self.agents],
-    network_type="watts_strogatz",           # or "barabasi_albert", "erdos_renyi"
+    # ⚠ network_type MUST be the EXACT networkx generator function name (with "_graph" suffix).
+    # Wrong: "watts_strogatz", "barabasi_albert", "erdos_renyi"  →  AttributeError at runtime.
+    # Right:
+    network_type="watts_strogatz_graph",     # small-world; needs k (int, EVEN), p (float)
+    # network_type="barabasi_albert_graph",  # scale-free; needs m (int = edges per new node)
+    # network_type="erdos_renyi_graph",      # random; needs p (float, edge probability)
     network_params={
-        "k": self.scenario.network_k,        # degree
+        "k": self.scenario.network_k,        # degree (Watts-Strogatz; must be even integer)
         "p": self.scenario.network_p,        # rewiring probability
     },
 )

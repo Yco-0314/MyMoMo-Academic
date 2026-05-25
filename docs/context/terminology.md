@@ -369,6 +369,110 @@ Component that runs Python subprocesses with timeout and error capture.
 | MAPE | Mean Absolute Percentage Error |
 | DOI | Digital Object Identifier |
 | APA | American Psychological Association |
+| GVR | Generate-Validate-Refine loop |
+
+---
+
+## Pipeline Architecture Patterns
+
+### Generate-Validate-Refine (GVR) Loop
+
+A first-class module (`abm_auto/refinement.py`) that wraps any
+**(generator, validator)** pair into a self-healing retry loop with
+structured feedback. Added 2026-05-25 after benchmark runs revealed that
+50%+ of pipeline failures were caused by single-shot LLM non-determinism
+that a feedback-driven retry would have fixed.
+
+The pattern has three roles:
+
+- **Generator** — produces an artifact; accepts optional free-text feedback
+  from the previous failed attempt. Example: `DesignAgent.run(extra_feedback=...)`.
+- **Validator** — checks the artifact and returns a `ValidationOutcome`
+  (ok, reasons, severity, structured). May be deterministic (rule check),
+  LLM-based (semantic judge), or hybrid. Example: `ViabilityChecker.check`.
+- **`refine()` orchestrator** — calls generator, calls validator, on failure
+  feeds the reasons back into generator, repeats up to `max_iters`.
+
+**Exhaustion policy**: `on_exhaust="continue_best"` returns the attempt with
+the fewest failure reasons (best-so-far) and writes a HIGH audit issue.
+`on_exhaust="halt"` returns `accepted=False` and lets the caller halt.
+
+**Current adapters** (two — real seam, per architecture review):
+1. `DesignerViability` — Phase 1+1c. Closes the most-frequently-failing gate.
+2. `CoderVerifier` — Phase 2+3. Validator now BOTH runs the import dry-run AND
+   enforces the Calibration Contract (see below).
+
+**When to add a new adapter**: any phase where (a) the output comes from an
+LLM and (b) acceptance criteria can be checked programmatically. Candidate:
+`BayesianCalibrator + PosteriorQuality` (once posterior identifiability
+metric is defined).
+
+### Research Mode (Reproduce vs. Originate)
+
+`ResearchSpec.mode` is detected once at Phase −1 by `ModeDetector` from
+`story.md`. Downstream agents calibrate their thresholds and prompts:
+
+- **reproduce** — story names a paper / classic model. Strict thresholds
+  (≤ 5 AI-ASSUMPTION tags), prompt `phase1_design_reproduce.md` enforces
+  source-priority extraction (story → lit_notes → paper-canonical → assumption).
+- **originate** — story describes a phenomenon. Looser thresholds (≤ 15
+  assumptions), prompt `phase1_design_originate.md` anchors on
+  `hypothesis.md` from the upstream `HypothesisAgent`. WhatIfOracle runs
+  only in this mode.
+
+User can force mode via `--mode reproduce|originate` (overrides detection).
+
+### Calibration Contract
+
+`ResearchSpec.calibration_param_specs` is a list of
+`{name, min, max, unit}` dicts extracted from story.md. Three downstream
+contracts:
+
+1. **Name contract** — `CoderAgent` injects param names into the codegen
+   prompt as a hard constraint. Post-codegen, `_check_calibration_contract()`
+   validates every spec param appears as a column in `SimulatorScenarios.csv`.
+   Violation → routed back to CoderAgent through CoderVerifier GVR.
+2. **Unit contract** — each spec carries the original unit ("percent",
+   "probability", etc.). CoderAgent prompt forbids unit conversion (no
+   silent percent→probability). Without this, downstream prior bounds end
+   up 100× off truth.
+3. **Range contract** — `BayesianCalibrator._infer_priors(spec_overrides=…)`
+   uses spec `min`/`max` instead of CSV-inferred ±50% bounds. Decouples
+   prior width from accidental CSV default values.
+
+### Audit Ledger
+
+`abm_auto/audit/ledger.py` — append-only event stream
+(`audit_ledger.jsonl` + rendered `.md`). Every agent writes `info` /
+`raise_issue` / `resolve` events tagged with phase + actor. Used by
+ReviewerAgent and by debugging to see "who made which decision when".
+
+Adopted by all 14 agents (Round 1A complete).
+
+### LLM Provider Abstraction (`abm_auto/llm.py`)
+
+Single `LLMClient` wraps either Anthropic SDK (Claude) or OpenAI SDK
+pointed at DeepSeek's compatible endpoint. Selected by env var
+`LLM_PROVIDER=anthropic|deepseek`. Adding a third provider = a third
+branch in `LLMClient.__init__` — no caller changes needed.
+
+### Calibration Benchmark Suite
+
+Three scripts for measuring the calibration pipeline against Milan's 2025
+challenge ground truth (`virus_spread_chance=4.4`, `recovery_chance=0.3`,
+`gain_resistance_chance=25.0`):
+
+1. `benchmark_calibration_challenge.py` — full pipeline (story → DESIGN →
+   code → sim → calibrate → MSE). Stress-tests the whole stack.
+2. `benchmark_calibration_handcrafted.py` — bypasses codegen by injecting
+   a hand-written SIR-on-network simulator. Isolates calibration math
+   from codegen reliability.
+3. `benchmark_calibration_stability.py` — runs (2) N times, reports
+   variance. Tells us if calibration is reproducible vs RNG-flaky.
+
+Score format: per-parameter relative error + Milan-formula MSE (mean of
+squared errors across `susceptible`, `infected`, `resistant` columns,
+averaged over aligned ticks).
 
 ---
 
