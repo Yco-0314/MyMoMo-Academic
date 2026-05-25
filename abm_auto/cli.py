@@ -36,6 +36,7 @@ def run(
     fetch_citations: bool = typer.Option(False, "--fetch-citations", help="Fetch real citations from Semantic Scholar (requires API key)"),
     baseline: Optional[Path] = typer.Option(None, "--baseline", help="Path to baseline CSV for comparison (time,metric1,metric2,...)"),
     no_lit_review: bool = typer.Option(False, "--no-lit-review", help="Skip Phase 0 automatic literature search"),
+    mode: Optional[str] = typer.Option(None, "--mode", help="Force research mode: 'reproduce' or 'originate'. Default: auto-detect from story.md (LLM)."),
 ):
     """
     Run the full autonomous ABM pipeline from a story description.
@@ -77,6 +78,7 @@ def run(
         fetch_citations=fetch_citations,
         baseline_path=baseline,
         auto_lit_review=not no_lit_review,
+        mode_override=mode,
     )
     workspace_path = pipeline.run()
     console.print(f"\n[bold]Output directory:[/bold] {workspace_path}")
@@ -95,10 +97,10 @@ def optimize(
     from abm_auto.agents.optimizer import OptimizerAgent
     from abm_auto.agents.coder import CoderAgent
     from abm_auto.agents.reporter import ReporterAgent
-    import anthropic
+    from abm_auto.llm import make_client
 
     ws = Workspace.load(workspace)
-    client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY, base_url=config.ANTHROPIC_BASE_URL, timeout=300.0)
+    client = make_client(provider=config.LLM_PROVIDER, api_key=config.get_api_key(), base_url=config.get_base_url(), timeout=300.0)
     executor = Executor(ws)
     analyzer = AnalyzerAgent(client, ws, model=model)
     optimizer = OptimizerAgent(client, ws, model=model)
@@ -153,14 +155,14 @@ def sensitivity(
     from abm_auto.runner.workspace import Workspace
     from abm_auto.runner.executor import Executor
     from abm_auto.agents.salib_optimizer import SensitivityAnalyzer
-    import anthropic
+    from abm_auto.llm import make_client
 
     if method not in ("morris", "sobol"):
         console.print("[red]Method must be 'morris' or 'sobol'[/red]")
         raise typer.Exit(1)
 
     ws = Workspace.load(workspace)
-    client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY, base_url=config.ANTHROPIC_BASE_URL, timeout=300.0)
+    client = make_client(provider=config.LLM_PROVIDER, api_key=config.get_api_key(), base_url=config.get_base_url(), timeout=300.0)
     executor = Executor(ws, timeout=timeout)
     analyzer = SensitivityAnalyzer(client, ws, model=model, lang=lang)
 
@@ -287,14 +289,14 @@ def review(
     """
     from abm_auto.runner.workspace import Workspace
     from abm_auto.agents.reviewer import ReviewerAgent
-    import anthropic
+    from abm_auto.llm import make_client
 
     if mode not in ("panel", "quick"):
         console.print("[red]Mode must be 'panel' or 'quick'[/red]")
         raise typer.Exit(1)
 
     ws = Workspace.load(workspace)
-    client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY, base_url=config.ANTHROPIC_BASE_URL, timeout=300.0)
+    client = make_client(provider=config.LLM_PROVIDER, api_key=config.get_api_key(), base_url=config.get_base_url(), timeout=300.0)
     reviewer = ReviewerAgent(client, ws, model=model, lang=lang)
     reviewer.run(mode=mode)
 

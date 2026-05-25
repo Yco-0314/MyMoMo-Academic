@@ -72,21 +72,29 @@ REVIEWERS = [
 class ReviewerAgent(BaseAgent):
     """Multi-reviewer peer review panel for ABM research."""
 
-    def run(self, mode: str = "panel") -> str:
+    # Reviewers whose evaluation criteria are mode-dependent.
+    # R2 (methodology transparency) is mode-neutral and skips the mode preamble.
+    _MODE_AWARE_REVIEWERS = {"R1", "R3", "R4"}
+
+    def run(self, mode: str = "panel", spec=None) -> str:
         """
         Run peer review.
 
         Args:
             mode: "panel" for full 5-reviewer panel, "quick" for single consolidated review.
+            spec: ResearchSpec from ModeDetector (optional). When provided, R1/R3/R4
+                  and EiC receive a mode-context preamble that re-calibrates their
+                  criteria — reproduce mode evaluates fidelity, originate mode
+                  evaluates contribution.
 
         Returns:
             Combined review as markdown text.
         """
         if mode == "quick":
-            return self._run_quick()
-        return self._run_panel()
+            return self._run_quick(spec=spec)
+        return self._run_panel(spec=spec)
 
-    def _run_panel(self) -> str:
+    def _run_panel(self, spec=None) -> str:
         """Run the full 5-reviewer panel: R1→R2→R3→R4→EiC."""
         console.print(Panel.fit(
             "[bold]同行评议委员会[/bold]\n"
@@ -97,6 +105,12 @@ class ReviewerAgent(BaseAgent):
         materials = self._gather_materials()
         reviews = {}
 
+        # Pre-compute mode context block (empty string if no spec or unknown mode)
+        mode_block = self._mode_context_block(spec)
+        if mode_block:
+            mode_label = spec.mode if spec else "unknown"
+            console.print(f"  [dim]Review mode: {mode_label}[/dim]")
+
         # Run R1-R4 sequentially
         for reviewer in REVIEWERS:
             rid = reviewer["id"]
@@ -104,6 +118,23 @@ class ReviewerAgent(BaseAgent):
 
             prompt_template = self.load_prompt(reviewer["prompt"])
             prompt = self._fill_template(prompt_template, materials, reviewer["materials"])
+
+            # Inject mode context preamble for R1/R3/R4 only (R2 is mode-neutral)
+            if mode_block and rid in self._MODE_AWARE_REVIEWERS:
+                prompt = mode_block + "\n\n---\n\n" + prompt
+
+            # Append audit history — cross-phase issue context that the templates
+            # don't reference by placeholder. Reviewers see what was raised
+            # in earlier phases and whether it was resolved.
+            audit_history = materials.get("audit_history", "")
+            if audit_history and "（审计记录为空" not in audit_history:
+                prompt += (
+                    "\n\n---\n\n"
+                    "## 流水线审计历史（cross-phase audit ledger）\n\n"
+                    "以下是 pipeline 各阶段已记录的 issue 及其状态。请在评审中明确引用 open issues，"
+                    "对已 resolved 的 issue 可作为方法论透明度的正面证据。\n\n"
+                    + audit_history
+                )
 
             review = self.call_llm(reviewer["system"], prompt, max_tokens=3072)
             reviews[rid] = review
@@ -114,11 +145,27 @@ class ReviewerAgent(BaseAgent):
             console.print(f"  [green]✓ {rid} review saved[/green]")
 
             # Extract score if present
-            self._show_score(review, rid)
+            score = self._show_score(review, rid)
+
+            # Audit: log this reviewer's score + name
+            try:
+                self.workspace.audit.info(
+                    phase="Phase 8",
+                    text=f"{rid} ({reviewer['name']}) review complete, score: {score or 'n/a'}",
+                    actor=f"Reviewer:{rid}",
+                    structured={
+                        "reviewer_id": rid,
+                        "reviewer_name": reviewer["name"],
+                        "score": score,
+                        "review_length": len(review),
+                    },
+                )
+            except Exception:
+                pass
 
         # Run Editor-in-Chief with all reviewer summaries
         console.print(f"\n[bold red]EiC: 主编终审[/bold red]")
-        eic_review = self._run_editor(materials, reviews)
+        eic_review = self._run_editor(materials, reviews, mode_block=mode_block)
         reviews["EiC"] = eic_review
 
         # Combine all reviews into one document
@@ -130,7 +177,7 @@ class ReviewerAgent(BaseAgent):
         self._display_final_verdict(eic_review)
         return combined
 
-    def _run_quick(self) -> str:
+    def _run_quick(self, spec=None) -> str:
         """Run the original single-pass consolidated review."""
         console.print("[bold cyan]Peer Review (Quick Mode)...[/bold cyan]")
 
@@ -147,6 +194,11 @@ class ReviewerAgent(BaseAgent):
             .replace("{{ memory }}", materials["memory"])
         )
 
+        # Inject mode context preamble
+        mode_block = self._mode_context_block(spec)
+        if mode_block:
+            prompt = mode_block + "\n\n---\n\n" + prompt
+
         system = (
             "You are a senior ABM reviewer for JASSS and CMOT journals. "
             "Be rigorous, specific, and constructive. Write in Chinese. "
@@ -160,7 +212,12 @@ class ReviewerAgent(BaseAgent):
         self._display_final_verdict(review)
         return review
 
-    def _run_editor(self, materials: dict[str, str], reviews: dict[str, str]) -> str:
+    def _run_editor(
+        self,
+        materials: dict[str, str],
+        reviews: dict[str, str],
+        mode_block: str = "",
+    ) -> str:
         """Run the Editor-in-Chief final verdict."""
         prompt_template = self.load_prompt("review_editor")
 
@@ -181,6 +238,10 @@ class ReviewerAgent(BaseAgent):
             .replace("{{ r4_summary }}", r4_summary)
         )
 
+        # EiC also receives mode preamble so the final verdict uses correct criteria
+        if mode_block:
+            prompt = mode_block + "\n\n---\n\n" + prompt
+
         system = (
             "你是极其忙碌且眼光毒辣的 ABM 顶刊主编。"
             "没有耐心，只要结论。诚实残忍。用中文撰写。"
@@ -191,7 +252,87 @@ class ReviewerAgent(BaseAgent):
         path = self.workspace.path / "review_editor.md"
         path.write_text(review, encoding="utf-8")
         console.print(f"  [green]✓ Editor review saved[/green]")
+
+        # Audit: log the editor's final verdict
+        try:
+            verdict = self._extract_verdict(review)
+            self.workspace.audit.info(
+                phase="Phase 8",
+                text=f"Editor-in-Chief verdict: {verdict or 'unknown'}",
+                actor="Reviewer:EiC",
+                structured={"verdict": verdict, "review_length": len(review)},
+            )
+        except Exception:
+            pass
         return review
+
+    @staticmethod
+    def _extract_verdict(review: str) -> str | None:
+        """Find the EiC verdict keyword (Accept / Minor Revision / Major Revision / Reject)."""
+        for line in review.split("\n"):
+            stripped = line.strip()
+            for kw in ("Accept", "Minor Revision", "Major Revision", "Reject"):
+                if kw in stripped and "终审" not in stripped and "##" not in stripped:
+                    return kw
+        return None
+
+    def _mode_context_block(self, spec) -> str:
+        """Build the mode-context preamble injected into R1/R3/R4/EiC prompts.
+
+        Returns an empty string when spec is None — in that case reviewers use
+        their original (originate-flavoured) prompts unchanged.
+
+        The block re-calibrates evaluation criteria:
+          reproduce — judge fidelity to the source paper, not originality
+          originate — judge contribution, anchored on hypothesis.md (if present)
+        """
+        if spec is None:
+            return ""
+
+        if spec.mode == "reproduce":
+            paper_ref = spec.paper_ref or "（源论文信息未提取）"
+            return (
+                "## 评审模式：复现研究 (Reproduction Mode)\n\n"
+                f"**待评审任务是对一篇已有论文的复现：** {paper_ref}\n\n"
+                "**评审重点是「忠实度」而非「原创性」。** 重要的范式调整：\n\n"
+                "- **不要问** 「这有什么理论贡献？」——理论贡献属于原论文。\n"
+                "- **应该问**：模型是否忠实实现了原论文描述的机制？仿真动态是否复现了原论文报告的关键现象？\n"
+                "- **R1（理论）**：评判原论文的理论框架是否被准确还原；关键概念是否被简化、混淆或误解；\n"
+                "  agent 行为规则是否对应原论文的机制描述。\n"
+                "- **R3（文献）**：评判与原论文的对话是否准确；原论文与领域的关系是否被正确呈现；\n"
+                "  不要再问「研究缺口是否真实」——缺口由原论文定义。\n"
+                "- **R4（逻辑）**：评判复现的因果链是否与原论文一致；任何偏离原文之处是 bug 还是合理的实现差异。\n\n"
+                "**评分基准重置**：高分给「成功复现关键动态且实现透明」，"
+                "低分给「机制偏离、关键参数无依据、未能复现关键发现」。\n"
+                "禁止以「无新理论贡献」为由扣分——这是设计目标，不是缺陷。\n"
+            )
+
+        if spec.mode == "originate":
+            phenomenon = spec.phenomenon or "（现象描述未提取）"
+            rq = spec.research_question or ""
+            has_hypothesis = bool(self.workspace.read_hypothesis())
+            hypothesis_note = (
+                "假设框架已经过竞争性筛选（见 hypothesis.md），"
+                "推荐假设作为本模型的理论锚点。"
+                if has_hypothesis
+                else "未运行 HypothesisAgent，模型理论框架由 DesignAgent 直接构建。"
+            )
+            rq_block = f"\n**核心研究问题：** {rq}\n" if rq else ""
+            return (
+                "## 评审模式：原创研究 (Originate Mode)\n\n"
+                f"**待评审任务是从现象出发的原创建模：** {phenomenon}\n"
+                f"{rq_block}\n"
+                f"{hypothesis_note}\n\n"
+                "**评审标准与传统顶刊论文一致：** 理论贡献、机制清晰度、实证可证伪性、文献对话。\n"
+                "原创模式的合理特征（不应被扣分）：\n"
+                "- 部分参数为合理设定（非论文复现，无原始参数表可对照）\n"
+                "- 假设的边界条件需要由作者自己论证，而非引用原论文\n"
+                "- 仿真结果与「预期」不完全一致——这本身就是研究发现\n\n"
+                "**应严格扣分的情形**：理论锚点不明（hypothesis.md 之外另立机制而不说明）、"
+                "机制循环论证（假设直接塞进规则然后「验证」假设）、过度推论。\n"
+            )
+
+        return ""
 
     def _fill_template(self, template: str, materials: dict[str, str],
                        needed: list[str]) -> str:
@@ -259,6 +400,12 @@ class ReviewerAgent(BaseAgent):
         if ws.report_path.exists():
             report = ws.report_path.read_text(encoding="utf-8")
 
+        # Audit ledger — cross-phase issue history (newest)
+        try:
+            audit_view = ws.audit.for_reviewer()
+        except Exception:
+            audit_view = "（审计记录不可用）"
+
         return {
             "story": story[:2000],
             "design": design[:2500],
@@ -269,6 +416,7 @@ class ReviewerAgent(BaseAgent):
             "trajectory": trajectory[:1500],
             "memory": memory[:1000],
             "report": report[:2000],
+            "audit_history": audit_view[:2500],
         }
 
     def _build_resolution_ledger(self, reviews: dict[str, str]) -> str:
@@ -375,13 +523,14 @@ class ReviewerAgent(BaseAgent):
                         actions[action_key].append(issue)
         return actions
 
-    def _show_score(self, review: str, reviewer_id: str) -> None:
-        """Extract and display score from a reviewer's output."""
+    def _show_score(self, review: str, reviewer_id: str) -> str | None:
+        """Extract and display score from a reviewer's output. Returns score string or None."""
         for line in review.split("\n"):
             stripped = line.strip()
             if "评分" in stripped and "/10" in stripped:
                 console.print(f"  [dim]{reviewer_id}: {stripped}[/dim]")
-                break
+                return stripped
+        return None
 
     def _display_final_verdict(self, review: str) -> None:
         """Display the final verdict from the review."""

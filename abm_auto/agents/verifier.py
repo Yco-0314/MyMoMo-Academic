@@ -12,22 +12,60 @@ console = Console()
 
 
 class VerifierAgent(BaseAgent):
-    """Runs model code, catches errors, and asks LLM to fix them."""
+    """Runs model code, catches errors, and asks LLM to fix them.
+
+    As of 2026-05-25 the Pipeline composes verifier.fix() into the GVR
+    refine() loop (see CoderVerifier adapter in pipeline.py). The original
+    run() and fix_and_rerun() methods remain for backwards compatibility
+    with external callers but pipeline.py no longer uses them. Prefer the
+    GVR pattern (see docs/context/terminology.md — Generate-Validate-Refine).
+    """
 
     def run(self, executor: Executor, max_retries: int = DEFAULT_MAX_RETRIES) -> bool:
-        """Phase 3: import-check loop. Returns True when code imports cleanly."""
+        """Phase 3: import-check loop. Returns True when code imports cleanly.
+
+        DEPRECATED — pipeline.py now composes self.fix() into refine().
+        Kept for backwards compat with external tools.
+        """
         console.print("[bold cyan]Phase 3: Verifying & fixing code...[/bold cyan]")
+
+        first_error_issue_id: str | None = None
 
         for attempt in range(1, max_retries + 1):
             error = executor.dry_run()
             if error is None:
                 console.print(f"  [green]✓ Code verified (attempt {attempt})[/green]")
+                # Audit: if we raised an issue earlier, mark it resolved
+                if first_error_issue_id:
+                    self.workspace.audit.resolve(
+                        first_error_issue_id,
+                        note=f"Code verified after {attempt} attempt(s)",
+                        actor="VerifierAgent",
+                    )
                 return True
 
             console.print(f"  [yellow]✗ Error on attempt {attempt}/{max_retries}:[/yellow] {error[:200]}")
 
+            # Audit: record the first error as an issue (subsequent errors update it via reopen)
+            if first_error_issue_id is None:
+                first_error_issue_id = self.workspace.audit.raise_issue(
+                    phase="Phase 3",
+                    severity="HIGH",
+                    text=f"Code verification failure: {error[:200]}",
+                    actor="VerifierAgent",
+                    structured={"attempt": attempt, "max_retries": max_retries},
+                )
+
             if attempt == max_retries:
                 console.print("  [red]✗ Max retries reached. Could not fix code.[/red]")
+                # Audit: escalate to BLOCKING
+                self.workspace.audit.raise_issue(
+                    phase="Phase 3",
+                    severity="BLOCKING",
+                    text=f"Code verification failed after {max_retries} attempts: {error[:200]}",
+                    actor="VerifierAgent",
+                    structured={"final_error": error[:500]},
+                )
                 return False
 
             self.fix(error)
@@ -42,10 +80,11 @@ class VerifierAgent(BaseAgent):
         max_retries: int = DEFAULT_MAX_RETRIES,
         label: str = "fix",
     ) -> tuple[bool, str]:
-        """Public seam: fix the code for a given error then re-run the simulation.
+        """Fix the code for a given error then re-run the simulation.
 
-        Replaces the scattered ``self.verifier._fix(err); executor.run(i)`` patterns
-        in pipeline.py.  Returns (success, output_or_error).
+        DEPRECATED — pipeline.py replaced this with Pipeline._fix_and_rerun_via_gvr
+        which routes through refine() for unified retry/audit/feedback semantics.
+        Kept for backwards compat.
         """
         for attempt in range(1, max_retries + 1):
             console.print(

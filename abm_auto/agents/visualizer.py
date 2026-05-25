@@ -125,6 +125,22 @@ class VisualizerAgent:
 
         if generated:
             console.print(f"  [green]✓ {len(generated)} figures generated in figures/[/green]")
+
+        # Audit (works around the fact that VisualizerAgent takes a Path, not Workspace)
+        try:
+            from abm_auto.audit import AuditLedger
+            AuditLedger(self.workspace).info(
+                phase="Phase 7b",
+                text=f"Generated {len(generated)} figures",
+                actor="VisualizerAgent",
+                structured={
+                    "n_figures": len(generated),
+                    "figure_names": [p.stem for p in generated],
+                },
+            )
+        except Exception:
+            pass
+
         return generated
 
     def _plot_timeseries(self, run_dirs: list[Path]) -> Path | None:

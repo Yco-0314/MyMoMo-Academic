@@ -44,7 +44,56 @@ class AnalyzerAgent(BaseAgent):
         insights_path.write_text(insights, encoding="utf-8")
 
         console.print(f"  [green]✓ Insights saved for run #{run_number}[/green]")
+
+        # Audit: log run + raise issue if results look degenerate
+        try:
+            degenerate_signal = self._check_degenerate(results_summary)
+            if degenerate_signal:
+                self.workspace.audit.raise_issue(
+                    phase=f"Phase 5 (run {run_number})",
+                    severity="HIGH",
+                    text=(
+                        f"Degenerate simulation output detected: {degenerate_signal}. "
+                        f"Insights may not be meaningful for this run."
+                    ),
+                    actor="AnalyzerAgent",
+                    structured={"run": run_number, "signal": degenerate_signal},
+                )
+            else:
+                self.workspace.audit.info(
+                    phase=f"Phase 5 (run {run_number})",
+                    text=f"Analysed run {run_number}, insights {len(insights)} chars",
+                    actor="AnalyzerAgent",
+                    structured={
+                        "run": run_number,
+                        "insights_length": len(insights),
+                        "params": current_params,
+                    },
+                )
+        except Exception:
+            pass
+
         return insights
+
+    @staticmethod
+    def _check_degenerate(results_summary: str) -> str | None:
+        """Detect obvious degeneracy signals in the results summary string.
+
+        Returns a short description if degenerate, else None. Cheap heuristic —
+        the real check is in SanityChecker; this just surfaces the symptom in
+        the audit log so reviewers see it without trawling raw CSVs.
+        """
+        if not results_summary:
+            return "results_summary is empty"
+        low = results_summary.lower()
+        signals = []
+        if "all zero" in low or "all-zero" in low or "全部为零" in low:
+            signals.append("all-zero metrics")
+        if "nan" in low or "缺失" in low:
+            signals.append("NaN / missing values")
+        if "constant" in low or "no variation" in low or "无变化" in low:
+            signals.append("constant metric (no variation)")
+        return "; ".join(signals) if signals else None
 
     def _extract_design_summary(self, design: str) -> str:
         """Extract the Model Overview section from DESIGN.md."""

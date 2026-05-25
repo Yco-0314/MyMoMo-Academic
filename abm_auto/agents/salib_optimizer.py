@@ -18,14 +18,30 @@ import pandas as pd
 from rich.console import Console
 from rich.table import Table
 
-from SALib.sample import morris as morris_sample, sobol as sobol_sample
-from SALib.analyze import morris as morris_analyze, sobol as sobol_analyze
+# SALib is optional. The pipeline keeps working when it's missing — only
+# the --sensitivity flag becomes a no-op (the agent raises a clear error).
+try:
+    from SALib.sample import morris as morris_sample, sobol as sobol_sample
+    from SALib.analyze import morris as morris_analyze, sobol as sobol_analyze
+    _HAS_SALIB = True
+except Exception:
+    morris_sample = sobol_sample = None
+    morris_analyze = sobol_analyze = None
+    _HAS_SALIB = False
 
 from abm_auto.agents.base import BaseAgent
 from abm_auto.runner.workspace import Workspace
 from abm_auto.runner.executor import Executor
 
 console = Console()
+
+
+def _require_salib():
+    if not _HAS_SALIB:
+        raise ImportError(
+            "SALib is not installed. Sensitivity analysis is unavailable. "
+            "Install with: pip install SALib"
+        )
 
 
 class SensitivityAnalyzer(BaseAgent):
@@ -54,6 +70,7 @@ class SensitivityAnalyzer(BaseAgent):
         Returns:
             Dict with sensitivity indices and LLM interpretation.
         """
+        _require_salib()
         console.print(f"[bold cyan]Sensitivity Analysis ({method.upper()})...[/bold cyan]")
 
         # 1. Define the problem from SimulatorScenarios.csv
@@ -117,6 +134,28 @@ class SensitivityAnalyzer(BaseAgent):
 
         # 7. LLM interpretation
         interpretation = self._interpret(indices, method)
+
+        try:
+            top_params = sorted(
+                indices.items(),
+                key=lambda kv: kv[1].get("mu_star", kv[1].get("ST", 0)) or 0,
+                reverse=True,
+            )[:3]
+            self.workspace.audit.info(
+                phase="Phase 6b",
+                text=(
+                    f"Sensitivity analysis ({method}) complete; "
+                    f"top influential: {', '.join(p for p, _ in top_params)}"
+                ),
+                actor="SensitivityAnalyzer",
+                structured={
+                    "method": method,
+                    "n_params": len(indices),
+                    "top_params": [p for p, _ in top_params],
+                },
+            )
+        except Exception:
+            pass
 
         return {"indices": indices, "interpretation": interpretation, "method": method}
 

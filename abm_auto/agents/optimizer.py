@@ -87,6 +87,25 @@ class OptimizerAgent(BaseAgent):
             hypothesis=hypothesis,
         )
 
+        try:
+            self.workspace.audit.info(
+                phase=f"Phase 6 (after run {current_run})",
+                text=(
+                    f"Proposed params for run {current_run + 1}; "
+                    f"hypothesis: {hypothesis[:80]}"
+                ),
+                actor="OptimizerAgent",
+                structured={
+                    "from_run": current_run,
+                    "to_run": current_run + 1,
+                    "old_params": current_params,
+                    "new_params": new_params,
+                    "drop_reason": drop_reason,
+                },
+            )
+        except Exception:
+            pass
+
         return new_params
 
     def _build_results_summary(self) -> str:

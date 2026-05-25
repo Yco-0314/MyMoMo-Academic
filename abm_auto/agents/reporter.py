@@ -51,4 +51,26 @@ class ReporterAgent(BaseAgent):
         self.workspace.write_report(report)
 
         console.print(f"  [green]✓ Report saved to {self.workspace.report_path}[/green]")
+
+        try:
+            import re
+            section_count = len(re.findall(r"^##\s", report, re.M))
+            self.workspace.audit.info(
+                phase="Phase 7",
+                text=(
+                    f"Final report generated ({len(report)} chars, "
+                    f"{section_count} sections, from {total_runs} runs)"
+                ),
+                actor="ReporterAgent",
+                structured={
+                    "length": len(report),
+                    "sections": section_count,
+                    "runs_synthesised": total_runs,
+                    "had_citations": bool(citations),
+                    "had_baseline": bool(baseline_comparison),
+                },
+            )
+        except Exception:
+            pass
+
         return report

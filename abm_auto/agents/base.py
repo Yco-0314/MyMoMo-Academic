@@ -2,11 +2,13 @@ from __future__ import annotations
 import re
 import time
 from pathlib import Path
+from typing import Union
 
 import anthropic
 from rich.console import Console
 
 from abm_auto.config import DEFAULT_MODEL, PROMPTS_DIR, KNOWLEDGE_DIR
+from abm_auto.llm import LLMClient
 from abm_auto.runner.workspace import Workspace
 
 console = Console()
@@ -44,9 +46,18 @@ SECTION_LABELS: dict[str, dict[str, str]] = {
 class BaseAgent:
     """Base class for all pipeline agents."""
 
-    def __init__(self, client: anthropic.Anthropic, workspace: Workspace,
-                 model: str = DEFAULT_MODEL, lang: str = "zh"):
-        self.client = client
+    def __init__(self,
+                 client: Union[LLMClient, anthropic.Anthropic],
+                 workspace: Workspace,
+                 model: str = DEFAULT_MODEL,
+                 lang: str = "zh"):
+        # Accept either the new LLMClient abstraction or a raw anthropic.Anthropic
+        # (the latter for back-compat with any callers still constructing the
+        # SDK client directly). Wrap raw Anthropic clients in a thin shim.
+        if isinstance(client, anthropic.Anthropic):
+            self.client = _AnthropicShim(client)
+        else:
+            self.client = client
         self.workspace = workspace
         self.model = model
         self.lang = lang
@@ -66,7 +77,7 @@ class BaseAgent:
         return path.read_text(encoding="utf-8")
 
     def call_llm(self, system: str, user: str, max_tokens: int = 8192) -> str:
-        """Call Claude and return the text response. Injects language directive. Retries on transient errors."""
+        """Call the LLM and return text. Provider-agnostic; retries on transient errors."""
         lang_dir = LANG_DIRECTIVES.get(self.lang, LANG_DIRECTIVES["en"])
         full_system = f"{system}\n\n{lang_dir}"
         console.print(f"  [dim]→ LLM ({self.model}, lang={self.lang}, max_tokens={max_tokens})[/dim]")
@@ -74,21 +85,20 @@ class BaseAgent:
         max_retries = 5
         for attempt in range(max_retries):
             try:
-                response = self.client.messages.create(
+                return self.client.create(
                     model=self.model,
                     max_tokens=max_tokens,
                     system=full_system,
-                    messages=[{"role": "user", "content": user}],
+                    user=user,
                 )
-                return response.content[0].text
-            except anthropic.RateLimitError as e:
+            except self.client.RateLimitError as e:
                 # HTTP 429 — back off and retry; always retryable
                 wait = min(30 * (2 ** attempt), 300)  # 30s, 60s, 120s, 240s, 300s
                 console.print(f"  [yellow]⚠ Rate limit ({attempt + 1}/{max_retries}), waiting {wait}s...[/yellow]")
                 time.sleep(wait)
                 if attempt == max_retries - 1:
                     raise
-            except anthropic.BadRequestError as e:
+            except self.client.BadRequestError as e:
                 msg = str(e)
                 if "413" in msg or "Payload Too Large" in msg:
                     # Truncate and retry once
@@ -100,7 +110,7 @@ class BaseAgent:
                 if "workspace API usage limits" in msg or "quota" in msg.lower():
                     console.print(f"  [red]✗ API quota exhausted — {msg[:200]}[/red]")
                 raise
-            except (anthropic.APIConnectionError, anthropic.APITimeoutError) as e:
+            except self.client.ConnectionErrors as e:
                 if attempt < max_retries - 1:
                     wait = min(10 * (2 ** attempt), 120)  # exponential: 10, 20, 40, 80
                     console.print(f"  [yellow]⚠ API error ({attempt + 1}/{max_retries}), retrying in {wait}s... ({e})[/yellow]")
@@ -136,3 +146,35 @@ class BaseAgent:
         template = self.load_prompt(prompt_name)
         prompt = self.render_prompt(template, **context)
         return self.call_llm(system, prompt, max_tokens=max_tokens)
+
+
+class _AnthropicShim:
+    """Wraps a raw anthropic.Anthropic so it satisfies the LLMClient interface.
+
+    Lets old callers that still pass an anthropic.Anthropic into agents keep
+    working without changes — base.py just wraps them transparently.
+    """
+
+    def __init__(self, anthropic_client: anthropic.Anthropic):
+        self._c = anthropic_client
+
+    def create(self, model: str, max_tokens: int, system: str, user: str) -> str:
+        r = self._c.messages.create(
+            model=model,
+            max_tokens=max_tokens,
+            system=system,
+            messages=[{"role": "user", "content": user}],
+        )
+        return r.content[0].text
+
+    @property
+    def RateLimitError(self):
+        return anthropic.RateLimitError
+
+    @property
+    def BadRequestError(self):
+        return anthropic.BadRequestError
+
+    @property
+    def ConnectionErrors(self) -> tuple:
+        return (anthropic.APIConnectionError, anthropic.APITimeoutError)

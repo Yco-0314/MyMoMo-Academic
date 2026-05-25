@@ -35,6 +35,18 @@ class OddWriter(BaseAgent):
         odd_path = self.workspace.path / "ODD.md"
         odd_path.write_text(odd, encoding="utf-8")
         console.print(f"  [green]✓ ODD.md generated[/green]")
+
+        try:
+            section_count = len(re.findall(r"^##\s", odd, re.M))
+            self.workspace.audit.info(
+                phase="Phase 1b",
+                text=f"ODD.md generated ({len(odd)} chars, {section_count} sections)",
+                actor="OddWriter",
+                structured={"length": len(odd), "sections": section_count},
+            )
+        except Exception:
+            pass
+
         return odd
 
     def _extract_project_name(self, design: str) -> str:

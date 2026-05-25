@@ -27,7 +27,15 @@ def _load_templates_context() -> str:
 class CoderAgent(BaseAgent):
     """Converts DESIGN.md → executable Python files."""
 
-    def run(self) -> dict[str, str]:
+    def run(self, extra_feedback: str | None = None) -> dict[str, str]:
+        """Generate Python files from DESIGN.md.
+
+        Args:
+            extra_feedback: Optional refinement feedback from a previous failed
+                            codegen attempt (used by the CoderVerifier GVR loop
+                            when schema-contract violations or runtime errors
+                            require re-generation).
+        """
         console.print("[bold cyan]Phase 2: Generating Python code...[/bold cyan]")
 
         design = self.workspace.read_design()
@@ -37,6 +45,7 @@ class CoderAgent(BaseAgent):
         templates_ctx = _load_templates_context()
         knowledge_ctx = self._load_knowledge_context()
         prompt = self.load_prompt("phase2_code")
+        contract_block = self._build_calibration_contract_block()
 
         system = (
             "You are an expert ABM Engineer. "
@@ -51,8 +60,22 @@ class CoderAgent(BaseAgent):
             'input_folder="data/input" and output_folder="data/output". '
             "Do NOT use any other paths like 'input', 'output', 'config', or 'input_data'."
         )
+        # GVR refinement feedback (only on retry attempts) — placed at top
+        # so LLM reads "fix these schema/runtime issues" before the brief.
+        feedback_block = ""
+        if extra_feedback:
+            feedback_block = (
+                "## ⚠ Refinement Feedback (from previous codegen attempt)\n\n"
+                "Your previous code was rejected. Address ALL of these issues:\n\n"
+                f"{extra_feedback}\n\n"
+                "---\n\n"
+            )
+            console.print("  [yellow]Using GVR feedback from previous attempt[/yellow]")
+
         user = (
+            f"{feedback_block}"
             f"{prompt}\n\n"
+            f"{contract_block}"
             f"---\n\n## DESIGN.md\n\n{design}\n\n"
             f"---\n\n## Template Reference\n\n{templates_ctx}\n\n"
             f"---\n\n## Runtime Knowledge Reference\n\n{knowledge_ctx}"
@@ -82,7 +105,99 @@ class CoderAgent(BaseAgent):
 
         self.workspace.write_model_files(files)
         console.print(f"  [green]✓ {len(files)} files generated[/green]")
+
+        # Audit: log generated file inventory + any completeness fixes
+        try:
+            total_lines = sum(len(c.splitlines()) for c in files.values())
+            text = f"Generated {len(files)} files ({total_lines} lines total)"
+            if missing:
+                text += f"; auto-completed missing attributes: {list(missing)[:5]}"
+            self.workspace.audit.info(
+                phase="Phase 2",
+                text=text,
+                actor="CoderAgent",
+                structured={
+                    "n_files": len(files),
+                    "total_lines": total_lines,
+                    "file_names": list(files.keys()),
+                    "missing_attributes_completed": list(missing) if missing else [],
+                },
+            )
+        except Exception:
+            pass
+
         return files
+
+    def _build_calibration_contract_block(self) -> str:
+        """Read calibration param SPECS from research_spec.json and render as a hard contract.
+
+        Includes name + range + unit so the LLM uses the right scale.
+        Without unit info, the LLM tends to convert "4.4 percent" → 0.044
+        (probability) and the calibrator's prior bounds end up 100× off truth.
+        """
+        import json
+        spec_path = self.workspace.path / "research_spec.json"
+        if not spec_path.exists():
+            return ""
+        try:
+            spec = json.loads(spec_path.read_text(encoding="utf-8"))
+        except Exception:
+            return ""
+        param_specs: list = spec.get("calibration_param_specs") or []
+        params: list = spec.get("calibration_params") or []
+        if not param_specs and not params:
+            return ""
+
+        # Build the contract table. Prefer rich specs; fall back to name-only.
+        if param_specs:
+            rows = []
+            for s in param_specs:
+                name = s.get("name", "?")
+                lo = s.get("min", "?")
+                hi = s.get("max", "?")
+                unit = s.get("unit", "(unspecified)")
+                rows.append(f"| `{name}` | {lo} – {hi} | {unit} |")
+            contract_table = (
+                "| Param name (EXACT) | Range | Unit (CRITICAL — use this scale verbatim) |\n"
+                "|---|---|---|\n"
+                + "\n".join(rows)
+            )
+            unit_warning = (
+                "\n\n**UNIT DISCIPLINE — DO NOT CONVERT SCALES**:\n"
+                "- If unit is `percent`, store the value as the PERCENTAGE (e.g. 4.4 for 4.4%), "
+                "  NOT as probability 0.044. Inside agent code, divide by 100 only at the moment "
+                "  of use: `if random.random() < self.scenario.virus_spread_chance / 100.0: ...`\n"
+                "- If unit is `probability` or `rate`, store as the raw probability (0.0–1.0).\n"
+                "- Default value in SimulatorScenarios.csv MUST be in the declared range and unit, "
+                "  not auto-converted to a different scale.\n"
+                "- The downstream BayesianCalibrator uses the declared `min`/`max` to build priors. "
+                "  If your CSV value is on a different scale than declared, calibration will "
+                "  estimate values in the WRONG scale and the pipeline will report nonsense."
+            )
+        else:
+            # Legacy fallback when LLM didn't provide structured specs
+            contract_table = "\n".join(f"  - `{p}`" for p in params)
+            unit_warning = ""
+
+        return (
+            "---\n\n"
+            "## ⚠⚠⚠ CALIBRATION CONTRACT (HARD CONSTRAINT) ⚠⚠⚠\n\n"
+            "The downstream BayesianCalibrator will tune these parameters. "
+            "Your generated code MUST expose them with the EXACT names, ranges, AND units below:\n\n"
+            f"{contract_table}"
+            f"{unit_warning}\n\n"
+            "**Required to satisfy this contract**:\n"
+            "1. `data/input/SimulatorScenarios.csv` MUST contain a column with each EXACT name above, "
+            "with a default value IN the declared range and unit.\n"
+            "2. `core/scenario.py` `Scenario.setup()` MUST declare each as an attribute with the same name.\n"
+            "3. Each agent / environment method that uses these parameters MUST read them as "
+            "`self.scenario.<name>` using the EXACT name above.\n"
+            "4. You MAY add additional structural parameters (e.g. `agent_num`, `periods`, `seed`). "
+            "Those are NOT calibration params — keep them separate.\n\n"
+            "If you violate this contract:\n"
+            "- Wrong NAME → BayesianCalibrator reports `missing` for that param.\n"
+            "- Wrong SCALE/UNIT → BayesianCalibrator returns estimates in the wrong scale (silent failure).\n\n"
+        )
 
     def _load_knowledge_context(self) -> str:
         """Inject runtime knowledge files into LLM context for code generation."""

@@ -15,11 +15,22 @@ class Workspace:
         self.path = path
         self.story_path = path / "STORY.md"
         self.lit_notes_path = path / "lit_notes.md"
+        self.hypothesis_path = path / "hypothesis.md"
         self.design_path = path / "DESIGN.md"
         self.model_dir = path / "model"
         self.results_dir = path / "results"
         self.report_path = path / "report.md"
         self.params_history_path = path / "params_history.json"
+        # Cross-phase audit ledger (lazily constructed on first access)
+        self._audit = None
+
+    @property
+    def audit(self):
+        """Lazy AuditLedger handle. Constructed on first access."""
+        if self._audit is None:
+            from abm_auto.audit import AuditLedger
+            self._audit = AuditLedger(self.path)
+        return self._audit
 
     @classmethod
     def create(cls, name: str | None = None) -> "Workspace":
@@ -46,6 +57,12 @@ class Workspace:
 
     def read_lit_notes(self) -> str:
         return self.lit_notes_path.read_text(encoding="utf-8") if self.lit_notes_path.exists() else ""
+
+    def write_hypothesis(self, content: str) -> None:
+        self.hypothesis_path.write_text(content, encoding="utf-8")
+
+    def read_hypothesis(self) -> str:
+        return self.hypothesis_path.read_text(encoding="utf-8") if self.hypothesis_path.exists() else ""
 
     def write_design(self, content: str) -> None:
         self.design_path.write_text(content, encoding="utf-8")

@@ -104,6 +104,19 @@ class LitReviewAgent(BaseAgent):
 
         if not unique:
             console.print("  [yellow]⚠ No papers found — DesignAgent will proceed without lit context[/yellow]")
+            try:
+                self.workspace.audit.raise_issue(
+                    phase="Phase 0",
+                    severity="MEDIUM",
+                    text=(
+                        "Literature search returned zero papers. DesignAgent will rely "
+                        "solely on story.md, increasing AI-ASSUMPTION count downstream."
+                    ),
+                    actor="LitReviewAgent",
+                    structured={"terms": terms},
+                )
+            except Exception:
+                pass
             return ""
 
         # Step 4: LLM synthesis into lit_notes.md
@@ -112,6 +125,21 @@ class LitReviewAgent(BaseAgent):
 
         self.workspace.write_lit_notes(lit_notes)
         console.print(f"  [green]✓ lit_notes.md written ({len(lit_notes)} chars)[/green]")
+
+        try:
+            self.workspace.audit.info(
+                phase="Phase 0",
+                text=f"Literature review synthesised from {len(unique)} unique papers",
+                actor="LitReviewAgent",
+                structured={
+                    "papers_found": len(unique),
+                    "lit_notes_length": len(lit_notes),
+                    "top_titles": [p.get("title", "")[:80] for p in unique[:3]],
+                },
+            )
+        except Exception:
+            pass
+
         return lit_notes
 
     # ── Search helpers ───────────────────────────────────────────────────────
