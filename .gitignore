@@ -14,6 +14,9 @@ workspace/
 *.db
 *.sqlite
 
+# Transient benchmark scorecards (regenerated each run)
+benchmark_calibration_summary.md
+
 # macOS
 .DS_Store
 
@@ -22,3 +25,4 @@ workspace/
 
 # Claude Code
 .claude/
+examples/calibration_challenge_virus/handcrafted_model/data/output/

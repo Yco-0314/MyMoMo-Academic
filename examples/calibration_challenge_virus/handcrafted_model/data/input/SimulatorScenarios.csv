@@ -1,0 +1,2 @@
+id,run_num,periods,agent_num,average_degree,initial_outbreak_size,virus_check_frequency,seed,virus_spread_chance,recovery_chance,gain_resistance_chance
+0,1,250,150,6,3,1,0,4.4,0.3,25.0
