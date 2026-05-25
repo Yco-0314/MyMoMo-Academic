@@ -123,8 +123,9 @@ def run_benchmark(max_sims: int = 50) -> int:
 
     # ── Sanity sim at ground truth (proves the handcrafted simulator works) ──
     console.rule("[cyan]Sanity check: simulate at ground-truth params[/cyan]")
-    bc_temp = BayesianCalibrator(client, ws, model=cfg.DEFAULT_MODEL, lang="en")
-    bc_temp._write_scenario_params({
+    from abm_auto.calibration.simulator import SimulatorWrapper
+    sim_wrap = SimulatorWrapper(ws, executor, base_run_id=99000)
+    sim_wrap.write_scenario_params({
         "virus_spread_chance": 4.4,
         "recovery_chance": 0.3,
         "gain_resistance_chance": 25.0,
