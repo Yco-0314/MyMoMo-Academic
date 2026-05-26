@@ -69,23 +69,27 @@ class MechanismExtractor(BaseAgent):
 
         hypothesis = self.workspace.read_hypothesis()
 
+        # Build the conditional hypothesis section ourselves — keep the prompt
+        # template Jinja-free (the base render_prompt only handles {{ var }},
+        # and stray {% if %} tags confuse the reasoner model into returning
+        # empty output).
+        hypothesis_block = (
+            f"### hypothesis.md (originate mode)\n{hypothesis}\n"
+            if hypothesis
+            else ""
+        )
         template = self.load_prompt("mechanism_spec")
         prompt = self.render_prompt(
             template,
             design=design,
-            hypothesis=hypothesis or "",
+            hypothesis_block=hypothesis_block,
         )
-        # Strip the unfilled {% if hypothesis %} ... {% endif %} block when no hypothesis
-        if not hypothesis:
-            import re
-            prompt = re.sub(
-                r"\{%\s*if hypothesis\s*%\}.*?\{%\s*endif\s*%\}",
-                "",
-                prompt,
-                flags=re.DOTALL,
-            )
 
-        spec = self.call_llm(_SYSTEM, prompt, max_tokens=2048)
+        # 4096 not 2048: deepseek-reasoner consumes the budget on its chain-of-
+        # thought before emitting visible output. With 2048, an empty string
+        # comes back; with 4096, full ~6000-char spec. Same total cost since
+        # we billable-token-count both (reasoning + completion).
+        spec = self.call_llm(_SYSTEM, prompt, max_tokens=4096)
         if not spec or len(spec.strip()) < _MIN_OUTPUT_CHARS:
             console.print(
                 f"  [yellow]⚠ Mechanism spec is too short ({len(spec or '')} chars) — "

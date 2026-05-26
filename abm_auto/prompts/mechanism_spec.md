@@ -18,10 +18,7 @@ implementation degree of freedom**.
 ### DESIGN.md
 {{ design }}
 
-{% if hypothesis %}
-### hypothesis.md (originate mode)
-{{ hypothesis }}
-{% endif %}
+{{ hypothesis_block }}
 
 ## Required output structure
 
