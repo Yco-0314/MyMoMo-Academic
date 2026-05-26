@@ -385,16 +385,17 @@ the BEHAVE 2025 ground truth.
 ## Reading the audit ledger
 
 After a full pipeline run, open `<workspace>/audit_ledger.md` for a
-chronological record of every agent's decisions:
+chronological record of every agent's decisions. Format (one bullet per
+event, real excerpt from a BEHAVE 2025 benchmark run):
 
 ```
-ev-0001 ℹ Phase -1   ModeDetector       Detected mode=originate (confidence=0.92)
-ev-0002 ℹ Phase 1    DesignerViability  GVR iter 1/3 PASS
-ev-0003 ℹ Phase 2    CoderAgent         Generated 7 files (215 lines total)
-ev-0004 🚩 Phase 3    CoderVerifier      GVR iter 1/5 FAIL (3 reasons)
-ev-0005 ℹ Phase 3    CoderVerifier      GVR iter 2/5 PASS
-ev-0006 ℹ Phase 4    Simulator          Run #1 complete, 1 CSV
-...
+- `ev-0001` ℹ **info** [INFO] Phase -1 (by ModeDetector): Research mode FORCED by --mode flag: originate (user override; LLM detection skipped)
+- `ev-0002` ℹ **info** [INFO] Phase 0.5 (by HypothesisAgent): Generated 3 competing hypotheses; recommended H2
+- `ev-0003` ℹ **info** [INFO] Phase 1 (by DesignAgent): DESIGN.md generated (prompt=phase1_design_originate, mode=originate, length=15768 chars, recommended_h=H2, used_h=H2)
+- `ev-0004` ℹ **info** [INFO] Phase 1c (by ViabilityChecker): Viability Gate passed (assumptions=9, missing=0)
+- `ev-0005` 🚩 **raise** [MEDIUM] Phase 1c (by ViabilityChecker): Design relies on 9 AI-ASSUMPTION tags ...
+- `ev-0007` ℹ **info** [INFO] Phase 2 (by CoderAgent): Generated 8 files (172 lines total)
+- `ev-0009` ℹ **info** [INFO] Phase 6 (calibration) (by BayesianCalibrator): Bayesian calibration complete via abc-rejection; 100 simulator calls, 3 params fit
 ```
 
 Every agent writes here — see CalibrationBenchmark output for a real
@@ -428,16 +429,15 @@ work:
 | −1 | ModeDetector | `story.md` | `research_spec.json` |
 | 0 | LitReviewer (optional) | `story.md` | `lit_notes.md` |
 | 0.5 | HypothesisAgent (originate only) | `story.md`, `lit_notes.md` | `hypothesis.md` |
-| 1 | DesignAgent | `story.md` (+`hypothesis.md`) | `DESIGN.md` |
-| 1c | ViabilityChecker (GVR validator) | `DESIGN.md` | `viability_*.json` |
+| 1 + 1c | DesignAgent + ViabilityChecker (GVR adapter, up to 3 iters) | `story.md`, `hypothesis.md` | `DESIGN.md` |
 | 1b | OddWriter | `DESIGN.md` | `ODD.md` |
-| 2 | CoderAgent (GVR generator) | `DESIGN.md`, this knowledge base | `core/*.py`, `main.py`, CSVs |
-| 3 | VerifierAgent (GVR validator) | generated code | fixes via re-codegen |
-| 4 | Simulator (the model itself) | `SimulatorScenarios.csv` | `Result_Simulator_*.csv` |
-| 5 | AnalyzerAgent | results | `analysis.md` |
-| 6 | BayesianCalibrator OR OptimizerAgent | observed.csv (if any) | `best_params.json`, ... |
+| 2 + 3 | CoderAgent + VerifierAgent (GVR adapter, up to 5 fix iters) | `DESIGN.md`, this knowledge base | `core/*.py`, `main.py`, CSVs |
+| **4 + 5 + 6 loop** | Simulator → AnalyzerAgent → (Calibrator OR Optimizer); typically 2-3 iters | `SimulatorScenarios.csv`, `observed.csv` | `Result_Simulator_*.csv`, per-iter insights |
+| 6 (in loop) | BayesianCalibrator OR OptimizerAgent | `observed.csv` (if any) | `best_params.json`, `posterior_summary.csv` |
+| 6.5 | WhatIfOracle (originate only) | results | `what_if_analysis.md` |
 | 7 | ReporterAgent | everything | `report.md` |
-| 8 | ReviewerAgent (optional) | everything | `peer_review.md` |
+| 7b | VisualizerAgent | results | `figures/*.png` |
+| 8 | ReviewerAgent (optional, `--review`) | everything | `peer_review.md` |
 
 Each phase produces a contract-bound artifact ([`04-data-contracts.md`](04-data-contracts.md))
 consumed by the next.
