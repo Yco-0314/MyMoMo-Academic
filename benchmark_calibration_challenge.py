@@ -182,7 +182,7 @@ def run_benchmark() -> int:
         story_path=story_path,
         iterations=3,           # ≥3 so calibrate-or-optimize branch fires after iter 1 success
         peer_review=False,
-        mode_override="originate",
+        mode_override="reproduce",  # Milan data is plain SIR (no hypothesis-driven mechanism added); reproduce mode is the fair comparison
         auto_lit_review=False,
         workspace_name=f"benchmark_calibration_{int(time.time())}",
     )
