@@ -72,10 +72,30 @@ class CoderAgent(BaseAgent):
             )
             console.print("  [yellow]Using GVR feedback from previous attempt[/yellow]")
 
+        # Mechanism Spec — the HARD CONTRACT from Phase 1d (if present).
+        # Placed ABOVE DESIGN.md in the prompt so the LLM reads "implement
+        # THIS pseudocode" before reading the free-form English design.
+        # If both disagree, the spec wins (it was extracted FROM design to
+        # remove ambiguity).
+        mechanism_spec = self.workspace.read_mechanism_spec()
+        spec_block = ""
+        if mechanism_spec:
+            spec_block = (
+                "---\n\n"
+                "## ⚠ MECHANISM SPECIFICATION — HARD CONTRACT ⚠\n\n"
+                "Implement the algorithm below LITERALLY. This pseudocode was "
+                "extracted from DESIGN.md specifically to remove implementation "
+                "ambiguity. If anything in DESIGN.md (further below) appears to "
+                "contradict this spec, **the spec wins** — DESIGN.md is for "
+                "context and architecture, the spec is for algorithm.\n\n"
+                f"{mechanism_spec}\n\n"
+            )
+
         user = (
             f"{feedback_block}"
             f"{prompt}\n\n"
             f"{contract_block}"
+            f"{spec_block}"
             f"---\n\n## DESIGN.md\n\n{design}\n\n"
             f"---\n\n## Template Reference\n\n{templates_ctx}\n\n"
             f"---\n\n## Runtime Knowledge Reference\n\n{knowledge_ctx}"

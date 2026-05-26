@@ -24,6 +24,7 @@ from abm_auto.agents.viability_checker import ViabilityChecker
 from abm_auto.agents.lit_reviewer import LitReviewAgent
 from abm_auto.agents.mode_detector import ModeDetector, ResearchSpec
 from abm_auto.agents.hypothesis_agent import HypothesisAgent
+from abm_auto.agents.mechanism_extractor import MechanismExtractor
 from abm_auto.agents.what_if_oracle import WhatIfOracle
 from abm_auto.agents.bayesian_calibrator import BayesianCalibrator
 from abm_auto.refinement import refine, ValidationOutcome
@@ -124,6 +125,7 @@ class Pipeline:
         self.lit_reviewer = LitReviewAgent(self.client, self.workspace, model=model, **agent_kw)
         self.mode_detector = ModeDetector(self.client, self.workspace, model=model, **agent_kw)
         self.hypothesis_agent = HypothesisAgent(self.client, self.workspace, model=strong_model, **agent_kw)
+        self.mechanism_extractor = MechanismExtractor(self.client, self.workspace, model=strong_model, **agent_kw)
         self.what_if_oracle = WhatIfOracle(self.client, self.workspace, model=strong_model, **agent_kw)
         self.bayesian_calibrator = BayesianCalibrator(self.client, self.workspace, model=model, **agent_kw)
         self._spec: ResearchSpec | None = None  # set by Phase -1, read by downstream agents
@@ -213,6 +215,12 @@ class Pipeline:
                     border_style="red",
                 ))
                 return self.workspace.path
+
+        # Phase 1d: Mechanism Spec Extraction — pin down every behavioural
+        # ambiguity in DESIGN.md as pseudocode. CoderAgent will read this as
+        # a hard contract (injected at TOP of its prompt, above DESIGN.md).
+        # This is the "raise the ceiling" lever for codegen fidelity.
+        self.mechanism_extractor.run()
 
         # Phase 1b: ODD Protocol
         self.odd_writer.run()

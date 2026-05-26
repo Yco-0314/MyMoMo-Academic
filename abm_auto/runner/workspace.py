@@ -16,6 +16,7 @@ class Workspace:
         self.story_path = path / "STORY.md"
         self.lit_notes_path = path / "lit_notes.md"
         self.hypothesis_path = path / "hypothesis.md"
+        self.mechanism_spec_path = path / "mechanism_spec.md"
         self.design_path = path / "DESIGN.md"
         self.model_dir = path / "model"
         self.results_dir = path / "results"
@@ -63,6 +64,12 @@ class Workspace:
 
     def read_hypothesis(self) -> str:
         return self.hypothesis_path.read_text(encoding="utf-8") if self.hypothesis_path.exists() else ""
+
+    def write_mechanism_spec(self, content: str) -> None:
+        self.mechanism_spec_path.write_text(content, encoding="utf-8")
+
+    def read_mechanism_spec(self) -> str:
+        return self.mechanism_spec_path.read_text(encoding="utf-8") if self.mechanism_spec_path.exists() else ""
 
     def write_design(self, content: str) -> None:
         self.design_path.write_text(content, encoding="utf-8")
