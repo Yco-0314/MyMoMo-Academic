@@ -200,42 +200,36 @@ not in `agent.setup()`.
 
 ---
 
-## 9. `GridAgent` / `NetworkAgent` missing `set_category()`
+## 9. `GridAgent` / `NetworkAgent.set_category()` — gotcha when overriding
 
-Both `GridAgent` and `NetworkAgent` require subclasses to implement
-`set_category()`. The MyMoMo Runtime provides a default that sets
-`self.category = 0`, but if you OVERRIDE it without setting `category` you
-get `NotImplementedError`.
+MyMoMo Runtime provides a **default** `set_category()` that assigns
+`self.category = 0`, so for single-agent-type models you can just inherit:
 
-✓ Minimum:
+```python
+class Person(NetworkAgent):
+    pass    # set_category() inherited — category becomes 0 automatically
+```
+
+But if you **override** `set_category()` and forget to set `self.category`,
+the simulator raises `AttributeError` the first time anything reads it:
+
+❌ Wrong:
 ```python
 class Person(NetworkAgent):
     def set_category(self):
-        self.category = 0     # integer category id — required
+        print("setting up")    # ← never assigns self.category → AttributeError
 ```
 
-`category` is a static type identifier (int) — it never changes during the
-simulation. If you have multiple agent classes in one network, give them
-distinct categories (0, 1, 2 ...).
-
----
-
-## 10. `grid.width` / `grid.height` may be methods, not properties
-
-Some runtime versions expose these as `@property`, others as bare methods.
-A direct comparison can fail:
-
-❌ Fragile:
+✓ Right:
 ```python
-if x < grid.width:    # TypeError when width is a method object
+class Person(NetworkAgent):
+    def set_category(self):
+        self.category = 0       # integer category id — required when overriding
 ```
 
-✓ Robust — cache from scenario in `model.setup()`:
-```python
-self._grid_w = self.scenario.grid_width
-# ... then everywhere:
-if x < self._grid_w:
-```
+When you have multiple agent classes sharing the same grid/network, give
+each a distinct integer (`0`, `1`, `2`, ...). `category` is a STATIC type
+id — it never changes during the simulation.
 
 ---
 
