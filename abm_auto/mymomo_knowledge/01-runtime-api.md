@@ -234,10 +234,13 @@ class MarketScenario(Scenario):
 ```
 
 **Column-to-attribute contract**: a column named `network_k` in the CSV
-must match an attribute `self.network_k` declared in `setup()`. Type cast
-follows the declared annotation: `int` columns parse as int, `float` as
-float. Columns the Scenario doesn't declare are ignored. Attributes the
-CSV doesn't have keep their default. See
+gets bound to `self.network_k` on the Scenario instance. The value type
+follows what pandas infers from the CSV column (integers stay int, floats
+stay float). Declaring `self.network_k: int = 6` in `setup()` mainly
+serves two purposes: (a) gives the attribute a default when the CSV omits
+the column, and (b) documents the expected type to readers. Columns the
+Scenario does not declare are still accessible via `self.<col_name>` but
+should be considered undocumented. See
 [`04-data-contracts.md`](04-data-contracts.md) for the full CSV schema.
 
 The framework does NOT have an `after_setup()` hook — all initialisation
