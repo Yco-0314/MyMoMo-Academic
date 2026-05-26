@@ -57,10 +57,12 @@ class DesignAgent(BaseAgent):
                 flags=re.DOTALL,
             )
 
-        # Inject agent design patterns reference so LLM makes explicit pattern choices
+        # Inject the topology-choice guide so the LLM commits to Grid / Network /
+        # Plain explicitly in DESIGN.md. The MyMoMo Knowledge Base file is
+        # decision-tree-shaped — directly maps DESIGN.md cues to a module choice.
         try:
-            agent_design_ref = self.load_knowledge("abm-agent-design")
-            agent_design_block = f"\n\n---\n\n## Agent Design Reference\n\n{agent_design_ref}"
+            agent_design_ref = self.load_knowledge("03-modules")
+            agent_design_block = f"\n\n---\n\n## Topology Module Reference\n\n{agent_design_ref}"
         except FileNotFoundError:
             agent_design_block = ""
 

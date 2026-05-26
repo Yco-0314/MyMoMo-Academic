@@ -9,7 +9,7 @@ PROJECT_ROOT = Path(__file__).parent.parent
 load_dotenv(PROJECT_ROOT / ".env", override=True)
 TEMPLATES_DIR = PROJECT_ROOT / "runtime_templates"
 PROMPTS_DIR = PROJECT_ROOT / "abm_auto" / "prompts"
-KNOWLEDGE_DIR = PROJECT_ROOT / "abm_auto" / "knowledge"
+KNOWLEDGE_DIR = PROJECT_ROOT / "abm_auto" / "mymomo_knowledge"
 WORKSPACE_DIR = PROJECT_ROOT / "workspace"
 
 # LLM provider selection — controls which SDK + API key is used.

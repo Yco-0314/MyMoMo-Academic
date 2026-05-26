@@ -200,12 +200,18 @@ class CoderAgent(BaseAgent):
         )
 
     def _load_knowledge_context(self) -> str:
-        """Inject runtime knowledge files into LLM context for code generation."""
+        """Inject MyMoMo Knowledge Base files into LLM context for code generation.
+
+        Loads the API canon + the anti-patterns catalogue. The API canon
+        tells the LLM what classes/methods exist; the anti-patterns
+        catalogue directly addresses the most-frequent codegen mistakes
+        observed during BEHAVE 2025 benchmark runs.
+        """
         parts = []
-        for name in ("runtime-quickref", "runtime-framework"):
+        for name in ("01-runtime-api", "05-anti-patterns"):
             try:
                 content = self.load_knowledge(name)
-                parts.append(f"=== KNOWLEDGE: {name}.md ===\n{content}")
+                parts.append(f"=== MyMoMo Knowledge: {name}.md ===\n{content}")
             except FileNotFoundError:
                 pass
         return "\n\n".join(parts)
