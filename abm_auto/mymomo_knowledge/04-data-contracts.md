@@ -215,10 +215,10 @@ Two files are written per Simulator run, named by convention:
 
 | File | Granularity | Rows |
 |---|---|---|
-| `Result_Simulator_Agent_<agent_list_name>.csv` | one per (agent × period) | `agent_num × periods` |
+| `Result_Simulator_Agents.csv` | one per (agent × period) | `agent_num × periods` |
 | `Result_Simulator_Environment.csv` | one per period | `periods` |
 
-**Column schema (Agent CSV)**:
+**Column schema (Agents CSV)**:
 
 | Column | Source |
 |---|---|
@@ -227,6 +227,12 @@ Two files are written per Simulator run, named by convention:
 | `period` | time step (0-indexed) |
 | `id` | agent's internal id |
 | ...one column per `add_agent_property()` call... | the agent's attribute at that period |
+
+Sample first row (BEHAVE 2025 virus benchmark):
+```csv
+id_scenario,id_run,period,id,state,virus_check_timer
+0,0,0,0,S,1
+```
 
 **Column schema (Environment CSV)**:
 
