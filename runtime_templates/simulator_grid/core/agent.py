@@ -2,7 +2,7 @@ import random
 from abm_auto.runtime import GridAgent
 
 
-class TemplateGridAgent(GridAgent):
+class MyMoMoGridAgent(GridAgent):
     # set_category() defaults to category=0 — override only for multi-type grids
 
     def setup(self):

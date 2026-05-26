@@ -4,7 +4,7 @@ Calibration-only benchmark: BayesianCalibrator + MSE on a hand-crafted simulator
 Why this exists (vs. benchmark_calibration_challenge.py):
   The full-pipeline benchmark exercises ModeDetect → Hypothesis → Design → Codegen
   → Verify → Sim → Calibrate. The codegen step is brittle (DeepSeek hallucinates
-  Melodie API), causing 50%+ pipeline failures BEFORE calibration even runs.
+  MyMoMo Runtime API), causing 50%+ pipeline failures BEFORE calibration even runs.
 
   This script bypasses codegen entirely:
     1. Pre-built workspace = examples/calibration_challenge_virus/handcrafted_model
@@ -15,7 +15,7 @@ Why this exists (vs. benchmark_calibration_challenge.py):
 
   Cleanly separates "is calibration broken?" from "is codegen broken?".
 
-Ground truth (Milan calibration_challenge_results.pdf p9):
+Ground truth (BEHAVE 2025 calibration_challenge_results.pdf p9):
   virus_spread_chance    = 4.4    (% per neighbour per tick)
   recovery_chance        = 0.3    (% per infected per check)
   gain_resistance_chance = 25.0   (% at recovery)
@@ -32,7 +32,7 @@ from rich.console import Console
 from rich.table import Table
 
 # Reuse scoring helpers from the other benchmark
-from benchmark_calibration_challenge import GROUND_TRUTH, assess, score_milan_mse
+from benchmark_calibration_challenge import GROUND_TRUTH, assess, score_calibration_mse
 
 console = Console()
 
@@ -65,7 +65,7 @@ def setup_workspace(name: str) -> Path:
     spec = {
         "mode": "originate",
         "paper_ref": "",
-        "phenomenon": "Virus on a network (Milan calibration challenge)",
+        "phenomenon": "Virus on a network (BEHAVE 2025 calibration challenge)",
         "has_calibration_data": True,
         "calibration_data_path": "data/observed.csv",
         "calibration_targets": ["susceptible", "infected", "resistant"],
@@ -141,9 +141,9 @@ def run_benchmark(max_sims: int = 50) -> int:
         console.print("[bold red]No output from sanity sim.[/bold red]")
         return 1
     shutil.copy(env_csv, ws.path / "sanity_groundtruth_sim.csv")
-    sanity_mse = score_milan_mse(ws.path / "data" / "observed.csv", env_csv)
+    sanity_mse = score_calibration_mse(ws.path / "data" / "observed.csv", env_csv)
     console.print(f"[dim]Sanity MSE (ground-truth params): "
-                  f"{sanity_mse.get('milan_formula_mse', 'N/A'):.2f}[/dim]")
+                  f"{sanity_mse.get('aggregate_mse', 'N/A'):.2f}[/dim]")
 
     # ── Real calibration ──
     console.rule("[cyan]Calibration[/cyan]")
@@ -176,24 +176,24 @@ def run_benchmark(max_sims: int = 50) -> int:
     if not final_sim.exists():
         console.print("[yellow]No calibration_final_sim.csv — MSE skipped.[/yellow]")
         return 0
-    mse = score_milan_mse(ws.path / "data" / "observed.csv", final_sim)
+    mse = score_calibration_mse(ws.path / "data" / "observed.csv", final_sim)
     if "error" in mse:
         console.print(f"[yellow]MSE error: {mse['error']}[/yellow]")
         return 0
 
-    mse_table = Table(title="Milan MSE (calibrated trajectory vs observed)")
+    mse_table = Table(title="Calibration MSE (calibrated trajectory vs observed)")
     mse_table.add_column("Column"); mse_table.add_column("MSE", justify="right")
     for col, m in mse["per_column_mse"].items():
         mse_table.add_row(col, f"{m:.2f}")
-    mse_table.add_row("[bold]Milan formula MSE[/bold]",
-                      f"[bold]{mse['milan_formula_mse']:.2f}[/bold]")
+    mse_table.add_row("[bold]Aggregate MSE[/bold]",
+                      f"[bold]{mse['aggregate_mse']:.2f}[/bold]")
     mse_table.add_row("[dim]Sanity MSE (ground-truth)[/dim]",
-                      f"[dim]{sanity_mse.get('milan_formula_mse', float('nan')):.2f}[/dim]")
+                      f"[dim]{sanity_mse.get('aggregate_mse', float('nan')):.2f}[/dim]")
     console.print(mse_table)
 
     # Compare: calibrated should be ≤ sanity (otherwise calibration found a worse-than-truth fit)
-    cal_mse = mse["milan_formula_mse"]
-    truth_mse = sanity_mse.get("milan_formula_mse", float("inf"))
+    cal_mse = mse["aggregate_mse"]
+    truth_mse = sanity_mse.get("aggregate_mse", float("inf"))
     if cal_mse <= truth_mse:
         console.print(f"\n[bold green]✓ Calibration found fit AT LEAST as good as ground truth "
                       f"({cal_mse:.2f} ≤ {truth_mse:.2f})[/bold green]")

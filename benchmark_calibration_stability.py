@@ -62,13 +62,13 @@ def run_one(max_sims: int) -> dict | None:
     # MSE from calibration_final_sim
     final_sim = ws / "calibration_final_sim.csv"
     if final_sim.exists():
-        # Reuse Milan MSE scorer
+        # Reuse Calibration MSE scorer
         sys.path.insert(0, str(REPO))
-        from benchmark_calibration_challenge import score_milan_mse
+        from benchmark_calibration_challenge import score_calibration_mse
         observed = REPO / "examples" / "calibration_challenge_virus" / "observed.csv"
-        mse_res = score_milan_mse(observed, final_sim)
-        if "milan_formula_mse" in mse_res:
-            out["mse"] = mse_res["milan_formula_mse"]
+        mse_res = score_calibration_mse(observed, final_sim)
+        if "aggregate_mse" in mse_res:
+            out["mse"] = mse_res["aggregate_mse"]
             out["mse_per_column"] = mse_res["per_column_mse"]
     return out
 
@@ -132,7 +132,7 @@ def main():
     if mses:
         m_mse = statistics.mean(mses)
         sd_mse = statistics.stdev(mses) if len(mses) > 1 else 0.0
-        console.print(f"\n[bold]Milan MSE across runs:[/bold] "
+        console.print(f"\n[bold]Calibration MSE across runs:[/bold] "
                       f"mean={m_mse:.1f} ± {sd_mse:.1f}, "
                       f"min={min(mses):.1f}, max={max(mses):.1f}")
 

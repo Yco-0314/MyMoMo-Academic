@@ -1,7 +1,7 @@
 from abm_auto.runtime import Scenario
 
 
-class TemplateScenario(Scenario):
+class MyMoMoScenario(Scenario):
     def setup(self):
         self.periods: int = 0
         self.agent_num: int = 0

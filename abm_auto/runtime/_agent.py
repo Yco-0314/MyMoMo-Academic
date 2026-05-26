@@ -1,7 +1,7 @@
 """
 ABM Auto Runtime — Agent base classes.
 
-Wraps Melodie's Agent/GridAgent/NetworkAgent and fixes known gotchas:
+Wraps MyMoMo Runtime's Agent/GridAgent/NetworkAgent and fixes known gotchas:
   - Agent: adds _safe_attr() to prevent setup() from overwriting CSV-loaded values
   - GridAgent: provides default set_category() so subclasses don't need to override
     unless they have multiple agent types on the same grid
@@ -19,7 +19,7 @@ from Melodie import NetworkAgent as _NetworkAgent
 class Agent(_Agent):
     """Base agent class for ABM Auto simulations.
 
-    Key addition over raw Melodie Agent:
+    Key addition over raw MyMoMo Runtime Agent:
       Use ``self._safe_attr(name, default)`` inside ``setup()`` for any attribute
       that may be pre-loaded from AgentParams.csv.  This preserves the CSV value
       instead of overwriting it with the default.
@@ -37,7 +37,7 @@ class Agent(_Agent):
         """Return the current value of *name* if already set, else *default*.
 
         Use inside ``setup()`` for attributes that are loaded from CSV before
-        ``setup()`` is called by the Melodie runtime.
+        ``setup()`` is called by the MyMoMo Runtime runtime.
         """
         return getattr(self, name, default)
 
@@ -48,7 +48,7 @@ class Agent(_Agent):
 class GridAgent(_GridAgent):
     """Grid-aware agent with a safe default category.
 
-    Melodie's GridAgent raises ``NotImplementedError`` if ``set_category()``
+    MyMoMo Runtime's GridAgent raises ``NotImplementedError`` if ``set_category()``
     is not overridden.  ABM Auto's GridAgent defaults to category 0, which is
     correct for models with a single agent type.  Override only when you have
     multiple agent types sharing the same grid.

@@ -16,7 +16,7 @@ Translate the structured **Design Document** (`DESIGN.md`) into executable **Pyt
 - `category` is a STATIC type identifier — never changes after init
 - Configuration files MUST be Dictionaries (not Lists)
 - Always use `os.path.dirname(__file__)` for `project_root`
-- **All imports use `from abm_auto.runtime import ...`** — never import from `Melodie` directly
+- **All imports use `from abm_auto.runtime import ...`** — never `from Melodie import ...` (the wrapper exists to be the only entry point)
 
 ### Attribute Loading Order
 The runtime calls `agent.setup()` **AFTER** loading attributes from AgentParams.csv.
@@ -209,7 +209,7 @@ from abm_auto.runtime import NetworkAgent
 
 class MyAgent(NetworkAgent):
     def set_category(self):
-        self.category = 0   # REQUIRED integer type identifier — Melodie raises NotImplementedError without it
+        self.category = 0   # REQUIRED integer type identifier — MyMoMo Runtime raises NotImplementedError without it
 
     def setup(self):
         self.state: int = getattr(self, "state", 0)   # preserve CSV value

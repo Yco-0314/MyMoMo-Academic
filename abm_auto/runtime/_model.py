@@ -22,7 +22,7 @@ from Melodie import Model as _Model
 class Model(_Model):
     """ABM Auto base model.
 
-    Drop-in replacement for Melodie Model.  Overrides ``create_grid()`` and
+    Drop-in replacement for MyMoMo Runtime Model.  Overrides ``create_grid()`` and
     ``create_network()`` so the returned objects know about ``self.agents``
     and can resolve neighbour IDs without caller help.
     """

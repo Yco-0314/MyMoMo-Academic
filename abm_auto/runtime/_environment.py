@@ -1,11 +1,11 @@
 """
 ABM Auto Runtime — standalone Environment base class.
 
-This is a full replacement for Melodie's Environment — no Melodie import.
-Melodie's Environment is ~40 LoC inheriting from Element; we replicate that
+This is a full replacement for MyMoMo Runtime's Environment — no Melodie import.
+MyMoMo Runtime's Environment is ~40 LoC inheriting from Element; we replicate that
 interface here so generated code stays identical.
 
-The only difference from Melodie's version: this file has zero Melodie
+The only difference from Melodie's version: this file has zero MyMoMo Runtime
 dependencies, meaning the engine-replacement contract in __init__.py can
 eventually swap the entire stack by updating that one file.
 """

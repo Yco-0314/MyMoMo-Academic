@@ -10,7 +10,7 @@ class VirusEnvironment(Environment):
     def step(self, agents, network, scenario):
         """Execute one tick: spread virus + recovery checks.
 
-        Algorithm (from Milan calibration_challenge.pdf):
+        Algorithm (from BEHAVE 2025 calibration_challenge.pdf):
           1. Each infected agent has chance virus_spread_chance/100 to infect
              each non-resistant neighbour (susceptible only — resistant immune).
           2. At intervals of virus_check_frequency ticks, each infected agent

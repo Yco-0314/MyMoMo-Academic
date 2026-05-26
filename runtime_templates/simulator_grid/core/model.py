@@ -1,14 +1,14 @@
 from abm_auto.runtime import Model
-from .agent import TemplateGridAgent
-from .environment import TemplateEnvironment
-from .data_collector import TemplateDataCollector
+from .agent import MyMoMoGridAgent
+from .environment import MyMoMoEnvironment
+from .data_collector import MyMoMoDataCollector
 
 
-class TemplateGridModel(Model):
+class MyMoMoGridModel(Model):
     def create(self):
-        self.agents = self.create_agent_list(TemplateGridAgent)
-        self.environment = self.create_environment(TemplateEnvironment)
-        self.data_collector = self.create_data_collector(TemplateDataCollector)
+        self.agents = self.create_agent_list(MyMoMoGridAgent)
+        self.environment = self.create_environment(MyMoMoEnvironment)
+        self.data_collector = self.create_data_collector(MyMoMoDataCollector)
         self.grid = self.create_grid()  # NO arguments
 
     def setup(self):

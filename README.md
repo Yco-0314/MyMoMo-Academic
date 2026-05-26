@@ -19,7 +19,7 @@ story.md → [Design Agent] → [Code Agent] → [Verify & Fix Loop] → [Simula
 1. **Design** — LLM reads story.md, produces DESIGN.md with agent specs, parameters, and ODD protocol
 2. **Code Generation** — LLM generates complete Python simulation code from design
 3. **Verification & Self-Healing** — Auto-compiles and fixes errors (up to 5 retry cycles)
-4. **Execution** — Runs simulation using the Melodie ABM framework as runtime engine
+4. **Execution** — Runs simulation using the MyMoMo Runtime ABM framework as runtime engine
 5. **Sanity Checking** — Detects degenerate outputs (constant columns, no state transitions)
 6. **Analysis** — LLM interprets CSV results, extracts insights
 7. **Parameter Optimization** — LLM proposes hypothesis-driven parameter changes
@@ -102,7 +102,7 @@ abm_auto/
 ├── pipeline.py      # Main orchestrator
 └── cli.py           # CLI entry point
 
-runtime_templates/   # Simulation code templates (Melodie framework)
+runtime_templates/   # Simulation code templates (MyMoMo Runtime framework)
 examples/            # 50+ validated model scenarios
 ```
 

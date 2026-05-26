@@ -15,7 +15,7 @@ class VirusModel(Model):
         self.network = self.create_network()
 
     def setup(self):
-        # Reproducibility — match Milan's `random-seed 0`
+        # Reproducibility — match the source-paper `random-seed 0`
         random.seed(int(getattr(self.scenario, "seed", 0)))
 
         # 1. Create agents
@@ -29,7 +29,7 @@ class VirusModel(Model):
             a.virus_check_timer = 0
 
         # 3. Build network. Watts-Strogatz: k ≈ average_degree (must be even),
-        #    rewiring prob 0.1. Aligns with Milan's "spatially clustered network"
+        #    rewiring prob 0.1. Aligns with the source-paper "spatially clustered network"
         #    which is a small-world variant.
         k = int(self.scenario.average_degree)
         if k % 2 == 1:
@@ -49,7 +49,7 @@ class VirusModel(Model):
         self.environment.count_r = sum(1 for a in self.agents if a.state == 2)
 
     def run(self):
-        # Collect tick 0 BEFORE any step, so output aligns with Milan format
+        # Collect tick 0 BEFORE any step, so output aligns with BEHAVE 2025 format
         # (observed.csv row 0 is the initial state).
         for t in self.iterator(self.scenario.periods):
             self._refresh_counts()

@@ -94,7 +94,7 @@ def run_final_validation_sim(
 ) -> Optional[Path]:
     """One sim at best_params, saved at calibration_final_sim.csv.
 
-    Lets downstream scorers (Milan-style MSE benchmark, reviewers) read a
+    Lets downstream scorers (Calibration MSE benchmark, reviewers) read a
     deterministic "this is what the calibrated model produces" CSV without
     guessing which iter ran with which params.
     """

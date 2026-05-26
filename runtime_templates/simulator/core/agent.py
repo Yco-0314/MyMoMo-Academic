@@ -1,6 +1,6 @@
 from abm_auto.runtime import Agent
 
-class TemplateAgent(Agent):
+class MyMoMoAgent(Agent):
     def setup(self):
         # _safe_attr preserves CSV-loaded values (setup() runs after CSV loading)
         self.state: int = self._safe_attr("state", 0)

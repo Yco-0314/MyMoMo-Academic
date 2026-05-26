@@ -1,8 +1,8 @@
 """
-Benchmark: BEHAVE 2025 Milan Calibration Challenge.
+Benchmark: BEHAVE 2025 Calibration Challenge.
 
 Runs abm-auto end-to-end on the "Virus on a Network" calibration challenge
-from Milan Advanced Week, then compares estimated parameters against the
+from BEHAVE 2025 Advanced Week, then compares estimated parameters against the
 published ground truth.
 
 Ground truth (from calibration_challenge_results.pdf, page 9):
@@ -67,7 +67,7 @@ def assess(estimated: dict, truth: dict) -> dict:
     return rows
 
 
-# Milan MSE: mean over all (tick, column) of (observed - simulated)^2
+# Calibration MSE: mean over all (tick, column) of (observed - simulated)^2
 # across columns {susceptible, infected, resistant}.
 # This is what the original calibration_challenge_results.pdf scored on.
 _COLUMN_ALIASES = {
@@ -79,8 +79,8 @@ _COLUMN_ALIASES = {
 _TICK_ALIASES = ["tick", "period", "step", "time", "t"]
 
 
-def score_milan_mse(observed_path: Path, simulated_path: Path) -> dict:
-    """Compute Milan-style MSE: mean squared error per column, plus aggregate.
+def score_calibration_mse(observed_path: Path, simulated_path: Path) -> dict:
+    """Compute Calibration MSE: mean squared error per column, plus aggregate.
 
     Returns dict:
       {
@@ -89,7 +89,7 @@ def score_milan_mse(observed_path: Path, simulated_path: Path) -> dict:
         "aligned_rows": int,
         "per_column_mse": {"susceptible": float, "infected": float, "resistant": float},
         "mean_mse": float,           # mean across the 3 columns
-        "milan_formula_mse": float,  # exactly the formula on calibration_challenge_results.pdf p2
+        "aggregate_mse": float,  # exactly the formula on calibration_challenge_results.pdf p2
         "note": str,
       }
     """
@@ -155,7 +155,7 @@ def score_milan_mse(observed_path: Path, simulated_path: Path) -> dict:
         "aligned_rows": len(merged),
         "per_column_mse": per_column_mse,
         "mean_mse": float(np.mean(list(per_column_mse.values()))),
-        "milan_formula_mse": total_se / total_n if total_n else float("nan"),
+        "aggregate_mse": total_se / total_n if total_n else float("nan"),
         "column_mapping": {k: v for k, v in metric_map.items()},
     }
 
@@ -251,21 +251,21 @@ def run_benchmark() -> int:
     estimated = json.loads(best_params_path.read_text())
     rows = assess(estimated, GROUND_TRUTH)
 
-    # ── Stage 4b: Milan-style MSE on simulated trajectory ──
+    # ── Stage 4b: Calibration MSE on simulated trajectory ──
     mse_result = None
     final_sim_path = workspace_path / "calibration_final_sim.csv"
     if final_sim_path.exists():
-        mse_result = score_milan_mse(observed_src, final_sim_path)
+        mse_result = score_calibration_mse(observed_src, final_sim_path)
         if "error" in mse_result:
             console.print(f"[yellow]MSE scoring skipped: {mse_result['error']}[/yellow]")
         else:
-            mse_table = Table(title="Milan-style MSE (observed vs. simulated at best_params)")
+            mse_table = Table(title="Calibration MSE (observed vs. simulated at best_params)")
             mse_table.add_column("Column")
             mse_table.add_column("MSE", justify="right")
             for col, mse in mse_result["per_column_mse"].items():
                 mse_table.add_row(col, f"{mse:.2f}")
-            mse_table.add_row("[bold]Milan formula MSE[/bold]",
-                              f"[bold]{mse_result['milan_formula_mse']:.2f}[/bold]")
+            mse_table.add_row("[bold]Aggregate MSE[/bold]",
+                              f"[bold]{mse_result['aggregate_mse']:.2f}[/bold]")
             console.print(mse_table)
             console.print(
                 f"[dim]Aligned {mse_result['aligned_rows']} ticks "
@@ -333,16 +333,16 @@ def write_summary(workspace_path: Path, wall_seconds: float, rows, estimated,
     else:
         lines.append("| _calibration did not run_ | — | — | — | — |")
 
-    lines += ["", "## Ground truth (from Milan calibration_challenge_results.pdf)", ""]
+    lines += ["", "## Ground truth (from BEHAVE 2025 calibration_challenge_results.pdf)", ""]
     for k, v in GROUND_TRUTH.items():
         lines.append(f"- `{k}` = {v}")
 
     if mse_result and "error" not in mse_result:
         lines += [
             "",
-            "## Milan-style MSE (observed vs. simulated at best_params)",
+            "## Calibration MSE (observed vs. simulated at best_params)",
             "",
-            "This is the metric the original Milan calibration challenge used.",
+            "This is the metric the original BEHAVE 2025 calibration challenge used.",
             "It is **decoupled from parameter identifiability** — measures whether the",
             "calibrated model REPRODUCES THE OBSERVED DYNAMICS, regardless of whether",
             "our generated simulator's params map 1:1 to the source NetLogo model.",
@@ -353,7 +353,7 @@ def write_summary(workspace_path: Path, wall_seconds: float, rows, estimated,
         for col, mse in mse_result["per_column_mse"].items():
             lines.append(f"| `{col}` | {mse:.2f} |")
         lines += [
-            f"| **Milan formula MSE** | **{mse_result['milan_formula_mse']:.2f}** |",
+            f"| **Aggregate MSE** | **{mse_result['aggregate_mse']:.2f}** |",
             "",
             f"Aligned {mse_result['aligned_rows']} ticks "
             f"(observed: {mse_result['observed_rows']}, "
@@ -362,7 +362,7 @@ def write_summary(workspace_path: Path, wall_seconds: float, rows, estimated,
     elif mse_result and "error" in mse_result:
         lines += [
             "",
-            f"## Milan MSE: ERROR — {mse_result['error']}",
+            f"## Calibration MSE: ERROR — {mse_result['error']}",
         ]
 
     lines += [

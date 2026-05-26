@@ -379,7 +379,7 @@ class CoderAgent(BaseAgent):
     def _fix_grid_agent_category(self, files: dict[str, str]) -> dict[str, str]:
         """Ensure every GridAgent subclass implements set_category().
 
-        Melodie raises NotImplementedError if set_category() is absent.
+        MyMoMo Runtime raises NotImplementedError if set_category() is absent.
         Insert a minimal implementation right after class definition.
         """
         for path, content in files.items():

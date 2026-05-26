@@ -1,4 +1,4 @@
-"""Hand-crafted SIR-on-network simulator for the Milan calibration benchmark.
+"""Hand-crafted SIR-on-network simulator for the BEHAVE 2025 calibration challenge.
 
 Sidesteps abm-auto's codegen entirely. Used by benchmark_calibration_validated.py
 to test BayesianCalibrator + MSE scoring on a KNOWN-GOOD simulator. This lets

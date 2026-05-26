@@ -9,7 +9,7 @@ Why this exists:
   "produce output → check it → on failure, give feedback and try again".
   Every other phase was "one-shot, halt on first failure" — which made
   pipeline runs 50%+ flaky against a non-deterministic LLM. Benchmark runs
-  on the Milan Calibration Challenge confirmed the pattern: same story.md,
+  on the BEHAVE 2025 Calibration Challenge confirmed the pattern: same story.md,
   consecutive runs failed at different phases purely because of LLM noise.
 
   GVR makes that pattern a first-class module. Two adapters at launch:

@@ -1,10 +1,10 @@
 """
 ABM Auto Runtime — Grid wrapper.
 
-Fixes over raw Melodie Grid:
+Fixes over raw MyMoMo Runtime Grid:
   1. get_neighbors() returns Agent objects by default, not (category, id) tuples.
      Pass return_agents=False to get the original tuple list if needed.
-  2. width and height are public properties (Melodie uses _width/_height).
+  2. width and height are public properties (MyMoMo Runtime uses _width/_height).
   3. Clearer error messages with "ABM Auto" prefix.
   4. _agent_list_ref is injected by Model.create_grid() (Candidate 3) so
      get_neighbors() needs no agent_list parameter at the call site.
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 class Grid(_Grid):
     """Spatial grid for ABM Auto simulations.
 
-    Drop-in replacement for Melodie's Grid with a cleaner neighbor API.
+    Drop-in replacement for MyMoMo Runtime's Grid with a cleaner neighbor API.
 
     Preferred usage when using ABM Auto's Model (agent_list auto-injected)::
 
@@ -48,12 +48,12 @@ class Grid(_Grid):
 
     @property
     def width(self) -> int:
-        """Public width property (Melodie uses private _width)."""
+        """Public width property (MyMoMo Runtime uses private _width)."""
         return self._width
 
     @property
     def height(self) -> int:
-        """Public height property (Melodie uses private _height)."""
+        """Public height property (MyMoMo Runtime uses private _height)."""
         return self._height
 
     def get_neighbors(
@@ -83,7 +83,7 @@ class Grid(_Grid):
         return_agents:
             If True (default) return GridAgent objects.
             If False return raw ``(category, agent_id)`` tuples — same as
-            original Melodie behaviour.
+            original MyMoMo Runtime behaviour.
 
         Returns
         -------
@@ -106,7 +106,7 @@ class Grid(_Grid):
 
         result = []
         for item in raw:
-            # Melodie returns (category_str, agent_id_int) tuples
+            # MyMoMo Runtime returns (category_str, agent_id_int) tuples
             if isinstance(item, tuple):
                 _, agent_id = item
                 result.append(effective_list[agent_id])

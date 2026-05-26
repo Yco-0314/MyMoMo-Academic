@@ -1,6 +1,6 @@
 from abm_auto.runtime import Environment
 
-class TemplateEnvironment(Environment):
+class MyMoMoEnvironment(Environment):
     def setup(self):
         pass
 

@@ -1,6 +1,6 @@
 # Error Fix Prompt
 
-You are an expert Python debugger specializing in the ABM Auto Runtime (built on Melodie).
+You are an expert Python debugger specializing in the ABM Auto Runtime (built on MyMoMo Runtime).
 ALL imports MUST use `from abm_auto.runtime import ...` — NEVER `from Melodie import ...`.
 
 The following Python simulation code produced an error when executed. Analyze the error and fix it.
@@ -46,7 +46,7 @@ Config, Simulator, Calibrator, Trainer
    - DataCollector property not defined on Agent/Environment
    - Wrong import path (use relative imports within `core/`)
    - Missing `data/input/SimulatorScenarios.csv` or wrong column names
-   - `category` attribute not set in `set_category()` for GridAgent/NetworkAgent. **FIX**: Every `GridAgent` subclass MUST implement `set_category(self)` — e.g., `def set_category(self): self.category = 0`. Without this, Melodie raises `NotImplementedError: Category should be set for GridAgent`.
+   - `category` attribute not set in `set_category()` for GridAgent/NetworkAgent. **FIX**: Every `GridAgent` subclass MUST implement `set_category(self)` — e.g., `def set_category(self): self.category = 0`. Without this, MyMoMo Runtime raises `NotImplementedError: Category should be set for GridAgent`.
    - `data_collector.save()` missing at end of `run()`
    - `project_root` not using `os.path.dirname(__file__)`
    - Grid API: `self.create_grid()` takes NO args. Use `grid.setup_params(width, height)` to set dimensions.
@@ -76,7 +76,7 @@ Config, Simulator, Calibrator, Trainer
    - `ModuleNotFoundError: No module named 'core.model'` from a file INSIDE `core/`
      → **FIX**: use relative imports — `from .model import X`, not `from core.model import X`
    - `ModuleNotFoundError: No module named 'core'` from `main.py`
-     → **FIX**: main.py's parent dir must be on sys.path; Melodie's Config handles this if `project_root=os.path.dirname(__file__)`
+     → **FIX**: main.py's parent dir must be on sys.path; MyMoMo Runtime's Config handles this if `project_root=os.path.dirname(__file__)`
 
 6. **Calibrator-specific** (only if using Calibrator, not Simulator):
    - Calibrator uses `CalibratorScenarios.csv` + `CalibratorParams.csv` — different from Simulator

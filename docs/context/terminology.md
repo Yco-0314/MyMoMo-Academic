@@ -458,7 +458,7 @@ branch in `LLMClient.__init__` — no caller changes needed.
 
 ### Calibration Benchmark Suite
 
-Three scripts for measuring the calibration pipeline against Milan's 2025
+Three scripts for measuring the calibration pipeline against BEHAVE 2025 Brescia
 challenge ground truth (`virus_spread_chance=4.4`, `recovery_chance=0.3`,
 `gain_resistance_chance=25.0`):
 
@@ -470,7 +470,7 @@ challenge ground truth (`virus_spread_chance=4.4`, `recovery_chance=0.3`,
 3. `benchmark_calibration_stability.py` — runs (2) N times, reports
    variance. Tells us if calibration is reproducible vs RNG-flaky.
 
-Score format: per-parameter relative error + Milan-formula MSE (mean of
+Score format: per-parameter relative error + BEHAVE 2025-formula MSE (mean of
 squared errors across `susceptible`, `infected`, `resistant` columns,
 averaged over aligned ticks).
 

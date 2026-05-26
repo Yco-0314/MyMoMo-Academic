@@ -1,7 +1,7 @@
 """
 ABM Auto Runtime — Network wrapper.
 
-Fixes over raw Melodie Network:
+Fixes over raw MyMoMo Runtime Network:
   1. get_neighbors() returns Agent objects by default, not (category, id) tuples.
   2. _agent_list_ref is injected by Model.create_network() (Candidate 3) so
      get_neighbors() needs no agent_list parameter at the call site.
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 class Network(_Network):
     """Social/spatial network for ABM Auto simulations.
 
-    Drop-in replacement for Melodie's Network with a cleaner neighbor API.
+    Drop-in replacement for MyMoMo Runtime's Network with a cleaner neighbor API.
 
     Preferred usage when using ABM Auto's Model (agent_list auto-injected)::
 
@@ -77,7 +77,7 @@ class Network(_Network):
         for item in raw:
             if isinstance(item, tuple):
                 category, agent_id = item
-                # Melodie's network stores agents by category
+                # MyMoMo Runtime's network stores agents by category
                 if hasattr(self, "agent_categories") and category in self.agent_categories:
                     result.append(self.agent_categories[category].get_agent(agent_id))
                 else:

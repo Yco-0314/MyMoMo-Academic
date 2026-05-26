@@ -7,7 +7,7 @@ All generated model code imports from here::
 
 **Architecture**
     Custom wrapper and standalone classes in ``abm_auto/runtime/`` fix known
-    Melodie gotchas and provide a cleaner research-oriented API.  Melodie
+    MyMoMo Runtime gotchas and provide a cleaner research-oriented API.  MyMoMo Runtime
     handles the underlying simulation mechanics (CSV loading, iteration, output
     collection) where we have not yet replaced it.
 
@@ -19,7 +19,7 @@ All generated model code imports from here::
     Agent, AgentList, Model, Environment, DataCollector, Scenario, Config,
     Simulator, Grid, GridAgent, Network, NetworkAgent, Calibrator, Trainer
 
-**Key improvements over raw Melodie**
+**Key improvements over raw MyMoMo Runtime**
     - Agent._safe_attr(name, default): prevents setup() from overwriting CSV values
     - GridAgent.set_category(): default implementation (category=0), no more NotImplementedError
     - NetworkAgent.set_category(): same default
@@ -32,14 +32,14 @@ All generated model code imports from here::
 
 **Route C progress**
     Standalone (no Melodie import): Agent wrappers, Grid, Network, Model, Environment
-    Still delegated to Melodie: AgentList, DataCollector, Scenario, Config, Simulator,
+    Still delegated to MyMoMo Runtime: AgentList, DataCollector, Scenario, Config, Simulator,
                                 Calibrator, Trainer
 """
 
 try:
     import Melodie as _melodie_pkg
     _melodie_version = getattr(_melodie_pkg, "__version__", "unknown")
-    RUNTIME_ENGINE: str = f"ABM Auto Runtime (Melodie {_melodie_version})"
+    RUNTIME_ENGINE: str = f"ABM Auto Runtime (MyMoMo Runtime {_melodie_version})"
 except Exception:
     RUNTIME_ENGINE = "ABM Auto Runtime"
 
@@ -51,7 +51,7 @@ from abm_auto.runtime._network import Network
 from abm_auto.runtime._model import Model
 from abm_auto.runtime._environment import Environment
 
-# ── Still delegated to Melodie (complex CSV/DB machinery) ────────────────────
+# ── Still delegated to MyMoMo Runtime (complex CSV/DB machinery) ────────────────────
 
 from Melodie import (
     AgentList,
