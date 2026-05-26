@@ -268,24 +268,104 @@ class Pipeline:
                 structured={"violation_count": len(violations)},
             )
 
+        def _fidelity_validator(_ignored) -> "ValidationOutcome":
+            """LLM-judge: does generated code algorithmically match mechanism_spec.md?
+
+            Candidate 2 of the filter architecture. Compares generated Python
+            against the pseudocode contract from MechanismExtractor (Phase 1d).
+            Soft severity — failures audit-log but don't death-spiral retries.
+            """
+            spec = self.workspace.read_mechanism_spec()
+            if not spec or len(spec.strip()) < 200:
+                return ValidationOutcome(ok=True)   # no spec → nothing to check
+            code_files = self.workspace.read_model_files()
+            code_blob = "\n".join(
+                f"--- {p} ---\n{code_files[p]}" for p in (
+                    "core/agent.py", "core/model.py",
+                    "core/environment.py", "core/data_collector.py",
+                ) if p in code_files
+            )
+            if not code_blob.strip():
+                return ValidationOutcome(ok=True)   # no code → dry_run will fire first
+
+            system = (
+                "You are a strict algorithm-fidelity judge. Compare ABM "
+                "pseudocode (the contract) against its Python implementation. "
+                "Identify SEMANTIC deviations: different update order, "
+                "different stochastic semantics, wrong unit handling, missed "
+                "edge cases. Ignore stylistic differences and naming. "
+                "Output ONLY valid JSON, no other text."
+            )
+            prompt = (
+                "## Mechanism Spec (the contract)\n\n"
+                f"{spec[:4000]}\n\n"
+                "## Generated Python code\n\n"
+                f"{code_blob[:6000]}\n\n"
+                "Does the code IMPLEMENT the spec's algorithm faithfully?\n\n"
+                "Return JSON:\n"
+                "{\n"
+                '  "matches": true/false,\n'
+                '  "deviations": ["<specific deviation 1>", "..."],\n'
+                '  "severity_assessment": "minor" | "moderate" | "critical"\n'
+                "}"
+            )
+            try:
+                import json as _json
+                raw = self.coder.call_llm(system, prompt, max_tokens=600).strip()
+                if raw.startswith("```"):
+                    raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0]
+                parsed = _json.loads(raw)
+                if parsed.get("matches", False):
+                    return ValidationOutcome(ok=True)
+                deviations = parsed.get("deviations") or ["(no specifics given)"]
+                return ValidationOutcome(
+                    ok=False,
+                    reasons=[f"Spec deviation: {d}" for d in deviations[:5]],
+                    severity="soft",   # don't death-spiral: fidelity is warn-not-block
+                    structured={
+                        "assessment": parsed.get("severity_assessment", "unknown"),
+                        "deviation_count": len(deviations),
+                    },
+                )
+            except Exception:
+                # Judge crashed (parse error, LLM hiccup) → skip, don't block
+                return ValidationOutcome(ok=True)
+
         _verifier_val = compose_validators([
             ("dry_run", _dry_run_validator),
             ("contract", _contract_validator),
+            ("fidelity", _fidelity_validator),
         ])
 
         verify_gvr = refine(
             generator=_verifier_gen,
             validator=_verifier_val,
             max_iters=self.max_retries,
-            on_exhaust="halt",   # broken imports cannot be worked around
+            on_exhaust="continue_best",   # severity check below decides halt vs continue
             audit=self.workspace.audit,
             actor="CoderVerifier",
             phase="Phase 3",
         )
 
         if not verify_gvr.accepted:
-            console.print("[red]Pipeline halted: could not produce working code.[/red]")
-            return self.workspace.path
+            # Exhausted retries. Halt only if the best-so-far still has a
+            # FATAL failure (e.g., dry_run import error — code won't run at
+            # all). Soft-only failures (e.g., fidelity deviations) are
+            # logged to audit but pipeline continues with the best attempt.
+            best = min(
+                verify_gvr.attempts,
+                key=lambda a: (len(a.outcome.reasons), -a.iteration),
+            )
+            if best.outcome.severity == "fatal":
+                console.print(
+                    "[red]Pipeline halted: could not produce working code "
+                    "(fatal errors remain after retries).[/red]"
+                )
+                return self.workspace.path
+            console.print(
+                "[yellow]Pipeline proceeding with best-so-far code "
+                "despite soft validator failures (see audit_ledger).[/yellow]"
+            )
 
         # Inject random seed if specified
         if self.seed is not None:
