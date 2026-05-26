@@ -478,7 +478,7 @@ averaged over aligned ticks).
 
 ## Related Documentation
 
-- [ABM Suitability Guide](../abm_auto/knowledge/abm-suitability.md) — When to use ABM
+- [MyMoMo Knowledge Base](../abm_auto/mymomo_knowledge/) — Runtime API, anti-patterns, writing-models walkthrough, data contracts
 - [Memory System](memory-system.md) — 3-tier architecture details
 - [Pipeline Phases](pipeline-phases.md) — Workflow breakdown
 - [ODD Protocol Template](../abm_auto/prompts/odd.md) — LLM prompt for ODD generation

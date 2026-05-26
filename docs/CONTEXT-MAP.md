@@ -53,22 +53,15 @@ Critical design choices documented in [ADR format](https://adr.github.io/):
 
 ## Knowledge Base
 
-Domain-specific guides embedded in the system:
+Domain-specific guides embedded in the system. All five live in
+`abm_auto/mymomo_knowledge/` — the MyMoMo Knowledge Base, written from
+scratch with no external attribution dependency:
 
-### ABM Methodology
-- [ABM Suitability Assessment](../abm_auto/knowledge/abm-suitability.md) — When to use agent-based modeling
-- [Agent Design Patterns](../abm_auto/knowledge/abm-agent-design.md) — Best practices for agent architecture
-- [Module Library](../abm_auto/knowledge/modules/) — Reusable components (Grid, Network, etc.)
-
-### Runtime Guidance
-- [Framework Reference](../abm_auto/knowledge/runtime-framework.md) — Mesa API quick reference
-- [Data Handling](../abm_auto/knowledge/runtime-data-guide.md) — DataCollector patterns
-- [Code Templates](../abm_auto/knowledge/runtime-code-templates.md) — Common implementation patterns
-- [Quick Reference](../abm_auto/knowledge/runtime-quickref.md) — Cheat sheet for common tasks
-
-### System Internals
-- [Change Impact Analysis](../abm_auto/knowledge/change-impact.md) — Understanding modification ripple effects
-- [Tab2Dict Guide](../abm_auto/knowledge/tab2dict-guide.md) — Tabular data parsing utilities
+- [01 — Runtime API](../abm_auto/mymomo_knowledge/01-runtime-api.md) — Canonical reference for every importable name in `abm_auto.runtime`
+- [02 — Writing Models](../abm_auto/mymomo_knowledge/02-writing-models.md) — End-to-end walkthrough: story.md → calibrated simulation
+- [03 — Modules](../abm_auto/mymomo_knowledge/03-modules.md) — Decision guide for Grid vs. Network vs. No-topology
+- [04 — Data Contracts](../abm_auto/mymomo_knowledge/04-data-contracts.md) — The five file formats the pipeline reads/writes
+- [05 — Anti-patterns](../abm_auto/mymomo_knowledge/05-anti-patterns.md) — LLM-codegen mistakes observed in real benchmark runs
 
 ---
 
