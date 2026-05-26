@@ -142,20 +142,26 @@ class SchellingModel(Model):
 - Agents move (positions change during simulation)
 - Adjacency = physical proximity
 
-**Grid-specific scenario columns** in `SimulatorScenarios.csv`:
+**Grid-specific scenario columns** that you typically add to
+`SimulatorScenarios.csv`:
 
-| Column | Required | Default |
+| Column | Required | Notes |
 |---|---|---|
-| `grid_width`  | ✓ (no implicit default) | — |
-| `grid_height` | ✓ | — |
-| `grid_wrap`   | optional | `True` (toroidal) |
+| `grid_width`  | ✓ | int — passed to `setup_params(width=...)` |
+| `grid_height` | ✓ | int — passed to `setup_params(height=...)` |
 
-**`setup_agent_locations()` placement modes**:
+Wrap / caching / multi behaviour are method parameters on
+`setup_params()`, not standard CSV columns — they're set in code. Default
+is `wrap=True, caching=True, multi=True`. If you want to make any of them
+scenario-driven, declare a CSV column (e.g. `grid_wrap`) and a matching
+Scenario attribute, then pass `wrap=self.scenario.grid_wrap`.
+
+**`setup_agent_locations()` placement modes** (default `"direct"`):
 
 | Mode | Behaviour |
 |---|---|
+| `"direct"` | Use agent's pre-set `x, y` (e.g. loaded from AgentParams.csv) |
 | `"random_single"` | Random cell; one agent per cell |
-| `"direct_position"` | Use the `x`, `y` columns from AgentParams.csv |
 
 After placement, each GridAgent has `self.x`, `self.y`, `self.grid` set.
 
