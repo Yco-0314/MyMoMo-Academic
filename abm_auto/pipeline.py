@@ -232,25 +232,38 @@ class Pipeline:
                 self.verifier.fix(feedback)
             return None
 
-        def _verifier_val(_ignored) -> "ValidationOutcome":
-            reasons: list[str] = []
-            # (a) Import / runtime check
-            error = self.executor.dry_run()
-            if error is not None:
-                reasons.append(error[:1000])
-            # (b) Calibration contract check — only when calibration is requested
-            schema_violations = self._check_calibration_contract()
-            reasons.extend(schema_violations)
+        # Two independent validators, AND-composed via compose_validators().
+        # Reasons get [label] prefixes so the LLM can identify on retry which
+        # check failed. Default short_circuit_fatal=False means BOTH checks
+        # always run, giving the LLM a complete picture on its first retry.
+        from abm_auto.refinement import compose_validators
 
-            if not reasons:
+        def _dry_run_validator(_ignored) -> "ValidationOutcome":
+            error = self.executor.dry_run()
+            if error is None:
                 return ValidationOutcome(ok=True)
             return ValidationOutcome(
                 ok=False,
-                reasons=reasons,
-                severity="fatal" if error else "soft",
-                structured={"import_error": error is not None,
-                            "schema_violations": len(schema_violations)},
+                reasons=[error[:1000]],
+                severity="fatal",   # broken imports can't be sidestepped
+                structured={"error_preview": error[:500]},
             )
+
+        def _contract_validator(_ignored) -> "ValidationOutcome":
+            violations = self._check_calibration_contract()
+            if not violations:
+                return ValidationOutcome(ok=True)
+            return ValidationOutcome(
+                ok=False,
+                reasons=violations,
+                severity="soft",   # missing param column → calibrator skips it, not fatal
+                structured={"violation_count": len(violations)},
+            )
+
+        _verifier_val = compose_validators([
+            ("dry_run", _dry_run_validator),
+            ("contract", _contract_validator),
+        ])
 
         verify_gvr = refine(
             generator=_verifier_gen,

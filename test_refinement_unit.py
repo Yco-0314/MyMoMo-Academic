@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from abm_auto.refinement import (
     refine, ValidationOutcome, RefinementResult, _pick_best, Attempt,
-    build_cumulative_feedback,
+    build_cumulative_feedback, compose_validators,
 )
 
 
@@ -254,6 +254,104 @@ def test_validation_outcome_to_feedback():
     fb2 = o2.to_feedback()
     assert "first reason" in fb2
     assert "second reason" in fb2
+
+
+# ── compose_validators ──────────────────────────────────────────────────────
+
+
+def test_compose_all_pass():
+    """When all validators pass, combined is ok=True with no reasons."""
+    def v1(a): return ValidationOutcome(ok=True)
+    def v2(a): return ValidationOutcome(ok=True)
+    combined = compose_validators([("a", v1), ("b", v2)])
+    r = combined("anything")
+    assert r.ok is True
+    assert r.reasons == []
+
+
+def test_compose_one_fails_others_pass():
+    """One failing validator → combined fails with only that one's reasons."""
+    def v_pass(a): return ValidationOutcome(ok=True)
+    def v_fail(a): return ValidationOutcome(ok=False, reasons=["bad thing"])
+    combined = compose_validators([("a", v_pass), ("b", v_fail), ("c", v_pass)])
+    r = combined("x")
+    assert r.ok is False
+    assert r.reasons == ["[b] bad thing"]
+
+
+def test_compose_label_prefixes_reasons():
+    """Each reason is prefixed with [validator_label]."""
+    def v1(a): return ValidationOutcome(ok=False, reasons=["err A"])
+    def v2(a): return ValidationOutcome(ok=False, reasons=["err B1", "err B2"])
+    combined = compose_validators([("first", v1), ("second", v2)])
+    r = combined("x")
+    assert "[first] err A" in r.reasons
+    assert "[second] err B1" in r.reasons
+    assert "[second] err B2" in r.reasons
+    assert len(r.reasons) == 3
+
+
+def test_compose_severity_fatal_wins():
+    """Any fatal → combined severity is fatal."""
+    def v_soft(a): return ValidationOutcome(ok=False, reasons=["s"], severity="soft")
+    def v_fatal(a): return ValidationOutcome(ok=False, reasons=["f"], severity="fatal")
+    combined = compose_validators([("a", v_soft), ("b", v_fatal)])
+    r = combined("x")
+    assert r.severity == "fatal"
+
+
+def test_compose_short_circuit_on_fatal():
+    """short_circuit_fatal=True stops at first fatal; later validators don't run."""
+    calls = []
+    def v_fatal(a):
+        calls.append("fatal")
+        return ValidationOutcome(ok=False, reasons=["bad"], severity="fatal")
+    def v_after(a):
+        calls.append("after")
+        return ValidationOutcome(ok=False, reasons=["also bad"])
+
+    combined = compose_validators(
+        [("a", v_fatal), ("b", v_after)],
+        short_circuit_fatal=True,
+    )
+    r = combined("x")
+    assert calls == ["fatal"]   # b never ran
+    assert "[a] bad" in r.reasons
+    assert "[b] also bad" not in r.reasons
+
+
+def test_compose_full_run_no_short_circuit():
+    """Default short_circuit_fatal=False runs all validators."""
+    calls = []
+    def v_fatal(a):
+        calls.append("fatal")
+        return ValidationOutcome(ok=False, reasons=["bad"], severity="fatal")
+    def v_after(a):
+        calls.append("after")
+        return ValidationOutcome(ok=False, reasons=["also bad"])
+
+    combined = compose_validators([("a", v_fatal), ("b", v_after)])
+    combined("x")
+    assert calls == ["fatal", "after"]   # both ran
+
+
+def test_compose_structured_merges_with_prefixes():
+    """structured dicts merge with label-prefixed keys."""
+    def v1(a):
+        return ValidationOutcome(
+            ok=False, reasons=["r1"],
+            structured={"count": 5, "extra": "info"},
+        )
+    def v2(a):
+        return ValidationOutcome(
+            ok=False, reasons=["r2"],
+            structured={"count": 10},   # would collide without prefix
+        )
+    combined = compose_validators([("dry_run", v1), ("contract", v2)])
+    r = combined("x")
+    assert r.structured["dry_run.count"] == 5
+    assert r.structured["dry_run.extra"] == "info"
+    assert r.structured["contract.count"] == 10   # no collision
 
 
 # ── Driver ──────────────────────────────────────────────────────────────────

@@ -92,6 +92,62 @@ Generator = Callable[[Optional[str]], Any]
 Validator = Callable[[Any], ValidationOutcome]
 
 
+# ── Validator composition ───────────────────────────────────────────────────
+
+
+def compose_validators(
+    validators: list[tuple[str, Validator]],
+    short_circuit_fatal: bool = False,
+) -> Validator:
+    """AND-combine multiple validators into one.
+
+    Each validator runs in turn against the same artifact. Results are merged:
+      ok = True iff EVERY validator returns ok=True
+      reasons = concatenated; each reason is prefixed with its validator's
+                label (e.g., "[dry_run] ImportError: ...")
+      severity = "fatal" if ANY validator reports fatal, else "soft"
+      structured = merged dict with label-prefixed keys
+                   (e.g., {"dry_run.error_preview": "..."}) — collision-free
+
+    Args:
+        validators: list of (label, validator_fn) tuples. Labels prefix reasons
+                    and structured keys so the LLM can identify which check failed.
+        short_circuit_fatal: when True, stop on the first validator that returns
+                             fatal severity. Default False — run all, give the
+                             LLM a complete picture of what's wrong on first retry.
+
+    Returns:
+        A single Validator that, when called, runs all (or until fatal) and
+        returns one combined ValidationOutcome.
+    """
+    def combined(artifact: Any) -> ValidationOutcome:
+        all_reasons: list[str] = []
+        merged_structured: dict[str, Any] = {}
+        worst_severity: str = "soft"
+        all_ok = True
+        for label, v in validators:
+            outcome = v(artifact)
+            if outcome.ok:
+                continue
+            all_ok = False
+            all_reasons.extend(f"[{label}] {r}" for r in outcome.reasons)
+            for k, val in (outcome.structured or {}).items():
+                merged_structured[f"{label}.{k}"] = val
+            if outcome.severity == "fatal":
+                worst_severity = "fatal"
+                if short_circuit_fatal:
+                    break
+        if all_ok:
+            return ValidationOutcome(ok=True)
+        return ValidationOutcome(
+            ok=False,
+            reasons=all_reasons,
+            severity=worst_severity,  # type: ignore[arg-type]
+            structured=merged_structured,
+        )
+    return combined
+
+
 # ── Cumulative feedback (anti-oscillation) ───────────────────────────────────
 
 
