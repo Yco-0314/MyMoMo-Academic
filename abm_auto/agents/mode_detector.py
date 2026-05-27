@@ -106,6 +106,14 @@ class ResearchSpec:
     # The two MUST stay synchronised: every entry in specs has its name in params.
     calibration_params: list = field(default_factory=list)
     calibration_param_specs: list = field(default_factory=list)
+    # External simulator — when set, pipeline copies this dir into workspace/model/
+    # and skips Phase 1d (MechanismExtractor), Phase 2 (CoderAgent), Phase 3
+    # (VerifierAgent). Lets users plug in a hand-crafted or third-party Python
+    # model directly, bypassing LLM codegen — useful for reproducing NetLogo
+    # models (where codegen introduces unavoidable tick-semantics drift), and
+    # for fast iteration on calibration algorithms (no codegen randomness).
+    # Set via CLI flag --external-model PATH or Pipeline constructor.
+    external_model_path: str = ""
     confidence: float = 1.0             # LLM confidence in mode detection (0–1)
 
     # Thresholds for ViabilityChecker (set from _THRESHOLDS[mode])

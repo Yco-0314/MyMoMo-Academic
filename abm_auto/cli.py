@@ -37,6 +37,7 @@ def run(
     baseline: Optional[Path] = typer.Option(None, "--baseline", help="Path to baseline CSV for comparison (time,metric1,metric2,...)"),
     no_lit_review: bool = typer.Option(False, "--no-lit-review", help="Skip Phase 0 automatic literature search"),
     mode: Optional[str] = typer.Option(None, "--mode", help="Force research mode: 'reproduce' or 'originate'. Default: auto-detect from story.md (LLM)."),
+    external_model: Optional[str] = typer.Option(None, "--external-model", help="Path to prebuilt Python model dir (main.py + core/). When set, Phase 1d / 2 / 3 are skipped — dir is copied into workspace/model/ and Phase 4+ runs against it. Useful for reproducing established models without LLM codegen drift."),
 ):
     """
     Run the full autonomous ABM pipeline from a story description.
@@ -79,6 +80,7 @@ def run(
         baseline_path=baseline,
         auto_lit_review=not no_lit_review,
         mode_override=mode,
+        external_model_path=external_model,
     )
     workspace_path = pipeline.run()
     console.print(f"\n[bold]Output directory:[/bold] {workspace_path}")
