@@ -1,0 +1,2 @@
+id,run_num,periods,grid_width,grid_height,density,fraction_minority,agent_num,seed,tolerance
+0,1,100,20,20,0.90,0.50,360,0,0.30
