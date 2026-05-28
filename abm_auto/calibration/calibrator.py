@@ -17,7 +17,7 @@ import pandas as pd
 from rich.console import Console
 
 from abm_auto.agents.base import BaseAgent
-from abm_auto.calibration import backends, posterior, priors as priors_mod
+from abm_auto.calibration import backends, posterior, priors as priors_mod, refiners
 from abm_auto.calibration.simulator import SimulatorWrapper, infer_targets, summary_stats
 from abm_auto.calibration.types import CalibrationResult
 
@@ -25,6 +25,10 @@ console = Console()
 
 
 _DEFAULT_MAX_SIMS = 100
+# Extra evaluations for the local-refinement stage. Runs in addition to
+# screening's budget — refinement serves a different purpose (downhill
+# from screening's best) and shouldn't compete with screening's coverage.
+_REFINE_EVALS = 50
 
 
 class BayesianCalibrator(BaseAgent):
@@ -91,28 +95,57 @@ class BayesianCalibrator(BaseAgent):
 
         obs_stats = summary_stats(observed, targets)
 
-        # ── Pick backend, run inference ──
+        # ── Stage 1: Screening (broad prior coverage) ──
         # Preference order: RF > PyMC > ABC.
         # RF (Carrella 2021): consistently best in cross-validated benchmarks
         #   for ABM calibration; uses ALL successful sims (not top 20% like ABC).
         # PyMC SMC: theoretically principled but expensive (particle filter).
         # ABC rejection: simple fallback, always available (numpy only).
-        result = None
+        screen_result = None
         if backends.HAS_SKLEARN:
             try:
-                console.print("  [dim]Using Random Forest regression backend[/dim]")
-                result = backends.run_rf(prior_dict, targets, obs_stats, simulator, max_sims)
+                console.print("  [dim]Stage 1 (screen): Random Forest regression[/dim]")
+                screen_result = backends.run_rf(prior_dict, targets, obs_stats, simulator, max_sims)
             except Exception as e:
                 console.print(f"  [yellow]⚠ RF backend failed ({e}) — trying next[/yellow]")
-        if result is None and backends.HAS_PYMC:
+        if screen_result is None and backends.HAS_PYMC:
             try:
-                console.print("  [dim]Using PyMC SMC backend[/dim]")
-                result = backends.run_pymc(prior_dict, targets, obs_stats, simulator, max_sims)
+                console.print("  [dim]Stage 1 (screen): PyMC SMC[/dim]")
+                screen_result = backends.run_pymc(prior_dict, targets, obs_stats, simulator, max_sims)
             except Exception as e:
                 console.print(f"  [yellow]⚠ PyMC backend failed ({e}) — trying next[/yellow]")
-        if result is None:
-            console.print("  [dim]Using ABC rejection sampling backend[/dim]")
-            result = backends.run_abc(prior_dict, targets, obs_stats, simulator, max_sims)
+        if screen_result is None:
+            console.print("  [dim]Stage 1 (screen): ABC rejection[/dim]")
+            screen_result = backends.run_abc(prior_dict, targets, obs_stats, simulator, max_sims)
+
+        # ── Stage 2: Refinement (local descent from screening's best point) ──
+        # NM walks downhill on ||sim - obs|| from screening's best_params,
+        # closing the ~10-20 distance gap between best-of-N-uniform-draws and
+        # the true basin. The screening posterior_summary is carried forward.
+        result = screen_result
+        if screen_result.ok:
+            try:
+                console.print(f"  [dim]Stage 2 (refine): Nelder-Mead from {screen_result.backend}'s best[/dim]")
+                refine_result = refiners.nelder_mead_refine(
+                    start_params=screen_result.best_params,
+                    priors=prior_dict,
+                    targets=targets,
+                    obs_stats=obs_stats,
+                    simulator=simulator,
+                    max_evals=_REFINE_EVALS,
+                )
+                if refine_result.ok:
+                    result = CalibrationResult(
+                        ok=True,
+                        backend=f"{screen_result.backend}+nelder-mead",
+                        n_simulator_calls=(
+                            screen_result.n_simulator_calls + refine_result.n_simulator_calls
+                        ),
+                        best_params=refine_result.best_params,
+                        posterior_summary=screen_result.posterior_summary,
+                    )
+            except Exception as e:
+                console.print(f"  [yellow]⚠ NM refinement failed ({e}) — using screening result[/yellow]")
 
         # ── Post-processing ──
         if result.ok:
