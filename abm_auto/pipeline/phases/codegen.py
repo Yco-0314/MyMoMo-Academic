@@ -42,6 +42,30 @@ class CodegenPhase:
                 self.verifier.fix(feedback)
             return None
 
+        def _anti_pattern_validator(_ignored) -> ValidationOutcome:
+            """Static scan for known-recurring codegen anti-patterns.
+
+            Catches what dry_run sometimes lets slip: hallucinated names
+            in branches not exercised at import time. Patterns sourced
+            from mymomo_knowledge/05-anti-patterns.md §1-3. Sourced
+            centrally from anti_patterns.scan() so the catalogue stays
+            in one place.
+            """
+            from abm_auto.codegen.anti_patterns import scan as scan_anti_patterns
+
+            code_files = ctx.workspace.read_model_files()
+            if not code_files:
+                return ValidationOutcome(ok=True)
+            issues = scan_anti_patterns(code_files)
+            if not issues:
+                return ValidationOutcome(ok=True)
+            return ValidationOutcome(
+                ok=False,
+                reasons=issues,
+                severity="fatal",  # these patterns guarantee runtime failure
+                structured={"issue_count": len(issues)},
+            )
+
         def _dry_run_validator(_ignored) -> ValidationOutcome:
             error = self.executor.dry_run()
             if error is None:
@@ -120,6 +144,7 @@ class CodegenPhase:
                 return ValidationOutcome(ok=True)
 
         _val = compose_validators([
+            ("anti_pattern", _anti_pattern_validator),   # static, runs first — cheap
             ("dry_run", _dry_run_validator),
             ("contract", _contract_validator),
             ("fidelity", _fidelity_validator),
