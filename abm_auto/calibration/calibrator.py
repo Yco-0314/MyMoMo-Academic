@@ -18,7 +18,8 @@ from rich.console import Console
 
 from abm_auto.agents.base import BaseAgent
 from abm_auto.calibration import backends, posterior, priors as priors_mod, refiners
-from abm_auto.calibration.simulator import SimulatorWrapper, infer_targets, summary_stats
+from abm_auto.calibration.simulator import SimulatorWrapper, infer_targets
+from abm_auto.calibration.summary_stats import full_trajectory
 from abm_auto.calibration.types import CalibrationResult
 
 console = Console()
@@ -93,7 +94,12 @@ class BayesianCalibrator(BaseAgent):
         scope = f"{len(prior_dict)} of {len(allowlist)} requested" if allowlist else f"{len(prior_dict)} (all numeric)"
         console.print(f"  [dim]Parameters under inference: {list(prior_dict.keys())} ({scope})[/dim]")
 
-        obs_stats = summary_stats(observed, targets)
+        # Use full_trajectory as the summary (preserves per-tick info, gives
+        # ABC/NM a sharp loss surface). Pass the same fn into the simulator
+        # so sim_stats and obs_stats live in the same vector space.
+        summary_fn = full_trajectory
+        simulator.summary_fn = summary_fn
+        obs_stats = summary_fn(observed, targets)
 
         # ── Stage 1: Screening (broad prior coverage) ──
         # Preference order: RF > PyMC > ABC.

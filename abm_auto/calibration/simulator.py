@@ -4,6 +4,8 @@ Stateful (unlike priors/posterior helpers) because it owns:
   - the workspace path (to find scenario CSV + read result CSV)
   - the executor (to actually run a sim)
   - a monotonic run_id counter (every simulate() call gets a unique id)
+  - a `summary_fn` (which dictates what the calibrator actually optimizes —
+    see abm_auto.calibration.summary_stats)
 
 Provides ONE public method, `simulate(params, targets) → np.ndarray | None`,
 which the inference backends consume as a callable. Backends never touch
@@ -17,6 +19,13 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
+from abm_auto.calibration.summary_stats import (
+    SummaryStats,
+    full_trajectory,
+    mean_std_last,
+    normalize_columns,
+)
+
 
 class SimulatorWrapper:
     """Adapts (workspace, executor) into a simulate(params, targets) callable.
@@ -24,20 +33,33 @@ class SimulatorWrapper:
     Usage:
         sim = SimulatorWrapper(workspace, executor)
         stats = sim.simulate({"virus_spread_chance": 5.0, ...}, ["susceptible", "infected"])
-        # → np.array([mean_s, std_s, last_s, mean_i, std_i, last_i]) or None on failure
+        # → np.array(flattened trajectory) or None on failure
+
+    Pass `summary_fn=mean_std_last` to switch back to the previous summary
+    behavior (3-D per column instead of full trajectory).
     """
 
-    def __init__(self, workspace, executor, base_run_id: int = 10000):
+    def __init__(
+        self,
+        workspace,
+        executor,
+        base_run_id: int = 10000,
+        summary_fn: SummaryStats = full_trajectory,
+    ):
         """
         Args:
             workspace: abm_auto.runner.workspace.Workspace
             executor:  abm_auto.runner.executor.Executor
             base_run_id: starting run_id for calibration sims. Defaults to 10000
                          to leave room for normal pipeline runs (1, 2, 3, ...).
+            summary_fn: reduces sim DataFrame to fixed-length stats vector.
+                        Default `full_trajectory` preserves all per-tick info,
+                        which gives ABC/NM a sharp loss surface to descend.
         """
         self.workspace = workspace
         self.executor = executor
         self._run_counter = base_run_id
+        self.summary_fn = summary_fn
 
     @property
     def scenario_csv_path(self) -> Path:
@@ -59,7 +81,11 @@ class SimulatorWrapper:
             df = self.read_result_metrics(run_id)
             if df is None or df.empty:
                 return None
-            return summary_stats(df, targets)
+            # Bridge sim's column-naming convention (e.g. `count_s`) to the
+            # canonical target names (`susceptible`) before summarizing.
+            # Without this step, summary_fn returns all zeros silently.
+            df = normalize_columns(df, targets)
+            return self.summary_fn(df, targets)
         except Exception:
             return None
 
@@ -90,28 +116,10 @@ class SimulatorWrapper:
             return None
 
 
-def summary_stats(df: pd.DataFrame, targets: list[str]) -> np.ndarray:
-    """Reduce a time-series CSV to a fixed-length summary vector.
-
-    For each target column: [mean, std, last_value]. Missing columns
-    contribute zeros so the vector length is always 3 × len(targets).
-
-    Free function (not a method) so backends can call it on observed data
-    too without constructing a SimulatorWrapper.
-    """
-    stats: list[float] = []
-    for col in targets:
-        if col in df.columns:
-            series = pd.to_numeric(df[col], errors="coerce").dropna()
-            if len(series) > 0:
-                stats.extend([
-                    float(series.mean()),
-                    float(series.std() or 0.0),
-                    float(series.iloc[-1]),
-                ])
-                continue
-        stats.extend([0.0, 0.0, 0.0])
-    return np.array(stats, dtype=float)
+# Back-compat: external code may still import `summary_stats` from this
+# module. Alias it to `mean_std_last` (the historical default). New code
+# should import directly from `abm_auto.calibration.summary_stats`.
+summary_stats = mean_std_last
 
 
 def infer_targets(observed: pd.DataFrame) -> list[str]:
