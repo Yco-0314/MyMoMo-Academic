@@ -28,9 +28,11 @@ Why this benchmark exists (vs. the two existing ones):
       not from LLM codegen — so this benchmark is a cleaner test of
       calibration stability under realistic pipeline conditions.
 
-Ground truth (BEHAVE 2025 calibration_challenge_results.pdf p9):
+Ground truth (inferred from observed.csv; see benchmark_calibration_challenge
+docstring for the typo finding — paper printed recovery_chance=0.3 but data
+requires ~2.5):
   virus_spread_chance    = 4.4    (% per neighbour per tick)
-  recovery_chance        = 0.3    (% per infected per check)
+  recovery_chance        = 2.5    (% per infected per check)
   gain_resistance_chance = 25.0   (% at recovery)
 
 Usage:

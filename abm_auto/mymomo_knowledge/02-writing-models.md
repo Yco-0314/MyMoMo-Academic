@@ -223,7 +223,7 @@ class VirusScenario(Scenario):
         self.seed: int = 0
         # Calibration params — EXACT names matching spec.calibration_params
         self.virus_spread_chance: float = 4.4
-        self.recovery_chance: float = 0.3
+        self.recovery_chance: float = 2.5    # inferred GT — see benchmark_calibration_challenge docstring re: PDF typo (printed 0.3)
         self.gain_resistance_chance: float = 25.0
 ```
 

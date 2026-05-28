@@ -478,9 +478,13 @@ branch in `LLMClient.__init__` — no caller changes needed.
 
 ### Calibration Benchmark Suite
 
-Three scripts for measuring the calibration pipeline against BEHAVE 2025 Brescia
-challenge ground truth (`virus_spread_chance=4.4`, `recovery_chance=0.3`,
-`gain_resistance_chance=25.0`):
+Three scripts for measuring the calibration pipeline against the inferred
+data-generating ground truth for the BEHAVE 2025 Brescia challenge
+(`virus_spread_chance=4.4`, `recovery_chance=2.5`, `gain_resistance_chance=25.0`).
+The PDF prints `recovery_chance=0.3` but that value is mathematically
+incompatible with observed.csv — parameter sweep against the observed
+trajectory finds the minimum at ~2.5 (MSE 217 vs 8187 at the printed value).
+See `benchmark_calibration_challenge.py` docstring for the full diagnostic.
 
 1. `benchmark_calibration_challenge.py` — full pipeline (story → DESIGN →
    code → sim → calibrate → MSE). Stress-tests the whole stack.

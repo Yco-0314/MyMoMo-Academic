@@ -20,11 +20,7 @@ from rich.table import Table
 
 REPO = Path(__file__).parent
 PYTHON = "/home/user/Documents/Social Simulation /abm-auto/.venv/bin/python"
-GROUND_TRUTH = {
-    "virus_spread_chance": 4.4,
-    "recovery_chance": 0.3,
-    "gain_resistance_chance": 25.0,
-}
+from benchmark_calibration_challenge import GROUND_TRUTH  # noqa: E402  inferred truth (see that file's docstring)
 
 console = Console()
 

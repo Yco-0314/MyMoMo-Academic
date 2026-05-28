@@ -15,9 +15,11 @@ Why this exists (vs. benchmark_calibration_challenge.py):
 
   Cleanly separates "is calibration broken?" from "is codegen broken?".
 
-Ground truth (BEHAVE 2025 calibration_challenge_results.pdf p9):
+Ground truth (inferred from observed.csv; see benchmark_calibration_challenge
+docstring for the typo finding — paper printed recovery_chance=0.3 but data
+requires ~2.5):
   virus_spread_chance    = 4.4    (% per neighbour per tick)
-  recovery_chance        = 0.3    (% per infected per check)
+  recovery_chance        = 2.5    (% per infected per check)
   gain_resistance_chance = 25.0   (% at recovery)
 """
 from __future__ import annotations
@@ -125,11 +127,7 @@ def run_benchmark(max_sims: int = 50) -> int:
     console.rule("[cyan]Sanity check: simulate at ground-truth params[/cyan]")
     from abm_auto.calibration.simulator import SimulatorWrapper
     sim_wrap = SimulatorWrapper(ws, executor, base_run_id=99000)
-    sim_wrap.write_scenario_params({
-        "virus_spread_chance": 4.4,
-        "recovery_chance": 0.3,
-        "gain_resistance_chance": 25.0,
-    })
+    sim_wrap.write_scenario_params(GROUND_TRUTH)
     success, _ = executor.run(99000)  # sentinel run id
     if not success:
         console.print("[bold red]Sanity sim failed — handcrafted simulator is broken.[/bold red]")
