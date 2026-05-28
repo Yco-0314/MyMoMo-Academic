@@ -138,8 +138,7 @@ class MarketModel(Model):
         self.agents.setup_agents(agents_num=self.scenario.agent_num)
         self.network.setup_agent_connections(
             agent_lists=[self.agents],
-            network_type="watts_strogatz_graph",
-            network_params={"k": self.scenario.network_k, "p": self.scenario.network_p},
+            topology=topologies.watts_strogatz(k=self.scenario.network_k, p=self.scenario.network_p),
         )
 
     def run(self):
@@ -329,9 +328,12 @@ For the original tuple form pass `return_agents=False`.
 
 ## Network
 
-Graph-based topology. Same neighbour API as Grid; topology is set by name.
+Graph-based topology. Same neighbour API as Grid; topology is supplied as a
+**callable** (see `Topology` in `abm_auto.runtime.topologies`).
 
 ```python
+from abm_auto.runtime import Model, topologies
+
 # Model.create():
 self.network = self.create_network()
 
@@ -339,28 +341,31 @@ self.network = self.create_network()
 self.agents.setup_agents(agents_num=self.scenario.agent_num)
 self.network.setup_agent_connections(
     agent_lists=[self.agents],
-    network_type="watts_strogatz_graph",     # EXACT networkx generator name
-    network_params={
-        "k": self.scenario.network_k,        # degree (must be even for WS)
-        "p": self.scenario.network_p,        # rewiring prob
-    },
+    topology=topologies.watts_strogatz(
+        k=self.scenario.network_k,        # degree (must be even for WS)
+        p=self.scenario.network_p,        # rewiring prob
+    ),
 )
 ```
 
-**Supported `network_type` values** (each maps to a networkx generator —
-the suffix `_graph` is REQUIRED, see `05-anti-patterns.md` §3):
+**Built-in topology adapters** (`abm_auto.runtime.topologies`):
 
-| network_type | Required params | Notes |
+| Adapter | Signature | Notes |
 |---|---|---|
-| `"watts_strogatz_graph"` | `{"k": int (even), "p": float}` | Small-world |
-| `"barabasi_albert_graph"` | `{"m": int}` | Scale-free; m edges per new node |
-| `"erdos_renyi_graph"` | `{"p": float}` | Random; p is edge probability |
+| `watts_strogatz(k, p)` | k = int (even), p = float | Small-world |
+| `barabasi_albert(m)` | m = int (edges per new node) | Scale-free |
+| `erdos_renyi(p)` | p = float (edge probability) | Random |
+| `netlogo_spatially_clustered(avg_degree)` | avg_degree = int | Faithful port of NetLogo `setup-spatially-clustered-network`: iterative random-node → nearest-non-neighbor linking, no per-node degree cap, terminates at n*d/2 edges. High-variance degree distribution. |
+| `melodie_named(name, **params)` | name = networkx generator function name | Escape hatch for anything networkx ships. Bridges `random.Random` to networkx's int seed. |
+
+A `Topology` is `Callable[[int, random.Random], nx.Graph]`. RNG is supplied
+by `Network._rng` (auto-seeded from `scenario.seed` in `Model.create_network()`).
 
 **Methods**:
 
 | Method | Purpose |
 |---|---|
-| `setup_agent_connections(agent_lists, network_type, network_params)` | Build the graph |
+| `setup_agent_connections(agent_lists, topology)` | Build the graph via the supplied Topology callable |
 | `get_neighbors(agent)` | List of NetworkAgent objects (agent_list auto-injected) |
 | `add_edge(a, b)` | Manually add an edge after setup |
 

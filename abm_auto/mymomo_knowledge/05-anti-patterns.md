@@ -20,7 +20,7 @@ The LLM invents class names that "sound right" but do not exist in
 | ❌ Hallucinated | ✓ Use instead |
 |---|---|
 | `NetworkGrid`, `GridNetwork`, `NetworkModel` | `Network` (a separate top-level class from `Grid`) |
-| `WattsStrogatzNetwork`, `BarabasiAlbertGraph` | `Network` + pass topology via `network_type=` arg |
+| `WattsStrogatzNetwork`, `BarabasiAlbertGraph` | `Network` + `topology=topologies.watts_strogatz(...)` etc. (see `01-runtime-api.md` §Network) |
 | `GridModel`, `NetworkAgentModel`, `SIRModel` | `Model` — there is only one base class |
 | `SIRAgent`, `EpidemicAgent`, `BuyerAgent` | These are **your** classes; subclass `Agent` / `GridAgent` / `NetworkAgent` |
 | `AgentScheduler`, `EventLoop` | No such thing. Use `for t in self.iterator(periods):` |
@@ -43,7 +43,7 @@ hallucinated.
 | `agent_list.shuffle()` | `AgentList` does not have `.shuffle()`. Iterate `self.agents` directly. |
 | `model.after_setup()` | There is no `after_setup()` hook. All initialisation goes in `setup()`. |
 | `data_collector.add_property("name")` | Use either `add_agent_property("container", "attr")` or `add_environment_property("attr")`. |
-| `network.k`, `network.p` | These are not attributes. Pass them via `setup_agent_connections(network_params={"k": ..., "p": ...})`. |
+| `network.k`, `network.p` | These are not attributes. Bind them at topology construction: `topology=topologies.watts_strogatz(k=..., p=...)`. |
 
 **Why `gen_num` was particularly stubborn**: in early benchmarks the LLM
 oscillated between `gen_num` and `generation_num` across 5 retries — both
@@ -53,21 +53,34 @@ history so it stops cycling through equivalent wrong answers.
 
 ---
 
-## 3. Wrong networkx generator names (most common codegen failure)
+## 3. Old string-based network API (removed)
 
-Top runtime failure for any Network-based design:
-`AttributeError: module 'networkx' has no attribute 'watts_strogatz'`.
+The OLD API took a `network_type=str` + `network_params=dict`:
 
-The `network_type` string passed to `Network.setup_agent_connections` MUST
-be the EXACT networkx function name, **including the `_graph` suffix**:
+```python
+# ❌ REMOVED — will raise TypeError("unexpected keyword 'network_type'")
+self.network.setup_agent_connections(
+    agent_lists=[self.agents],
+    network_type="watts_strogatz_graph",
+    network_params={"k": 6, "p": 0.1},
+)
+```
 
-| ❌ Wrong | ✓ Correct | Required params |
-|---|---|---|
-| `"watts_strogatz"` | `"watts_strogatz_graph"` | `{"k": int (even), "p": float}` |
-| `"barabasi_albert"` | `"barabasi_albert_graph"` | `{"m": int}` (edges per new node) |
-| `"erdos_renyi"` | `"erdos_renyi_graph"` | `{"p": float}` (edge probability) |
+Use the callable form from `abm_auto.runtime.topologies` instead:
 
-`k` for Watts-Strogatz must be an **even** integer.
+```python
+# ✓ Current
+self.network.setup_agent_connections(
+    agent_lists=[self.agents],
+    topology=topologies.watts_strogatz(k=6, p=0.1),
+)
+```
+
+`k` for Watts-Strogatz must be an **even** integer (networkx enforces it).
+
+Other built-in adapters: `barabasi_albert(m)`, `erdos_renyi(p)`,
+`netlogo_spatially_clustered(avg_degree)`, and the escape hatch
+`melodie_named("any_networkx_graph_fn", **kwargs)`.
 
 ---
 

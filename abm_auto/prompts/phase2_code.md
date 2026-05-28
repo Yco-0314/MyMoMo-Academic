@@ -219,6 +219,8 @@ class MyAgent(NetworkAgent):
 ### Network Setup (in Model)
 
 ```python
+from abm_auto.runtime import Model, topologies
+
 # Model.create():
 self.network = self.create_network()
 
@@ -226,18 +228,22 @@ self.network = self.create_network()
 self.agents.setup_agents(agents_num=self.scenario.agent_num)
 self.network.setup_agent_connections(
     agent_lists=[self.agents],
-    # ⚠ network_type MUST be the EXACT networkx generator function name (with "_graph" suffix).
-    # Wrong: "watts_strogatz", "barabasi_albert", "erdos_renyi"  →  AttributeError at runtime.
-    # Right:
-    network_type="watts_strogatz_graph",     # small-world; needs k (int, EVEN), p (float)
-    # network_type="barabasi_albert_graph",  # scale-free; needs m (int = edges per new node)
-    # network_type="erdos_renyi_graph",      # random; needs p (float, edge probability)
-    network_params={
-        "k": self.scenario.network_k,        # degree (Watts-Strogatz; must be even integer)
-        "p": self.scenario.network_p,        # rewiring probability
-    },
+    # Topology is a CALLABLE from abm_auto.runtime.topologies.
+    # Pick the one that matches the story; all take primitive params.
+    topology=topologies.watts_strogatz(k=self.scenario.network_k, p=self.scenario.network_p),
+    # topology=topologies.barabasi_albert(m=3),         # scale-free
+    # topology=topologies.erdos_renyi(p=0.05),          # random
+    # topology=topologies.netlogo_spatially_clustered(  # NetLogo Virus on a Network
+    #     avg_degree=int(self.scenario.average_degree),
+    # ),
+    # Escape hatch for any other networkx generator:
+    # topology=topologies.melodie_named("random_geometric_graph", radius=0.113),
 )
 ```
+
+⚠ The OLD API (`network_type="..."` + `network_params={...}`) was removed. If
+you see those keyword args anywhere in inspiration code, translate them to
+the callable form above.
 
 ### Neighbor Access Pattern
 

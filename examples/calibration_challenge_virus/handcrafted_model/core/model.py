@@ -1,6 +1,6 @@
 import random
 
-from abm_auto.runtime import Model
+from abm_auto.runtime import Model, topologies
 
 from .agent import Person
 from .data_collector import VirusDataCollector
@@ -28,16 +28,15 @@ class VirusModel(Model):
             a.state = 1 if i in infected_idx else 0
             a.virus_check_timer = 0
 
-        # 3. Build network. Watts-Strogatz: k ≈ average_degree (must be even),
-        #    rewiring prob 0.1. Aligns with the source-paper "spatially clustered network"
-        #    which is a small-world variant.
-        k = int(self.scenario.average_degree)
-        if k % 2 == 1:
-            k += 1
+        # 3. Build network — faithful port of NetLogo `setup-spatially-clustered-
+        #    network` (iterative random-node → nearest-non-neighbor linking,
+        #    no per-node degree cap, terminating at n*d/2 edges). See
+        #    abm_auto/runtime/_topologies.py for the algorithm.
         self.network.setup_agent_connections(
             agent_lists=[self.agents],
-            network_type="watts_strogatz_graph",
-            network_params={"k": k, "p": 0.1},
+            topology=topologies.netlogo_spatially_clustered(
+                avg_degree=int(self.scenario.average_degree),
+            ),
         )
 
         # 4. Init aggregate counters on environment for DataCollector

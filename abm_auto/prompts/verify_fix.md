@@ -22,7 +22,7 @@ the LLM (you, in a previous attempt) likely **hallucinated a class name**. Check
 | ❌ Hallucinated | ✓ Use instead |
 |---|---|
 | `NetworkGrid`, `NetworkModel`, `GridNetwork` | `Network` (separate from `Grid`) |
-| `WattsStrogatzNetwork`, `BarabasiAlbertGraph` | `Network` + set `network_type` parameter |
+| `WattsStrogatzNetwork`, `BarabasiAlbertGraph` | `Network` + pass `topology=topologies.watts_strogatz(...)` etc. |
 | `GridModel`, `NetworkAgentModel` | `Model` (only one base class) |
 | `SIRAgent`, `EpidemicAgent`, `BuyerAgent` | You DEFINE these — they're not in runtime |
 | `AgentScheduler`, `EventLoop` | Just use `for t in self.iterator(periods):` |
@@ -63,12 +63,14 @@ Config, Simulator, Calibrator, Trainer
    - If simulation output shows all agents stuck in initial state (e.g., count_i=0 throughout), check if `agent.setup()` is overwriting CSV-loaded `state` attribute.
 
 4. **Network-specific errors** (most common codegen failure mode):
-   - `AttributeError: module 'networkx' has no attribute 'watts_strogatz'`
-     → **FIX**: `network_type` must include the `_graph` suffix. Correct names:
-        - `"watts_strogatz_graph"` (small-world; params `{"k": int, "p": float}`, k must be EVEN)
-        - `"barabasi_albert_graph"` (scale-free; params `{"m": int}` — edges per new node)
-        - `"erdos_renyi_graph"` (random; params `{"p": float}`)
-   - `network.k`, `network.p` not attributes → pass via `network_params={"k": ..., "p": ...}` in `setup_agent_connections()`
+   - `TypeError: setup_agent_connections() got an unexpected keyword 'network_type'`
+     → **FIX**: the OLD `network_type=str` + `network_params=dict` API was removed. Use a callable from `abm_auto.runtime.topologies`:
+        - `topology=topologies.watts_strogatz(k=int_even, p=float)` (small-world)
+        - `topology=topologies.barabasi_albert(m=int)` (scale-free)
+        - `topology=topologies.erdos_renyi(p=float)` (random)
+        - `topology=topologies.netlogo_spatially_clustered(avg_degree=int)` (NetLogo iterative nearest-non-neighbor)
+        - `topology=topologies.melodie_named("any_networkx_generator_name", **kwargs)` (escape hatch)
+   - `network.k`, `network.p` not attributes → these are bound at topology construction: `topologies.watts_strogatz(k=..., p=...)`.
    - `get_neighbors()` returns NetworkAgent objects (NOT (category, id) tuples — that's Grid). Access `.state` etc. directly.
    - `set_category()` MUST be implemented on every NetworkAgent subclass (same rule as GridAgent): `def set_category(self): self.category = 0`
 

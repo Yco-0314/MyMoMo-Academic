@@ -188,11 +188,10 @@ class OpinionModel(Model):
         self.agents.setup_agents(agents_num=self.scenario.agent_num)
         self.network.setup_agent_connections(
             agent_lists=[self.agents],
-            network_type="watts_strogatz_graph",
-            network_params={
-                "k": self.scenario.network_k,    # must be EVEN
-                "p": self.scenario.network_p,
-            },
+            topology=topologies.watts_strogatz(
+                k=self.scenario.network_k,       # must be EVEN
+                p=self.scenario.network_p,
+            ),
         )
 
     def run(self):

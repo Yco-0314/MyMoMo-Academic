@@ -54,11 +54,19 @@ class Model(_Model):
     ):
         """Create a Network, defaulting to ABM Auto's Network subclass.
 
-        Same agent_list injection pattern as ``create_grid()``.
+        Injects:
+          - ``_agent_list_ref`` so ``get_neighbors()`` needs no agent_list arg.
+          - ``_rng`` so Topology callables in ``setup_agent_connections`` get a
+            deterministic, scenario-seeded ``random.Random`` instead of leaking
+            on the global module state.
         """
+        import random
+
         from abm_auto.runtime._network import Network as _Network
 
         network = super().create_network(network_cls or _Network, edge_cls)
         if getattr(self, "agents", None) is not None:
             network._agent_list_ref = self.agents
+        seed = int(getattr(self.scenario, "seed", 0))
+        network._rng = random.Random(seed)
         return network

@@ -114,6 +114,26 @@ Sobol indices stabilize as sample size increases. Rule of thumb: N ≥ 64 for D 
 
 ---
 
+## ABM-Auto Runtime
+
+**Topology**  
+A pure callable that constructs the graph for a `Network`, decoupled from how
+the graph is stored or traversed. Signature: `Callable[[int, random.Random], nx.Graph]`.
+Built-in adapters in `abm_auto.runtime.topologies` cover the cases LLM-generated
+research models actually use (`watts_strogatz`, `barabasi_albert`, `erdos_renyi`,
+`netlogo_spatially_clustered`); `melodie_named` wraps any other networkx
+generator. The seam exists so research-paper-specific topologies (e.g., NetLogo's
+iterative nearest-non-neighbor clustering) can be expressed faithfully without
+hacking Melodie internals.
+
+**RNG injection (Network)**  
+`Network._rng` is a seeded `random.Random` injected by `Model.create_network()`
+from `scenario.seed`. Topology callables must consume randomness only from
+this `rng` (not from the global `random` module) to preserve determinism
+under parallel/multi-process calibration.
+
+---
+
 ## Mesa Framework
 
 **Mesa**  

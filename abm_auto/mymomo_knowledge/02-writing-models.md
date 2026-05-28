@@ -88,8 +88,7 @@ Apply the decision tree in [`03-modules.md`](03-modules.md):
 Specifically a small-world (Watts-Strogatz) graph — the story names it
 explicitly. From [`01-runtime-api.md`](01-runtime-api.md) Network table:
 
-- `network_type = "watts_strogatz_graph"`
-- `network_params = {"k": int (even), "p": float}`
+- `topology = topologies.watts_strogatz(k=int_even, p=float)`
 
 `k` must be even — see [`05-anti-patterns.md`](05-anti-patterns.md) §3.
 `average_degree=6` from the story is already even, so we map directly:
@@ -255,11 +254,10 @@ class VirusModel(Model):
         # Build small-world network
         self.network.setup_agent_connections(
             agent_lists=[self.agents],
-            network_type="watts_strogatz_graph",   # ← _graph suffix required (05 §3)
-            network_params={
-                "k": self.scenario.average_degree,
-                "p": 0.1,   # rewiring; could be exposed via scenario
-            },
+            topology=topologies.watts_strogatz(
+                k=self.scenario.average_degree,
+                p=0.1,   # rewiring; could be exposed via scenario
+            ),
         )
 
         # Seed initial infections (state set in model.setup, not agent.setup,

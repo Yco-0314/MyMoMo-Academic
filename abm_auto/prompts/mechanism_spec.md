@@ -70,7 +70,7 @@ For EVERY calibration parameter, state:
 
 ## Network / spatial init
 If the model uses a Grid or Network:
-- Topology type (exact string for `setup_agent_connections`)
+- Topology callable (one of `topologies.watts_strogatz`, `topologies.barabasi_albert`, `topologies.erdos_renyi`, `topologies.netlogo_spatially_clustered`, or `topologies.melodie_named` as escape hatch — see `01-runtime-api.md` §Network)
 - Parameters (with mapping from scenario columns)
 - Whether topology is rebuilt each tick or fixed at setup (almost always: fixed)
 

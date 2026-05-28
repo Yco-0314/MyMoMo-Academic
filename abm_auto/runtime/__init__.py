@@ -50,6 +50,7 @@ from abm_auto.runtime._grid import Grid
 from abm_auto.runtime._network import Network
 from abm_auto.runtime._model import Model
 from abm_auto.runtime._environment import Environment
+from abm_auto.runtime import _topologies as topologies  # noqa: F401  exposed as `runtime.topologies`
 
 # ── Still delegated to MyMoMo Runtime (complex CSV/DB machinery) ────────────────────
 
@@ -79,6 +80,7 @@ __all__ = [
     # Network
     "Network",
     "NetworkAgent",
+    "topologies",
     # Optimization
     "Calibrator",
     "Trainer",
