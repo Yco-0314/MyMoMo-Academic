@@ -1,0 +1,2 @@
+id,run_num,periods,agent_num,average_degree,seed,confidence_threshold,convergence_rate
+0,1,200,200,8,0,0.20,0.30

@@ -135,14 +135,29 @@ def score_calibration_mse(observed_path: Path, simulated_path: Path) -> dict:
     if obs_tick is None or sim_tick is None:
         return {"error": f"tick column not found (obs={list(obs.columns)}, sim={list(sim.columns)})"}
 
-    # Resolve metric columns
+    # Resolve metric columns. For each observed metric column (skipping
+    # the tick column), find the matching simulator column via:
+    #   1. exact (case-insensitive) name match — works for any domain
+    #   2. _COLUMN_ALIASES — SIR-specific bridge (count_s ↔ susceptible)
+    # This way the function is generic across domains: opinion-dynamics
+    # observed.csv with `mean_opinion` matches sim `mean_opinion` directly,
+    # while SIR `susceptible` still resolves to sim `count_s` via aliases.
     metric_map = {}  # observed col name → simulator col name
-    for obs_name, sim_candidates in _COLUMN_ALIASES.items():
-        if obs_name not in obs_cols:
+    skip_obs = {obs_tick}
+    for obs_name_lower, obs_name in obs_cols.items():
+        if obs_name in skip_obs:
             continue
-        for sim_alias in sim_candidates:
+        if not pd.api.types.is_numeric_dtype(obs[obs_name]):
+            continue
+        # 1. Exact match
+        if obs_name_lower in sim_cols:
+            metric_map[obs_name] = sim_cols[obs_name_lower]
+            continue
+        # 2. Alias bridge (SIR-domain extra)
+        aliases = _COLUMN_ALIASES.get(obs_name_lower, [])
+        for sim_alias in aliases:
             if sim_alias in sim_cols:
-                metric_map[obs_cols[obs_name]] = sim_cols[sim_alias]
+                metric_map[obs_name] = sim_cols[sim_alias]
                 break
 
     if not metric_map:
