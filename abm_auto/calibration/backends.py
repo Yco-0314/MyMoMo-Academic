@@ -12,10 +12,23 @@ Two backends today:
   - run_abc:   numpy-only ABC rejection. Always available.
   - run_pymc:  PyMC SMC for likelihood-free inference. Optional dep.
 
-Convention: both backends report POSTERIOR MEAN as `best_params` (not
-single closest sample / MAP). Posterior mean has lower MSE for ABC
-(Beaumont 2010, Marin et al. 2012) — single-closest-sample is a poor
-estimator because it overweights one random draw.
+Point-estimate convention (2026-05-28 revision):
+  - ABC and RF report the CLOSEST SAMPLE by ||sim_stats - obs_stats||.
+  - PyMC SMC reports the posterior mean (proper posterior from SMC sampling
+    is concentrated enough that the mean is well-behaved).
+
+Why we changed ABC/RF away from posterior mean (Beaumont 2010): at small
+budgets (max_sims ≤ 300, wide uniform priors), the top-K accepted samples
+have wide spread and their mean collapses toward the prior midpoint.
+Empirical evidence on the BEHAVE 2025 virus challenge: posterior-mean
+converged to (10.2, 2.5, 50) = exactly the prior midpoint, regardless of
+whether N=30, 100, or 300; the true minimum was at (4.4, 2.5, 25) with MSE
+217 vs prior-mean's 3461. The closest-sample estimator lands in the basin
+instead of in the centroid.
+
+This is a screening-stage point estimate. A future refinement stage
+(Nelder-Mead from this point) is the proper fix; closest-sample is the
+honest stopgap that at least stops returning prior midpoints.
 """
 from __future__ import annotations
 
@@ -64,8 +77,9 @@ def run_abc(
     """Approximate Bayesian Computation via rejection sampling.
 
     Samples uniformly from priors, runs the simulator, keeps the
-    top _ABC_TOP_FRACTION by distance to observed stats. Posterior
-    mean over the accepted samples is reported as best_params.
+    top _ABC_TOP_FRACTION by distance to observed stats for the
+    posterior summary. The CLOSEST sample (smallest distance) is
+    reported as best_params — see module docstring for why.
     """
     param_names = list(priors.keys())
     all_samples: list[tuple[dict, float]] = []
@@ -96,12 +110,13 @@ def run_abc(
     n_keep = max(1, int(len(all_samples) * _ABC_TOP_FRACTION))
     accepted = all_samples[:n_keep]
 
-    # Posterior summary
+    # Posterior summary (still useful for uncertainty quantification)
     post_df = pd.DataFrame([p for p, _ in accepted], columns=param_names)
     summary = post_df.describe(percentiles=[0.025, 0.5, 0.975]).T
 
-    # Posterior mean as point estimate (better than closest sample for ABC)
-    best_params = {name: float(post_df[name].mean()) for name in param_names}
+    # Closest sample as point estimate — posterior mean collapses to prior
+    # midpoint at small budgets with wide priors. See module docstring.
+    best_params = dict(accepted[0][0])
 
     return CalibrationResult(
         ok=True,
@@ -175,6 +190,8 @@ def run_rf(
 
     # Train one RF regressor per parameter (avoids correlated multi-output).
     # 100 trees is a sane default; min_samples_leaf=2 prevents overfit on small N.
+    # Posterior summary built from per-tree predictions; useful for uncertainty
+    # quantification even though the point estimate uses closest-sample.
     posteriors_per_param: dict[str, np.ndarray] = {}
     for j, name in enumerate(param_names):
         rf = RandomForestRegressor(
@@ -184,16 +201,19 @@ def run_rf(
             n_jobs=1,
         )
         rf.fit(X_arr, Y_arr[:, j])
-        # Per-tree predictions on observed stats → posterior sample
         per_tree = np.array([t.predict(obs_stats.reshape(1, -1))[0] for t in rf.estimators_])
         posteriors_per_param[name] = per_tree
 
-    # Build posterior summary in the same shape as ABC / PyMC for downstream code
     post_df = pd.DataFrame(posteriors_per_param)
     summary = post_df.describe(percentiles=[0.025, 0.5, 0.975]).T
 
-    # Point estimate: posterior mean across trees
-    best_params = {n: float(posteriors_per_param[n].mean()) for n in param_names}
+    # Closest training sample as point estimate — RF mean collapses to prior
+    # midpoint at small N (training labels are uniform draws from prior, so
+    # an undertrained regressor predicts the label mean = prior mean). See
+    # module docstring.
+    distances = np.linalg.norm(X_arr - obs_stats, axis=1)
+    closest_idx = int(np.argmin(distances))
+    best_params = {n: float(Y_arr[closest_idx, j]) for j, n in enumerate(param_names)}
 
     return CalibrationResult(
         ok=True,
