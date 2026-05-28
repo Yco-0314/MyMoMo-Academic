@@ -222,10 +222,23 @@ within 19% of the inferred ground truth. Stable across seeds (CV 12%).
 
 ## Open Questions (for future ADRs)
 
-- **NetLogo as a verification oracle**: should `netlogo_spatially_clustered`
-  topology be statistically validated against a NetLogo headless run?
-  Original "B + 2 联合验证" plan never executed paths 5+6 (NetLogo install
-  + statistical_test fixture). Worth doing once for credibility.
+- ~~**NetLogo as a verification oracle**~~ **RESOLVED 2026-05-28** —
+  added `abm_auto/verification/netlogo_oracle.py` wrapping NetLogo
+  headless. Committed fixtures at `tests/fixtures/netlogo/output/`
+  (30-rep network topology stats, 30-rep SIR trajectories) and a
+  pytest gate at `tests/test_topologies.py`. Findings:
+    - Topology: **statistically equivalent** (KS p=0.808 on std, p=0.135
+      on max, exact match on mean/edges across 30 seeds each)
+    - SIR mechanism: Python peak I tick 73 vs NetLogo 89 (16 ticks
+      earlier in Python), peak height 88 vs 79 (+12% higher). Root
+      cause: NetLogo's `random 100 < recovery-chance` is INTEGER
+      random — at `recovery_chance=2.5` the effective rate is 3%
+      (rounds up), while Python's `random.random() < 0.025` is exact
+      2.5%. ~17% lower recovery rate in Python → epidemic lingers
+      longer. Final R statistically indistinguishable (KS p=0.135).
+    - Not fixing the integer-random discrepancy: it's a NetLogo
+      idiom, not a spec requirement; final-state agreement is what
+      matters for calibration.
 - **Multi-seed observed data**: observed.csv is one NetLogo realization.
   Calibrating against the mean of K NetLogo realizations would remove the
   network-realization noise from the floor. Requires NetLogo in the
