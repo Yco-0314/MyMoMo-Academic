@@ -71,6 +71,7 @@ class Pipeline:
         auto_lit_review: bool = True,
         mode_override: Optional[str] = None,
         external_model_path: Optional[str] = None,
+        observed_path: Optional[str] = None,
     ):
         self.story_path = Path(story_path)
         self.max_retries = max_retries
@@ -156,6 +157,7 @@ class Pipeline:
             auto_lit_review=auto_lit_review,
             mode_override=mode_override,
             external_model_path=external_model_path,
+            observed_path=observed_path,
             sensitivity_method=sensitivity_method,
             sensitivity_samples=sensitivity_samples,
         )
@@ -202,6 +204,7 @@ class Pipeline:
         from abm_auto.pipeline.phases.setup import (
             ExternalModelDeclarationPhase,
             HypothesisPhase,
+            InjectObservedDataPhase,
             LitReviewPhase,
             ModeDetectorPhase,
         )
@@ -223,6 +226,7 @@ class Pipeline:
         return [
             ModeDetectorPhase(self.mode_detector),
             ExternalModelDeclarationPhase(),
+            InjectObservedDataPhase(),
             LitReviewPhase(self.lit_reviewer),
             HypothesisPhase(self.hypothesis_agent),
             DesignViabilityPhase(designer=self.designer, viability=self.viability_checker),

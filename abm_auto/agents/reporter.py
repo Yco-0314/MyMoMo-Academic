@@ -11,7 +11,7 @@ console = Console()
 class ReporterAgent(BaseAgent):
     """Generates the final research report from all simulation runs."""
 
-    def run(self, all_insights: list[str], citations: str | None = None, baseline_comparison: str | None = None) -> str:
+    def run(self, all_insights: list[str], citations: str | None = None, baseline_comparison: str | None = None, spec=None) -> str:
         console.print("[bold cyan]Phase 7: Generating final report...[/bold cyan]")
 
         story = self.workspace.read_story()
@@ -30,6 +30,19 @@ class ReporterAgent(BaseAgent):
             for h in params_history
         )
 
+        # Anti-hallucination constraint — Reporter has been observed to
+        # invent "Run 3" content when only 2 iterations ran. Spell it out.
+        iteration_constraint = (
+            f"This study ran EXACTLY {total_runs} iteration(s). "
+            f"Do not invent additional runs. Reference only Run 1 through Run {total_runs}."
+        )
+
+        # Anti-unit-drift block — Reporter has been observed treating
+        # virus_spread_chance=4.4 as a probability instead of percent,
+        # mis-explaining "4.4>1 means certain transmission". Inject the
+        # declared unit per param (mirrors CoderAgent's contract block).
+        param_units_block = _format_param_units(spec)
+
         # Pick prompt based on language
         prompt_name = "report_en" if self.lang == "en" else "report"
         system = (
@@ -43,6 +56,8 @@ class ReporterAgent(BaseAgent):
             story_summary=story[:800],
             design_summary=design[:1200],
             total_runs=str(total_runs),
+            iteration_constraint=iteration_constraint,
+            param_units_block=param_units_block,
             all_runs_summary=all_runs_summary,
             params_history=params_str,
             citations=citations or "No citations fetched.",
@@ -74,3 +89,24 @@ class ReporterAgent(BaseAgent):
             pass
 
         return report
+
+
+def _format_param_units(spec) -> str:
+    """Render calibration_param_specs as a markdown table of (name, unit, range).
+
+    Returns "(no calibration parameters declared)" when spec is None or empty,
+    so the template variable always has a sensible string.
+    """
+    if spec is None:
+        return "(no calibration parameters declared)"
+    specs = getattr(spec, "calibration_param_specs", None) or []
+    if not specs:
+        return "(no calibration parameters declared)"
+    lines = ["| Parameter | Unit | Range |", "|---|---|---|"]
+    for s in specs:
+        name = s.get("name", "?")
+        unit = s.get("unit", "?")
+        lo = s.get("min", "?")
+        hi = s.get("max", "?")
+        lines.append(f"| `{name}` | {unit} | [{lo}, {hi}] |")
+    return "\n".join(lines)

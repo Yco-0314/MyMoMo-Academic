@@ -200,6 +200,36 @@ class OptimizeOrCalibratePhase:
         i = ctx.iteration
         insights = ctx.all_insights[-1] if ctx.all_insights else ""
 
+        # Backstop warning: if spec wanted calibration but we're about to
+        # fall through to OptimizerAgent, make sure the user sees it.
+        # InjectObservedDataPhase already raised an audit issue earlier;
+        # this is the second loud signal at Phase 6 time so the operator
+        # cannot miss it in the stdout flow.
+        if (
+            ctx.spec is not None
+            and ctx.spec.has_calibration_data
+            and not _should_calibrate(ctx)
+            and not ctx.used_bayesian_calibration
+        ):
+            console.print(
+                "  [bold yellow]⚠ DEGRADED: spec declared calibration data but no observed.csv "
+                "found in workspace. Falling back to OptimizerAgent — results are NOT a Bayesian "
+                "fit. Re-run with `--observed PATH` or place observed.csv next to your story.[/bold yellow]"
+            )
+            try:
+                ctx.workspace.audit.raise_issue(
+                    phase="Phase 6 (degraded)",
+                    severity="HIGH",
+                    text=(
+                        "Spec requested calibration but observed.csv missing — "
+                        "fell back to OptimizerAgent. Output best_params are heuristic, "
+                        "not Bayesian-fit. Re-run with --observed PATH."
+                    ),
+                    actor="OptimizeOrCalibratePhase",
+                )
+            except Exception:
+                pass
+
         if _should_calibrate(ctx) and not ctx.used_bayesian_calibration:
             cal_result = self.calibrator.run(ctx.executor, spec=ctx.spec)
             ctx.used_bayesian_calibration = True

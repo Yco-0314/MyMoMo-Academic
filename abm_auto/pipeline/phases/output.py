@@ -33,6 +33,7 @@ class ReportPhase:
             ctx.all_insights,
             citations=ctx.citations_text,
             baseline_comparison=ctx.comparison_text,
+            spec=ctx.spec,
         )
 
 

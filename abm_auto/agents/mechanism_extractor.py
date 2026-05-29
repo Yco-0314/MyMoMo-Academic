@@ -1,15 +1,22 @@
 """
 Phase 1d — Mechanism Spec Extraction.
 
-Reads DESIGN.md (+ hypothesis.md if originate mode) and produces a
-pseudocode `mechanism_spec.md` that pins down every behavioural
-decision the design left ambiguous. The downstream CoderAgent reads
-this spec as a HARD CONTRACT — implements it literally.
+Reads DESIGN.md (+ hypothesis.md if originate mode) and produces TWO
+artefacts:
 
-This phase is the "raise the ceiling" half of the fidelity-improvement
-strategy: instead of asking CoderAgent to translate English-prose design
-into Python (lossy, high variance), give it an unambiguous pseudocode
-target that has ONE valid implementation.
+  - `mechanism_spec.md`   — free-form markdown pseudocode (audit trail,
+                            human review). Always written.
+  - `mechanism_spec.json` — structured MechanismSpec for the
+                            TemplateGenerator. Written only when the LLM
+                            output includes a parseable ```json``` block
+                            matching the schema.
+
+When the JSON block is missing or invalid, the pipeline falls back to
+legacy codegen (CoderAgent writes all 7 files including the boilerplate).
+When it's present and valid, TemplateGenerator emits the 5 boilerplate
+files deterministically and CoderAgent's job narrows to agent.py +
+environment.py only — the topology API, scenario class, data collector,
+and main.py boilerplate become uncopyable-by-LLM.
 
 Pipeline placement:
     DesignAgent → ViabilityChecker (Phase 1+1c)
@@ -18,15 +25,18 @@ Pipeline placement:
       ↓
     OddWriter (Phase 1b)
       ↓
-    CoderAgent (Phase 2) — reads mechanism_spec.md at TOP of user prompt
-
-Output file: <workspace>/mechanism_spec.md
+    CoderAgent (Phase 2) — reads mechanism_spec.md + .json
 """
 from __future__ import annotations
+
+import json
+import re
+from typing import Optional
 
 from rich.console import Console
 
 from abm_auto.agents.base import BaseAgent
+from abm_auto.codegen.mechanism_spec import MechanismSpec
 
 console = Console()
 
@@ -101,20 +111,76 @@ class MechanismExtractor(BaseAgent):
             f"  [green]✓ mechanism_spec.md written ({len(spec)} chars)[/green]"
         )
 
+        # NEW (Layer 3): try to extract the JSON block for TemplateGenerator
+        mech_spec_obj = _extract_mechanism_json(spec)
+        json_path = self.workspace.path / "mechanism_spec.json"
+        json_status = "absent"
+        if mech_spec_obj is not None:
+            errors = mech_spec_obj.validate()
+            if errors:
+                console.print(
+                    f"  [yellow]⚠ mechanism_spec.json parsed but invalid "
+                    f"({len(errors)} errors); template path will be skipped:[/yellow]"
+                )
+                for e in errors[:5]:
+                    console.print(f"      [yellow]· {e}[/yellow]")
+                json_status = f"invalid ({len(errors)} errors)"
+            else:
+                json_path.write_text(mech_spec_obj.to_json(), encoding="utf-8")
+                console.print(
+                    f"  [green]✓ mechanism_spec.json written — "
+                    f"TemplateGenerator will own 5 boilerplate files[/green]"
+                )
+                json_status = "ok"
+        else:
+            console.print(
+                "  [yellow]⚠ no ```json``` block found in LLM output — "
+                "TemplateGenerator skipped, falling back to legacy codegen[/yellow]"
+            )
+
         # Audit
         try:
             section_count = spec.count("\n## ")
             self.workspace.audit.info(
                 phase="Phase 1d",
-                text=f"Mechanism spec generated ({len(spec)} chars, {section_count} sections)",
+                text=f"Mechanism spec generated ({len(spec)} chars, {section_count} sections); json={json_status}",
                 actor="MechanismExtractor",
                 structured={
                     "length": len(spec),
                     "sections": section_count,
                     "had_hypothesis": bool(hypothesis),
+                    "json_status": json_status,
                 },
             )
         except Exception:
             pass
 
         return spec
+
+
+_JSON_BLOCK_RE = re.compile(r"```json\s*\n(.*?)\n```", re.DOTALL)
+
+
+def _extract_mechanism_json(llm_output: str) -> Optional[MechanismSpec]:
+    """Find and parse the ```json``` block from LLM output.
+
+    Returns None when:
+      - no fenced json block present
+      - block present but not parseable as JSON
+      - JSON parsed but not loadable into MechanismSpec
+    The caller decides what to do with None (fall back to legacy codegen).
+    """
+    match = _JSON_BLOCK_RE.search(llm_output)
+    if not match:
+        return None
+    block = match.group(1).strip()
+    try:
+        data = json.loads(block)
+    except json.JSONDecodeError as e:
+        console.print(f"  [dim]json block parse error: {e}[/dim]")
+        return None
+    try:
+        return MechanismSpec.from_dict(data)
+    except (TypeError, KeyError) as e:
+        console.print(f"  [dim]json → MechanismSpec mapping error: {e}[/dim]")
+        return None

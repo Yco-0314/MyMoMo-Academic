@@ -8,11 +8,23 @@ You are an expert computational social scientist writing up an ABM simulation st
 ## Model Design Summary
 {{ design_summary }}
 
+## Calibration Parameters (declared units — DO NOT misinterpret)
+{{ param_units_block }}
+
+When discussing parameter values in the report, you MUST honor the units
+above. For example, if a parameter is declared in `percent` and its value
+is 4.4, that means 4.4% (probability 0.044), NOT 4.4 as a probability.
+Misreading percent values as probabilities has caused embarrassing
+mis-explanations in past reports.
+
 ## All Simulation Runs ({{ total_runs }} runs)
 {{ all_runs_summary }}
 
 ## Parameter Evolution
 {{ params_history }}
+
+## Hard Constraint — Iteration Count
+{{ iteration_constraint }}
 
 ## Task
 

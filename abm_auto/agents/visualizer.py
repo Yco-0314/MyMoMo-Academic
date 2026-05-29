@@ -61,15 +61,38 @@ class VisualizerAgent:
         tmpl = self._LABELS[self.lang].get(key, self._LABELS["en"][key])
         return tmpl.format(**fmt) if fmt else tmpl
 
-    @staticmethod
-    def _setup_style() -> None:
-        """Apply publication-quality style. Seaborn preferred; falls back to plain."""
+    def _setup_style(self) -> None:
+        """Apply publication-quality style + CJK font fallback for lang='zh'.
+
+        Without the CJK font setup, every Chinese glyph in axis labels /
+        titles renders as a placeholder box and matplotlib emits a
+        UserWarning per glyph (observed: ~14 warnings per run in the
+        2026-05-29 dogfood test).
+        """
         import matplotlib.pyplot as plt
         try:
             import seaborn as sns
             sns.set_theme(style="whitegrid", context="paper", font_scale=1.2)
         except ImportError:
             plt.style.use("seaborn-v0_8-whitegrid" if "seaborn-v0_8-whitegrid" in plt.style.available else "ggplot")
+
+        if self.lang == "zh":
+            # Prepend CJK-capable fonts; matplotlib walks the list and uses
+            # the first one available on the system. PingFang SC ships on
+            # macOS; Noto Sans CJK SC is the Linux standard; Microsoft YaHei
+            # on Windows. Fall through to seaborn's default afterwards.
+            cjk_fonts = [
+                "PingFang SC",
+                "Heiti SC",
+                "Noto Sans CJK SC",
+                "Microsoft YaHei",
+                "WenQuanYi Zen Hei",
+            ]
+            current = plt.rcParams.get("font.sans-serif", [])
+            plt.rcParams["font.sans-serif"] = cjk_fonts + list(current)
+            # Some CJK fonts lack a minus glyph; turn off the unicode minus
+            # so axes don't render a placeholder for negative numbers.
+            plt.rcParams["axes.unicode_minus"] = False
 
     @staticmethod
     def _save(fig, path: Path) -> None:

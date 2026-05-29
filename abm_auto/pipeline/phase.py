@@ -52,6 +52,7 @@ class PipelineContext:
     auto_lit_review: bool = True
     mode_override: Optional[str] = None
     external_model_path: Optional[str] = None
+    observed_path: Optional[str] = None
     sensitivity_method: Optional[str] = None
     sensitivity_samples: int = 10
 

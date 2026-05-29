@@ -1,17 +1,37 @@
-"""Phase 2 + 3: CoderAgent generates, VerifierAgent refines via GVR loop.
+"""Phase 2 + 3: TemplateGenerator + CoderAgent + VerifierAgent.
 
-Three validators are AND-composed:
-  - dry_run: import sanity check (fatal severity — pipeline halts on persistent failure)
-  - contract: calibration_params actually appear as CSV columns (soft)
-  - fidelity: LLM-judge generated code vs mechanism_spec.md (soft)
+Two-stage codegen (Layer 3 architectural change):
 
-When `using_external_model` is True, the entire phase is a no-op (the
-user's code is already in workspace/model/).
+  Stage A — TemplateGenerator (deterministic, no LLM)
+      If mechanism_spec.json exists from Phase 1d, emit 5 boilerplate
+      files (model.py, scenario.py, data_collector.py, main.py,
+      SimulatorScenarios.csv). These files are guaranteed correct by
+      construction — no LLM-side errors possible.
+
+  Stage B — CoderAgent + GVR (LLM)
+      Generate the remaining files (agent.py, environment.py). The
+      anti_pattern / dry_run / contract / fidelity validator chain
+      retries via refine() on failure.
+
+When mechanism_spec.json is absent or invalid, the pipeline falls back
+to legacy whole-file codegen (CoderAgent writes all 7 files).
+
+When `using_external_model` is True, BOTH stages are no-ops — the
+user's prebuilt model lives in workspace/model/ untouched.
 """
 from __future__ import annotations
 
+import shutil
+from pathlib import Path
+
 from rich.console import Console
 
+from abm_auto.codegen.mechanism_spec import MechanismSpec
+from abm_auto.codegen.template_generator import (
+    TEMPLATE_FILES,
+    generate_all,
+    is_template_file,
+)
 from abm_auto.pipeline.phase import PipelineContext
 from abm_auto.refinement import ValidationOutcome, compose_validators, refine
 
@@ -33,8 +53,16 @@ class CodegenPhase:
         return not ctx.using_external_model
 
     def run(self, ctx: PipelineContext) -> None:
-        # Phase 2: code generation (single-shot — verify drives any retry)
+        # Stage A: TemplateGenerator (deterministic). Runs only when a
+        # valid mechanism_spec.json was produced in Phase 1d.
+        template_used = _try_run_template_generator(ctx)
+
+        # Phase 2: code generation (single-shot — verify drives any retry).
+        # When templates ran, CoderAgent's output is post-processed to
+        # revert any LLM edits to template-owned files.
         self.coder.run()
+        if template_used:
+            _revert_template_files(ctx)
 
         # Phase 3: verify with composed validators
         def _gen(feedback):
@@ -179,6 +207,92 @@ class CodegenPhase:
         console.print(
             "[yellow]Pipeline proceeding with best-so-far code "
             "despite soft validator failures (see audit_ledger).[/yellow]"
+        )
+
+
+def _try_run_template_generator(ctx: PipelineContext) -> bool:
+    """Emit the 5 template files when mechanism_spec.json is available + valid.
+
+    Returns True when templates were written (=> CoderAgent's outputs for
+    these files should be reverted after Stage B). Returns False when no
+    JSON spec exists or it's invalid (=> legacy whole-file codegen).
+    """
+    json_path = ctx.workspace.path / "mechanism_spec.json"
+    if not json_path.exists():
+        return False
+    try:
+        spec = MechanismSpec.from_json(json_path.read_text(encoding="utf-8"))
+    except Exception as e:
+        console.print(
+            f"  [yellow]⚠ mechanism_spec.json failed to load ({e}); "
+            f"falling back to legacy codegen[/yellow]"
+        )
+        return False
+
+    errors = spec.validate()
+    if errors:
+        console.print(
+            f"  [yellow]⚠ mechanism_spec.json invalid ({len(errors)} errors); "
+            f"falling back to legacy codegen[/yellow]"
+        )
+        for e in errors[:5]:
+            console.print(f"      [yellow]· {e}[/yellow]")
+        return False
+
+    files = generate_all(spec)
+    model_dir = ctx.workspace.model_dir
+    for rel, content in files.items():
+        target = model_dir / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(content, encoding="utf-8")
+
+    console.print(
+        f"  [green]✓ TemplateGenerator wrote {len(files)} files "
+        f"(LLM does NOT touch these): {', '.join(TEMPLATE_FILES)}[/green]"
+    )
+    # Audit
+    try:
+        ctx.workspace.audit.info(
+            phase="Phase 2 (TemplateGenerator)",
+            text=f"TemplateGenerator emitted {len(files)} boilerplate files from mechanism_spec.json",
+            actor="TemplateGenerator",
+            structured={"files": list(files.keys())},
+        )
+    except Exception:
+        pass
+    return True
+
+
+def _revert_template_files(ctx: PipelineContext) -> None:
+    """Re-emit template files after CoderAgent runs.
+
+    CoderAgent may have edited / rewritten the template-owned files
+    even when told not to (LLMs ignore directives sometimes). Running
+    the generator again is idempotent — restores the deterministic
+    contents. Cheap (~milliseconds; all string ops).
+    """
+    json_path = ctx.workspace.path / "mechanism_spec.json"
+    if not json_path.exists():
+        return
+    try:
+        spec = MechanismSpec.from_json(json_path.read_text(encoding="utf-8"))
+    except Exception:
+        return
+    files = generate_all(spec)
+    model_dir = ctx.workspace.model_dir
+    overwrote = 0
+    for rel, content in files.items():
+        target = model_dir / rel
+        if target.exists():
+            existing = target.read_text(encoding="utf-8")
+            if existing != content:
+                overwrote += 1
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(content, encoding="utf-8")
+    if overwrote:
+        console.print(
+            f"  [dim]TemplateGenerator restored {overwrote} file(s) that "
+            f"CoderAgent had edited[/dim]"
         )
 
 

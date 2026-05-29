@@ -42,7 +42,12 @@ DEFAULT_GROUND_TRUTH = {
 }
 
 
-def run_pipeline(story: Path, iterations: int, workspace_name: str) -> tuple[int, str, str, float]:
+def run_pipeline(
+    story: Path,
+    iterations: int,
+    workspace_name: str,
+    observed: Optional[Path] = None,
+) -> tuple[int, str, str, float]:
     """Invoke `python -m abm_auto.cli run` as a subprocess. Return (exit_code, stdout, stderr, wall_seconds)."""
     cmd = [
         sys.executable, "-u", "-m", "abm_auto.cli", "run",
@@ -52,6 +57,8 @@ def run_pipeline(story: Path, iterations: int, workspace_name: str) -> tuple[int
         "--no-lit-review",
         "--workspace", workspace_name,
     ]
+    if observed:
+        cmd += ["--observed", str(observed)]
     print(f"$ {' '.join(cmd)}", flush=True)
     t0 = time.time()
     result = subprocess.run(
@@ -299,6 +306,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--story", type=Path, default=DEFAULT_STORY)
     ap.add_argument("--iterations", type=int, default=2)
+    ap.add_argument("--observed", type=Path, default=DEFAULT_OBSERVED, help="Passed through to --observed CLI flag")
     ap.add_argument("--report", type=Path, default=REPO / "docs" / "dogfood" / f"{time.strftime('%Y-%m-%d')}-codegen-path-virus.md")
     args = ap.parse_args()
 
@@ -310,7 +318,7 @@ def main() -> int:
     print()
 
     exit_code, stdout, stderr, wall = run_pipeline(
-        args.story, args.iterations, workspace_name
+        args.story, args.iterations, workspace_name, observed=args.observed,
     )
     print(f"\n[wall {wall:.0f}s, exit {exit_code}]")
 
