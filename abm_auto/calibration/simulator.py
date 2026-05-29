@@ -70,24 +70,56 @@ class SimulatorWrapper:
 
         Returns None on any failure (CSV write fail, simulator crash, empty output).
         Callers use None to mark a sample as rejected.
+
+        Failure observability — `_last_failure_kind` records WHY the most
+        recent simulate() returned None (one of: "write_params", "executor",
+        "no_csv", "summary_fn", "exception:<ClassName>"). Per-failure
+        warnings go through `_log_failure` which dedupes by kind to avoid
+        spamming the console when 100 sample sims all fail the same way.
         """
+        self._run_counter += 1
+        run_id = self._run_counter
         try:
             self.write_scenario_params(params)
-            self._run_counter += 1
-            run_id = self._run_counter
-            success, _ = self.executor.run(run_id)
-            if not success:
-                return None
+        except Exception as e:
+            self._log_failure(f"exception:{type(e).__name__}", f"write_scenario_params failed: {e}")
+            return None
+        try:
+            success, output = self.executor.run(run_id)
+        except Exception as e:
+            self._log_failure(f"exception:{type(e).__name__}", f"executor.run raised: {e}")
+            return None
+        if not success:
+            self._log_failure("executor", f"executor returned not-OK for run {run_id}: {output[:200]}")
+            return None
+        try:
             df = self.read_result_metrics(run_id)
-            if df is None or df.empty:
-                return None
-            # Bridge sim's column-naming convention (e.g. `count_s`) to the
-            # canonical target names (`susceptible`) before summarizing.
-            # Without this step, summary_fn returns all zeros silently.
+        except Exception as e:
+            self._log_failure(f"exception:{type(e).__name__}", f"read_result_metrics raised: {e}")
+            return None
+        if df is None or df.empty:
+            self._log_failure("no_csv", f"no result CSV (or empty) for run {run_id}")
+            return None
+        try:
             df = normalize_columns(df, targets)
             return self.summary_fn(df, targets)
-        except Exception:
+        except Exception as e:
+            self._log_failure(f"exception:{type(e).__name__}", f"summary_fn failed: {e}")
             return None
+
+    def _log_failure(self, kind: str, detail: str) -> None:
+        """Record + emit at-most-once warning per failure kind."""
+        self._last_failure_kind = kind
+        seen = getattr(self, "_logged_failure_kinds", None)
+        if seen is None:
+            seen = set()
+            self._logged_failure_kinds = seen
+        if kind not in seen:
+            seen.add(kind)
+            from rich.console import Console
+            Console().print(
+                f"  [yellow]simulate() failure ({kind}): {detail}[/yellow]"
+            )
 
     def write_scenario_params(self, params: dict) -> None:
         """Mutate row 0 of SimulatorScenarios.csv with the given params.
@@ -95,14 +127,30 @@ class SimulatorWrapper:
         Columns not in `params` are left untouched. Columns in `params` but
         not in the CSV are silently ignored (defensive — calibrator's
         allowlist should already prevent this).
+
+        Dtype handling: if the column's pandas-inferred dtype is narrower
+        than `value`'s actual type (typical case: column inferred as int64
+        from an earlier integer-valued write, then calibrator writes a
+        float from the prior), modern pandas raises a TypeError on the
+        `df.loc[..., name] = value` assignment. We widen the column dtype
+        first so the assignment succeeds. Without this, BayesianCalibrator
+        produced "0 successful sims" — every sample failed silently before
+        the subprocess could fire (root cause of the 2026-05-29 dogfood
+        bug; see tests/e2e/diagnose_calibrator_zero_sims.py).
         """
         csv_path = self.scenario_csv_path
         if not csv_path.exists():
             return
         df = pd.read_csv(csv_path)
         for name, value in params.items():
-            if name in df.columns:
-                df.loc[df.index[0], name] = value
+            if name not in df.columns:
+                continue
+            col_dtype = df[name].dtype
+            if isinstance(value, float) and not pd.api.types.is_float_dtype(col_dtype):
+                df[name] = df[name].astype(float)
+            elif isinstance(value, bool) and not pd.api.types.is_bool_dtype(col_dtype):
+                df[name] = df[name].astype(bool)
+            df.loc[df.index[0], name] = value
         df.to_csv(csv_path, index=False)
 
     def read_result_metrics(self, run_id: int) -> Optional[pd.DataFrame]:

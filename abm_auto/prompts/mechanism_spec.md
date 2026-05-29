@@ -4,6 +4,17 @@ You are a **simulation algorithm specifier**. Read the ABM design document
 below and produce a **pseudocode mechanism specification** that pins down
 EVERY behavioural decision the design left ambiguous.
 
+## ⚠ CRITICAL OUTPUT REQUIREMENT — READ BEFORE WRITING ANYTHING
+
+Your output MUST end with a fenced ```json``` block that strictly matches
+the schema in the final section of this prompt. Skip the JSON block →
+TemplateGenerator skips → codegen falls back to a known-buggy legacy
+path (network topology, scenario class, data collector boilerplate
+become LLM-generated and frequently wrong).
+
+The JSON block is the contract. The markdown above it is documentation
+for humans. Do not invert this priority.
+
 ## Why this matters
 
 The downstream coder will translate this spec **literally** into Python. If
