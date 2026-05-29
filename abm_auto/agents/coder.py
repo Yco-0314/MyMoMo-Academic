@@ -118,11 +118,25 @@ class CoderAgent(BaseAgent):
                 f"{mechanism_spec}\n\n"
             )
 
+        # Templated targets — when Layer 3 ran, the DataCollector was emitted
+        # by TemplateGenerator and registers a specific set of environment
+        # attributes (from `mechanism_spec.json[targets]`). The LLM-written
+        # environment.py MUST set those exact attribute names each tick or
+        # DataCollector collects zeros silently.
+        #
+        # Without this block: the 2026-05-29 dogfood saw LLM pick
+        # `targets: [count_s, count_i, count_r]` in Stage-2 JSON but separately
+        # write env.py using `self.susceptible / .infected / .resistant`.
+        # Mismatch → DataCollector reads count_* (doesn't exist) → all zeros →
+        # sanity-check fired → 4 GVR retries → pipeline exited 1.
+        targets_block = self._build_templated_targets_block()
+
         user = (
             f"{feedback_block}"
             f"{memory_block}"
             f"{prompt}\n\n"
             f"{contract_block}"
+            f"{targets_block}"
             f"{spec_block}"
             f"---\n\n## DESIGN.md\n\n{design}\n\n"
             f"---\n\n## Template Reference\n\n{templates_ctx}\n\n"
@@ -175,6 +189,58 @@ class CoderAgent(BaseAgent):
             pass
 
         return files
+
+    def _build_templated_targets_block(self) -> str:
+        """Force LLM env.py to match the targets the templated DataCollector
+        registers.
+
+        When Layer 3 fires, TemplateGenerator emits a `data_collector.py` that
+        registers exactly `mechanism_spec.json[targets]` as environment
+        properties. Returns a hard-contract prompt block listing those names.
+        The LLM's env.py MUST set `self.<name> = ...` on each tick for each
+        target — otherwise DataCollector reads None/0 and downstream calibration
+        gets a zero-trajectory.
+
+        Without this block, the LLM picks attribute names independently of the
+        Stage-2 JSON and silently mismatches (see 2026-05-29 dogfood log
+        commit fd61d70).
+
+        Returns empty string when mechanism_spec.json is absent (legacy
+        whole-file codegen path; CoderAgent owns DataCollector and naming is
+        self-consistent by construction).
+        """
+        import json
+        spec_path = self.workspace.path / "mechanism_spec.json"
+        if not spec_path.exists():
+            return ""
+        try:
+            spec = json.loads(spec_path.read_text(encoding="utf-8"))
+        except Exception:
+            return ""
+        targets: list = spec.get("targets") or []
+        if not targets:
+            return ""
+        env_class = spec.get("environment_class_name", "Environment")
+        lines = "\n".join(f"        self.{t} = ...    # YOUR per-tick calculation here" for t in targets)
+        return (
+            "---\n\n"
+            "## ⚠ TEMPLATED DATA COLLECTOR — ENVIRONMENT ATTRIBUTE CONTRACT ⚠\n\n"
+            "The DataCollector is template-generated and registers EXACTLY these "
+            f"environment attributes: `{', '.join(targets)}`.\n\n"
+            f"Your `{env_class}.step(agents, network, scenario)` method MUST set "
+            f"`self.<name>` for EVERY target listed above, on EVERY tick. Use these "
+            "EXACT attribute names — no aliases (`infected` ≠ `count_i`), no "
+            "alternate spellings. The DataCollector reads these by name and writes "
+            "them to the output CSV; missing or misnamed → zeros in output → "
+            "downstream calibration receives garbage.\n\n"
+            f"Inside `{env_class}.step()` you must end with assignments equivalent to:\n\n"
+            "```python\n"
+            f"    def step(self, agents, network, scenario):\n"
+            "        # ... your mechanism logic ...\n"
+            "        # Required updates (data_collector reads these):\n"
+            f"{lines}\n"
+            "```\n\n"
+        )
 
     def _build_calibration_contract_block(self) -> str:
         """Read calibration param SPECS from research_spec.json and render as a hard contract.

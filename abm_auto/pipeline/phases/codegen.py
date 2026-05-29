@@ -77,6 +77,70 @@ class CodegenPhase:
                 self.verifier.fix(feedback)
             return None
 
+        def _targets_alignment_validator(_ignored) -> ValidationOutcome:
+            """Verify LLM env.py sets every templated DataCollector attribute.
+
+            When Layer 3 fires, mechanism_spec.json declares `targets` and
+            TemplateGenerator emits a DataCollector that registers them as
+            environment properties. The LLM-written environment.py MUST
+            set `self.<target>` each tick or DataCollector reads None/0
+            and downstream calibration silently receives zeros.
+
+            Without this gate, the 2026-05-29 dogfood hit exactly that:
+            spec said `count_s/i/r`, env.py used `susceptible/infected/
+            resistant`, sanity-check fired "constant column", 4 GVR
+            cycles tried to repair, pipeline exited 1.
+
+            Scan is simple: regex for `self.<target>` assignment patterns
+            in core/environment.py. Misses (e.g. tuple unpacking) are
+            acceptable false negatives — dry_run + downstream sanity
+            checks still backstop. Goal: catch the obvious
+            spec-vs-implementation drift up front with a clear reason.
+            """
+            import json
+            import re as _re
+
+            spec_path = ctx.workspace.path / "mechanism_spec.json"
+            if not spec_path.exists():
+                return ValidationOutcome(ok=True)
+            try:
+                spec = json.loads(spec_path.read_text(encoding="utf-8"))
+            except Exception:
+                return ValidationOutcome(ok=True)
+            targets: list = spec.get("targets") or []
+            if not targets:
+                return ValidationOutcome(ok=True)
+
+            code_files = ctx.workspace.read_model_files()
+            env_src = code_files.get("core/environment.py", "")
+            if not env_src.strip():
+                return ValidationOutcome(ok=True)
+
+            missing = []
+            for target in targets:
+                # Match either `self.<target> =` or `self.<target>:` (typed)
+                pattern = _re.compile(rf"\bself\.{_re.escape(target)}\s*[:=]")
+                if not pattern.search(env_src):
+                    missing.append(target)
+
+            if not missing:
+                return ValidationOutcome(ok=True)
+            reasons = [
+                f"core/environment.py does not assign `self.{name}` anywhere. "
+                f"The templated DataCollector registers `{name}` as an "
+                f"environment property and reads it each tick — without the "
+                f"assignment, DataCollector writes empty / zero values to the "
+                f"output CSV. Add `self.{name} = ...` updates inside the env "
+                f"step() method."
+                for name in missing
+            ]
+            return ValidationOutcome(
+                ok=False,
+                reasons=reasons,
+                severity="fatal",   # silent zero-trajectory is worse than a halt
+                structured={"missing_targets": missing},
+            )
+
         def _anti_pattern_validator(_ignored) -> ValidationOutcome:
             """Static scan for known-recurring codegen anti-patterns.
 
@@ -179,7 +243,8 @@ class CodegenPhase:
                 return ValidationOutcome(ok=True)
 
         _val = compose_validators([
-            ("anti_pattern", _anti_pattern_validator),   # static, runs first — cheap
+            ("anti_pattern", _anti_pattern_validator),         # static, cheap
+            ("targets_alignment", _targets_alignment_validator),  # Layer 3 desync gate
             ("dry_run", _dry_run_validator),
             ("contract", _contract_validator),
             ("fidelity", _fidelity_validator),
