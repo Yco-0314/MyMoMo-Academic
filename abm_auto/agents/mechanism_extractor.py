@@ -188,7 +188,12 @@ class MechanismExtractor(BaseAgent):
                     + prompt
                 )
             try:
-                raw = self.call_llm(self._JSON_SYSTEM, prompt, max_tokens=2048)
+                # 4096 not 2048: deepseek-reasoner spends its budget on
+                # chain-of-thought reasoning before emitting visible output.
+                # First dogfood with 2048 returned empty string both attempts
+                # — bumping to 4096 (same as Stage-1) gives the model headroom
+                # to think then emit the JSON.
+                raw = self.call_llm(self._JSON_SYSTEM, prompt, max_tokens=4096)
             except Exception as e:
                 console.print(
                     f"  [yellow]⚠ Stage-2 LLM call raised "

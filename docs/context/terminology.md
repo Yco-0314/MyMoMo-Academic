@@ -132,6 +132,59 @@ from `scenario.seed`. Topology callables must consume randomness only from
 this `rng` (not from the global `random` module) to preserve determinism
 under parallel/multi-process calibration.
 
+**Phase (Pipeline)**  
+Smallest unit of pipeline work. Each Phase has `should_run(ctx) -> bool` and
+`run(ctx) -> None`. `Pipeline.run()` walks a list of Phase instances over a
+shared `PipelineContext`. Adding a new phase = one new file in
+`abm_auto/pipeline/phases/` + one line in `Pipeline._build_phases()`. Replaces
+the pre-2026-05-29 god-method shape where 522 LoC of orchestration lived
+inline.
+
+**MechanismSpec**  
+Structured contract between MechanismExtractor (Phase 1d) and TemplateGenerator
+(Phase 2). Dataclass in `abm_auto/codegen/mechanism_spec.py`. Carries
+topology, scenario_params, agent_state_vars, targets, plus pseudocode fields
+for the LLM-filled mechanism bodies. JSON-roundtrippable via `to_json`/`from_json`.
+Drives schema-driven codegen — see ADR-007.
+
+**TemplateGenerator**  
+Deterministic Python-source emitter (`abm_auto/codegen/template_generator.py`)
+that takes a `MechanismSpec` and writes 5 boilerplate files: `model.py`,
+`scenario.py`, `data_collector.py`, `main.py`, `SimulatorScenarios.csv`. No
+LLM involvement — files guaranteed correct by construction. LLM only writes
+the remaining 2 mechanism-specific files (`agent.py`, `environment.py`).
+
+**Two-stage extraction (MechanismExtractor)**  
+Phase 1d produces both `mechanism_spec.md` (Stage 1, rich markdown pseudocode)
+AND `mechanism_spec.json` (Stage 2, strict structured spec). Two separate LLM
+calls because a single prompt asking for both consistently drops the JSON.
+Stage 2 uses `prompts/mechanism_spec_json.md` and has one retry on parse
+failure. See ADR-007.
+
+**AntiPattern**  
+Catalog entry in `abm_auto/codegen/anti_patterns.py` pairing a regex with a
+human-readable failure-reason string. `scan(code_files)` returns one reason
+per match. Used as the FIRST validator in CodegenPhase's GVR loop —
+deterministic, fast, runs before LLM-based fidelity check. 19 entries cover
+hallucinated class names (`WattsStrogatzNetwork`), removed API usage
+(`network_type=`), hallucinated attributes (`agent.gen_num`).
+
+**Refiner (Calibration)**  
+Stage-2 of the calibrator (after screening). Pure function:
+`refine_xxx(start_params, priors, targets, obs_stats, simulator, max_evals)
+-> CalibrationResult`. Today only one adapter: `nelder_mead_refine` (scipy
+bounded NM, adaptive simplex). Walks downhill from screening's best point —
+closes the ~10-20 distance gap between best-of-N-uniform-draws and the true
+basin. Lives in `abm_auto/calibration/refiners.py`.
+
+**SummaryStats + COLUMN_ALIASES**  
+`SummaryStats = Callable[[pd.DataFrame, list[str]], np.ndarray]`. Two
+adapters: `full_trajectory` (default, preserves per-tick info — sharp loss
+surface) and `mean_std_last` (legacy, 3 dims per target — flat loss surface,
+NM cannot descend). `COLUMN_ALIASES` bridges sim conventions (e.g. `count_s`)
+to canonical observation names (`susceptible`). Lives in
+`abm_auto/calibration/summary_stats.py`.
+
 ---
 
 ## Mesa Framework

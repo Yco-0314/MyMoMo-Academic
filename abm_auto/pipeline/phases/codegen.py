@@ -60,7 +60,14 @@ class CodegenPhase:
         # Phase 2: code generation (single-shot — verify drives any retry).
         # When templates ran, CoderAgent's output is post-processed to
         # revert any LLM edits to template-owned files.
-        self.coder.run()
+        # Memory feedback: pass accumulated semantic + episodic knowledge
+        # so CoderAgent learns from prior codegen failures (Item 4 / ADR-006 OQ#4).
+        memory_context = ""
+        try:
+            memory_context = ctx.memory.retrieve_context()
+        except Exception:
+            pass
+        self.coder.run(memory_context=memory_context)
         if template_used:
             _revert_template_files(ctx)
 

@@ -77,19 +77,30 @@ class VisualizerAgent:
             plt.style.use("seaborn-v0_8-whitegrid" if "seaborn-v0_8-whitegrid" in plt.style.available else "ggplot")
 
         if self.lang == "zh":
-            # Prepend CJK-capable fonts; matplotlib walks the list and uses
-            # the first one available on the system. PingFang SC ships on
-            # macOS; Noto Sans CJK SC is the Linux standard; Microsoft YaHei
-            # on Windows. Fall through to seaborn's default afterwards.
-            cjk_fonts = [
-                "PingFang SC",
-                "Heiti SC",
-                "Noto Sans CJK SC",
-                "Microsoft YaHei",
-                "WenQuanYi Zen Hei",
+            # Probe matplotlib's font registry at runtime — the static list of
+            # CJK font NAMES used to be hard-coded but didn't always match
+            # what's actually installed (`PingFang SC` on macOS appears as
+            # `PingFang HK` or `Hannotate SC`; Linux ships `Noto Sans CJK SC`
+            # but only when fonts-noto-cjk is installed). The 2026-05-29
+            # dogfoods all still emitted ~14 CJK glyph warnings because none
+            # of the listed names matched the system. This probe picks the
+            # first font matplotlib actually sees from a broader candidate
+            # set covering macOS / Linux / Windows defaults.
+            from matplotlib import font_manager
+            installed = {f.name for f in font_manager.fontManager.ttflist}
+            candidates = [
+                # macOS (verified via font_manager listing)
+                "PingFang SC", "PingFang HK", "Hiragino Sans GB",
+                "Hannotate SC", "Songti SC", "Heiti TC", "STHeiti",
+                # Linux
+                "Noto Sans CJK SC", "Source Han Sans SC", "WenQuanYi Zen Hei",
+                # Windows
+                "Microsoft YaHei", "SimHei",
             ]
-            current = plt.rcParams.get("font.sans-serif", [])
-            plt.rcParams["font.sans-serif"] = cjk_fonts + list(current)
+            chosen = [c for c in candidates if c in installed]
+            if chosen:
+                current = plt.rcParams.get("font.sans-serif", [])
+                plt.rcParams["font.sans-serif"] = chosen + list(current)
             # Some CJK fonts lack a minus glyph; turn off the unicode minus
             # so axes don't render a placeholder for negative numbers.
             plt.rcParams["axes.unicode_minus"] = False

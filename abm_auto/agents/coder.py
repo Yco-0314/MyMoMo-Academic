@@ -27,7 +27,11 @@ def _load_templates_context() -> str:
 class CoderAgent(BaseAgent):
     """Converts DESIGN.md → executable Python files."""
 
-    def run(self, extra_feedback: str | None = None) -> dict[str, str]:
+    def run(
+        self,
+        extra_feedback: str | None = None,
+        memory_context: str = "",
+    ) -> dict[str, str]:
         """Generate Python files from DESIGN.md.
 
         Args:
@@ -35,6 +39,13 @@ class CoderAgent(BaseAgent):
                             codegen attempt (used by the CoderVerifier GVR loop
                             when schema-contract violations or runtime errors
                             require re-generation).
+            memory_context: Optional formatted markdown of semantic + episodic
+                            memory (anti-patterns observed in past runs,
+                            successful patterns). When non-empty, prepended to
+                            the prompt as a "lessons from past runs" block.
+                            Mirrors OptimizerAgent's existing memory_context
+                            wiring — closes the read side of the memory
+                            feedback loop (ADR-006 OQ#4).
         """
         console.print("[bold cyan]Phase 2: Generating Python code...[/bold cyan]")
 
@@ -72,6 +83,22 @@ class CoderAgent(BaseAgent):
             )
             console.print("  [yellow]Using GVR feedback from previous attempt[/yellow]")
 
+        # Cross-session memory context (semantic anti-patterns + episodic
+        # lessons accumulated by ExperimentMemory across past runs). Mirror
+        # of OptimizerAgent's memory_context wiring. The Pipeline passes
+        # `ctx.memory.retrieve_context()` so the CoderAgent finally LEARNS
+        # from prior codegen failures across runs — instead of repeating
+        # the same hallucination patterns each session (ADR-006 OQ#4).
+        memory_block = ""
+        if memory_context.strip():
+            memory_block = (
+                "## Cross-session memory — lessons from past runs\n\n"
+                "Patterns and anti-patterns the system has accumulated. Treat\n"
+                "as informational — apply only when relevant to this design.\n\n"
+                f"{memory_context}\n\n"
+                "---\n\n"
+            )
+
         # Mechanism Spec — the HARD CONTRACT from Phase 1d (if present).
         # Placed ABOVE DESIGN.md in the prompt so the LLM reads "implement
         # THIS pseudocode" before reading the free-form English design.
@@ -93,6 +120,7 @@ class CoderAgent(BaseAgent):
 
         user = (
             f"{feedback_block}"
+            f"{memory_block}"
             f"{prompt}\n\n"
             f"{contract_block}"
             f"{spec_block}"
