@@ -45,6 +45,7 @@ class SimulatorWrapper:
         executor,
         base_run_id: int = 10000,
         summary_fn: SummaryStats = full_trajectory,
+        expected_rows: Optional[int] = None,
     ):
         """
         Args:
@@ -55,11 +56,22 @@ class SimulatorWrapper:
             summary_fn: reduces sim DataFrame to fixed-length stats vector.
                         Default `full_trajectory` preserves all per-tick info,
                         which gives ABC/NM a sharp loss surface to descend.
+            expected_rows: optional row count to TRUNCATE the simulator
+                        output DataFrame to before summary_fn runs.
+                        When the simulator writes more rows than the
+                        observed CSV (e.g., 251 vs 250 due to off-by-one
+                        in tick recording), `np.linalg.norm(sim - obs)`
+                        raises ValueError on shape mismatch and sklearn's
+                        RandomForestRegressor refuses to fit on
+                        non-uniform feature lengths across samples. Set
+                        this to `len(observed_df)` to align all sims to
+                        the observed length. None = no truncation.
         """
         self.workspace = workspace
         self.executor = executor
         self._run_counter = base_run_id
         self.summary_fn = summary_fn
+        self.expected_rows = expected_rows
 
     @property
     def scenario_csv_path(self) -> Path:
@@ -102,6 +114,8 @@ class SimulatorWrapper:
             return None
         try:
             df = normalize_columns(df, targets)
+            if self.expected_rows is not None and len(df) > self.expected_rows:
+                df = df.iloc[: self.expected_rows]
             return self.summary_fn(df, targets)
         except Exception as e:
             self._log_failure(f"exception:{type(e).__name__}", f"summary_fn failed: {e}")

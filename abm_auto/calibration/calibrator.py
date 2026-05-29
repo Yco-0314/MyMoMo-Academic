@@ -71,6 +71,11 @@ def fit(
         summary_fn: Reducer from DataFrame → fixed-length stats vector.
     """
     simulator.summary_fn = summary_fn
+    # Pin sim output shape to observed shape — RF backend's
+    # np.array(X) refuses non-uniform feature lengths across samples
+    # (off-by-one tick recording can cause some sims to write 251 rows
+    # vs 250). Truncating mid-flight is the simplest defense.
+    simulator.expected_rows = len(observed)
     obs_stats = summary_fn(observed, targets)
 
     # ── Stage 1: Screening (broad prior coverage) ──
@@ -183,7 +188,11 @@ def fit_from_files(
     observed = pd.read_csv(observed_csv)
 
     executor = Executor(ws, timeout=timeout)
-    simulator = SimulatorWrapper(ws, executor, summary_fn=summary_fn)
+    simulator = SimulatorWrapper(
+        ws, executor,
+        summary_fn=summary_fn,
+        expected_rows=len(observed),
+    )
 
     result = fit(simulator, priors, observed, targets, max_sims, refine_evals, summary_fn)
     return result, ws
@@ -231,7 +240,10 @@ class BayesianCalibrator(BaseAgent):
                 except (TypeError, ValueError):
                     pass
 
-        simulator = SimulatorWrapper(self.workspace, executor)
+        simulator = SimulatorWrapper(
+            self.workspace, executor,
+            expected_rows=len(observed),
+        )
         prior_dict = priors_mod.build_priors(
             simulator.scenario_csv_path,
             allowlist=allowlist,
