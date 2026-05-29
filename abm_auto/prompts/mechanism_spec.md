@@ -4,16 +4,11 @@ You are a **simulation algorithm specifier**. Read the ABM design document
 below and produce a **pseudocode mechanism specification** that pins down
 EVERY behavioural decision the design left ambiguous.
 
-## ⚠ CRITICAL OUTPUT REQUIREMENT — READ BEFORE WRITING ANYTHING
-
-Your output MUST end with a fenced ```json``` block that strictly matches
-the schema in the final section of this prompt. Skip the JSON block →
-TemplateGenerator skips → codegen falls back to a known-buggy legacy
-path (network topology, scenario class, data collector boilerplate
-become LLM-generated and frequently wrong).
-
-The JSON block is the contract. The markdown above it is documentation
-for humans. Do not invert this priority.
+This is Stage 1 of two-stage extraction. Your output here is rich
+human-readable markdown pseudocode. A second focused LLM call will read
+your output and emit the structured JSON that TemplateGenerator consumes.
+Don't worry about JSON — that's the next stage. Focus on producing the
+most precise, unambiguous pseudocode you can.
 
 ## Why this matters
 
@@ -123,85 +118,3 @@ versions of it, the spec is too loose — sharpen it.
 
 Your output IS the contract the coder must implement. Ambiguity in your
 output = mechanism drift in the simulator = calibration bias downstream.
-
----
-
-## Machine-readable JSON spec (REQUIRED, append at the very end)
-
-After the markdown sections above, append a single fenced ```json``` block
-containing a structured spec. The TemplateGenerator parses this block and
-emits 5 boilerplate files (model.py, scenario.py, data_collector.py,
-main.py, SimulatorScenarios.csv) deterministically — the LLM never writes
-them. Without a valid JSON block, the pipeline falls back to free-form
-codegen and topology / scenario / data-collector boilerplate may regress.
-
-### Schema (all fields required unless marked optional)
-
-```json
-{
-  "project_name": "VirusOnNetwork",
-  "model_class_name": "VirusModel",
-  "agent_class_name": "Person",
-  "environment_class_name": "VirusEnvironment",
-  "scenario_class_name": "VirusScenario",
-  "data_collector_class_name": "VirusDataCollector",
-  "topology": {
-    "type": "netlogo_spatially_clustered",
-    "params": {"avg_degree": "scenario.average_degree"}
-  },
-  "n_agents_param": "agent_num",
-  "periods_param": "periods",
-  "scenario_params": [
-    {"name": "periods", "type": "int", "default": 250, "unit": "ticks"},
-    {"name": "agent_num", "type": "int", "default": 150, "unit": "count"},
-    {"name": "virus_spread_chance", "type": "float", "default": 4.4,
-     "unit": "percent", "min": 0, "max": 20}
-  ],
-  "agent_state_vars": [
-    {"name": "state", "type": "int", "init": "0"}
-  ],
-  "targets": ["count_s", "count_i", "count_r"],
-  "env_step_pseudocode": "snapshot infecteds; spread to S-neighbors with prob...",
-  "agent_step_pseudocode": null,
-  "initial_setup_pseudocode": "sample K=initial_outbreak_size agents and set state=1"
-}
-```
-
-### Topology type — pick ONE
-
-| Type | Required params |
-|---|---|
-| `"watts_strogatz"` | `k` (int, even), `p` (float) |
-| `"barabasi_albert"` | `m` (int, edges per new node) |
-| `"erdos_renyi"` | `p` (float, edge probability) |
-| `"netlogo_spatially_clustered"` | `avg_degree` (int) |
-| `"melodie_named"` | `name` (str, networkx generator name) + kwargs |
-
-**Topology param values**: bare scenario references use `"scenario.X"`
-(quoted as a JSON string — the renderer extracts the identifier).
-Numeric literals use raw JSON numbers.
-
-### Scenario param types — pick ONE per param
-
-`"int"` | `"float"` | `"bool"` | `"str"`
-
-### Required scenario_params
-
-Every value in `agent_state_vars`, `topology.params`, and the
-`env_step_pseudocode` that comes from `scenario.X` MUST appear in
-`scenario_params` (the templated Scenario class only has the fields
-you declare here). At minimum include `periods` and the value named
-by `n_agents_param`.
-
-### Targets
-
-`targets` lists environment-level attribute names. The DataCollector
-template registers each as a column; the environment.step() body that
-CoderAgent writes is REQUIRED to set `self.<target>` each tick.
-
-### Failure modes
-
-If you cannot determine a value, use a sensible default (e.g., 250 for
-periods, 150 for agent_num). DO NOT emit `null` for required fields —
-that causes parse failure. The JSON block MUST be valid JSON; no
-trailing commas, no comments, no Python literals.

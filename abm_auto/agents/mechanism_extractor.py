@@ -111,31 +111,22 @@ class MechanismExtractor(BaseAgent):
             f"  [green]✓ mechanism_spec.md written ({len(spec)} chars)[/green]"
         )
 
-        # NEW (Layer 3): try to extract the JSON block for TemplateGenerator
-        mech_spec_obj = _extract_mechanism_json(spec)
+        # ── Layer 3 (two-stage extraction) ──
+        # Stage 1 above: free-form markdown spec (rich pseudocode, audit-friendly)
+        # Stage 2 here:  focused JSON extractor → mechanism_spec.json
+        #
+        # Why two stages: a single LLM call asked for both markdown AND JSON
+        # consistently dropped the JSON (3 dogfoods confirmed). Reasoner-class
+        # models spend their budget on the markdown pseudocode and treat the
+        # appended JSON requirement as optional. Splitting into two calls gives
+        # each prompt narrow focus — Call 2 emits ONLY JSON.
+        mech_spec_obj, json_status = self._extract_json_spec(spec, design)
         json_path = self.workspace.path / "mechanism_spec.json"
-        json_status = "absent"
         if mech_spec_obj is not None:
-            errors = mech_spec_obj.validate()
-            if errors:
-                console.print(
-                    f"  [yellow]⚠ mechanism_spec.json parsed but invalid "
-                    f"({len(errors)} errors); template path will be skipped:[/yellow]"
-                )
-                for e in errors[:5]:
-                    console.print(f"      [yellow]· {e}[/yellow]")
-                json_status = f"invalid ({len(errors)} errors)"
-            else:
-                json_path.write_text(mech_spec_obj.to_json(), encoding="utf-8")
-                console.print(
-                    f"  [green]✓ mechanism_spec.json written — "
-                    f"TemplateGenerator will own 5 boilerplate files[/green]"
-                )
-                json_status = "ok"
-        else:
+            json_path.write_text(mech_spec_obj.to_json(), encoding="utf-8")
             console.print(
-                "  [yellow]⚠ no ```json``` block found in LLM output — "
-                "TemplateGenerator skipped, falling back to legacy codegen[/yellow]"
+                f"  [green]✓ mechanism_spec.json written — "
+                f"TemplateGenerator will own 5 boilerplate files[/green]"
             )
 
         # Audit
@@ -157,30 +148,117 @@ class MechanismExtractor(BaseAgent):
 
         return spec
 
+    # ── Stage-2 JSON extraction ──
+
+    _JSON_SYSTEM = (
+        "You are a JSON-only extractor. Your output is parsed mechanically. "
+        "Emit ONE fenced ```json``` block containing one JSON object that "
+        "matches the schema in the user prompt. Nothing else — no prose, "
+        "no commentary, no other code fences. Strict JSON: double quotes, "
+        "no trailing commas, no Python literals (true/false/null only)."
+    )
+
+    def _extract_json_spec(
+        self, markdown_spec: str, design: str,
+    ) -> tuple[Optional[MechanismSpec], str]:
+        """Stage 2: focused LLM call that emits ONLY mechanism_spec JSON.
+
+        Returns (MechanismSpec | None, status_string). The status is one
+        of: "ok", "no_json_block", "parse_error", "invalid (N errors)",
+        "exception:Class". On any non-"ok" status, returns None for the
+        spec; pipeline falls back to legacy codegen.
+
+        One retry is permitted — if the first call returns malformed JSON,
+        we prepend the parse error to a second call's prompt as feedback.
+        """
+        attempts: list[str] = []
+        feedback: str = ""
+        for attempt_idx in range(2):
+            prompt_template = self.load_prompt("mechanism_spec_json")
+            prompt = self.render_prompt(
+                prompt_template,
+                mechanism_md=markdown_spec,
+                design=design,
+            )
+            if feedback:
+                prompt = (
+                    f"## ⚠ Previous attempt failed parsing\n\n"
+                    f"{feedback}\n\n"
+                    f"Fix the error and re-emit. Same schema applies.\n\n"
+                    + prompt
+                )
+            try:
+                raw = self.call_llm(self._JSON_SYSTEM, prompt, max_tokens=2048)
+            except Exception as e:
+                console.print(
+                    f"  [yellow]⚠ Stage-2 LLM call raised "
+                    f"({type(e).__name__}): {e}[/yellow]"
+                )
+                return None, f"exception:{type(e).__name__}"
+            attempts.append(raw or "")
+            parsed, status, parse_error = _parse_mechanism_json(raw)
+            if status == "ok":
+                # Final structural validation against MechanismSpec invariants
+                errors = parsed.validate()
+                if not errors:
+                    return parsed, "ok"
+                console.print(
+                    f"  [yellow]⚠ Stage-2 JSON parsed but invalid "
+                    f"({len(errors)} errors):[/yellow]"
+                )
+                for e in errors[:5]:
+                    console.print(f"      [yellow]· {e}[/yellow]")
+                if attempt_idx == 0:
+                    feedback = (
+                        "The JSON parsed, but MechanismSpec validation failed:\n"
+                        + "\n".join(f"- {e}" for e in errors)
+                    )
+                    continue
+                return None, f"invalid ({len(errors)} errors)"
+            # parse failed — feed the error back on retry
+            console.print(
+                f"  [yellow]⚠ Stage-2 JSON parse failed: {parse_error}[/yellow]"
+            )
+            if attempt_idx == 0:
+                feedback = parse_error
+                continue
+            return None, status
+        return None, "no_json_block"
+
 
 _JSON_BLOCK_RE = re.compile(r"```json\s*\n(.*?)\n```", re.DOTALL)
+_BARE_JSON_RE = re.compile(r"\{.*\}", re.DOTALL)
 
 
-def _extract_mechanism_json(llm_output: str) -> Optional[MechanismSpec]:
-    """Find and parse the ```json``` block from LLM output.
+def _parse_mechanism_json(
+    llm_output: str,
+) -> tuple[Optional[MechanismSpec], str, str]:
+    """Find + parse the JSON spec from a Stage-2 LLM response.
 
-    Returns None when:
-      - no fenced json block present
-      - block present but not parseable as JSON
-      - JSON parsed but not loadable into MechanismSpec
-    The caller decides what to do with None (fall back to legacy codegen).
+    Returns (spec, status, parse_error). status ∈ {"ok", "no_json_block",
+    "parse_error", "mapping_error"}. spec is None on any non-ok status.
+
+    Tries fenced ```json``` block first, then a bare top-level {…} as
+    fallback (some models forget the fence even when asked).
     """
+    if not llm_output:
+        return None, "no_json_block", "LLM returned empty output"
     match = _JSON_BLOCK_RE.search(llm_output)
-    if not match:
-        return None
-    block = match.group(1).strip()
+    block: Optional[str] = None
+    if match:
+        block = match.group(1).strip()
+    else:
+        # Fallback: look for a top-level {...} the model may have emitted bare
+        bare = _BARE_JSON_RE.search(llm_output)
+        if bare:
+            block = bare.group(0).strip()
+    if block is None:
+        return None, "no_json_block", "no ```json``` block or bare {…} found"
     try:
         data = json.loads(block)
     except json.JSONDecodeError as e:
-        console.print(f"  [dim]json block parse error: {e}[/dim]")
-        return None
+        return None, "parse_error", f"JSONDecodeError: {e.msg} at line {e.lineno} col {e.colno}"
     try:
-        return MechanismSpec.from_dict(data)
-    except (TypeError, KeyError) as e:
-        console.print(f"  [dim]json → MechanismSpec mapping error: {e}[/dim]")
-        return None
+        return MechanismSpec.from_dict(data), "ok", ""
+    except (TypeError, KeyError, ValueError) as e:
+        return None, "mapping_error", f"{type(e).__name__}: {e}"

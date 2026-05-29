@@ -1,0 +1,52 @@
+name: CI
+
+# Runs the pure-Python test battery on every push + PR. Does NOT run
+# NetLogo oracle tests (skipped automatically when NetLogo not installed)
+# or dogfood/benchmark scripts (require LLM API keys).
+#
+# Coverage today (33+ tests):
+#   tests/test_topologies.py             — Topology adapter KS fidelity
+#   tests/test_codegen_anti_patterns.py  — 19 regex anti-patterns + fixtures
+#   tests/test_mechanism_spec.py         — JSON schema validation + roundtrip
+#   tests/test_template_generator.py     — Generated Python parses + topology shape
+#
+# Any future test added under tests/ runs automatically — no CI config edit.
+
+on:
+  push:
+    branches: [main, "v*"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]   # matches local .venv
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Editable install pulls everything in pyproject.toml's
+          # [project.dependencies] including Melodie / scipy / sklearn /
+          # networkx (via Melodie) / numpy / pandas
+          pip install -e .
+          pip install pytest
+
+      - name: Run pytest
+        run: |
+          pytest tests/ -v --tb=short --no-header
+        env:
+          # Block accidental LLM API calls during CI (tests that require
+          # network should be skipped or mocked, not exercise live APIs)
+          ANTHROPIC_API_KEY: ""
+          DEEPSEEK_API_KEY: ""
