@@ -20,61 +20,36 @@ from rich.console import Console
 from rich.panel import Panel
 
 from abm_auto.agents.base import BaseAgent
+from abm_auto.review.sub_reviewer import REVIEWERS as _SUB_REVIEWERS, run_panel
 
 console = Console()
 
 
-# Reviewer definitions: (id, name, prompt_file, system_msg, materials_needed)
+# Back-compat: external code may still reference the historic `REVIEWERS`
+# constant from this module. The real source of truth is now
+# `abm_auto.review.sub_reviewer.REVIEWERS` (a list of SubReviewer instances
+# instead of dicts). Expose a dict-compatible view for any legacy reader.
 REVIEWERS = [
     {
-        "id": "R1",
-        "name": "理论贡献质询师",
-        "prompt": "review_theory",
-        "system": (
-            "你是社会科学顶刊的资深理论审稿人。尖锐直接，禁止讨好型学术套话。"
-            "如果理论贡献为零，直说。用中文撰写。"
-        ),
-        "materials": ["story", "design", "odd", "report"],
-    },
-    {
-        "id": "R2",
-        "name": "方法论审查员",
-        "prompt": "review_methodology",
-        "system": (
-            "你是学术界出名的'挑刺王' Reviewer 2，ABM 方法论专家。"
-            "对 ODD 透明度和 V&V 有像素级洁癖。用中文撰写。"
-        ),
-        "materials": ["odd", "design", "sensitivity", "memory", "params_history"],
-    },
-    {
-        "id": "R3",
-        "name": "文献对话专家",
-        "prompt": "review_literature",
-        "system": (
-            "你精通 ABM 与计算社会科学思想史，擅长识别伪创新和稻草人缺口。"
-            "用中文撰写。"
-        ),
-        "materials": ["story", "design", "odd", "report"],
-    },
-    {
-        "id": "R4",
-        "name": "逻辑结构拆解师",
-        "prompt": "review_logic",
-        "system": (
-            "你是学术逻辑审计师，只关注论证结构是否自洽严密。"
-            "不需要领域知识，纯粹的形式逻辑检验。用中文撰写。"
-        ),
-        "materials": ["story", "design", "results", "trajectory", "report"],
-    },
+        "id": sub.id,
+        "name": sub.name,
+        "prompt": sub.prompt_name,
+        "system": sub.system,
+        "materials": sub.materials_needed,
+    }
+    for sub in _SUB_REVIEWERS
 ]
 
 
 class ReviewerAgent(BaseAgent):
-    """Multi-reviewer peer review panel for ABM research."""
+    """Multi-reviewer peer review panel for ABM research.
 
-    # Reviewers whose evaluation criteria are mode-dependent.
-    # R2 (methodology transparency) is mode-neutral and skips the mode preamble.
-    _MODE_AWARE_REVIEWERS = {"R1", "R3", "R4"}
+    Per-reviewer LLM logic + mode-aware preamble injection lives in
+    abm_auto.review.sub_reviewer (SubReviewer adapters). This class owns
+    workspace I/O (materials gathering, file writes, audit ledger) and
+    panel-level orchestration (EiC synthesis, Resolution Ledger,
+    Quick-mode single-pass review).
+    """
 
     def run(self, mode: str = "panel", spec=None) -> str:
         """
@@ -95,7 +70,13 @@ class ReviewerAgent(BaseAgent):
         return self._run_panel(spec=spec)
 
     def _run_panel(self, spec=None) -> str:
-        """Run the full 5-reviewer panel: R1→R2→R3→R4→EiC."""
+        """Run the full 5-reviewer panel: R1→R2→R3→R4→EiC.
+
+        Per-reviewer LLM logic lives in abm_auto.review.sub_reviewer.run_panel.
+        This method owns the surrounding orchestration: materials gathering,
+        mode-context block construction, per-review console + file output +
+        audit logging, EiC synthesis, Resolution Ledger build, final verdict.
+        """
         console.print(Panel.fit(
             "[bold]同行评议委员会[/bold]\n"
             "R1 理论质询师 → R2 方法论审查员 → R3 文献专家 → R4 逻辑拆解师 → 主编终审",
@@ -103,59 +84,42 @@ class ReviewerAgent(BaseAgent):
         ))
 
         materials = self._gather_materials()
-        reviews = {}
-
-        # Pre-compute mode context block (empty string if no spec or unknown mode)
         mode_block = self._mode_context_block(spec)
         if mode_block:
             mode_label = spec.mode if spec else "unknown"
             console.print(f"  [dim]Review mode: {mode_label}[/dim]")
 
-        # Run R1-R4 sequentially
-        for reviewer in REVIEWERS:
-            rid = reviewer["id"]
-            console.print(f"\n[bold magenta]{rid}: {reviewer['name']}[/bold magenta]")
+        # Pre-announce each sub-reviewer in the panel for UX (sub_reviewer
+        # itself is pure orchestration; console output stays at this layer).
+        for sub in _SUB_REVIEWERS:
+            console.print(f"\n[bold magenta]{sub.id}: {sub.name}[/bold magenta]")
 
-            prompt_template = self.load_prompt(reviewer["prompt"])
-            prompt = self._fill_template(prompt_template, materials, reviewer["materials"])
+        # Run the panel via the extracted orchestrator
+        reviews = run_panel(
+            materials=materials,
+            mode_block=mode_block,
+            llm_caller=self.call_llm,
+            prompt_loader=self.load_prompt,
+            audit_history=materials.get("audit_history", ""),
+        )
 
-            # Inject mode context preamble for R1/R3/R4 only (R2 is mode-neutral)
-            if mode_block and rid in self._MODE_AWARE_REVIEWERS:
-                prompt = mode_block + "\n\n---\n\n" + prompt
-
-            # Append audit history — cross-phase issue context that the templates
-            # don't reference by placeholder. Reviewers see what was raised
-            # in earlier phases and whether it was resolved.
-            audit_history = materials.get("audit_history", "")
-            if audit_history and "（审计记录为空" not in audit_history:
-                prompt += (
-                    "\n\n---\n\n"
-                    "## 流水线审计历史（cross-phase audit ledger）\n\n"
-                    "以下是 pipeline 各阶段已记录的 issue 及其状态。请在评审中明确引用 open issues，"
-                    "对已 resolved 的 issue 可作为方法论透明度的正面证据。\n\n"
-                    + audit_history
-                )
-
-            review = self.call_llm(reviewer["system"], prompt, max_tokens=3072)
-            reviews[rid] = review
-
-            # Save individual review
+        # Side effects: persist + score + audit per reviewer
+        sub_by_id = {sub.id: sub for sub in _SUB_REVIEWERS}
+        for rid, review in reviews.items():
+            sub = sub_by_id.get(rid)
+            name = sub.name if sub else rid
             path = self.workspace.path / f"review_{rid.lower()}.md"
             path.write_text(review, encoding="utf-8")
             console.print(f"  [green]✓ {rid} review saved[/green]")
-
-            # Extract score if present
             score = self._show_score(review, rid)
-
-            # Audit: log this reviewer's score + name
             try:
                 self.workspace.audit.info(
                     phase="Phase 8",
-                    text=f"{rid} ({reviewer['name']}) review complete, score: {score or 'n/a'}",
+                    text=f"{rid} ({name}) review complete, score: {score or 'n/a'}",
                     actor=f"Reviewer:{rid}",
                     structured={
                         "reviewer_id": rid,
-                        "reviewer_name": reviewer["name"],
+                        "reviewer_name": name,
                         "score": score,
                         "review_length": len(review),
                     },
@@ -163,12 +127,12 @@ class ReviewerAgent(BaseAgent):
             except Exception:
                 pass
 
-        # Run Editor-in-Chief with all reviewer summaries
+        # Run Editor-in-Chief on the panel outputs
         console.print(f"\n[bold red]EiC: 主编终审[/bold red]")
         eic_review = self._run_editor(materials, reviews, mode_block=mode_block)
         reviews["EiC"] = eic_review
 
-        # Combine all reviews into one document
+        # Combine + Resolution Ledger
         combined = self._combine_reviews(reviews)
         combined_path = self.workspace.path / "peer_review.md"
         combined_path.write_text(combined, encoding="utf-8")
@@ -333,15 +297,6 @@ class ReviewerAgent(BaseAgent):
             )
 
         return ""
-
-    def _fill_template(self, template: str, materials: dict[str, str],
-                       needed: list[str]) -> str:
-        """Fill template placeholders with available materials."""
-        for key in needed:
-            placeholder = "{{ " + key + " }}"
-            value = materials.get(key, "（未提供）")
-            template = template.replace(placeholder, value)
-        return template
 
     def _gather_materials(self) -> dict[str, str]:
         """Collect all reviewable artifacts from workspace."""
