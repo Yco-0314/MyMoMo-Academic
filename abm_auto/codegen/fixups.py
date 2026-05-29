@@ -199,6 +199,143 @@ DEFAULT_FIXUPS: list[CodegenFixup] = [
 ]
 
 
+# ── Stateful fixups (need workspace + LLM) ──────────────────────────────
+
+
+class CompletenessCheckFixup:
+    """Re-call the LLM to complete agent.py if attributes from DESIGN.md are missing.
+
+    Closes the second half of CoderAgent's god-class decomposition.
+    Unlike the four pure fixups above, this one needs the design document
+    (workspace state) and the LLM (to re-generate). Constructed at codegen
+    time via `make_completeness_fixup(workspace, llm_caller)`.
+
+    The check is a regex scan over DESIGN.md for agent-attribute mentions,
+    cross-checked against agent.py contents. Missing attrs trigger a
+    focused single-file regeneration prompt that asks the LLM to emit
+    the COMPLETE corrected file.
+
+    Heuristic, conservative: false positives (claiming an attr is missing
+    when it isn't) are OK — the LLM is asked to "emit the complete file
+    with all attrs initialized" and will preserve what's already there.
+    False negatives (missing an actual missing attr) are also OK — the
+    downstream dry_run / contract / fidelity validators backstop.
+    """
+
+    name = "completeness_check"
+
+    def __init__(self, workspace, llm_caller):
+        """
+        Args:
+            workspace: provides read_design()
+            llm_caller: callable matching `BaseAgent.call_llm(system, user, max_tokens)`
+                — typically `coder_agent.call_llm` bound method.
+        """
+        self.workspace = workspace
+        self.llm_caller = llm_caller
+
+    def should_run(self, files: dict[str, str]) -> bool:
+        design = self.workspace.read_design()
+        if not design:
+            return False
+        agent_file = self._agent_file_key(files)
+        if agent_file is None:
+            return False
+        return bool(self._detect_missing(files[agent_file], design))
+
+    def run(self, files: dict[str, str]) -> dict[str, str]:
+        import ast
+        from rich.console import Console as _Console
+        _console = _Console()
+
+        design = self.workspace.read_design()
+        agent_file = self._agent_file_key(files)
+        if agent_file is None:
+            return files
+        missing = self._detect_missing(files[agent_file], design)
+        if not missing:
+            return files
+
+        _console.print(
+            f"  [yellow]⚠ Missing attributes in {agent_file}: {missing}[/yellow]"
+        )
+        system = (
+            "You are an expert Python developer. The following agent code is "
+            "INCOMPLETE — it is missing attributes that were specified in the "
+            "design document. Output the COMPLETE, corrected file. Output ONLY "
+            "the Python code, no explanation."
+        )
+        user = (
+            f"## Design Document (relevant section)\n\n{design[:3000]}\n\n"
+            f"## Current {agent_file} (INCOMPLETE)\n\n```python\n{files[agent_file]}\n```\n\n"
+            f"## Missing attributes\n\nThe following attributes are missing: {missing}\n\n"
+            f"Generate the COMPLETE corrected {agent_file} with ALL attributes initialized "
+            f"in setup(). Use getattr(self, 'attr', default) pattern for CSV-loaded attributes."
+        )
+        try:
+            raw = self.llm_caller(system, user, max_tokens=4096)
+            code = raw.strip()
+            if code.startswith("```"):
+                code = code.split("\n", 1)[-1].rsplit("```", 1)[0]
+            ast.parse(code)   # validate it parses before swap
+            files[agent_file] = code
+            _console.print(f"  [green]✓ {agent_file} completed with missing attributes[/green]")
+        except (SyntaxError, Exception) as e:
+            _console.print(f"  [red]✗ Could not complete {agent_file}: {e}[/red]")
+        return files
+
+    @staticmethod
+    def _agent_file_key(files: dict[str, str]) -> str | None:
+        for key in files:
+            if "agent.py" in key:
+                return key
+        return None
+
+    @staticmethod
+    def _detect_missing(agent_code: str, design: str) -> list[str]:
+        """Regex-scan DESIGN.md for agent-attribute mentions; return any
+        absent from agent_code.
+
+        Logic moved verbatim from CoderAgent._check_attribute_completeness
+        (commit 22c5298 and earlier). Heuristic — false positives expected;
+        the LLM's "emit complete file" prompt handles them gracefully.
+        """
+        attr_pattern = re.compile(
+            r"[-*]\s+\*{0,2}(\w+)\*{0,2}\s*(?:\(|:|\s*—|\s*–|\s*-)",
+        )
+        design_attrs: set[str] = set()
+        in_agent_section = False
+        for line in design.split("\n"):
+            lower = line.lower().strip()
+            if "agent" in lower and ("attribute" in lower or "propert" in lower or "state" in lower):
+                in_agent_section = True
+                continue
+            if in_agent_section and line.startswith("#"):
+                in_agent_section = False
+            if in_agent_section:
+                m = attr_pattern.match(line.strip())
+                if m:
+                    attr = m.group(1)
+                    if attr not in {"the", "each", "all", "type", "int", "float",
+                                    "str", "bool", "list", "dict", "note"}:
+                        design_attrs.add(attr)
+        return [a for a in design_attrs if a not in agent_code]
+
+
+def make_default_pipeline(workspace=None, llm_caller=None) -> list[CodegenFixup]:
+    """Construct the standard fixup pipeline.
+
+    When `workspace + llm_caller` provided, includes the stateful
+    `CompletenessCheckFixup` at the end. When omitted, returns only the
+    pure fixups — useful for tests + external consumers that don't have
+    LLM access.
+    """
+    pipeline: list[CodegenFixup] = list(DEFAULT_FIXUPS)
+    if workspace is not None and llm_caller is not None:
+        pipeline.append(CompletenessCheckFixup(workspace, llm_caller))
+    return pipeline
+
+
 def apply_fixup_pipeline(
     files: dict[str, str],
     fixups: list[CodegenFixup] = DEFAULT_FIXUPS,
@@ -216,6 +353,8 @@ __all__ = [
     "CsvLocationFixup",
     "GridCategoryInjectionFixup",
     "SyntaxValidationFixup",
+    "CompletenessCheckFixup",
     "DEFAULT_FIXUPS",
+    "make_default_pipeline",
     "apply_fixup_pipeline",
 ]

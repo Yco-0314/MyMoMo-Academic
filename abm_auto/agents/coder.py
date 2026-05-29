@@ -1,12 +1,11 @@
 from __future__ import annotations
-import ast
 import re
 
 from rich.console import Console
 
 from abm_auto.agents.base import BaseAgent
 from abm_auto.agents.code_manager import parse_code_blocks as _parse_code_blocks
-from abm_auto.codegen.fixups import apply_fixup_pipeline
+from abm_auto.codegen.fixups import apply_fixup_pipeline, make_default_pipeline
 from abm_auto.config import TEMPLATES_DIR
 
 console = Console()
@@ -154,35 +153,32 @@ class CoderAgent(BaseAgent):
             console.print("  [yellow]⚠ Could not parse file blocks, attempting raw extraction[/yellow]")
             files = self._extract_fallback(raw)
 
-        # Post-generation fixes — each is an independent CodegenFixup adapter
+        # Post-generation fixups — each is an independent CodegenFixup adapter
         # in abm_auto.codegen.fixups. Order matters (e.g. CSV placement fixes
         # the filesystem layout before subsequent fixups depend on it).
-        files = apply_fixup_pipeline(files)
-
-        # Completeness check: verify all DESIGN.md agent attributes present
-        missing = self._check_attribute_completeness(files, design)
-        if missing:
-            console.print(f"  [yellow]⚠ Missing attributes detected, requesting completion...[/yellow]")
-            files = self._complete_missing_attributes(files, design, missing)
+        # The stateful CompletenessCheckFixup (last in the pipeline) needs
+        # workspace + LLM access to re-call the model if agent.py is missing
+        # attributes declared in DESIGN.md.
+        pipeline = make_default_pipeline(
+            workspace=self.workspace,
+            llm_caller=self.call_llm,
+        )
+        files = apply_fixup_pipeline(files, fixups=pipeline)
 
         self.workspace.write_model_files(files)
         console.print(f"  [green]✓ {len(files)} files generated[/green]")
 
-        # Audit: log generated file inventory + any completeness fixes
+        # Audit: log generated file inventory
         try:
             total_lines = sum(len(c.splitlines()) for c in files.values())
-            text = f"Generated {len(files)} files ({total_lines} lines total)"
-            if missing:
-                text += f"; auto-completed missing attributes: {list(missing)[:5]}"
             self.workspace.audit.info(
                 phase="Phase 2",
-                text=text,
+                text=f"Generated {len(files)} files ({total_lines} lines total)",
                 actor="CoderAgent",
                 structured={
                     "n_files": len(files),
                     "total_lines": total_lines,
                     "file_names": list(files.keys()),
-                    "missing_attributes_completed": list(missing) if missing else [],
                 },
             )
         except Exception:
@@ -366,90 +362,6 @@ class CoderAgent(BaseAgent):
             estimate += (attribute_lines - 10) * 128
         # Cap at 16384
         return min(estimate, 16384)
-
-    def _check_attribute_completeness(
-        self, files: dict[str, str], design: str
-    ) -> dict[str, list[str]]:
-        """Check if generated agent code contains all attributes from DESIGN.md.
-
-        Returns dict mapping file path → list of missing attribute names.
-        """
-        # Extract attributes from DESIGN.md: lines like "- **attr_name**" or "- attr_name:"
-        attr_pattern = re.compile(
-            r"[-*]\s+\*{0,2}(\w+)\*{0,2}\s*(?:\(|:|\s*—|\s*–|\s*-)",
-        )
-        design_attrs: set[str] = set()
-        in_agent_section = False
-        for line in design.split("\n"):
-            lower = line.lower().strip()
-            if "agent" in lower and ("attribute" in lower or "propert" in lower or "state" in lower):
-                in_agent_section = True
-                continue
-            if in_agent_section and line.startswith("#"):
-                in_agent_section = False
-            if in_agent_section:
-                m = attr_pattern.match(line.strip())
-                if m:
-                    attr = m.group(1)
-                    # Skip common non-attribute words
-                    if attr not in {"the", "each", "all", "type", "int", "float", "str", "bool", "list", "dict", "note"}:
-                        design_attrs.add(attr)
-
-        if not design_attrs:
-            return {}
-
-        # Check agent.py for these attributes
-        missing: dict[str, list[str]] = {}
-        agent_file = None
-        for key in files:
-            if "agent.py" in key:
-                agent_file = key
-                break
-
-        if agent_file:
-            agent_code = files[agent_file]
-            absent = [a for a in design_attrs if a not in agent_code]
-            if absent:
-                missing[agent_file] = absent
-
-        return missing
-
-    def _complete_missing_attributes(
-        self, files: dict[str, str], design: str, missing: dict[str, list[str]]
-    ) -> dict[str, str]:
-        """Re-generate files with missing attributes."""
-        for filepath, attrs in missing.items():
-            console.print(f"  [yellow]  Missing in {filepath}: {attrs}[/yellow]")
-
-            existing_code = files.get(filepath, "")
-            system = (
-                "You are an expert Python developer. "
-                "The following agent code is INCOMPLETE — it is missing attributes "
-                "that were specified in the design document. "
-                "Output the COMPLETE, corrected file. "
-                "Output ONLY the Python code, no explanation."
-            )
-            user = (
-                f"## Design Document (relevant section)\n\n{design[:3000]}\n\n"
-                f"## Current {filepath} (INCOMPLETE)\n\n```python\n{existing_code}\n```\n\n"
-                f"## Missing attributes\n\nThe following attributes are missing: {attrs}\n\n"
-                f"Generate the COMPLETE corrected {filepath} with ALL attributes initialized "
-                f"in setup(). Use getattr(self, 'attr', default) pattern for CSV-loaded attributes."
-            )
-            try:
-                raw = self.call_llm(system, user, max_tokens=4096)
-                # Extract code from response
-                code = raw.strip()
-                if code.startswith("```"):
-                    code = code.split("\n", 1)[-1].rsplit("```", 1)[0]
-                # Validate it parses
-                ast.parse(code)
-                files[filepath] = code
-                console.print(f"  [green]✓ {filepath} completed with missing attributes[/green]")
-            except (SyntaxError, Exception) as e:
-                console.print(f"  [red]✗ Could not complete {filepath}: {e}[/red]")
-
-        return files
 
     def _extract_fallback(self, text: str) -> dict[str, str]:
         """Try to salvage any python code block as main.py."""

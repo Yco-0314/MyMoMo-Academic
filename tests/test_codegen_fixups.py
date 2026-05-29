@@ -2,12 +2,14 @@
 from __future__ import annotations
 
 from abm_auto.codegen.fixups import (
+    CompletenessCheckFixup,
     ConfigPathsFixup,
     CsvLocationFixup,
     GridCategoryInjectionFixup,
     SyntaxValidationFixup,
     DEFAULT_FIXUPS,
     apply_fixup_pipeline,
+    make_default_pipeline,
 )
 
 
@@ -151,3 +153,90 @@ def test_default_fixups_protocol_compliance() -> None:
         assert isinstance(fixup.name, str) and fixup.name
         assert callable(fixup.should_run)
         assert callable(fixup.run)
+
+
+# ── CompletenessCheckFixup (stateful) ────────────────────────────────────
+
+
+class _FakeWorkspace:
+    """Minimal workspace stub exposing read_design() only."""
+
+    def __init__(self, design: str):
+        self._design = design
+
+    def read_design(self) -> str:
+        return self._design
+
+
+def test_completeness_should_run_false_with_no_design() -> None:
+    ws = _FakeWorkspace(design="")
+    fx = CompletenessCheckFixup(ws, llm_caller=lambda *a, **k: "")
+    assert not fx.should_run({"core/agent.py": "class A: pass"})
+
+
+def test_completeness_should_run_false_with_no_agent_file() -> None:
+    ws = _FakeWorkspace(
+        design="## Agent attributes\n- foo: int\n- bar: int\n"
+    )
+    fx = CompletenessCheckFixup(ws, llm_caller=lambda *a, **k: "")
+    assert not fx.should_run({"core/model.py": "..."})
+
+
+def test_completeness_should_run_true_when_attrs_missing() -> None:
+    ws = _FakeWorkspace(
+        design="## Agent attributes\n- foo: int\n- bar: int\n"
+    )
+    fx = CompletenessCheckFixup(ws, llm_caller=lambda *a, **k: "")
+    # agent.py mentions `foo` but not `bar`
+    files = {"core/agent.py": "class A:\n    foo = 0\n"}
+    assert fx.should_run(files)
+
+
+def test_completeness_run_calls_llm_with_complete_request() -> None:
+    """Mock the LLM caller; verify it returns a code blob and the file gets swapped."""
+    captured = {}
+
+    def llm(system: str, user: str, max_tokens: int = 4096) -> str:
+        captured["called"] = True
+        captured["user_contains_missing"] = "bar" in user
+        # Mock a complete rewrite that has BOTH attrs
+        return "class A:\n    def setup(self):\n        self.foo = 0\n        self.bar = 0\n"
+
+    ws = _FakeWorkspace(
+        design="## Agent attributes\n- foo: int\n- bar: int\n"
+    )
+    fx = CompletenessCheckFixup(ws, llm_caller=llm)
+    files = {"core/agent.py": "class A:\n    foo = 0\n"}
+    out = fx.run(files)
+    assert captured["called"]
+    assert captured["user_contains_missing"]
+    assert "self.bar" in out["core/agent.py"]
+
+
+def test_completeness_run_skips_on_llm_parse_failure() -> None:
+    """If LLM returns un-parseable code, original is preserved (no swap)."""
+    def llm(system: str, user: str, max_tokens: int = 4096) -> str:
+        return "def broken(:\n"   # SyntaxError
+
+    ws = _FakeWorkspace(
+        design="## Agent attributes\n- foo: int\n- bar: int\n"
+    )
+    fx = CompletenessCheckFixup(ws, llm_caller=llm)
+    original = "class A:\n    foo = 0\n"
+    files = {"core/agent.py": original}
+    out = fx.run(files)
+    # Original preserved because the LLM output didn't parse
+    assert out["core/agent.py"] == original
+
+
+def test_make_default_pipeline_no_workspace_returns_pure_fixups() -> None:
+    pipeline = make_default_pipeline()
+    assert all(not isinstance(f, CompletenessCheckFixup) for f in pipeline)
+    assert len(pipeline) == len(DEFAULT_FIXUPS)
+
+
+def test_make_default_pipeline_with_workspace_includes_completeness() -> None:
+    ws = _FakeWorkspace(design="")
+    pipeline = make_default_pipeline(workspace=ws, llm_caller=lambda *a, **k: "")
+    assert any(isinstance(f, CompletenessCheckFixup) for f in pipeline)
+    assert pipeline[-1].name == "completeness_check"   # always last

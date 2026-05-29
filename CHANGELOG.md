@@ -6,8 +6,14 @@ Versions track architectural milestones, not pip releases.
 ## v0.2 — 2026-05-29
 
 The "story → working calibrated model + report" promise now holds for the
-codegen path (not just `--external-model` bypass). 19 commits across one
-day landing 7 architectural seams + 1 major bug fix + 65 tests in CI.
+codegen path (not just `--external-model` bypass). 26 commits across one
+day landing 8 architectural seams + multiple bug fixes + 81 tests in CI
++ nightly dogfood CI.
+
+**Milestone**: commit `793d346` recorded the first end-to-end codegen
+success (no `--external-model`): exit 0, calibration MSE 180, all GVR
+loops accepted at iter 1/5. Compare to the immediately-prior dogfood
+where pipeline died in Sanity_fix loop with `count_r constant 0`.
 
 ### Added
 
@@ -84,7 +90,46 @@ day landing 7 architectural seams + 1 major bug fix + 65 tests in CI.
 - **Dogfood diagnostic infra** —
   `tests/e2e/dogfood_codegen_path.py`,
   `tests/e2e/diagnose_calibrator_zero_sims.py`,
-  + 5 `docs/dogfood/*` reports preserving the observation chain.
+  + 8 `docs/dogfood/*` reports preserving today's full diagnostic chain.
+- **Stage-2 model override** — `BaseAgent.call_llm(..., model=None)` —
+  per-call model override. First use: Stage-2 JSON extraction now uses
+  `deepseek-chat` (non-reasoning) instead of `deepseek-reasoner` which
+  spent token budget on chain-of-thought before emitting JSON. Two
+  adapters at a real seam. (8b06b09)
+- **`InjectObservedDataPhase`** — `--observed PATH` CLI flag + auto-
+  resolve relative to story directory + auto-copy into
+  workspace/data/observed.csv before calibration. Without this,
+  `_should_calibrate()` returned False and pipeline silently fell back
+  to OptimizerAgent. (5238aab)
+- **Multi-seed observed.csv generator** —
+  `abm_auto.verification.generate_observed` averages N NetLogo oracle
+  realizations into a single observed.csv to lower MSE floor from
+  ~100 (single-run noise) to ~20.
+- **`_targets_alignment_validator`** in CodegenPhase — scans
+  environment.py for `self.<target>` assignments matching every
+  declared spec target. Catches multi-stage extraction drift between
+  Stage-2 JSON `targets` and Stage-3 environment.py attribute names.
+  (80fdbd8)
+- **`_structural_fidelity_validator`** in CodegenPhase — checks
+  scenario.py declares every `scenario_params` and agent.py
+  initialises every `agent_state_vars`. Cheap deterministic
+  alternative to the LLM-judge fidelity validator that catches drift
+  earlier. (22c5298)
+- **`CoderAgent._build_templated_targets_block()`** — prompt-side
+  hard contract listing the templated DataCollector's required env
+  attribute names. LLM no longer picks `susceptible` when spec
+  declared `count_s`. (80fdbd8)
+- **`CodegenFixup` Protocol + `apply_fixup_pipeline()`** — same
+  Phase-adapter pattern Pipeline uses, applied to CoderAgent's
+  post-LLM file transforms. Four pure fixups extracted
+  (ConfigPathsFixup, CsvLocationFixup, GridCategoryInjectionFixup,
+  SyntaxValidationFixup), each independently testable. CoderAgent
+  shrinks from 542 LoC → ~360 LoC. (22c5298)
+- **`COLUMN_ALIASES` + `normalize_columns`** in
+  `abm_auto.calibration.summary_stats` — bridges sim `count_s` ↔ obs
+  `susceptible` naming. Mirrors the alias map in
+  benchmark_calibration_challenge for self-contained calibration.
+  (5238aab)
 
 ### Fixed
 
@@ -128,10 +173,21 @@ day landing 7 architectural seams + 1 major bug fix + 65 tests in CI.
 
 | Indicator | v0.1 | v0.2 |
 |---|---|---|
-| Calibration MSE (codegen path, BEHAVE virus) | crashed | **23.3** |
+| Calibration MSE (codegen path, BEHAVE virus) | crashed | **180.3** (full Layer 3) / **23.3** (legacy codegen) |
 | Calibration MSE (lean path) | 1480 | **99 ± 59** |
 | Pipeline god method | 522 LoC inline | **23 phase adapters** |
-| Architectural seams | 0 | **7** |
+| CoderAgent god class | 542 LoC inline | **4 fixups extracted, ~360 LoC remaining** |
+| Architectural seams | 0 | **8** (Topology, SummaryStats, Refiners, fit/fit_from_files, NetLogo oracle, Phase, AntiPattern, CodegenFixup) |
 | Anti-pattern catalog | 0 | **19 fixtures** |
-| Test count | 0 | **65 (in CI)** |
-| End-to-end "story → MSE" | broken | **works** |
+| Codegen validators | 0 | **6** (anti_pattern, structural_fidelity, targets_alignment, dry_run, contract, fidelity) |
+| Test count | 0 | **81 (in CI)** |
+| End-to-end "story → MSE" via codegen | broken | **works** (8 GVR iterations all accept at iter 1/5) |
+| Nightly dogfood CI | none | runs daily, asserts MSE < 500 |
+
+### Open follow-ups (next session)
+
+Identifiability diagnostics (ADR-006 OQ#3 — calibrator silently lands
+on one local minimum), Reviewer decomposition (god class #3, 544 LoC),
+cross-domain codegen validation (Opinion + Schelling stories never
+tested end-to-end through codegen path), CoderAgent full decomposition
+(LLM-driven fixups still inline).

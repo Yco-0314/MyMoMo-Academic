@@ -25,8 +25,10 @@ benchmark_pipeline_stability_summary.md
 # Per-example handcrafted model outputs (re-emitted by main.py on every run)
 examples/*/handcrafted_model/data/output/
 
-# Pre-built adversarial codegen test material (WIP, not yet first-class)
-examples/adversarial_codegen/
+# Adversarial codegen story.md + README.md are committed (first-class
+# fixture for the anti-pattern validator). Only ignore the data/output/
+# scratch produced when a dogfood writes results into the example dir.
+examples/adversarial_codegen/data/output/
 
 # In-flight design docs (not yet ADR'd; kept locally during drafting)
 docs/mymomo-simulation-engine-evolution-plan.md
