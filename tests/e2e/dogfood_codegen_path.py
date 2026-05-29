@@ -148,8 +148,20 @@ def estimate_api_cost_usd(llm_calls: dict[str, int]) -> float:
     return sum(llm_calls.values()) * cost_per_call
 
 
-def collect_metrics(workspace: Path, stdout: str, stderr: str, wall: float, exit_code: int) -> dict[str, Any]:
-    """Compute the 14 metrics for the report."""
+def collect_metrics(
+    workspace: Path,
+    stdout: str,
+    stderr: str,
+    wall: float,
+    exit_code: int,
+    observed_path: Path = DEFAULT_OBSERVED,
+) -> dict[str, Any]:
+    """Compute the 14 metrics for the report.
+
+    `observed_path` is the file to score the final-sim trajectory against.
+    Must match the observed.csv that was passed to the pipeline (cross-domain
+    dogfoods would silently score against the wrong domain otherwise).
+    """
     audit_path = workspace / "audit_ledger.jsonl" if workspace else None
     best_params_path = workspace / "best_params.json" if workspace else None
     final_sim_path = workspace / "calibration_final_sim.csv" if workspace else None
@@ -171,7 +183,8 @@ def collect_metrics(workspace: Path, stdout: str, stderr: str, wall: float, exit
 
     mse = None
     if final_sim_path and final_sim_path.exists():
-        mse = score_mse(DEFAULT_OBSERVED, final_sim_path)
+        # Score against the story-resolved observed.csv (cross-domain safety)
+        mse = score_mse(observed_path, final_sim_path)
 
     rel_errs = None
     if best_params:
@@ -302,13 +315,31 @@ def render_report(metrics: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def _resolve_observed(story: Path, explicit: Optional[Path]) -> Path:
+    """Auto-resolve observed.csv from story dir if not explicitly passed.
+
+    Without this, cross-domain dogfoods (Opinion / Schelling) silently
+    scored against virus observed.csv → garbage MSE. The CLI's --observed
+    flag works; this just makes the default sensible per-story.
+    """
+    if explicit is not None and explicit != DEFAULT_OBSERVED:
+        return explicit
+    story_observed = story.parent / "observed.csv"
+    if story_observed.exists():
+        return story_observed
+    return DEFAULT_OBSERVED
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--story", type=Path, default=DEFAULT_STORY)
     ap.add_argument("--iterations", type=int, default=2)
-    ap.add_argument("--observed", type=Path, default=DEFAULT_OBSERVED, help="Passed through to --observed CLI flag")
+    ap.add_argument("--observed", type=Path, default=None,
+                    help="Passed through to --observed CLI flag. Auto-resolved "
+                         "from <story.parent>/observed.csv when omitted.")
     ap.add_argument("--report", type=Path, default=REPO / "docs" / "dogfood" / f"{time.strftime('%Y-%m-%d')}-codegen-path-virus.md")
     args = ap.parse_args()
+    args.observed = _resolve_observed(args.story, args.observed)
 
     workspace_name = f"dogfood_codegen_{int(time.time())}"
     print(f"=== Dogfood codegen path ===")
@@ -326,9 +357,9 @@ def main() -> int:
     if not workspace:
         print("ERROR: could not locate workspace dir")
         # Still emit a report with what we have
-        metrics = collect_metrics(None, stdout, stderr, wall, exit_code)
+        metrics = collect_metrics(None, stdout, stderr, wall, exit_code, observed_path=args.observed)
     else:
-        metrics = collect_metrics(workspace, stdout, stderr, wall, exit_code)
+        metrics = collect_metrics(workspace, stdout, stderr, wall, exit_code, observed_path=args.observed)
 
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(render_report(metrics), encoding="utf-8")
