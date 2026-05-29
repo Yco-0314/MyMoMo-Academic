@@ -114,8 +114,8 @@ class SimulatorWrapper:
             return None
         try:
             df = normalize_columns(df, targets)
-            if self.expected_rows is not None and len(df) > self.expected_rows:
-                df = df.iloc[: self.expected_rows]
+            if self.expected_rows is not None:
+                df = _align_rows(df, self.expected_rows)
             return self.summary_fn(df, targets)
         except Exception as e:
             self._log_failure(f"exception:{type(e).__name__}", f"summary_fn failed: {e}")
@@ -176,6 +176,40 @@ class SimulatorWrapper:
             return pd.read_csv(csvs[0])
         except Exception:
             return None
+
+
+def _align_rows(df: pd.DataFrame, target_n: int) -> pd.DataFrame:
+    """Truncate or pad the DataFrame to exactly target_n rows.
+
+    Truncate (df longer than target): keep the first target_n rows.
+    Pad (df shorter): repeat the LAST row to fill. Padding with last-row
+    value is more honest than zeros — it represents "system reached
+    steady state at this point, no further dynamics" rather than "values
+    crashed to 0". Calibration distance metrics then reflect that
+    steady-state difference rather than treating a stalled sim as a
+    catastrophic mismatch.
+
+    Why this exists: cross-domain dogfood revealed that when sim runs
+    for N ticks but observed.csv has M ticks (N≠M), RF calibrator
+    crashes with "X has K features, expected J" because feature vector
+    length depends on row count. Forcing exact row alignment lets RF
+    fit and ABC distance norms work consistently.
+
+    Returns a NEW DataFrame; never mutates input.
+    """
+    n = len(df)
+    if n == target_n:
+        return df
+    if n > target_n:
+        return df.iloc[:target_n].reset_index(drop=True)
+    # n < target_n: pad with repeated last row
+    if n == 0:
+        # Edge case: zero-row df, return as-is (caller's summary_fn will
+        # produce a zero vector — handled by upstream `if df.empty` check)
+        return df
+    last_row = df.iloc[-1:]
+    padding = pd.concat([last_row] * (target_n - n), ignore_index=True)
+    return pd.concat([df.reset_index(drop=True), padding], ignore_index=True)
 
 
 # Back-compat: external code may still import `summary_stats` from this

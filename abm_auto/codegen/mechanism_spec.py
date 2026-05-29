@@ -157,7 +157,16 @@ class MechanismSpec:
     data_collector_class_name: str = "MyDataCollector"
 
     # ── Structure ──
-    topology: TopologySpec = field(default_factory=lambda: TopologySpec(type="watts_strogatz", params={"k": 6, "p": 0.1}))
+    # `topology` is OPTIONAL. None means the model is NOT network-based
+    # (e.g., Grid-based Schelling, or no spatial structure at all). When
+    # None, TemplateGenerator emits a model.py skeleton that skips the
+    # network setup block — CoderAgent is then responsible for any Grid
+    # / spatial setup in environment.py / agent.py.
+    # When set, TemplateGenerator emits `Network.setup_agent_connections(
+    # topology=topologies.<type>(...))` (Layer 3 happy path).
+    topology: Optional[TopologySpec] = field(
+        default_factory=lambda: TopologySpec(type="watts_strogatz", params={"k": 6, "p": 0.1})
+    )
     n_agents_param: str = "agent_num"         # scenario field holding agent count
     periods_param: str = "periods"             # scenario field holding tick count
 
@@ -183,11 +192,17 @@ class MechanismSpec:
     def from_dict(cls, data: dict[str, Any]) -> "MechanismSpec":
         # Hand-coded so nested dataclasses get reconstructed (asdict /
         # auto-from-dict don't handle nested @dataclass without help).
-        top_raw = data.get("topology", {})
-        topology = TopologySpec(
-            type=top_raw.get("type", "watts_strogatz"),
-            params=dict(top_raw.get("params", {})),
-        )
+        top_raw = data.get("topology")
+        if top_raw is None or top_raw == {}:
+            # Explicit None or empty dict → model has no network topology
+            # (Grid-based or spatial-free). Pass None through so
+            # TemplateGenerator emits a network-less model.py.
+            topology = None
+        else:
+            topology = TopologySpec(
+                type=top_raw.get("type", "watts_strogatz"),
+                params=dict(top_raw.get("params", {})),
+            )
         scenario_params = [ScenarioParam(**p) for p in data.get("scenario_params", [])]
         agent_state_vars = [AgentStateVar(**v) for v in data.get("agent_state_vars", [])]
         return cls(
@@ -231,8 +246,10 @@ class MechanismSpec:
         ]:
             if not value or not value.isidentifier():
                 errors.append(f"{label}={value!r} not a valid Python identifier")
-        # Topology
-        errors.extend(f"topology: {e}" for e in self.topology.validate())
+        # Topology — only validate when non-None (None is the explicit
+        # "no network" signal for Grid models / spatial-free models)
+        if self.topology is not None:
+            errors.extend(f"topology: {e}" for e in self.topology.validate())
         # Scenario params
         param_names_seen: set[str] = set()
         for p in self.scenario_params:

@@ -186,6 +186,53 @@ def test_generate_all_returns_every_template_file() -> None:
     assert set(files.keys()) == set(TEMPLATE_FILES)
 
 
+# ── topology=None branch (Grid / spatial-free models) ──────────────────
+
+
+def test_topology_free_model_py_skips_network_setup() -> None:
+    """When spec.topology is None, model.py must NOT mention Network or topologies."""
+    spec = _valid_sir_spec()
+    spec.topology = None
+    src = generate_model_py(spec)
+    # No Network references
+    assert "self.network" not in src
+    assert "create_network" not in src
+    assert "setup_agent_connections" not in src
+    assert "topologies." not in src
+    # Imports adjusted — no `topologies` import
+    assert "import topologies" not in src
+    # environment.step() signature drops the network arg
+    assert "self.environment.step(self.agents, self.scenario)" in src
+
+
+def test_topology_free_model_py_compiles() -> None:
+    import ast
+    spec = _valid_sir_spec()
+    spec.topology = None
+    ast.parse(generate_model_py(spec))
+
+
+def test_topology_free_model_py_still_creates_agents_and_env() -> None:
+    spec = _valid_sir_spec()
+    spec.topology = None
+    src = generate_model_py(spec)
+    assert "create_agent_list" in src
+    assert "create_environment" in src
+    assert "create_data_collector" in src
+    # initialize hook takes (agents, scenario), not (agents, network, scenario)
+    assert "self.environment.initialize(self.agents, self.scenario)" in src
+
+
+def test_network_model_py_still_includes_network() -> None:
+    """Regression — topology=set still produces the existing happy-path output."""
+    spec = _valid_sir_spec()
+    # topology is already set in _valid_sir_spec
+    assert spec.topology is not None
+    src = generate_model_py(spec)
+    assert "self.network = self.create_network()" in src
+    assert "setup_agent_connections" in src
+
+
 def test_is_template_file_recognises_template_files() -> None:
     assert is_template_file("core/model.py")
     assert is_template_file("core/scenario.py")
