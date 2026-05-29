@@ -77,6 +77,79 @@ class CodegenPhase:
                 self.verifier.fix(feedback)
             return None
 
+        def _structural_fidelity_validator(_ignored) -> ValidationOutcome:
+            """Deterministic structural checks against mechanism_spec.json.
+
+            Complements `_fidelity_validator` (LLM-judge, expensive & noisy)
+            with cheap regex-based gates that catch the most common
+            spec-vs-code drift:
+
+              - scenario_params declared in JSON spec but missing from
+                scenario.py `self.X` declarations
+              - agent_state_vars declared in JSON spec but missing from
+                agent.py `self.X` references
+
+            Doesn't try to validate behavioral fidelity (that's the LLM
+            judge's job) — just that the structural surface matches.
+
+            Why this fires BEFORE `_fidelity_validator`: structural drift
+            cascades into runtime errors (`AttributeError: 'Scenario' has
+            no attribute 'X'`). Catching it via cheap regex saves an LLM
+            call AND gives the GVR loop a more specific repair message.
+            """
+            import json
+            import re as _re
+
+            spec_path = ctx.workspace.path / "mechanism_spec.json"
+            if not spec_path.exists():
+                return ValidationOutcome(ok=True)
+            try:
+                spec = json.loads(spec_path.read_text(encoding="utf-8"))
+            except Exception:
+                return ValidationOutcome(ok=True)
+
+            code_files = ctx.workspace.read_model_files()
+            issues: list[str] = []
+
+            # scenario.py: every scenario_param must be declared as self.X
+            scenario_src = code_files.get("core/scenario.py", "")
+            if scenario_src.strip():
+                for p in spec.get("scenario_params", []) or []:
+                    name = p.get("name", "")
+                    if not name:
+                        continue
+                    if not _re.search(rf"\bself\.{_re.escape(name)}\b", scenario_src):
+                        issues.append(
+                            f"scenario.py: missing declaration `self.{name}`. "
+                            f"mechanism_spec.json declares it as a scenario_param "
+                            f"(unit={p.get('unit', '?')}, default={p.get('default', '?')}); "
+                            f"add `self.{name} = <default>` in Scenario.setup()."
+                        )
+
+            # agent.py: every agent_state_var must appear as self.X
+            agent_src = code_files.get("core/agent.py", "")
+            if agent_src.strip():
+                for v in spec.get("agent_state_vars", []) or []:
+                    name = v.get("name", "")
+                    if not name:
+                        continue
+                    if not _re.search(rf"\bself\.{_re.escape(name)}\b", agent_src):
+                        issues.append(
+                            f"agent.py: missing state variable `self.{name}`. "
+                            f"mechanism_spec.json declares it as an agent_state_var "
+                            f"(type={v.get('type', '?')}, init={v.get('init', '?')!r}); "
+                            f"initialize it in Agent.setup()."
+                        )
+
+            if not issues:
+                return ValidationOutcome(ok=True)
+            return ValidationOutcome(
+                ok=False,
+                reasons=issues,
+                severity="fatal",   # structural mismatches cause runtime AttributeError
+                structured={"issue_count": len(issues)},
+            )
+
         def _targets_alignment_validator(_ignored) -> ValidationOutcome:
             """Verify LLM env.py sets every templated DataCollector attribute.
 
@@ -243,11 +316,12 @@ class CodegenPhase:
                 return ValidationOutcome(ok=True)
 
         _val = compose_validators([
-            ("anti_pattern", _anti_pattern_validator),         # static, cheap
-            ("targets_alignment", _targets_alignment_validator),  # Layer 3 desync gate
+            ("anti_pattern", _anti_pattern_validator),               # static regex, cheap
+            ("structural_fidelity", _structural_fidelity_validator),  # spec vs scenario.py / agent.py
+            ("targets_alignment", _targets_alignment_validator),     # spec vs environment.py
             ("dry_run", _dry_run_validator),
             ("contract", _contract_validator),
-            ("fidelity", _fidelity_validator),
+            ("fidelity", _fidelity_validator),                       # LLM-judge, last
         ])
 
         gvr = refine(

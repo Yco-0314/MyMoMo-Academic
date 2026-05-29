@@ -5,7 +5,8 @@ import re
 from rich.console import Console
 
 from abm_auto.agents.base import BaseAgent
-from abm_auto.agents.code_manager import parse_code_blocks as _parse_code_blocks, validate_syntax as _cm_validate_syntax
+from abm_auto.agents.code_manager import parse_code_blocks as _parse_code_blocks
+from abm_auto.codegen.fixups import apply_fixup_pipeline
 from abm_auto.config import TEMPLATES_DIR
 
 console = Console()
@@ -153,11 +154,10 @@ class CoderAgent(BaseAgent):
             console.print("  [yellow]⚠ Could not parse file blocks, attempting raw extraction[/yellow]")
             files = self._extract_fallback(raw)
 
-        # Post-generation fixes
-        files = self._fix_config_paths(files)
-        files = self._ensure_output_dirs(files)
-        files = self._fix_grid_agent_category(files)
-        files = self._validate_syntax(files)
+        # Post-generation fixes — each is an independent CodegenFixup adapter
+        # in abm_auto.codegen.fixups. Order matters (e.g. CSV placement fixes
+        # the filesystem layout before subsequent fixups depend on it).
+        files = apply_fixup_pipeline(files)
 
         # Completeness check: verify all DESIGN.md agent attributes present
         missing = self._check_attribute_completeness(files, design)
@@ -449,88 +449,6 @@ class CoderAgent(BaseAgent):
             except (SyntaxError, Exception) as e:
                 console.print(f"  [red]✗ Could not complete {filepath}: {e}[/red]")
 
-        return files
-
-    def _fix_config_paths(self, files: dict[str, str]) -> dict[str, str]:
-        """Ensure main.py uses standardized Config paths."""
-        if "main.py" not in files:
-            return files
-
-        main = files["main.py"]
-        # Fix non-standard input_folder paths
-        main = re.sub(
-            r'input_folder\s*=\s*["\'](?!data/input)[^"\']+["\']',
-            'input_folder="data/input"',
-            main,
-        )
-        # Fix non-standard output_folder paths
-        main = re.sub(
-            r'output_folder\s*=\s*["\'](?!data/output)[^"\']+["\']',
-            'output_folder="data/output"',
-            main,
-        )
-        files["main.py"] = main
-        return files
-
-    def _ensure_output_dirs(self, files: dict[str, str]) -> dict[str, str]:
-        """Ensure data/input and data/output directories will exist.
-
-        If SimulatorScenarios.csv was placed under a non-standard key,
-        move it to data/input/SimulatorScenarios.csv.
-        """
-        csv_key = None
-        for key in list(files.keys()):
-            if key.endswith("SimulatorScenarios.csv"):
-                csv_key = key
-                break
-
-        if csv_key and csv_key != "data/input/SimulatorScenarios.csv":
-            files["data/input/SimulatorScenarios.csv"] = files.pop(csv_key)
-            console.print(f"  [yellow]⚠ Moved {csv_key} → data/input/SimulatorScenarios.csv[/yellow]")
-
-        return files
-
-    def _validate_syntax(self, files: dict[str, str]) -> dict[str, str]:
-        """Validate Python files parse correctly."""
-        for err in _cm_validate_syntax(files):
-            console.print(f"  [yellow]⚠ {err}[/yellow]")
-        return files
-
-    def _fix_grid_agent_category(self, files: dict[str, str]) -> dict[str, str]:
-        """Ensure every GridAgent subclass implements set_category().
-
-        MyMoMo Runtime raises NotImplementedError if set_category() is absent.
-        Insert a minimal implementation right after class definition.
-        """
-        for path, content in files.items():
-            if not path.endswith(".py"):
-                continue
-            if "GridAgent" not in content:
-                continue
-            # Check if any class inherits GridAgent but lacks set_category
-            has_grid_subclass = re.search(r"class\s+\w+\(GridAgent\)", content)
-            if not has_grid_subclass:
-                continue
-            if "set_category" in content:
-                continue  # already present
-            # Inject set_category into setup() or right after class header
-            # Strategy: insert after "def setup(self):" line if it exists
-            lines = content.split("\n")
-            new_lines = []
-            injected = False
-            for i, line in enumerate(lines):
-                new_lines.append(line)
-                # Inject right before first `def setup(self):` in a GridAgent class
-                if not injected and "def setup(self):" in line and i > 0:
-                    indent = len(line) - len(line.lstrip())
-                    ind = " " * indent
-                    new_lines.insert(-1, f"{ind}def set_category(self):")
-                    new_lines.insert(-1, f"{ind}    self.category = 0")
-                    new_lines.insert(-1, f"")
-                    injected = True
-            if injected:
-                files[path] = "\n".join(new_lines)
-                console.print(f"  [dim]Auto-injected set_category() into {path}[/dim]")
         return files
 
     def _extract_fallback(self, text: str) -> dict[str, str]:
