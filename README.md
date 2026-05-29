@@ -4,6 +4,33 @@
 
 `abm-auto` is a fully autonomous ABM research system that takes a plain-text research scenario and produces executable simulations, parameter explorations, and academic-quality research reports — with zero human intervention.
 
+## What's New (v0.2 — 2026-05-29)
+
+19 commits landing the **codegen path end-to-end**. Until v0.2, the BEHAVE 2025 SIR story would crash mid-pipeline. Now: 5-minute wall, MSE 23, calibrated params within 22% of truth — with no manual intervention.
+
+Architectural changes:
+
+- **Pluggable Topology seam** (`abm_auto.runtime.topologies`) — `netlogo_spatially_clustered`, `watts_strogatz`, `barabasi_albert`, `erdos_renyi`, `melodie_named`. NetLogo "spatially-clustered-network" finally expressible.
+- **Schema-driven codegen** — `MechanismSpec` (JSON contract) + `TemplateGenerator` (5 deterministic boilerplate files) replace LLM-written boilerplate. See [ADR-007](docs/decisions/ADR-007-schema-driven-codegen.md).
+- **Calibration recovery** — MSE 1480 → 99 on the lean benchmark (14× improvement). Two-stage screen+refine, full-trajectory summary stats, pandas dtype fix, observability instrumentation. See [ADR-006](docs/decisions/ADR-006-calibration-recovery.md).
+- **Pipeline decomposed** — 522-line god method → 23 `Phase` adapters in `abm_auto/pipeline/phases/`.
+- **Anti-pattern validator** — `abm_auto/codegen/anti_patterns.py` catches 19 known LLM hallucinations pre-execution.
+- **NetLogo headless oracle** + statistical fidelity tests.
+- **3 calibration examples** (SIR + Opinion Dynamics + Schelling) proving the seams are domain-portable.
+
+New CLI flags:
+
+- `--observed PATH` — copy observed data into workspace for calibration
+- `--external-model PATH` — bypass codegen, use prebuilt simulator
+
+New benchmarks:
+
+- `benchmark_calibration_lean.py` — 3-run regression bench, ~5 min wall (vs ~16 min via full pipeline)
+- `benchmark_external_model.py` — validates pipeline minus codegen
+- `tests/e2e/dogfood_codegen_path.py` — end-to-end codegen verification
+
+Full history: [CHANGELOG.md](CHANGELOG.md).
+
 ## Architecture
 
 ```
@@ -34,15 +61,25 @@ story.md → [Design Agent] → [Code Agent] → [Verify & Fix Loop] → [Simula
 cd abm-auto
 uv sync
 
-# 2. Set your API key
+# 2. Set your API key (Claude or DeepSeek)
 cp .env.example .env
 # Edit .env: ANTHROPIC_API_KEY=sk-ant-...
+#       or: DEEPSEEK_API_KEY=sk-... + LLM_PROVIDER=deepseek
 
-# 3. Run (SIR epidemic example, 2 iterations, English output)
-uv run abm-auto run examples/sir_epidemic/story.md --lang en --iterations 2
+# 3. Run a calibration example end-to-end (BEHAVE 2025 SIR — ~5 min, ~$0.03)
+uv run abm-auto run examples/calibration_challenge_virus/story.md \
+    --mode reproduce \
+    --no-lit-review \
+    --iterations 2 \
+    --observed examples/calibration_challenge_virus/observed.csv
 
-# 4. Run with sensitivity analysis and peer review
-uv run abm-auto run story.md --sensitivity morris --sa-samples 10 --review
+# 4. Skip codegen, use a prebuilt simulator (for benchmarking calibration alone)
+uv run abm-auto run examples/calibration_challenge_virus/story.md \
+    --external-model examples/calibration_challenge_virus/handcrafted_model \
+    --observed examples/calibration_challenge_virus/observed.csv
+
+# 5. Iterate on calibrator quickly (fast feedback loop, no LLM)
+uv run python benchmark_calibration_lean.py 3
 ```
 
 ## Usage

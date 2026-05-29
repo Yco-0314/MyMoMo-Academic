@@ -2,7 +2,7 @@ from __future__ import annotations
 import re
 import time
 from pathlib import Path
-from typing import Union
+from typing import Optional, Union
 
 import anthropic
 from rich.console import Console
@@ -76,17 +76,34 @@ class BaseAgent:
             raise FileNotFoundError(f"Knowledge file not found: {path}")
         return path.read_text(encoding="utf-8")
 
-    def call_llm(self, system: str, user: str, max_tokens: int = 8192) -> str:
-        """Call the LLM and return text. Provider-agnostic; retries on transient errors."""
+    def call_llm(
+        self,
+        system: str,
+        user: str,
+        max_tokens: int = 8192,
+        model: Optional[str] = None,
+    ) -> str:
+        """Call the LLM and return text. Provider-agnostic; retries on transient errors.
+
+        Args:
+            model: Optional per-call model override. Defaults to self.model
+                (set at agent construction). Use this when an agent has one
+                main model (e.g. a reasoner for chain-of-thought) but needs
+                a different model for a focused subtask (e.g. deepseek-chat
+                for structured JSON extraction where reasoning wastes
+                tokens). See MechanismExtractor._extract_json_spec for the
+                first real use of this seam.
+        """
+        effective_model = model or self.model
         lang_dir = LANG_DIRECTIVES.get(self.lang, LANG_DIRECTIVES["en"])
         full_system = f"{system}\n\n{lang_dir}"
-        console.print(f"  [dim]→ LLM ({self.model}, lang={self.lang}, max_tokens={max_tokens})[/dim]")
+        console.print(f"  [dim]→ LLM ({effective_model}, lang={self.lang}, max_tokens={max_tokens})[/dim]")
 
         max_retries = 5
         for attempt in range(max_retries):
             try:
                 return self.client.create(
-                    model=self.model,
+                    model=effective_model,
                     max_tokens=max_tokens,
                     system=full_system,
                     user=user,

@@ -1,0 +1,86 @@
+name: Dogfood (codegen path end-to-end)
+
+# Runs the full LLM-driven pipeline on the BEHAVE 2025 SIR story
+# without --external-model, asserting:
+#   - exit code 0 (pipeline completes)
+#   - pipeline does not halt (no fatal viability / fatal codegen failure)
+#   - MSE < 500 (calibration produces a meaningful fit)
+#   - workspace contains best_params.json + calibration_final_sim.csv
+#
+# Why nightly: catches regressions in LLM prompts, schema-driven codegen,
+# calibrator, and the whole Phase 1d → Phase 7b chain that unit tests
+# cannot reach. Runs once per day at 06:00 UTC (14:00 Beijing).
+#
+# Cost: ~$0.03 per run × ~30 days/month = ~$1/mo at DeepSeek pricing.
+#
+# Manual trigger (workflow_dispatch) allows on-demand validation when
+# investigating prompt changes or pipeline refactors.
+
+on:
+  schedule:
+    - cron: "0 6 * * *"   # 06:00 UTC daily
+  workflow_dispatch:        # manual run on demand
+  pull_request:
+    paths:
+      - "abm_auto/prompts/**"
+      - "abm_auto/agents/**"
+      - "abm_auto/pipeline/**"
+      - "abm_auto/codegen/**"
+      - "abm_auto/calibration/**"
+      - "abm_auto/runtime/**"
+
+jobs:
+  dogfood:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Check API key
+        # Don't fail the job on a fork PR without secrets — soft-skip
+        run: |
+          if [ -z "${{ secrets.DEEPSEEK_API_KEY }}" ]; then
+            echo "::warning::No DEEPSEEK_API_KEY secret — dogfood skipped (typical for fork PRs)"
+            echo "DOGFOOD_SKIP=1" >> $GITHUB_ENV
+          fi
+
+      - name: Run dogfood
+        if: env.DOGFOOD_SKIP != '1'
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+          LLM_PROVIDER: deepseek
+        run: |
+          python tests/e2e/dogfood_codegen_path.py \
+            --report docs/dogfood/ci-$(date -u +%Y-%m-%dT%H%M%SZ).md
+
+      - name: Assert MSE < 500
+        if: env.DOGFOOD_SKIP != '1'
+        run: |
+          # The dogfood runner writes a report; parse the TL;DR MSE line
+          REPORT=$(ls -t docs/dogfood/ci-*.md | head -1)
+          MSE=$(grep -oE "Calibration MSE.*\*\*[0-9.]+\*\*" "$REPORT" | grep -oE "[0-9.]+" | tail -1 || echo "999999")
+          echo "Parsed MSE: $MSE"
+          # Use Python for the comparison (bash floats are brittle)
+          python -c "import sys; sys.exit(0 if float('$MSE') < 500 else 1)" || {
+            echo "::error::MSE=$MSE exceeds threshold 500. See $REPORT"
+            exit 1
+          }
+
+      - name: Upload dogfood report
+        if: always() && env.DOGFOOD_SKIP != '1'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dogfood-report-${{ github.run_id }}
+          path: docs/dogfood/ci-*.md
+          retention-days: 30

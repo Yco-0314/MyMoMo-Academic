@@ -35,6 +35,7 @@ from typing import Optional
 
 from rich.console import Console
 
+from abm_auto import config
 from abm_auto.agents.base import BaseAgent
 from abm_auto.codegen.mechanism_spec import MechanismSpec
 
@@ -188,12 +189,17 @@ class MechanismExtractor(BaseAgent):
                     + prompt
                 )
             try:
-                # 4096 not 2048: deepseek-reasoner spends its budget on
-                # chain-of-thought reasoning before emitting visible output.
-                # First dogfood with 2048 returned empty string both attempts
-                # — bumping to 4096 (same as Stage-1) gives the model headroom
-                # to think then emit the JSON.
-                raw = self.call_llm(self._JSON_SYSTEM, prompt, max_tokens=4096)
+                # Stage-2 uses the NON-reasoning model. The reasoner returned
+                # empty output on both attempts in the first two-stage dogfood
+                # — it spent its token budget on chain-of-thought before
+                # emitting visible JSON. Structured extraction doesn't need
+                # reasoning; deepseek-chat is faster, cheaper, and reliable
+                # for "read this markdown, emit this JSON shape".
+                raw = self.call_llm(
+                    self._JSON_SYSTEM, prompt,
+                    max_tokens=4096,
+                    model=config.DEFAULT_MODEL,
+                )
             except Exception as e:
                 console.print(
                     f"  [yellow]⚠ Stage-2 LLM call raised "

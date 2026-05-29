@@ -99,15 +99,18 @@ class {spec.model_class_name}(Model):
         # 1. Create agents
         self.agents.setup_agents(agents_num=self.scenario.{spec.n_agents_param})
 
-        # 2. Initial state setup (mechanism-specific — pseudocode below was
-        #    extracted from DESIGN.md; CoderAgent fills this region if needed)
-{_render_initial_setup(spec)}
-
-        # 3. Build network from the templated topology adapter
+        # 2. Build network from the templated topology adapter
         self.network.setup_agent_connections(
             agent_lists=[self.agents],
             topology={_render_topology_call(spec.topology)},
         )
+
+        # 3. Defer model-specific initial state setup to the environment.
+        #    The environment is LLM-owned; CoderAgent fills .initialize()
+        #    if the mechanism needs initial state beyond what agent.setup()
+        #    handles (e.g., seeding K initial infected agents).
+        if hasattr(self.environment, "initialize"):
+            self.environment.initialize(self.agents, self.network, self.scenario)
 
     def run(self):
         # Collect tick 0 BEFORE any step (so output aligns with observed.csv
@@ -119,14 +122,11 @@ class {spec.model_class_name}(Model):
 '''
 
 
-def _render_initial_setup(spec: MechanismSpec) -> str:
-    """Render the LLM-FILL region for initial_setup_pseudocode (indented 8 spaces)."""
-    if not spec.initial_setup_pseudocode.strip():
-        return "        # (no extra initial setup needed)"
-    body = "\n".join(f"        # {line}" for line in spec.initial_setup_pseudocode.splitlines())
-    return f"""        # === LLM-FILL: initial_setup ===
-{body}
-        # === END LLM-FILL: initial_setup ===
+# NB: _render_initial_setup was removed in commit deleting the LLM-FILL
+# marker convention. Templates no longer emit "fill this region" markers
+# because no mechanism in CodegenPhase reads them — CoderAgent owns
+# agent.py + environment.py and is responsible for model-specific initial
+# state setup there. See ADR-007 §"Open questions".
         # NOTE: CoderAgent expands the pseudocode above into Python below.
         pass"""
 
