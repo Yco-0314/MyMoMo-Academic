@@ -1,0 +1,3 @@
+LLM provider: deepseek, model: deepseek-chat
+Workspace: /home/user/Documents/Social Simulation 
+/mymomo-academic/workspace/dogfood_codegen_1780045287

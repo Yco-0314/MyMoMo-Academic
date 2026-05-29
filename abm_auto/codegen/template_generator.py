@@ -127,8 +127,6 @@ class {spec.model_class_name}(Model):
 # because no mechanism in CodegenPhase reads them — CoderAgent owns
 # agent.py + environment.py and is responsible for model-specific initial
 # state setup there. See ADR-007 §"Open questions".
-        # NOTE: CoderAgent expands the pseudocode above into Python below.
-        pass"""
 
 
 # ── scenario.py ──────────────────────────────────────────────────────────
