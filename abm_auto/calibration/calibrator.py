@@ -272,12 +272,37 @@ class BayesianCalibrator(BaseAgent):
         if result.ok:
             posterior.write_posterior_summary(self.workspace, result)
             posterior.write_best_params(self.workspace, result)
-            posterior.write_calibration_report(self.workspace, result, call_llm=self.call_llm)
             posterior.apply_best_params(self.workspace, simulator, result.best_params)
 
             final_csv = posterior.run_final_validation_sim(simulator, result.best_params, self.workspace)
             if final_csv is not None:
                 console.print(f"  [dim]Final validation sim → {final_csv.name}[/dim]")
+
+            # Diagnostics (α/β/ε) — observability, never blocks pipeline.
+            # ~15s overhead at end of calibration on a 3-param problem.
+            console.print("  [dim]Running diagnostics (profile / Fisher / execution fidelity)...[/dim]")
+            try:
+                story_text = self.workspace.read_story()
+            except Exception:
+                story_text = ""
+            diagnostics_md = posterior.run_diagnostics(
+                self.workspace,
+                simulator,
+                prior_dict,
+                result.best_params,
+                targets,
+                obs_stats,
+                summary_fn=summary_fn,
+                story_text=story_text,
+                final_sim_csv=final_csv,
+                call_llm=self.call_llm,
+            )
+
+            posterior.write_calibration_report(
+                self.workspace, result,
+                call_llm=self.call_llm,
+                diagnostics_md=diagnostics_md,
+            )
 
             console.print(
                 f"  [green]✓ Calibration complete[/green] "
