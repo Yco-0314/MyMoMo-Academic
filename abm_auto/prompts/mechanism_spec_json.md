@@ -54,15 +54,64 @@ pipeline degrades to legacy LLM codegen — which has a known failure rate.
 
 ## Topology types
 
-Pick the ONE that the mechanism markdown declares. Each requires specific params:
+Decide first: **does this mechanism use an explicit AGENT NETWORK** (links
+between agents that drive interaction)?
 
-| `type` | Required params |
-|---|---|
-| `"watts_strogatz"` | `k` (int, even), `p` (float 0-1) |
-| `"barabasi_albert"` | `m` (int, edges per new node) |
-| `"erdos_renyi"` | `p` (float 0-1, edge probability) |
-| `"netlogo_spatially_clustered"` | `avg_degree` (int) |
-| `"melodie_named"` | `name` (str — networkx generator) plus arbitrary kwargs |
+- **Yes — network-based** (e.g., epidemic spread via contact links, opinion
+  diffusion through friendship graphs, information cascades over follower
+  networks): pick a topology type from the table below.
+- **No — Grid-based or spatial-free** (e.g., Schelling segregation on a
+  spatial grid where neighbours = adjacent cells, NOT agent-to-agent
+  links; cellular automata; well-mixed populations): emit
+  **`"topology": null`** (literal JSON null). The downstream
+  TemplateGenerator will emit a model.py that does NOT create a Network
+  — Grid/spatial setup happens inside agent.py / environment.py code
+  that CoderAgent fills in.
+
+| `type` | Required params | Typical use |
+|---|---|---|
+| `null` | — | **Schelling, cellular automata, spatial-grid models, well-mixed populations** — anything where neighbours are geographic adjacency or the model has no topology at all |
+| `"watts_strogatz"` | `k` (int, even), `p` (float 0-1) | small-world |
+| `"barabasi_albert"` | `m` (int, edges per new node) | scale-free preferential attachment |
+| `"erdos_renyi"` | `p` (float 0-1, edge probability) | random graph |
+| `"netlogo_spatially_clustered"` | `avg_degree` (int) | NetLogo's spatially-clustered network |
+| `"melodie_named"` | `name` (str — networkx generator) plus arbitrary kwargs | escape hatch |
+
+### When in doubt
+
+If the mechanism markdown says agents move around a grid / have spatial
+positions / interact with "neighbours" defined by adjacency, choose
+**`null`**. Do NOT pick `watts_strogatz` as a "safe default" — picking
+the wrong topology causes a runtime crash (NetworkAgent/GridAgent
+inheritance contradiction surfaces only at sim time).
+
+### Example: Schelling-shaped Grid model
+
+```json
+{
+  "project_name": "SegregationDynamics",
+  "model_class_name": "SegregationModel",
+  "agent_class_name": "Household",
+  "environment_class_name": "SegregationEnvironment",
+  "scenario_class_name": "SegregationScenario",
+  "data_collector_class_name": "SegregationDataCollector",
+  "topology": null,
+  "n_agents_param": "agent_num",
+  "periods_param": "periods",
+  "scenario_params": [
+    {"name": "periods", "type": "int", "default": 100, "unit": "ticks"},
+    {"name": "agent_num", "type": "int", "default": 1500, "unit": "count"},
+    {"name": "tolerance", "type": "float", "default": 0.3, "unit": "probability"}
+  ],
+  "agent_state_vars": [
+    {"name": "group", "type": "int", "init": "0"}
+  ],
+  "targets": ["fraction_unhappy", "segregation_index"],
+  "env_step_pseudocode": "for each unhappy agent: relocate to a random empty cell whose neighbourhood satisfies tolerance...",
+  "agent_step_pseudocode": null,
+  "initial_setup_pseudocode": "place agents on grid, assign group by ratio"
+}
+```
 
 ## Param value forms
 

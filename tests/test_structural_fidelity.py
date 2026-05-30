@@ -36,6 +36,26 @@ def _scan(spec: dict, code_files: dict[str, str]) -> list[str]:
                 continue
             if not re.search(rf"\bself\.{re.escape(name)}\b", agent_src):
                 issues.append(f"agent.py: missing self.{name}")
+    # Grid/Network contradiction check (mirror of the prod validator)
+    model_src = code_files.get("core/model.py", "")
+    spec_topology = spec.get("topology")
+    agent_inherits_grid = bool(
+        agent_src and re.search(r"class\s+\w+\(\s*GridAgent\s*\)", agent_src)
+    )
+    model_uses_network = bool(
+        model_src and (
+            "setup_agent_connections" in model_src
+            or "create_network" in model_src
+        )
+    )
+    if agent_inherits_grid and model_uses_network:
+        spec_topo_type = (
+            spec_topology.get("type")
+            if isinstance(spec_topology, dict) else None
+        )
+        issues.append(
+            f"Grid/Network contradiction (spec topology={spec_topo_type})"
+        )
     return issues
 
 
@@ -163,3 +183,66 @@ def test_real_mechanism_spec_roundtrip(tmp_path: Path) -> None:
         ),
     }
     assert _scan(spec_data, files) == []
+
+
+# ── Grid/Network contradiction (from originate dogfood) ─────────────────
+
+
+def test_grid_network_contradiction_caught() -> None:
+    """The originate-dogfood bug: agent.py uses GridAgent but model.py wires
+    Network. The validator must surface this contradiction with a clear
+    fix message pointing at mechanism_spec.json topology."""
+    spec = {
+        "scenario_params": [],
+        "agent_state_vars": [],
+        "topology": {"type": "watts_strogatz", "params": {"k": 6, "p": 0.1}},
+    }
+    files = {
+        "core/agent.py": "class Household(GridAgent):\n    pass\n",
+        "core/model.py": (
+            "class M(Model):\n"
+            "    def setup(self):\n"
+            "        self.network.setup_agent_connections(\n"
+            "            agent_lists=[self.agents],\n"
+            "            topology=topologies.watts_strogatz(k=6, p=0.1),\n"
+            "        )\n"
+        ),
+    }
+    issues = _scan(spec, files)
+    assert any("Grid/Network contradiction" in i for i in issues)
+    assert any("watts_strogatz" in i for i in issues)
+
+
+def test_pure_grid_passes_when_no_network_in_model() -> None:
+    """GridAgent + model.py without Network setup → no contradiction."""
+    spec = {
+        "scenario_params": [],
+        "agent_state_vars": [],
+        "topology": None,
+    }
+    files = {
+        "core/agent.py": "class Household(GridAgent):\n    pass\n",
+        "core/model.py": "class M(Model):\n    def setup(self):\n        self.grid = self.create_grid(width=80, height=80)\n",
+    }
+    assert _scan(spec, files) == []
+
+
+def test_pure_network_passes_no_contradiction() -> None:
+    """NetworkAgent + Network setup → no contradiction."""
+    spec = {
+        "scenario_params": [],
+        "agent_state_vars": [],
+        "topology": {"type": "watts_strogatz", "params": {"k": 6, "p": 0.1}},
+    }
+    files = {
+        "core/agent.py": "class Person(NetworkAgent):\n    pass\n",
+        "core/model.py": (
+            "class M(Model):\n"
+            "    def setup(self):\n"
+            "        self.network.setup_agent_connections(\n"
+            "            agent_lists=[self.agents],\n"
+            "            topology=topologies.watts_strogatz(k=6, p=0.1),\n"
+            "        )\n"
+        ),
+    }
+    assert _scan(spec, files) == []

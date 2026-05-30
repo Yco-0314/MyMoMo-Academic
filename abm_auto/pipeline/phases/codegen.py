@@ -141,6 +141,42 @@ class CodegenPhase:
                             f"initialize it in Agent.setup()."
                         )
 
+            # Grid/Network contradiction check — surfaced by 2026-05-30 originate
+            # dogfood. When mechanism_spec.json's `topology` is non-null,
+            # TemplateGenerator emits model.py with `self.network = create_network()`
+            # + `setup_agent_connections(topology=...)`. If agent.py inherits
+            # GridAgent, Network.setup_agent_connections raises
+            # `AssertionError: isinstance(agent, NetworkAgent)` at sim time.
+            # Catch this before Phase 4 with an explicit fix message that
+            # routes the LLM back to mechanism_spec.json (set topology=null).
+            model_src = code_files.get("core/model.py", "")
+            spec_topology = spec.get("topology")
+            agent_inherits_grid = bool(
+                agent_src and _re.search(r"class\s+\w+\(\s*GridAgent\s*\)", agent_src)
+            )
+            model_uses_network = bool(
+                model_src and (
+                    "setup_agent_connections" in model_src
+                    or "create_network" in model_src
+                )
+            )
+            if agent_inherits_grid and model_uses_network:
+                spec_topo_type = (
+                    spec_topology.get("type")
+                    if isinstance(spec_topology, dict) else None
+                )
+                issues.append(
+                    f"Grid/Network contradiction: agent.py inherits GridAgent but "
+                    f"model.py wires a Network topology "
+                    f"(`{spec_topo_type or 'unknown'}`). The Network's add_agent "
+                    f"asserts `isinstance(agent, NetworkAgent)`, which will "
+                    f"crash at Phase 4. **Fix in mechanism_spec.json**: set "
+                    f"`\"topology\": null` for Grid / spatial / no-topology "
+                    f"models. TemplateGenerator will then emit a model.py "
+                    f"without Network setup, and CoderAgent owns Grid "
+                    f"placement inside agent.py / environment.py."
+                )
+
             if not issues:
                 return ValidationOutcome(ok=True)
             return ValidationOutcome(
