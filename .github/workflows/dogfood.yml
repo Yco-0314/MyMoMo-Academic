@@ -103,3 +103,13 @@ jobs:
           name: cross-domain-summary-${{ github.run_id }}
           path: docs/dogfood/cross-domain-lean-*.json
           retention-days: 30
+
+      # Wave B: per-domain profile_likelihood reports (Schelling 0.000 sanity)
+      - name: Upload per-domain diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cross-domain-diag-${{ github.run_id }}
+          path: workspace/cross_domain_lean_*/diagnostics_profile.md
+          retention-days: 30
+          if-no-files-found: ignore

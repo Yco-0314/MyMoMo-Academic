@@ -4,6 +4,12 @@ Catches the kind of cross-domain regression that broke Opinion + Schelling
 on 2026-05-29 dogfood: calibration backend assumes SIR-shaped trajectories,
 fails silently on different column counts / dynamics.
 
+Wave B (2026-05-31): each domain also runs profile_likelihood after the
+fit to sanity-check identifiability. Schelling's MSE 0.000 raised the
+question "is this fit honest or is the loss landscape degenerate?";
+the diag pass distinguishes the two by sweeping each parameter and
+reporting the profile curvature.
+
 Why lean (not full Pipeline)
 ----------------------------
 Earlier smoke test with full Pipeline (--external-model) showed ~29 min
@@ -52,12 +58,19 @@ sys.path.insert(0, str(REPO))
 # unseeded runs). 42 is the seed under which thresholds were calibrated.
 np.random.seed(42)
 
+import pandas as pd
+
 from abm_auto.calibration.calibrator import fit_from_files
+from abm_auto.calibration.identifiability_profile import (
+    ProfileResult,
+    profile_likelihood,
+)
 from abm_auto.calibration.posterior import (
     run_final_validation_sim,
     write_best_params,
 )
 from abm_auto.calibration.simulator import SimulatorWrapper
+from abm_auto.calibration.summary_stats import full_trajectory
 from abm_auto.runner.executor import Executor
 
 
@@ -117,6 +130,9 @@ class DomainResult:
     threshold: float
     verdict: str
     failure_reason: str = ""
+    diag_status: str = ""        # "all identified" | "FLAT: <p1>, <p2>" | "skipped" | "error"
+    diag_flat_params: list[str] = None   # list of flat param names (Wave B)
+    diag_report_path: str = ""
 
 
 def _score_mse(observed: Path, simulated: Path) -> float | None:
@@ -127,6 +143,58 @@ def _score_mse(observed: Path, simulated: Path) -> float | None:
     except Exception as e:
         print(f"    score_mse failed: {e}", flush=True)
         return None
+
+
+# Curvature threshold below which `profile_likelihood` flags a param as
+# FLAT (unidentifiable). Picked to match `ProfileResult.unidentifiable_params`'s
+# default 0.1. Schelling's 1-param tolerance is the first test case —
+# with MSE 0.000 in the cross-domain baseline, the question is whether
+# the loss is genuinely insensitive to tolerance (flat) or whether
+# every tolerance sweep produces near-zero MSE (also flat, but for
+# different reasons).
+_FLAT_CURVATURE_THRESHOLD = 0.1
+
+
+def _run_diagnostics(
+    workspace,
+    executor,
+    domain: Domain,
+    best_params: dict,
+    observed: pd.DataFrame,
+) -> tuple[str, list[str], Path | None]:
+    """Run profile_likelihood per param; return (status, flat_params, report_path).
+
+    Cost: n_params × 15 grid sims per domain (≈12-45s extra). Worth the
+    overhead because identifiability artifacts (Schelling MSE 0.000) are
+    the kind of thing pure MSE thresholds can't catch — a calibration
+    can be "successful" by MSE while the parameter is actually
+    underdetermined.
+    """
+    priors = {
+        s["name"]: {"min": float(s["min"]), "max": float(s["max"])}
+        for s in domain.params_specs
+    }
+    sim = SimulatorWrapper(
+        workspace, executor,
+        base_run_id=80000,
+        summary_fn=full_trajectory,
+        expected_rows=len(observed),
+    )
+    obs_stats = full_trajectory(observed, domain.targets)
+    try:
+        profile: ProfileResult = profile_likelihood(
+            sim, priors, best_params, domain.targets, obs_stats,
+            n_grid=15, summary_fn=full_trajectory,
+        )
+    except Exception as e:
+        return f"error: {type(e).__name__}: {e}", [], None
+
+    flat = profile.unidentifiable_params(threshold=_FLAT_CURVATURE_THRESHOLD)
+    md = profile.to_markdown()
+    report_path = workspace.path / "diagnostics_profile.md"
+    report_path.write_text(md, encoding="utf-8")
+    status = "all identified" if not flat else f"FLAT: {', '.join(flat)}"
+    return status, flat, report_path
 
 
 def run_domain(domain: Domain) -> DomainResult:
@@ -182,11 +250,23 @@ def run_domain(domain: Domain) -> DomainResult:
         )
     verdict = "PASS" if mse <= domain.mse_threshold else "FAIL"
     reason = "" if verdict == "PASS" else f"MSE {mse:.3f} > threshold {domain.mse_threshold}"
+
+    # Wave B: profile_likelihood sanity. Adds ~12-45s/domain.
+    print(f"  running profile_likelihood ({len(domain.params_specs)}×15 sims)...", flush=True)
+    observed_df = pd.read_csv(domain.observed)
+    diag_status, diag_flat, diag_path = _run_diagnostics(
+        ws, executor, domain, result.best_params, observed_df,
+    )
+    wall = time.time() - t0  # include diag wall
+
     return DomainResult(
         domain=domain.name, wall_seconds=wall,
         best_params=result.best_params, mse=mse,
         threshold=domain.mse_threshold,
         verdict=verdict, failure_reason=reason,
+        diag_status=diag_status,
+        diag_flat_params=diag_flat,
+        diag_report_path=str(diag_path) if diag_path else "",
     )
 
 
@@ -198,12 +278,13 @@ def main() -> int:
     print("\n" + "=" * 60, flush=True)
     print("Cross-domain LEAN calibration summary", flush=True)
     print("=" * 60, flush=True)
-    print(f"{'Domain':<26} {'Verdict':<8} {'MSE':<10} {'Threshold':<10} {'Wall (s)':<8}", flush=True)
-    print("-" * 60, flush=True)
+    print(f"{'Domain':<26} {'Verdict':<8} {'MSE':<10} {'Wall':<6} {'Diag':<30}", flush=True)
+    print("-" * 80, flush=True)
     n_fail = 0
     for r in results:
         mse_s = f"{r.mse:.3f}" if r.mse is not None else "—"
-        print(f"{r.domain:<26} {r.verdict:<8} {mse_s:<10} {r.threshold:<10} {r.wall_seconds:.0f}", flush=True)
+        diag_s = r.diag_status[:28] if r.diag_status else "—"
+        print(f"{r.domain:<26} {r.verdict:<8} {mse_s:<10} {r.wall_seconds:<5.0f} {diag_s}", flush=True)
         if r.verdict != "PASS":
             n_fail += 1
             print(f"  reason: {r.failure_reason}", flush=True)
@@ -217,6 +298,9 @@ def main() -> int:
             "wall_seconds": r.wall_seconds,
             "best_params": r.best_params,
             "failure_reason": r.failure_reason,
+            "diag_status": r.diag_status,
+            "diag_flat_params": r.diag_flat_params or [],
+            "diag_report_path": r.diag_report_path,
         }
         for r in results
     ], indent=2, default=str), encoding="utf-8")
