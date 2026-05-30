@@ -4,30 +4,56 @@
 
 `abm-auto` is a fully autonomous ABM research system that takes a plain-text research scenario and produces executable simulations, parameter explorations, and academic-quality research reports — with zero human intervention.
 
-## What's New (v0.2 — 2026-05-29)
+## What's New (v0.3 — 2026-05-31)
 
-19 commits landing the **codegen path end-to-end**. Until v0.2, the BEHAVE 2025 SIR story would crash mid-pipeline. Now: 5-minute wall, MSE 23, calibrated params within 22% of truth — with no manual intervention.
+10 commits across three thrusts: **dogfood coverage** (originate-mode +
+Grid model + cross-domain CI), **calibration diagnostics** (α
+trajectory features + β identifiability + ε execution verifier), and
+**multi-fidelity calibration** infrastructure. Plus a 5-phase roadmap
+([ADR-009](docs/decisions/ADR-009-engine-replacement-roadmap.md)) for
+replacing the underlying Melodie engine.
+
+Cross-domain lean CI now runs **three independent quality gates per domain**:
+
+1. **MSE threshold** — calibration converged near truth
+2. **β profile_likelihood** — parameters individually identifiable
+3. **ε verify_execution** — qualitative direction matches story.md
+
+Latest reproducible (`seed=42`) baseline:
+
+| Domain | MSE | β | ε |
+|---|---|---|---|
+| SIR (virus) | 152 (≤200) | all identified | all match |
+| Opinion (deffuant) | 0.025 (≤0.5) | all identified | all match |
+| Schelling | 0.000 (≤0.5) | all identified | all match |
+
+Total CI wall: ~6 min, ε auto-skips when `DEEPSEEK_API_KEY` is absent
+(so fork PRs stay zero-LLM-cost).
 
 Architectural changes:
 
-- **Pluggable Topology seam** (`abm_auto.runtime.topologies`) — `netlogo_spatially_clustered`, `watts_strogatz`, `barabasi_albert`, `erdos_renyi`, `melodie_named`. NetLogo "spatially-clustered-network" finally expressible.
-- **Schema-driven codegen** — `MechanismSpec` (JSON contract) + `TemplateGenerator` (5 deterministic boilerplate files) replace LLM-written boilerplate. See [ADR-007](docs/decisions/ADR-007-schema-driven-codegen.md).
-- **Calibration recovery** — MSE 1480 → 99 on the lean benchmark (14× improvement). Two-stage screen+refine, full-trajectory summary stats, pandas dtype fix, observability instrumentation. See [ADR-006](docs/decisions/ADR-006-calibration-recovery.md).
-- **Pipeline decomposed** — 522-line god method → 23 `Phase` adapters in `abm_auto/pipeline/phases/`.
-- **Anti-pattern validator** — `abm_auto/codegen/anti_patterns.py` catches 19 known LLM hallucinations pre-execution.
-- **NetLogo headless oracle** + statistical fidelity tests.
-- **3 calibration examples** (SIR + Opinion Dynamics + Schelling) proving the seams are domain-portable.
-
-New CLI flags:
-
-- `--observed PATH` — copy observed data into workspace for calibration
-- `--external-model PATH` — bypass codegen, use prebuilt simulator
-
-New benchmarks:
-
-- `benchmark_calibration_lean.py` — 3-run regression bench, ~5 min wall (vs ~16 min via full pipeline)
-- `benchmark_external_model.py` — validates pipeline minus codegen
-- `tests/e2e/dogfood_codegen_path.py` — end-to-end codegen verification
+- **Multi-fidelity calibration infrastructure** (`Fidelity` dataclass +
+  `_run_mf_screen` scheduler) — coarse-to-fine sim budget split via
+  `periods_scale`. Defaults OFF; lean per-sim wall is subprocess-bound
+  so MF earns its keep only in expensive Pipeline contexts. See
+  [ADR-008](docs/decisions/ADR-008-multi-fidelity-calibration.md).
+- **α `trajectory_features` summary** — 4 shape features per target
+  `[peak_tick, peak_val, final_val, mean]` (12-D vs 750-D
+  `full_trajectory` on SIR). Cross-domain portable.
+- **β `profile_likelihood` + `fisher_info_eigen`** in
+  `abm_auto.calibration.identifiability_profile` — local
+  identifiability diagnostics; markdown-renderable reports with FLAT
+  detection. Closes ADR-006 OQ#3.
+- **ε `verify_execution`** in `abm_auto.verification.execution_verifier`
+  — LLM extracts qualitative claims from story.md, classifier diffs
+  against actual sim trajectory. Catches mechanism-semantics bugs
+  no MSE threshold catches.
+- **Grid/Network contradiction validator** in CodegenPhase — catches
+  originate-mode bug where LLM picks a network topology for an
+  inherently-spatial model.
+- **Originate-mode example** (`examples/originate_segregation_phenomenon/`)
+  — phenomenon-only story that asks the system to PROPOSE the
+  mechanism. Validates ADR-005's dual-mode promise.
 
 Full history: [CHANGELOG.md](CHANGELOG.md).
 

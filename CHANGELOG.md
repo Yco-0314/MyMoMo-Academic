@@ -3,6 +3,115 @@
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) loosely.
 Versions track architectural milestones, not pip releases.
 
+## v0.3 — 2026-05-31
+
+Three concurrent thrusts: **dogfood coverage** (originate-mode +
+Grid models + cross-domain CI), **calibration diagnostics**
+(α trajectory features + β identifiability + ε execution verifier),
+and **multi-fidelity calibration** infrastructure. Plus a 5-phase
+roadmap (ADR-009) for replacing the underlying Melodie engine.
+
+The cross-domain lean CI now runs SIR + Opinion + Schelling in
+~6 min total with three independent quality gates per domain:
+
+1. **MSE threshold** (calibration converged near truth)
+2. **β profile_likelihood** (parameters individually identifiable)
+3. **ε verify_execution** (qualitative direction matches story)
+
+Schelling's MSE=0 baseline now has three corroborating signals
+(MSE PASS, tolerance curvature 3314, ε all-match) that it's an
+honest perfect fit rather than a degenerate loss landscape.
+
+### Added
+
+- **`Fidelity` dataclass + multi-fidelity calibration** (`abm_auto.calibration.types.Fidelity`,
+  `calibrator._run_mf_screen`) — coarse-to-fine sim budget split via
+  `periods_scale` knob (0.4 / 0.7 / 1.0). Defaults OFF because lean
+  per-sim cost is subprocess-startup-dominated; opt in at the
+  call site for expensive Pipeline contexts. See
+  [ADR-008](docs/decisions/ADR-008-multi-fidelity-calibration.md).
+  (`bf1d848`)
+- **α `trajectory_features` SummaryStats adapter**
+  (`abm_auto.calibration.summary_stats.trajectory_features`) —
+  4 shape features per target `[peak_tick, peak_val, final_val, mean]`,
+  12-D vs 750-D `full_trajectory` on SIR. Cross-domain portable —
+  same features mean something for SIR / Opinion / Schelling.
+  (`9ebd4f6`)
+- **β `profile_likelihood` + `fisher_info_eigen`**
+  (`abm_auto.calibration.identifiability_profile`) — local
+  identifiability diagnostics. profile sweeps one param at a time
+  through MAP, Fisher does joint Hessian eigendecomposition. Both
+  produce markdown-renderable reports with FLAT detection. Closes
+  ADR-006 OQ#3. (`9ebd4f6`)
+- **Cross-domain lean CI** (`tests/e2e/cross_domain_lean.py`) —
+  3-domain seeded calibration (`np.random.seed(42)`) producing
+  reproducible SIR 152 / Opinion 0.025 / Schelling 0.0. Wired
+  into `.github/workflows/dogfood.yml` as a 30-day-retention
+  artifact, no LLM key required by default. Wave A added per-domain
+  ε execution verifier (gated by `DEEPSEEK_API_KEY`) and per-domain
+  β profile_likelihood (always-on). (`12e1158`, `b6f50b7`, `d274581`)
+- **ε execution verifier in cross-domain CI**
+  (`tests/e2e/cross_domain_lean._run_execution_verify`) — extracts
+  qualitative claims from each domain's `story.md` via 1 LLM call,
+  classifies the calibrated sim's trajectory directions, diffs.
+  Catches mechanism-semantics bugs no MSE threshold catches.
+  (`d274581`)
+- **Grid/Network contradiction validator**
+  (`abm_auto/pipeline/phases/codegen.py:_structural_fidelity_validator`)
+  — catches the originate-mode bug where LLM picks a network
+  topology for an inherently-spatial model. 3 new tests in
+  `test_structural_fidelity.py`. (`840ac4f`)
+- **Stage-2 prompt amendment for Grid models**
+  (`abm_auto/prompts/mechanism_spec_json.md`) — explicit `topology=null`
+  guidance with Schelling example. (`840ac4f`)
+- **ADR-009 engine replacement roadmap** — 5-phase Melodie
+  decommission plan (Scenario → DataCollector → AgentList →
+  Simulator/Config → Calibrator/Trainer removal). No code changes
+  this ADR; per-phase regression gate already in place via the
+  cross-domain lean + β + ε infrastructure. (`6cc4981`)
+- **Originate-mode dogfood example**
+  (`examples/originate_segregation_phenomenon/story.md`) —
+  phenomenon-only story that asks the system to PROPOSE the
+  mechanism rather than reproduce a published one. Validates
+  ADR-005's dual-mode promise. (`1285099`, `849814b`)
+
+### Fixed
+
+- **`obs_stats` recomputation at diagnostics call site**
+  (`abm_auto/calibration/calibrator.py:run`) — the α/β/ε
+  wire-up commit referenced `obs_stats` from `fit()`'s local scope
+  where it didn't exist. Recompute via the simulator's `summary_fn`
+  at the actual call point. (`37f271e`)
+- **MF coarse-fidelity periods restoration**
+  (`abm_auto/calibration/simulator.py:restore_periods_to_base`)
+  — `posterior.apply_best_params` and `run_final_validation_sim`
+  bypass `simulate()` so they'd inherit whatever scaled `periods`
+  the last coarse sim wrote. `fit()` now restores base periods
+  before returning. (`bf1d848`)
+
+### Changed
+
+- **MF default off** — initial Wave A run showed SIR MSE 36 → 121
+  with MF on; tuning (`coarse=0.4`, `medium=0.7`, `narrow=0.5`)
+  brought it down but didn't recover baseline. Empirical finding:
+  lean per-sim wall is ~95% subprocess+boot, so periods scaling
+  saves <1% wall. Default off pending validation in
+  expensive-sim contexts (multi-seed Pipeline, larger models).
+  (`bf1d848`)
+- **Cross-domain SIR threshold 100 → 200** under seed=42 — the
+  unseeded baseline of 36 was a lucky RF init; seeded baseline
+  is 152. Threshold raised to comfortably gate vs broken-state
+  baseline 1480 while not false-failing on RNG variance.
+  (`bf1d848`)
+
+### Infrastructure
+
+- 19 new unit tests for multi-fidelity primitives
+  (`tests/test_multi_fidelity.py`)
+- 195 unit tests pass + 1 skipped (no regressions)
+- Cross-domain CI artifact upload: summary JSON + per-domain
+  `diagnostics_profile.md`
+
 ## v0.2 — 2026-05-29
 
 The "story → working calibrated model + report" promise now holds for the
