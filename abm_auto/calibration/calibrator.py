@@ -280,19 +280,24 @@ class BayesianCalibrator(BaseAgent):
 
             # Diagnostics (α/β/ε) — observability, never blocks pipeline.
             # ~15s overhead at end of calibration on a 3-param problem.
+            # `obs_stats` is local to `fit()`; recompute it here using
+            # whatever summary_fn the simulator carries (set by fit() before
+            # screening). Default: full_trajectory.
             console.print("  [dim]Running diagnostics (profile / Fisher / execution fidelity)...[/dim]")
             try:
                 story_text = self.workspace.read_story()
             except Exception:
                 story_text = ""
+            diag_summary_fn = getattr(simulator, "summary_fn", full_trajectory)
+            obs_stats_for_diag = diag_summary_fn(observed, targets)
             diagnostics_md = posterior.run_diagnostics(
                 self.workspace,
                 simulator,
                 prior_dict,
                 result.best_params,
                 targets,
-                obs_stats,
-                summary_fn=summary_fn,
+                obs_stats_for_diag,
+                summary_fn=diag_summary_fn,
                 story_text=story_text,
                 final_sim_csv=final_csv,
                 call_llm=self.call_llm,
