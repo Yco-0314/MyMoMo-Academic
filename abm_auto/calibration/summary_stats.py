@@ -95,6 +95,50 @@ def full_trajectory(df: pd.DataFrame, targets: list[str]) -> np.ndarray:
     return np.vstack(arrays).T.flatten()
 
 
+def trajectory_features(df: pd.DataFrame, targets: list[str]) -> np.ndarray:
+    """Per-target shape features: [peak_tick, peak_val, final_val, mean].
+
+    Output shape: 4 × len(targets) — 4 features per target, vs n_ticks for
+    `full_trajectory`. For SIR with 250 ticks × 3 targets:
+
+        full_trajectory:    750 dims (ABC + NM struggle on noisy 750-D L2)
+        trajectory_features: 12 dims (clean shape signature)
+
+    Why these four features
+    -----------------------
+    - peak_tick: timing of the maximum — captures dynamics shape
+    - peak_val:  height of the maximum — captures intensity
+    - final_val: equilibrium / end state — captures persistence
+    - mean:      area under curve / 1 — captures cumulative magnitude
+
+    Cross-domain portability:
+    - Epidemic (SIR): peak_tick=R0 timing, peak_val=infection peak, final_val=lingering, mean=area
+    - Opinion dynamics: peak_val=max polarization, final_val=consensus state
+    - Segregation: peak_tick=equilibrium time, final_val=segregation index
+
+    Robust to trajectory length mismatch (peak_tick is an index, length-
+    independent meaning) — solves task #53 (RF backend trajectory length
+    mismatch) for free.
+
+    Missing columns contribute four zeros to keep vector shape stable.
+    """
+    feats: list[float] = []
+    for col in targets:
+        if col in df.columns:
+            series = pd.to_numeric(df[col], errors="coerce").fillna(0.0).values
+            if len(series) > 0:
+                peak_idx = int(np.argmax(series))
+                feats.extend([
+                    float(peak_idx),
+                    float(series[peak_idx]),
+                    float(series[-1]),
+                    float(np.mean(series)),
+                ])
+                continue
+        feats.extend([0.0, 0.0, 0.0, 0.0])
+    return np.array(feats, dtype=float)
+
+
 def mean_std_last(df: pd.DataFrame, targets: list[str]) -> np.ndarray:
     """Per-target [mean, std, last_value] — 3 × n_targets dims.
 
@@ -120,6 +164,7 @@ __all__ = [
     "SummaryStats",
     "full_trajectory",
     "mean_std_last",
+    "trajectory_features",
     "COLUMN_ALIASES",
     "normalize_columns",
 ]
