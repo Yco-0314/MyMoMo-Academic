@@ -35,7 +35,7 @@ from abm_auto.agents.base import BaseAgent
 from abm_auto.calibration import backends, posterior, priors as priors_mod, refiners
 from abm_auto.calibration.simulator import SimulatorWrapper, infer_targets
 from abm_auto.calibration.summary_stats import SummaryStats, full_trajectory
-from abm_auto.calibration.types import CalibrationResult
+from abm_auto.calibration.types import CalibrationResult, Fidelity
 
 console = Console()
 
@@ -45,6 +45,79 @@ _DEFAULT_MAX_SIMS = 100
 # screening's budget — refinement serves a different purpose (downhill
 # from screening's best) and shouldn't compete with screening's coverage.
 _REFINE_EVALS = 50
+# Default MF budget split when `use_multi_fidelity=True`.
+# Coarse stage explores broadly at 0.4× ticks; medium stage refines on
+# narrowed priors at 0.7× ticks. Refinement (NM) always runs at full.
+_MF_COARSE_FRAC = 0.5
+# Prior-narrowing factor: each side of the box shrinks to this fraction
+# of the original width, centered on the previous stage's best_params.
+# 0.5 (not 0.25) hedges against bad coarse calls — initial cross-domain
+# run with 0.25 missed SIR's true optimum after coarse landed in a
+# different basin. See ADR-008 for the tuning rationale.
+_MF_NARROW_FACTOR = 0.5
+
+
+def _narrow_priors(
+    priors: dict[str, dict],
+    around: dict[str, float],
+    factor: float = _MF_NARROW_FACTOR,
+) -> dict[str, dict]:
+    """Shrink prior boxes around a center point for the next MF stage.
+
+    For each param, the new range is `center ± width * factor / 2`, clipped
+    to the original [min, max]. Params missing from `around` retain their
+    original prior — this keeps the schedule robust when a backend silently
+    drops a param.
+
+    Choosing factor=0.25 narrows the box to 25% of the original width,
+    which is the empirically robust trade-off between trusting the coarse
+    stage (small factor) and hedging against bad coarse calls (factor → 1).
+    """
+    out: dict[str, dict] = {}
+    for name, prior in priors.items():
+        lo = float(prior["min"])
+        hi = float(prior["max"])
+        width = hi - lo
+        if name not in around or width <= 0:
+            out[name] = {"min": lo, "max": hi}
+            continue
+        center = float(around[name])
+        half = width * factor / 2
+        new_lo = max(lo, center - half)
+        new_hi = min(hi, center + half)
+        if new_hi - new_lo < width * 0.01:  # degenerate, fall back
+            out[name] = {"min": lo, "max": hi}
+        else:
+            out[name] = {"min": new_lo, "max": new_hi}
+    return out
+
+
+def _run_screen_with_fallback(
+    priors: dict[str, dict],
+    targets: list[str],
+    obs_stats,
+    simulator: SimulatorWrapper,
+    budget: int,
+) -> CalibrationResult:
+    """RF → PyMC → ABC fallback chain. Returns the first backend that succeeds.
+
+    Factored from the original `fit()` so MF can call it per-stage without
+    duplicating the cascade.
+    """
+    screen_result = None
+    if backends.HAS_SKLEARN:
+        try:
+            screen_result = backends.run_rf(priors, targets, obs_stats, simulator, budget)
+        except Exception as e:
+            console.print(f"  [yellow]⚠ RF backend failed ({e}) — trying next[/yellow]")
+    if screen_result is None and backends.HAS_PYMC:
+        try:
+            screen_result = backends.run_pymc(priors, targets, obs_stats, simulator, budget)
+        except Exception as e:
+            console.print(f"  [yellow]⚠ PyMC backend failed ({e}) — trying next[/yellow]")
+    if screen_result is None:
+        screen_result = backends.run_abc(priors, targets, obs_stats, simulator, budget)
+    return screen_result
 
 
 def fit(
@@ -55,49 +128,61 @@ def fit(
     max_sims: int = _DEFAULT_MAX_SIMS,
     refine_evals: int = _REFINE_EVALS,
     summary_fn: SummaryStats = full_trajectory,
+    use_multi_fidelity: bool = False,
 ) -> CalibrationResult:
-    """Two-stage Bayesian calibration: screen, then locally refine.
+    """Two- or three-stage Bayesian calibration.
 
     Pure function — no workspace, no I/O, no LLM. The simulator argument
     encapsulates how to run the model; the rest is screening + refinement.
+
+    When `use_multi_fidelity=True`, the screening budget splits 50/50
+    into coarse (Fidelity.coarse() = 0.4× periods) and medium (Fidelity.medium()
+    = 0.7× periods) stages, with priors narrowed ±50% around coarse's best
+    for the medium stage. Final Nelder-Mead refinement always runs at full
+    fidelity.
+
+    **MF is off by default** because empirical wall savings on lean
+    handcrafted_model sims are negligible (subprocess startup + Melodie
+    boot dominate ~3-4s/sim; 0.4× periods saves ~0.25s). MF earns its
+    keep on full-Pipeline runs where each sim is expensive (multi-seed
+    observed, larger agent populations) — opt in explicitly there. See
+    ADR-008.
+
+    When `use_multi_fidelity=False` (default), behaves like the pre-MF
+    single-stage screening at full fidelity. This is the regression-safe
+    path and the one cross-domain CI exercises.
 
     Args:
         simulator: SimulatorWrapper-like callable target.
         priors: {param_name: {"min": float, "max": float}} from spec.
         observed: DataFrame of empirical observations (must contain `targets`).
         targets: List of column names common to obs and sim outputs.
-        max_sims: Budget for screening stage (default 100).
+        max_sims: Total screening budget across all MF stages (default 100).
         refine_evals: Budget for Nelder-Mead refinement (default 50, on top).
         summary_fn: Reducer from DataFrame → fixed-length stats vector.
+        use_multi_fidelity: Default False. Set True to enable two-stage
+            MF screening — see ADR-008 for the trade-offs.
     """
     simulator.summary_fn = summary_fn
     # Pin sim output shape to observed shape — RF backend's
     # np.array(X) refuses non-uniform feature lengths across samples
     # (off-by-one tick recording can cause some sims to write 251 rows
-    # vs 250). Truncating mid-flight is the simplest defense.
+    # vs 250). Truncating mid-flight is the simplest defense. Padding
+    # short coarse-fidelity sims with the last-row value is also handled
+    # here (see _align_rows in simulator.py).
     simulator.expected_rows = len(observed)
     obs_stats = summary_fn(observed, targets)
 
-    # ── Stage 1: Screening (broad prior coverage) ──
-    # Preference order: RF > PyMC > ABC.
-    screen_result = None
-    if backends.HAS_SKLEARN:
-        try:
-            console.print("  [dim]Stage 1 (screen): Random Forest regression[/dim]")
-            screen_result = backends.run_rf(priors, targets, obs_stats, simulator, max_sims)
-        except Exception as e:
-            console.print(f"  [yellow]⚠ RF backend failed ({e}) — trying next[/yellow]")
-    if screen_result is None and backends.HAS_PYMC:
-        try:
-            console.print("  [dim]Stage 1 (screen): PyMC SMC[/dim]")
-            screen_result = backends.run_pymc(priors, targets, obs_stats, simulator, max_sims)
-        except Exception as e:
-            console.print(f"  [yellow]⚠ PyMC backend failed ({e}) — trying next[/yellow]")
-    if screen_result is None:
-        console.print("  [dim]Stage 1 (screen): ABC rejection[/dim]")
-        screen_result = backends.run_abc(priors, targets, obs_stats, simulator, max_sims)
+    # ── Screening (single- or multi-fidelity) ──
+    if use_multi_fidelity:
+        screen_result = _run_mf_screen(priors, targets, obs_stats, simulator, max_sims)
+    else:
+        simulator.fidelity = None
+        console.print("  [dim]Stage 1 (screen, single-fidelity): RF / PyMC / ABC cascade[/dim]")
+        screen_result = _run_screen_with_fallback(priors, targets, obs_stats, simulator, max_sims)
 
-    # ── Stage 2: Refinement (local descent from screening's best point) ──
+    # ── Refinement always at full fidelity, regardless of MF setting ──
+    simulator.fidelity = Fidelity.full() if use_multi_fidelity else None
     result = screen_result
     if screen_result.ok:
         try:
@@ -123,7 +208,73 @@ def fit(
         except Exception as e:
             console.print(f"  [yellow]⚠ NM refinement failed ({e}) — using screening result[/yellow]")
 
+    # Restore scenario CSV's `periods` to base so downstream phases
+    # (posterior.apply_best_params, run_final_validation_sim) see the
+    # canonical sim length, not whichever stage's scaled value got left
+    # behind. No-op when MF didn't run or no `periods` column exists.
+    if hasattr(simulator, "restore_periods_to_base"):
+        simulator.restore_periods_to_base()
+
     return result
+
+
+def _run_mf_screen(
+    priors: dict[str, dict],
+    targets: list[str],
+    obs_stats,
+    simulator: SimulatorWrapper,
+    max_sims: int,
+) -> CalibrationResult:
+    """Multi-fidelity screening: coarse RF → narrowed medium RF.
+
+    Returns the medium-stage result when both stages succeed; falls back
+    to the coarse result on medium failure, and to a non-ok result if
+    both fail. The simulator's `.fidelity` is left as `Fidelity.full()`
+    on return so callers (e.g., NM refinement) don't inherit a stale
+    coarse setting.
+
+    Budget allocation:
+      - Coarse: ⌈max_sims × 0.6⌉, but at least 10 sims (RF needs a few
+        samples to build any signal at all).
+      - Medium: max_sims − coarse_budget, also clamped to ≥ 10.
+    """
+    coarse_budget = max(10, int(max_sims * _MF_COARSE_FRAC))
+    medium_budget = max(10, max_sims - coarse_budget)
+
+    # Stage A: coarse RF on full priors.
+    simulator.fidelity = Fidelity.coarse()
+    console.print(
+        f"  [dim]MF Stage A (coarse, periods×{Fidelity.coarse().periods_scale:.1f}, "
+        f"{coarse_budget} sims): RF / PyMC / ABC cascade[/dim]"
+    )
+    coarse_result = _run_screen_with_fallback(priors, targets, obs_stats, simulator, coarse_budget)
+
+    if not coarse_result.ok:
+        console.print("  [yellow]⚠ Coarse stage failed; skipping medium stage[/yellow]")
+        simulator.fidelity = Fidelity.full()
+        return coarse_result
+
+    # Stage B: medium RF on priors narrowed around coarse's best.
+    narrowed = _narrow_priors(priors, coarse_result.best_params, factor=_MF_NARROW_FACTOR)
+    simulator.fidelity = Fidelity.medium()
+    console.print(
+        f"  [dim]MF Stage B (medium, periods×{Fidelity.medium().periods_scale:.1f}, "
+        f"{medium_budget} sims, priors narrowed ×{_MF_NARROW_FACTOR}): RF / PyMC / ABC[/dim]"
+    )
+    medium_result = _run_screen_with_fallback(narrowed, targets, obs_stats, simulator, medium_budget)
+
+    simulator.fidelity = Fidelity.full()
+    if not medium_result.ok:
+        console.print("  [yellow]⚠ Medium stage failed; falling back to coarse result[/yellow]")
+        return coarse_result
+    # Combine for accurate total sim count
+    return CalibrationResult(
+        ok=True,
+        backend=f"mf({coarse_result.backend}→{medium_result.backend})",
+        n_simulator_calls=coarse_result.n_simulator_calls + medium_result.n_simulator_calls,
+        best_params=medium_result.best_params,
+        posterior_summary=medium_result.posterior_summary,
+    )
 
 
 def fit_from_files(
@@ -136,6 +287,7 @@ def fit_from_files(
     summary_fn: SummaryStats = full_trajectory,
     workspace_name: Optional[str] = None,
     timeout: int = 120,
+    use_multi_fidelity: bool = False,
 ):
     """Standalone calibration — no LLM, no Pipeline phases.
 
@@ -194,7 +346,11 @@ def fit_from_files(
         expected_rows=len(observed),
     )
 
-    result = fit(simulator, priors, observed, targets, max_sims, refine_evals, summary_fn)
+    result = fit(
+        simulator, priors, observed, targets,
+        max_sims, refine_evals, summary_fn,
+        use_multi_fidelity=use_multi_fidelity,
+    )
     return result, ws
 
 

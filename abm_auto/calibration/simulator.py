@@ -25,6 +25,7 @@ from abm_auto.calibration.summary_stats import (
     mean_std_last,
     normalize_columns,
 )
+from abm_auto.calibration.types import Fidelity
 
 
 class SimulatorWrapper:
@@ -37,6 +38,12 @@ class SimulatorWrapper:
 
     Pass `summary_fn=mean_std_last` to switch back to the previous summary
     behavior (3-D per column instead of full trajectory).
+
+    Multi-fidelity: set `sim.fidelity = Fidelity.coarse()` between phases of
+    the MF scheduler; subsequent `simulate()` calls inject a scaled
+    `periods` into the params dict so the underlying sim runs shorter.
+    Backends (RF / ABC / PyMC / NM) need no changes — they see the same
+    callable surface.
     """
 
     def __init__(
@@ -46,6 +53,7 @@ class SimulatorWrapper:
         base_run_id: int = 10000,
         summary_fn: SummaryStats = full_trajectory,
         expected_rows: Optional[int] = None,
+        fidelity: Optional[Fidelity] = None,
     ):
         """
         Args:
@@ -72,10 +80,86 @@ class SimulatorWrapper:
         self._run_counter = base_run_id
         self.summary_fn = summary_fn
         self.expected_rows = expected_rows
+        self.fidelity = fidelity
+        # Lazily snapshot the base `periods` so MF scaling stays anchored
+        # to the original CSV value, not whatever the previous fidelity
+        # write left behind.
+        self._base_periods: Optional[int] = None
 
     @property
     def scenario_csv_path(self) -> Path:
         return self.workspace.model_dir / "data" / "input" / "SimulatorScenarios.csv"
+
+    def _ensure_base_periods(self) -> Optional[int]:
+        """Read+cache the scenario CSV's `periods` column on first call.
+
+        Returns None if the CSV doesn't exist or doesn't have a `periods`
+        column — callers should treat that as "fidelity scaling is a
+        no-op for this model" rather than an error.
+        """
+        if self._base_periods is not None:
+            return self._base_periods
+        csv_path = self.scenario_csv_path
+        if not csv_path.exists():
+            return None
+        try:
+            df = pd.read_csv(csv_path)
+        except Exception:
+            return None
+        if "periods" not in df.columns or df.empty:
+            return None
+        self._base_periods = int(df.loc[df.index[0], "periods"])
+        return self._base_periods
+
+    def _apply_fidelity(self, params: dict) -> dict:
+        """Inject a scaled `periods` into params when fidelity is set.
+
+        Honors a `params['periods']` already set by the caller (rare —
+        priors normally exclude `periods`) over the fidelity scaling.
+
+        When fidelity is None or full, this is a no-op — the caller's
+        params win and the CSV's current `periods` value persists.
+        Callers that need to RESET periods to base (e.g., after a MF
+        run wrote coarse periods) should use `restore_periods_to_base()`.
+        """
+        if self.fidelity is None or self.fidelity.periods_scale == 1.0:
+            return params
+        if "periods" in params:
+            return params
+        base = self._ensure_base_periods()
+        if base is None:
+            return params
+        scaled = max(2, int(round(base * self.fidelity.periods_scale)))
+        return {**params, "periods": scaled}
+
+    def restore_periods_to_base(self) -> None:
+        """Write the snapshotted base `periods` back to the scenario CSV.
+
+        Multi-fidelity stages leave the CSV with whichever scaled
+        `periods` the last coarse/medium sim wrote. `apply_best_params`
+        and `run_final_validation_sim` (in posterior.py) bypass
+        `simulate()` and would otherwise inherit the stale coarse
+        value — producing a 50-row validation CSV that breaks MSE
+        scoring against a 250-row observed.csv.
+
+        Calibrator.fit() calls this once before returning. Safe no-op
+        if base periods were never captured (no MF actually ran).
+        """
+        if self._base_periods is None:
+            return
+        csv_path = self.scenario_csv_path
+        if not csv_path.exists():
+            return
+        try:
+            df = pd.read_csv(csv_path)
+        except Exception:
+            return
+        if "periods" not in df.columns or df.empty:
+            return
+        if int(df.loc[df.index[0], "periods"]) == self._base_periods:
+            return  # already at base, nothing to write
+        df.loc[df.index[0], "periods"] = self._base_periods
+        df.to_csv(csv_path, index=False)
 
     def simulate(self, params: dict, targets: list[str]) -> Optional[np.ndarray]:
         """Run the simulator with `params`, return summary stats over `targets`.
@@ -91,6 +175,7 @@ class SimulatorWrapper:
         """
         self._run_counter += 1
         run_id = self._run_counter
+        params = self._apply_fidelity(params)
         try:
             self.write_scenario_params(params)
         except Exception as e:
