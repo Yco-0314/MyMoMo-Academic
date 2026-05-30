@@ -1,0 +1,105 @@
+{
+  "alpha": {
+    "per_run": [
+      {
+        "best_params": {
+          "virus_spread_chance": 4.989327531968789,
+          "recovery_chance": 4.6386409065505525,
+          "gain_resistance_chance": 15.870641114051473
+        },
+        "mse": 62.99466666666667,
+        "wall": 93.43217182159424,
+        "rel_errs": {
+          "virus_spread_chance": 13.393807544745204,
+          "recovery_chance": 85.5456362620221,
+          "gain_resistance_chance": 36.51743554379411
+        },
+        "workspace": "/home/user/Documents/Social Simulation /mymomo-academic/workspace/alpha_dogfood_1780131689_0"
+      },
+      {
+        "best_params": {
+          "virus_spread_chance": 4.619788127872069,
+          "recovery_chance": 3.2571847882398064,
+          "gain_resistance_chance": 23.557774840317208
+        },
+        "mse": 144.352,
+        "wall": 94.08490920066833,
+        "rel_errs": {
+          "virus_spread_chance": 4.9951847243652,
+          "recovery_chance": 30.287391529592256,
+          "gain_resistance_chance": 5.768900638731168
+        },
+        "workspace": "/home/user/Documents/Social Simulation /mymomo-academic/workspace/alpha_dogfood_1780131783_1"
+      }
+    ],
+    "aggregate": {
+      "n_runs": 2,
+      "mse_mean": 103.67333333333333,
+      "mse_std": 40.67866666666667,
+      "mse_min": 62.99466666666667,
+      "mse_max": 144.352,
+      "baseline_mse": 44.5,
+      "verdict": "WORSE \u2014 2.33\u00d7 baseline (summary may lose too much signal)"
+    }
+  },
+  "beta": {
+    "map_params": {
+      "virus_spread_chance": 4.989327531968789,
+      "recovery_chance": 4.6386409065505525,
+      "gain_resistance_chance": 15.870641114051473
+    },
+    "profile_md": "## Profile likelihood (per-parameter identifiability)\n\n| Parameter | MAP value | MAP objective | Min profile | Max profile | Curvature | Verdict |\n|---|---|---|---|---|---|---|\n| `virus_spread_chance` | 4.9893 | 13.61 | 34.94 | 353.30 | 23.385 | identified |\n| `recovery_chance` | 4.6386 | 13.61 | 33.72 | 336.64 | 22.251 | identified |\n| `gain_resistance_chance` | 15.8706 | 13.61 | 40.37 | 332.36 | 21.448 | identified |\n",
+    "profile_unidentifiable": [],
+    "fisher_md": "## Fisher information eigendecomposition (local identifiability)\n\nHessian of ||sim\u2212obs||\u00b2 at MAP, eigendecomposed. Small eigenvalues correspond to flat directions in joint param-space \u2014 these are parameter combinations that don't affect fit quality.\n\n| Rank | Eigenvalue | Direction (param: coefficient) |\n|---|---|---|\n| 1 | 250769.6279 | virus_spread_chance=-0.011, recovery_chance=+1.000, gain_resistance_chance=+0.003 |\n| 2 | 9096.5369 | virus_spread_chance=+1.000, recovery_chance=+0.011, gain_resistance_chance=+0.003 |\n| 3 | 576.1255 | virus_spread_chance=-0.003, recovery_chance=-0.003, gain_resistance_chance=+1.000 |\n",
+    "fisher_eigenvalues": [
+      250769.62793468827,
+      9096.536914748644,
+      576.1254545630135
+    ],
+    "fisher_flat_count": 0,
+    "workspace": "/home/user/Documents/Social Simulation /mymomo-academic/workspace/beta_dogfood_1780131877"
+  },
+  "epsilon": {
+    "claims": [
+      {
+        "target": "susceptible",
+        "direction": "monotonic_decrease",
+        "rationale": "Susceptible individuals are converted to infected or resistant, with only a small possibility of reversion from recovered to susceptible, so the net trend is downward."
+      },
+      {
+        "target": "infected",
+        "direction": "peak_then_decay",
+        "rationale": "Infected count rises initially from the outbreak, then declines as recovery outpaces new infections, eventually reaching zero."
+      },
+      {
+        "target": "resistant",
+        "direction": "monotonic_increase",
+        "rationale": "Resistant individuals accumulate over time as recovered agents gain resistance, and they never leave the resistant state."
+      }
+    ],
+    "actuals": [
+      {
+        "target": "susceptible",
+        "direction": "unclear",
+        "peak_ratio": 5.25,
+        "monotonicity": 0.26907630522088355
+      },
+      {
+        "target": "infected",
+        "direction": "unclear",
+        "peak_ratio": 3.4545454545454546,
+        "monotonicity": 0.42570281124497994
+      },
+      {
+        "target": "resistant",
+        "direction": "unclear",
+        "peak_ratio": 1.0,
+        "monotonicity": 0.3453815261044177
+      }
+    ],
+    "mismatches": [],
+    "is_valid": true,
+    "verdict": "PASS (zero mismatches on known-correct sim)",
+    "workspace": "/home/user/Documents/Social Simulation /mymomo-academic/workspace/epsilon_dogfood_1780131908"
+  }
+}

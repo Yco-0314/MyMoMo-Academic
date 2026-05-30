@@ -184,13 +184,19 @@ def classify_trajectory(
             monotonicity=_fraction_increasing(arr),
         )
 
-    frac_inc = _fraction_increasing(arr)
-    if frac_inc > 0.85:
+    # Monotonicity test must handle plateau-heavy trajectories (integer agent
+    # counts in ABMs spend many ticks unchanged between events). Compare
+    # signs ONLY among nonzero diffs; require overall net change to match.
+    # Without this, 250-tick SIR runs with ~75% zero diffs would always
+    # classify as unclear even when monotonically rising/falling.
+    frac_inc, dir_consistency = _direction_consistency(arr)
+    net_change = float(arr[-1] - arr[0])
+    if dir_consistency > 0.85 and net_change > 0:
         return TrajectoryClassification(
             target="?", direction="monotonic_increase",
             peak_ratio=peak_ratio, monotonicity=frac_inc,
         )
-    if frac_inc < 0.15:
+    if dir_consistency > 0.85 and net_change < 0:
         return TrajectoryClassification(
             target="?", direction="monotonic_decrease",
             peak_ratio=peak_ratio, monotonicity=frac_inc,
@@ -202,7 +208,7 @@ def classify_trajectory(
 
 
 def _fraction_increasing(arr: np.ndarray) -> float:
-    """Fraction of adjacent pairs where arr[i+1] > arr[i]."""
+    """Fraction of adjacent pairs where arr[i+1] > arr[i] (over ALL diffs)."""
     if len(arr) < 2:
         return 0.5
     diffs = np.diff(arr)
@@ -211,9 +217,45 @@ def _fraction_increasing(arr: np.ndarray) -> float:
     return n_inc / n_total if n_total else 0.5
 
 
+def _direction_consistency(arr: np.ndarray) -> tuple[float, float]:
+    """Return (frac_inc, dir_consistency).
+
+    `frac_inc` is the share of all adjacent diffs that are positive (legacy
+    field for the monotonicity column).
+
+    `dir_consistency` is the share of NONZERO diffs that agree with the
+    dominant direction. For a long trajectory of integer agent counts,
+    most diffs are zero (plateaus between events); the few non-zero
+    transitions are what reveal the trend. Computing consistency over
+    nonzero diffs only catches monotonicity even in plateau-heavy runs.
+    """
+    if len(arr) < 2:
+        return 0.5, 0.5
+    diffs = np.diff(arr)
+    n_pos = int(np.sum(diffs > 0))
+    n_neg = int(np.sum(diffs < 0))
+    n_total = len(diffs)
+    frac_inc = n_pos / n_total if n_total else 0.5
+    nonzero = n_pos + n_neg
+    if nonzero == 0:
+        return frac_inc, 0.5
+    consistency = max(n_pos, n_neg) / nonzero
+    return frac_inc, consistency
+
+
 def classify_trajectory_csv(csv_path: Path, targets: list[str]) -> list[TrajectoryClassification]:
-    """Read sim output CSV + classify each target column."""
+    """Read sim output CSV + classify each target column.
+
+    Applies `normalize_columns` first to bridge naming conventions
+    (sim writes `count_s/i/r`, story targets use `susceptible/infected/
+    resistant`). Without this bridge, the dogfood on 2026-05-30 silently
+    classified every target as "unclear" → empty mismatch list → trivial
+    "PASS" verdict that didn't actually verify anything.
+    """
+    from abm_auto.calibration.summary_stats import normalize_columns
+
     df = pd.read_csv(csv_path)
+    df = normalize_columns(df, targets)
     out: list[TrajectoryClassification] = []
     for target in targets:
         if target not in df.columns:
