@@ -1,0 +1,38 @@
+[
+  {
+    "domain": "sir-virus",
+    "verdict": "PASS",
+    "mse": 36.87466666666667,
+    "threshold": 100.0,
+    "wall_seconds": 97.91768908500671,
+    "best_params": {
+      "virus_spread_chance": 2.211674547095799,
+      "recovery_chance": 1.0165248075211257,
+      "gain_resistance_chance": 74.92254847480677
+    },
+    "failure_reason": ""
+  },
+  {
+    "domain": "opinion-deffuant",
+    "verdict": "PASS",
+    "mse": 0.07348236377457691,
+    "threshold": 0.5,
+    "wall_seconds": 72.85833477973938,
+    "best_params": {
+      "confidence_threshold": 0.3093218967212829,
+      "convergence_rate": 0.0513864894397742
+    },
+    "failure_reason": ""
+  },
+  {
+    "domain": "schelling-segregation",
+    "verdict": "PASS",
+    "mse": 0.0,
+    "threshold": 0.5,
+    "wall_seconds": 91.47500491142273,
+    "best_params": {
+      "tolerance": 0.2950084423111332
+    },
+    "failure_reason": ""
+  }
+]

@@ -84,3 +84,22 @@ jobs:
           name: dogfood-report-${{ github.run_id }}
           path: docs/dogfood/ci-*.md
           retention-days: 30
+
+      # ── Cross-domain LEAN calibration (SIR + Opinion + Schelling) ──
+      # Catches calibration-layer regressions across dynamical regimes
+      # (the kind that broke Opinion + Schelling during 2026-05-29
+      # dogfood). Uses fit_from_files — no LLM cost, ~5 min wall total.
+      # Full-Pipeline orchestration regressions are caught by the SIR
+      # dogfood above; this complements it across domains.
+      - name: Run cross-domain LEAN calibration
+        # Runs regardless of DEEPSEEK_API_KEY because lean path has no LLM
+        run: |
+          python tests/e2e/cross_domain_lean.py
+
+      - name: Upload cross-domain summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cross-domain-summary-${{ github.run_id }}
+          path: docs/dogfood/cross-domain-lean-*.json
+          retention-days: 30
