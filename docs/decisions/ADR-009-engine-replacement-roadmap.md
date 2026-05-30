@@ -257,7 +257,7 @@ answer.
 
 | Phase | Status | Branch/commit |
 |---|---|---|
-| 1 — Scenario | investigation complete (see amend below) | — |
+| 1 — Scenario | **SHIPPED** 2026-05-31 | `d8f2429` |
 | 2 — DataCollector | not started | — |
 | 3 — AgentList | not started | — |
 | 4 — Simulator + Config | not started | — |
