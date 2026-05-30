@@ -257,8 +257,146 @@ answer.
 
 | Phase | Status | Branch/commit |
 |---|---|---|
-| 1 — Scenario | not started | — |
+| 1 — Scenario | investigation complete (see amend below) | — |
 | 2 — DataCollector | not started | — |
 | 3 — AgentList | not started | — |
 | 4 — Simulator + Config | not started | — |
 | 5 — Calibrator + Trainer removal | not started | — |
+
+---
+
+## Amend 1 — Phase 1 Scenario investigation (2026-05-31)
+
+Source-read of `Melodie/simulator.py`, `Melodie/scenario_manager.py`,
+`Melodie/data_loader.py`, `Melodie/element.py` to resolve OQ#1 and
+scope the actual Phase 1 work.
+
+### OQ#1 resolved: no isinstance checks
+
+`grep -n "isinstance\|issubclass" Melodie/simulator.py` returns ONE
+hit, and it's for `df_loader_cls` (unrelated to Scenario):
+
+    line 61:  assert issubclass(self.df_loader_cls, DataLoader)
+
+The Simulator instantiates the user's scenario class via
+`self.scenario_cls()` (data_loader.py:367) and never type-checks the
+result. **Phase 1 can ship a non-Melodie-subclass Scenario without a
+back-compat parent class.**
+
+### Methods Simulator actually calls on a Scenario instance
+
+From `grep -nE "scenario\.|scenarios\["` across simulator.py +
+data_loader.py:
+
+| Call site | What it does |
+|---|---|
+| `scenario_cls()` (no args) | construct from CSV row generator |
+| `scenario.manager = self` | mutable attribute set |
+| `scenario._setup(row)` | lifecycle: `setup()` → setattr from row → `load_data()` → `setup_data()` |
+| `scenarios[0].copy()` | deep copy for per-run instances |
+| `scenario.to_dict()` | logging |
+| `scenario.id_run = id_run` | per-run mutable attribute |
+
+### Methods our examples USE (vs ones Melodie offers)
+
+Every `core/scenario.py` in our handcrafted examples is exactly:
+
+    class FooScenario(Scenario):
+        def setup(self):
+            self.periods = ...
+            self.foo = ...
+
+That's it. We use `setup()` and inherit `__init__`. The other
+machinery (`copy`, `to_dict`, `load_data`, `setup_data`,
+`load_dataframe`, `load_matrix`, `to_json`, `initialize`,
+`_parameters`) is called by Melodie's framework, never by user code.
+
+### Minimum viable replacement surface
+
+A standalone `abm_auto/runtime/_scenario.py` Scenario must provide:
+
+```python
+class Scenario:
+    def __init__(self, id_scenario: int | str | None = 0):
+        self.id = id_scenario
+        self.id_run = -1
+        self.run_num = 1
+        self.period_num = 0
+        self.manager = None       # set by framework
+        self._parameters = []     # unused by us, kept for parity
+
+    def setup(self) -> None:
+        """User override."""
+
+    def setup_data(self) -> None:
+        """User override (optional)."""
+
+    def load_data(self) -> None:
+        """User override (optional)."""
+
+    def _setup(self, data: dict | None = None) -> None:
+        self.setup()
+        if data is not None:
+            for col_name, value in data.items():
+                setattr(self, col_name, value)
+        self.load_data()
+        self.setup_data()
+
+    def initialize(self) -> None:
+        self._setup()
+
+    def copy(self) -> "Scenario":
+        import copy as _copy
+        new = self.__class__()
+        for k, v in self.__dict__.items():
+            setattr(new, k, _copy.deepcopy(v) if k != "manager" else v)
+        return new
+
+    def to_dict(self) -> dict:
+        return {k: v for k, v in self.__dict__.items() if not k.startswith("_") and k != "manager"}
+```
+
+~40 LoC. The `manager` reference is intentionally NOT deepcopied —
+the framework re-assigns it after copy anyway, and deepcopying it
+would walk the entire Simulator/DataLoader tree.
+
+`load_dataframe`/`load_matrix` go to `manager.data_loader` — only
+needed when a user model uses agent CSVs. None of our handcrafted
+models do, but generated code might. Phase 1 ships stubs that raise
+NotImplementedError with a helpful message; Phase 2/3 land real
+versions when DataCollector / AgentList replacements arrive.
+
+### Risk: `manager` is the Calibrator / Simulator / DataLoader
+
+Setting `scenario.manager = self` works because the manager object
+exposes `.data_loader`. When we eventually replace Simulator (Phase 4),
+the new Simulator must keep the same `manager.data_loader` shape
+(or our Phase 1 Scenario's `load_dataframe` will break). Document
+the contract; don't fix it now.
+
+### Byte-equal regression fixture
+
+`tests/e2e/test_engine_phase1_baseline.py` (added this session)
+captures the SIR handcrafted_model's `calibration_final_sim.csv` at
+deterministic params (seed=42, fixed best_params). Phase 1 swap
+must produce a byte-identical file or the test fails. Same approach
+will land for the other domains as their phases arrive.
+
+### Phase 1 code estimate (post-investigation)
+
+- `abm_auto/runtime/_scenario.py`: ~40 LoC
+- `abm_auto/runtime/__init__.py` seam swap: 1 line
+- Unit tests: ~80 LoC (init defaults, copy semantics, _setup overrides,
+  to_dict purity, manager not deepcopied)
+- Reference fixture: already in place (this commit)
+
+**Total: ~120 LoC of new code, 1 line of swap. Pick up in fresh session.**
+
+### Remaining open questions
+
+OQ#2 (cross-domain semantics): only relevant for Phase 4. Defer.
+
+OQ#3 (Calibrator/Trainer usage): grep `from Melodie import` across
+`abm_auto/` shows zero direct uses of Melodie.Calibrator or
+Melodie.Trainer. Phase 5 likely becomes "remove from runtime/__init__.py
+exports + check pipeline phases for indirect use" — half a day.
