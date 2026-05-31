@@ -258,7 +258,7 @@ answer.
 | Phase | Status | Branch/commit |
 |---|---|---|
 | 1 — Scenario | **SHIPPED** 2026-05-31 | `d8f2429` |
-| 2 — DataCollector | **SHIPPED** 2026-05-31 | `5354a0b` |
+| 2 — DataCollector | **SHIPPED** 2026-05-31 (v2 streaming+Parquet added under ADR-011 W6) | `5354a0b` |
 | 3 — AgentList | not started | — |
 | 4 — Simulator + Config | not started | — |
 | 5 — Calibrator + Trainer removal | not started | — |
