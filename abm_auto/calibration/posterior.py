@@ -120,8 +120,24 @@ def run_diagnostics(
     `summary_fn` is optional. When provided, it overrides the simulator's
     default summary_fn for the duration of the diagnostics — usually
     full_trajectory for maximum signal during identifiability analysis.
+
+    Side effect: writes ``workspace/diagnostics_signal.json`` with
+    structured halt-worthy signals. The phase orchestrator (currently
+    OptimizeOrCalibratePhase) reads this file and decides whether to
+    halt; this function does NOT halt itself, separating diagnosis
+    from policy.
     """
     blocks: list[str] = []
+    signals: dict = {
+        "n_params": len(priors),
+        "n_targets": len(targets),
+        "n_flat_params": 0,
+        "flat_params": [],
+        "n_eps_claims": 0,
+        "n_eps_mismatches": 0,
+        "eps_mismatch_targets": [],
+        "eps_verdict": "skipped",
+    }
 
     if enable_profile or enable_fisher:
         from abm_auto.calibration.identifiability_profile import (
@@ -140,6 +156,9 @@ def run_diagnostics(
                     summary_fn=summary_fn or original_summary,
                 )
                 blocks.append(profile.to_markdown())
+                flat = profile.unidentifiable_params(threshold=0.1)
+                signals["n_flat_params"] = len(flat)
+                signals["flat_params"] = list(flat)
             except Exception as e:
                 blocks.append(f"## Profile likelihood\n\n_(failed: {e})_\n")
 
@@ -166,10 +185,116 @@ def run_diagnostics(
             from abm_auto.verification.execution_verifier import verify_execution
             verify_result = verify_execution(story_text, final_sim_csv, targets, call_llm)
             blocks.append(_render_execution_verification(verify_result))
+            signals["n_eps_claims"] = len(verify_result.claims)
+            signals["n_eps_mismatches"] = len(verify_result.mismatches)
+            signals["eps_mismatch_targets"] = [t for t, _, _ in verify_result.mismatches]
+            signals["eps_verdict"] = "PASS" if verify_result.is_valid else "MISMATCH"
         except Exception as e:
             blocks.append(f"## Execution fidelity\n\n_(failed: {e})_\n")
 
+    # Persist signals for the phase orchestrator. Best-effort: workspace
+    # may not always have a writable path in test contexts.
+    try:
+        signal_path = workspace.path / "diagnostics_signal.json"
+        signal_path.write_text(json.dumps(signals, indent=2), encoding="utf-8")
+    except Exception:
+        pass
+
     return "\n\n".join(blocks)
+
+
+def maybe_halt_on_diagnostics(workspace) -> tuple[bool, str]:
+    """Read diagnostics_signal.json + decide if calibration outcome warrants a HALT.
+
+    Returns ``(should_halt, halt_reason)``. When should_halt is True, also
+    writes ``workspace/kill_memo.md`` so the operator sees the verdict
+    without digging into the calibration report.
+
+    HALT policy (conservative — only fire when all signals agree):
+      - All-FLAT β: every parameter in the profile has curvature < 0.1.
+        Means the loss landscape is insensitive to any parameter →
+        the simulator is broken (typically: generated agent.py doesn't
+        actually transition state).
+      - All-target ε MISMATCH: every story-claim contradicts the
+        simulated trajectory direction. Means mechanism semantics are
+        wrong (typically: same generated-model breakage).
+
+    Partial signals (some FLAT, some MISMATCH) do NOT halt — those
+    reflect genuine identifiability issues that should ship in the
+    report but don't invalidate the calibration entirely.
+    """
+    signal_path = workspace.path / "diagnostics_signal.json"
+    if not signal_path.exists():
+        return False, ""
+    try:
+        sig = json.loads(signal_path.read_text(encoding="utf-8"))
+    except Exception:
+        return False, ""
+
+    n_params = int(sig.get("n_params", 0))
+    n_flat = int(sig.get("n_flat_params", 0))
+    n_claims = int(sig.get("n_eps_claims", 0))
+    n_mismatch = int(sig.get("n_eps_mismatches", 0))
+
+    all_flat = n_params > 0 and n_flat == n_params
+    all_mismatch = n_claims > 0 and n_mismatch == n_claims
+
+    if not (all_flat or all_mismatch):
+        return False, ""
+
+    reasons: list[str] = []
+    if all_flat:
+        reasons.append(
+            f"All {n_params} calibration parameter(s) show FLAT profile "
+            f"likelihood (curvature < 0.1) → loss landscape is insensitive "
+            f"to every parameter. Generated simulator likely does not "
+            f"transition state."
+        )
+    if all_mismatch:
+        targets_str = ", ".join(sig.get("eps_mismatch_targets", []) or [])
+        reasons.append(
+            f"All {n_claims} ε execution-fidelity targets MISMATCH the "
+            f"story's qualitative direction claims ({targets_str}). "
+            f"Simulator produces trajectories that contradict the story's "
+            f"described mechanism."
+        )
+
+    halt_reason = (
+        "Calibration completed but diagnostics indicate the simulator is "
+        "non-functional. " + " ".join(reasons)
+    )
+
+    # Write kill_memo so the operator sees the failure without digging
+    # into calibration_report.md.
+    try:
+        kill_path = workspace.path / "kill_memo.md"
+        kill_lines = [
+            "# Kill Memo — Calibration Diagnostics Failed\n\n",
+            "Pipeline halted after Phase 6 because identifiability ",
+            "diagnostics indicate the calibrated simulator is non-",
+            "functional (exit code 0 would have been misleading).\n\n",
+            "## Reasons\n\n",
+        ]
+        for r in reasons:
+            kill_lines.append(f"- {r}\n")
+        kill_lines += [
+            "\n## What to do next\n\n",
+            "1. Inspect `calibration_report.md` for full β / ε diagnostic detail.\n",
+            "2. Inspect `model/core/agent.py` + `model/core/environment.py` ",
+            "for the state-transition logic. The most common failure mode is ",
+            "that `step()` doesn't change any agent state.\n",
+            "3. Either fix the generated code by hand or re-run the Pipeline ",
+            "(LLM-codegen has run-to-run variability — a second run may ",
+            "produce a functional model).\n",
+            "4. Once the model is functional, re-run calibration via ",
+            "`benchmark_calibration_lean.py` or the full pipeline.\n\n",
+            f"*See `diagnostics_signal.json` for the raw machine-readable signals.*\n",
+        ]
+        kill_path.write_text("".join(kill_lines), encoding="utf-8")
+    except Exception:
+        pass
+
+    return True, halt_reason
 
 
 def _render_execution_verification(result) -> str:

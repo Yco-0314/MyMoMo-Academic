@@ -238,6 +238,34 @@ class OptimizeOrCalibratePhase:
                     f"  [green]✓ Calibrated {len(cal_result.best_params)} params "
                     f"via {cal_result.backend}[/green]"
                 )
+                # Diagnostics-driven HALT: if calibration "succeeded" but the
+                # diagnostics layer reports a non-functional simulator
+                # (all-FLAT β profile or all-target ε MISMATCH), halt with
+                # kill_memo so the operator sees the failure without digging
+                # into calibration_report.md. Reliability sample 2026-05-31
+                # showed 2/5 Pipeline runs producing cal_result.ok=True
+                # with broken simulators; this gate converts those into
+                # clear halts.
+                from abm_auto.calibration.posterior import maybe_halt_on_diagnostics
+                should_halt, halt_reason = maybe_halt_on_diagnostics(ctx.workspace)
+                if should_halt:
+                    console.print(
+                        f"  [bold red]Pipeline halted: diagnostics flag non-"
+                        f"functional simulator.[/bold red]\n"
+                        f"  See: {ctx.workspace.path / 'kill_memo.md'}"
+                    )
+                    ctx.pipeline_halted = True
+                    ctx.halt_reason = halt_reason
+                    try:
+                        ctx.workspace.audit.raise_issue(
+                            phase="Phase 6 (calibration diagnostics)",
+                            severity="HIGH",
+                            text=halt_reason,
+                            actor="OptimizeOrCalibratePhase",
+                        )
+                    except Exception:
+                        pass
+                    return
             else:
                 console.print(
                     f"  [yellow]Calibration skipped ({cal_result.reason}) — "
