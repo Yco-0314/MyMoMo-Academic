@@ -20,10 +20,11 @@ Fisher information eigendecomposition, and execution-fidelity
 verification against the original problem statement). Applied to a
 SIR-on-network calibration problem (150 agents, 250 ticks, three
 behavioural parameters), the pipeline reduces aggregate MSE from a
-baseline of 1480 to a mean of 48.1 (best 11.3) across five independent
-runs, recovering the most-identifiable parameter to within 1.9 percent
-relative error of the data-generating value. The entire pipeline runs in
-~6 minutes wall-clock at ~$0.04 in LLM costs. We argue that the
+baseline of 1480 to a mean of 93.9 (best 20.9) across five seeded,
+exactly-reproducible runs, recovering the two well-identified parameters
+to within 8–14 percent relative error of the data-generating values
+while correctly flagging the third as weakly identifiable. The entire
+pipeline runs in ~6 minutes wall-clock at ~$0.04 in LLM costs. We argue that the
 combination of LLM codegen, first-class calibration, and machine-
 verifiable identifiability diagnostics represents a missing rung in the
 ladder between manual ABM research and automated computational social
@@ -214,27 +215,38 @@ this and the published parameter set).
 
 ### 3.1 Calibration accuracy
 
-Across N=5 independent calibration runs (different RNG seeds for the
-RF screening stage; pipeline otherwise deterministic), aggregate MSE
-between observed and simulated trajectory was **48.1 ± 32.3** (range
-11.3 to 99.9). Pre-calibration baseline (uncalibrated mid-prior
-parameters) gives MSE ~1480; the gold-standard hand-derived parameter
-set gives MSE 217. The calibrator recovers parameters that fit the
-observed data better than the data-generating parameters themselves —
-unsurprising given the finite-sample noise in the observed trajectory.
+Across N=5 calibration runs under a fixed RNG seed (seed=42, pinning the
+RF screening stage; the run is therefore exactly reproducible — see
+Appendix A), aggregate MSE between observed and simulated trajectory was
+**93.9 ± 56.1** (range 20.9 to 152.4; SD is sample standard deviation,
+n−1). Pre-calibration baseline (uncalibrated mid-prior parameters) gives
+MSE ~1480; the gold-standard hand-derived parameter set gives MSE 217.
+The best of the five runs (MSE 20.9) fits the observed trajectory ~10×
+better than that gold-standard parameterisation — the calibrator can
+find parameters matching the empirical data, including its finite-sample
+noise, more closely than the data-generating values themselves.
 
 Per-parameter recovery:
 
 | Parameter | Truth | Mean ± SD | Relative error |
 |---|---|---|---|
-| virus_spread_chance | 4.40 | 3.53 ± 1.26 | 19.7% |
-| recovery_chance | 2.50 | **2.55 ± 1.31** | **1.9%** |
-| gain_resistance_chance | 25.00 | 36.17 ± 24.19 | 44.7% |
+| virus_spread_chance | 4.40 | 3.79 ± 1.23 | 13.9% |
+| recovery_chance | 2.50 | 2.71 ± 1.06 | 8.3% |
+| gain_resistance_chance | 25.00 | 40.75 ± 22.46 | 63.0% |
 
-`recovery_chance` is recovered to within 2% relative error of truth on
-average; `gain_resistance_chance` has wide spread (SD ~half the prior
-range). This ordering is consistent with the identifiability
-diagnostics below.
+`recovery_chance` and `virus_spread_chance` are recovered to within
+~8–14% relative error on average; `gain_resistance_chance` is recovered
+poorly (63% error, SD nearly the full prior range). This ordering —
+spread/recovery well-identified, resistance weakly — is consistent with,
+and predicted by, the identifiability diagnostics below: the parameter
+with the weakest profile-likelihood curvature is exactly the one the
+calibrator pins down least reliably.
+
+(An earlier unseeded draw of this benchmark happened to land at MSE
+48.1 with recovery within 1.9%; we report the seeded run instead because
+it is exactly reproducible and not cherry-picked from RNG variance. The
+seeded numbers are worse — the honest cost of reproducibility over a
+lucky draw.)
 
 ### 3.2 Identifiability
 
@@ -374,10 +386,11 @@ concrete polish items:
 - Tune GVR retry budget separately per stage; the simulation-fix
   stage may benefit from more retries than the codegen-fix stage.
 
-The gain_resistance_chance parameter remains poorly recovered (44.7%
+The gain_resistance_chance parameter remains poorly recovered (63.0%
 relative error on the mean). This is genuine identifiability weakness,
 not a calibration failure — profile likelihood and Fisher diagnostics
-correctly surface it. Future work could include scheduling additional
+correctly surface it (it has the lowest profile curvature of the three,
+§3.2). Future work could include scheduling additional
 simulator effort on poorly-identified parameters once their wide CIs
 are detected.
 
@@ -520,17 +533,32 @@ modeling complexity. *International Conference on Complex Systems*,
 Source code: `https://github.com/Yco-0314/MyMoMo-Academic` (commit
 hash for this paper's runs: see `git log` at submission time).
 
-To reproduce the lean N=5 calibration benchmark in Section 3.1:
+To reproduce the lean N=5 calibration benchmark in Section 3.1 — the
+third argument is the RNG seed that pins the Random Forest screening
+stage, making the run **bit-for-bit reproducible**:
 
 ```bash
 git clone https://github.com/Yco-0314/MyMoMo-Academic
 cd mymomo-academic
 uv sync
-python benchmark_calibration_lean.py 5 100
+python benchmark_calibration_lean.py 5 100 42
 ```
 
-Expected wall time: ~8 minutes. Expected aggregate MSE: 48 ± 32 (run-
-to-run variance due to unseeded RNG in the Random Forest backend).
+Expected wall time: ~8 minutes. Expected output (verified reproducible
+across repeated runs at seed=42; only wall-clock seconds vary):
+aggregate MSE 93.9 ± 56.1 (range 20.9–152.4); per-run best_params land
+at virus 3.79 ± 1.23, recovery 2.71 ± 1.06, gain_resistance
+40.75 ± 22.46. Omitting the seed argument leaves the RF backend
+unseeded, in which case only the distribution reproduces (mean MSE
+~50–95), not the specific values.
+
+**Note on §3.1 vs §3.4.** Section 3.1 (calibration accuracy) uses the
+LEAN path — `fit_from_files` calibrating a hand-written reference
+simulator, isolating the calibration math from codegen. Section 3.4
+(codegen reliability) uses the FULL pipeline including LLM code
+generation. They measure different things — §3.1 "given a correct model,
+how well does calibration recover parameters", §3.4 "how often does the
+LLM produce a correct model" — and should not be conflated.
 
 To reproduce the full-pipeline run in Section 3.5 (requires LLM API
 key):
