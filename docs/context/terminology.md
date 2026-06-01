@@ -553,9 +553,68 @@ averaged over aligned ticks).
 
 ---
 
+## Research Harness (Gate vocabulary)
+
+Vocabulary crystallized in the ADR-013 grilling (2026-06-02). Names the
+seam that unifies abm-auto's scattered validators. See
+[ADR-013](../decisions/ADR-013-gate-harness.md).
+
+**Research harness**  
+The framing that abm-auto is not "a tool that generates ABM research" but
+"a scaffold that makes any generator's ABM research trustworthy." It does
+not trust any single generation step (LLM, search, or human); it requires
+every generated artifact to pass deterministic **Gates**. The six wedges
+(calibration, codegen, method-transfer, …) are all instances of this one
+harness pattern.
+
+**Gate**  
+The atom of the harness. A deterministic check over one *intermediate-state
+family*, returning a uniform **Verdict** carrying a **tier**. A Gate's
+`judge` must be deterministic (no LLM inside) so it can be self-tested.
+Two-or-more existing adapters (anti-pattern scan, null-model guard,
+ε claim-vs-trajectory diff, diagnostics-halt) make this a *real seam*, not
+a hypothetical one.
+
+**Verdict**  
+A Gate's uniform output: `{passed: bool, tier, evidence, salient_number?}`.
+The harness reads only `passed + tier` for flow control (halt / retry /
+proceed); the continuous `salient_number = (score, threshold)` is optional
+and sinks into provenance + human-readable rendering, so boolean
+collapse never silently discards margin information (e.g. "p=0.144,
+missed the 0.05 line by 0.094").
+
+**Tier (verification vs refutation)**  
+A property of a Gate, *derived from its self-test paradigm* — never an
+author-written label (that would let a generator self-certify).
+- **verification** — the self-test proves a *complete* property (e.g.
+  anti-pattern scan: known-bad code is always caught; clean code always
+  passes). Verdict may say "verified."
+- **refutation** — the self-test only proves the Gate can *reject obvious
+  failure* (e.g. null guard: distinguishes signal from white noise, but
+  cannot prove the signal has domain *meaning*). Verdict may say only "not
+  refuted." Conflating the two is the laundering ADR-012 forbids.
+
+**Intermediate-state family**  
+The kind of intermediate state a Gate consumes: source code, scalar
+trajectory, interaction graph, point cloud, workspace-signal, … A finite
+set of families (not one per Gate). The harness routes each artifact's
+parts to the Gates subscribed to that family. New families are *discovered*
+at runtime, not generated.
+
+**Self-test paradigm**  
+The method-agnostic verification pattern a Gate binds to, which determines
+its tier: "byte-equal invariance" and "exhaustive known-bad detection" →
+verification; "synthetic signal-vs-noise discrimination" and
+"degree-preserving rewire null" → refutation. The paradigm library is
+human-audited and finite; a generated Gate that cannot bind to one is
+tagged `unverified` and its Verdict can never claim verification.
+
+---
+
 ## Related Documentation
 
 - [MyMoMo Knowledge Base](../abm_auto/mymomo_knowledge/) — Runtime API, anti-patterns, writing-models walkthrough, data contracts
 - [Memory System](memory-system.md) — 3-tier architecture details
 - [Pipeline Phases](pipeline-phases.md) — Workflow breakdown
 - [ODD Protocol Template](../abm_auto/prompts/odd.md) — LLM prompt for ODD generation
+- [ADR-013: Gate seam — harness atom](../decisions/ADR-013-gate-harness.md)
