@@ -182,13 +182,32 @@ def run_diagnostics(
 
     if enable_execution and call_llm is not None and final_sim_csv is not None and story_text:
         try:
-            from abm_auto.verification.execution_verifier import verify_execution
-            verify_result = verify_execution(story_text, final_sim_csv, targets, call_llm)
-            blocks.append(_render_execution_verification(verify_result))
-            signals["n_eps_claims"] = len(verify_result.claims)
-            signals["n_eps_mismatches"] = len(verify_result.mismatches)
-            signals["eps_mismatch_targets"] = [t for t, _, _ in verify_result.mismatches]
-            signals["eps_verdict"] = "PASS" if verify_result.is_valid else "MISMATCH"
+            # ADR-013 D-LLM split, realized in the production path: the
+            # LLM-driven claim extraction (GENERATION side) is now visibly
+            # separated from the deterministic diff (JUDGEMENT side =
+            # ExecutionDiffGate). The LLM proposes direction claims; the
+            # verified Gate judges whether the sim honours them. Same
+            # net result as the old verify_execution (extract→classify→
+            # diff), but the seam is explicit and the judge is the
+            # self-tested Gate, not a fused function.
+            from abm_auto.verification.execution_verifier import (
+                extract_qualitative_claims,
+            )
+            from abm_auto.verification.execution_diff_gate import (
+                ExecutionDiffGate,
+                ExecutionDiffInput,
+            )
+
+            claims = extract_qualitative_claims(story_text, targets, call_llm)  # generation
+            verdict = ExecutionDiffGate().judge(                                # judgement
+                ExecutionDiffInput(claims=claims, sim_csv=final_sim_csv, targets=targets)
+            )
+            mismatches = (verdict.evidence or {}).get("mismatches", [])
+            blocks.append(_render_execution_gate(verdict, claims, mismatches))
+            signals["n_eps_claims"] = len(claims)
+            signals["n_eps_mismatches"] = len(mismatches)
+            signals["eps_mismatch_targets"] = [t for t, _, _ in mismatches]
+            signals["eps_verdict"] = "PASS" if verdict.passed else "MISMATCH"
         except Exception as e:
             blocks.append(f"## Execution fidelity\n\n_(failed: {e})_\n")
 
@@ -302,6 +321,43 @@ def maybe_halt_on_diagnostics(workspace) -> tuple[bool, str]:
         pass
 
     return True, halt_reason
+
+
+def _render_execution_gate(verdict, claims, mismatches) -> str:
+    """Render the ExecutionDiffGate verdict as the diagnostics-report
+    'Execution fidelity' section. Equivalent markdown to the legacy
+    _render_execution_verification, driven by the Gate's verdict +
+    its evidence['actuals'] instead of a VerificationResult.
+
+    Honest about tier: the Gate is refutation, so a pass is phrased as
+    "no contradiction" (not "verified") — same wording the legacy
+    renderer used.
+    """
+    lines = ["## Execution fidelity (LLM-claim vs sim-trajectory direction)", ""]
+    if not claims:
+        lines.append("_(LLM emitted no claims for any target — skipped.)_")
+        return "\n".join(lines) + "\n"
+    lines.append(f"- Claims extracted: **{len(claims)}**")
+    lines.append(f"- Mismatches: **{len(mismatches)}**")
+    if verdict.passed:
+        lines.append("- Verdict: **PASS** (no contradiction between story and sim trajectory)")
+    else:
+        lines.append("- Verdict: **MISMATCH DETECTED** — see below")
+    actuals = (verdict.evidence or {}).get("actuals", {})
+    mismatch_targets = {t for t, _e, _a in mismatches}
+    lines += ["", "### Per-target", "",
+              "| Target | LLM claim | Sim actual | Status |",
+              "|---|---|---|---|"]
+    for claim in claims:
+        actual_dir = actuals.get(claim.target, "—")
+        if claim.target in mismatch_targets:
+            status = "✗ mismatch"
+        elif claim.direction == "unclear" or actual_dir == "unclear":
+            status = "~ skipped (unclear)"
+        else:
+            status = "✓ match"
+        lines.append(f"| `{claim.target}` | `{claim.direction}` | `{actual_dir}` | {status} |")
+    return "\n".join(lines) + "\n"
 
 
 def _render_execution_verification(result) -> str:

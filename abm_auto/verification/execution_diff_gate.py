@@ -85,6 +85,10 @@ class ExecutionDiffGate:
                 "mismatches": result.mismatches,
                 "n_claims": len(x.claims),
                 "n_compared": n_compared,
+                # classified trajectory directions — lets a renderer build
+                # the per-target "claim vs sim actual" table without
+                # re-classifying. {target: direction}.
+                "actuals": {a.target: a.direction for a in actuals},
             },
         )
 
