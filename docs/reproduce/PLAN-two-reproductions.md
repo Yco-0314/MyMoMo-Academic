@@ -97,22 +97,78 @@ traces to that text, none from memory):**
   *synergistically* with social learning to amplify innovation and
   accelerate cultural evolution.
 
-**PENDING — exact parameters (SI appendix; my stdlib extractor produced
-garbage on the SI PDF — different font encoding — so these are NOT yet
-in hand; do NOT guess them):**
-- ⛔ Vector dimensionality of the semantic space
-- ⛔ Number of base items / total reachable items (recipe tree size)
-- ⛔ Population size N, generations, Moran turnover rate
-- ⛔ Semantic-model learning rule + learning rate; exploration
-  temperature/softmax over predicted-success
-- ⛔ Social-learning rate / who-observes-whom topology
-- ⛔ The ABM-specific quantitative results (effect sizes) vs the
-  human-experiment results
-- ⛔ Whether the N=1,243 human data is released (calibration material)
+**CONFIRMED — parameters (SI appendix, re-extracted 2026-06-01 via
+`docs/reproduce/_extract_pdf_cid.py`, which decodes the Type0/CID fonts
+through their ToUnicode CMaps; the first stdlib extractor failed on
+these. Every value below traces to /tmp/yaman_si_cid.txt):**
 
-**Mechanism is confirmed; parameters are the remaining gap. Step 1 below
-(落盘机制) is done by this edit; Step "1-later" (补 SI 参数) follows after
-the reflection pass.**
+- **Semantic model = feedforward ANN, single hidden layer, 16 neurons,
+  ReLU activation, softmax output over items, cross-entropy loss,
+  trained by backpropagation.** It estimates p(y|x): given input item x,
+  the conditional distribution over which item completes a successful
+  recipe. (SI "Semantic knowledge model".) Item *embeddings* are the
+  learned input representations; embedding size is swept in sensitivity
+  analysis.
+- **Innovation task = "Totem"**: hierarchical, 6 initial items, 11
+  innovation levels with item counts 6, 4, 2, 2, 2, 3, 3, 7, 11, 48, 96.
+  Combinations limited to ≤3 items (online-adapted). Recipes identical
+  across semantic/nonsemantic conditions.
+- **Population sizes tested: 25, 50, 100** (baseline 100 individuals).
+- **Two behavioral probabilities** (Algorithm 1/2): **PSL** = probability
+  of social learning, **PS** = probability of using the semantic model;
+  each compared against a uniform random draw to branch behavior.
+- **Moran-style loop (Algorithm 1):** probabilistic death per individual
+  → Selection of survivors as parents (prob ∝ success) → Reproduction
+  (offspring = copies of selected parents) → population = parents +
+  offspring → next generation. Max 10 generations referenced in cost
+  analysis.
+- **Cost parameter:** using the semantic model can carry a cost (baseline
+  1 = no extra cost); robustness shown up to 3× cost.
+- **Algorithms 1 (population CCE) and 2 (individual innovation)** are
+  given as pseudocode in SI — directly portable to a MechanismSpec.
+- **Transmission-noise robustness:** Gaussian noise (σ = 0.2 or 2) added
+  to NN weights + embeddings (params typically in [−1, 1]).
+
+**CONFIRMED — SI Table 1 (Individual model parameters), extracted
+verbatim. These are the SWEEP RANGES; main text states the baseline
+hidden-layer size is 16:**
+
+| Parameter | Symbol | Values swept |
+|---|---|---|
+| Hidden-layer neurons | — | {8, 16, 32} |
+| Item embedding size | — | {8, 16, 32} |
+| Probability of death | P_D | see Algorithm 1 (age-based) |
+| Probability of using semantic model | P_S | {0, 0.1, 0.5, 0.9} |
+| Probability of social learning | P_SL | {0, 0.1, 0.5, 0.9} |
+| Probability of generalization | P_G | {0, 0.1, 0.5, 0.9} |
+
+- **Death probability is age-based** (Algorithm 1): P_D = exp(a·x) form
+  with constants a ≈ 0.0001365, b ≈ 0.2097 and x = individual age (exact
+  functional form needs a cleaner pull of the equation — the CID extract
+  garbled the superscript).
+- There is also a **third behavioral knob P_G (generalization)** — I had
+  not seen this before the SI table; it joins P_S and P_SL. Each is
+  compared against a uniform random draw to branch behavior.
+
+**STILL PENDING (genuinely not yet pinned — do NOT guess):**
+- ⛔ Which value in each {…} set is the bolded BASELINE (bold markup did
+  not survive CID extraction; main text fixes hidden=16, the rest need
+  the figure or code). Likely P_S=P_SL=0.5-ish but UNCONFIRMED.
+- ⛔ Exact death-probability equation (superscript garbled).
+- ⛔ Learning rate / epochs per semantic-model update.
+- ⛔ Number of innovation attempts per individual per generation (symbol
+  shown, value not cleanly pulled).
+
+**Code/data availability:** SI says "see the code provided with the
+paper" — a real code artifact exists. The OpenCLIP/Zenodo refs are for
+their sentence-embedding baseline, NOT the ABM code. Locating the
+paper's own released code would make this a TRUE reproduction (run their
+code) vs a re-implementation (rebuild from spec). Worth finding before
+Track 2 implementation.
+
+**Mechanism + parameter ranges now confirmed from the real SI via CID
+decoding. Remaining gaps are bold-baseline values + two equations,
+obtainable from the figures or the released code.**
 
 ## Feasibility judgment for Track 2 (honest, post-extraction)
 
