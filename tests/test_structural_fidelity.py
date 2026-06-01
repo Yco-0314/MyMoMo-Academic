@@ -1,62 +1,22 @@
 """Test the structural fidelity scan logic in isolation.
 
-The actual validator runs inside CodegenPhase (closure over ctx).
-These tests exercise the SAME scan invariants against synthetic
-mechanism_spec.json + code_files dicts so the rules can be pinned
-without spinning up Pipeline.
+The scan logic is now the single source of truth in
+`StructuralFidelityGate._scan` (ADR-013 debt 3b); the CodegenPhase
+closure delegates to it. These tests pin the invariants directly against
+that canonical `_scan` with synthetic spec + code_files dicts, no
+Pipeline spin-up.
+
+Assertions check substrings (param names, "Grid/Network contradiction",
+"watts_strogatz") + empty-list, all of which the canonical (richer)
+messages contain — so they survived the merge from the old abbreviated
+in-test reimplementation.
 """
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
 
-
-def _scan(spec: dict, code_files: dict[str, str]) -> list[str]:
-    """Reimplement the validator's pure scan logic for direct testing.
-
-    Mirrors `_structural_fidelity_validator` in pipeline/phases/codegen.py.
-    Kept in-test so the validator stays a closure (no public API expansion
-    needed) while still being unit-testable.
-    """
-    issues: list[str] = []
-    scenario_src = code_files.get("core/scenario.py", "")
-    if scenario_src.strip():
-        for p in spec.get("scenario_params", []) or []:
-            name = p.get("name", "")
-            if not name:
-                continue
-            if not re.search(rf"\bself\.{re.escape(name)}\b", scenario_src):
-                issues.append(f"scenario.py: missing self.{name}")
-    agent_src = code_files.get("core/agent.py", "")
-    if agent_src.strip():
-        for v in spec.get("agent_state_vars", []) or []:
-            name = v.get("name", "")
-            if not name:
-                continue
-            if not re.search(rf"\bself\.{re.escape(name)}\b", agent_src):
-                issues.append(f"agent.py: missing self.{name}")
-    # Grid/Network contradiction check (mirror of the prod validator)
-    model_src = code_files.get("core/model.py", "")
-    spec_topology = spec.get("topology")
-    agent_inherits_grid = bool(
-        agent_src and re.search(r"class\s+\w+\(\s*GridAgent\s*\)", agent_src)
-    )
-    model_uses_network = bool(
-        model_src and (
-            "setup_agent_connections" in model_src
-            or "create_network" in model_src
-        )
-    )
-    if agent_inherits_grid and model_uses_network:
-        spec_topo_type = (
-            spec_topology.get("type")
-            if isinstance(spec_topology, dict) else None
-        )
-        issues.append(
-            f"Grid/Network contradiction (spec topology={spec_topo_type})"
-        )
-    return issues
+from abm_auto.codegen.structural_fidelity_gate import _scan
 
 
 def test_clean_code_passes() -> None:

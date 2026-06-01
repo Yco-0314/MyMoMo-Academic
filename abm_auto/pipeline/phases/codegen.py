@@ -98,7 +98,13 @@ class CodegenPhase:
             call AND gives the GVR loop a more specific repair message.
             """
             import json
-            import re as _re
+
+            # Scan logic is the single source of truth in
+            # StructuralFidelityGate._scan (ADR-013 debt 3b). This closure
+            # owns only the workspace I/O + ValidationOutcome wrapping; the
+            # actual spec-vs-code check delegates, so the catalogue of
+            # structural rules lives in exactly one place.
+            from abm_auto.codegen.structural_fidelity_gate import _scan
 
             spec_path = ctx.workspace.path / "mechanism_spec.json"
             if not spec_path.exists():
@@ -109,73 +115,7 @@ class CodegenPhase:
                 return ValidationOutcome(ok=True)
 
             code_files = ctx.workspace.read_model_files()
-            issues: list[str] = []
-
-            # scenario.py: every scenario_param must be declared as self.X
-            scenario_src = code_files.get("core/scenario.py", "")
-            if scenario_src.strip():
-                for p in spec.get("scenario_params", []) or []:
-                    name = p.get("name", "")
-                    if not name:
-                        continue
-                    if not _re.search(rf"\bself\.{_re.escape(name)}\b", scenario_src):
-                        issues.append(
-                            f"scenario.py: missing declaration `self.{name}`. "
-                            f"mechanism_spec.json declares it as a scenario_param "
-                            f"(unit={p.get('unit', '?')}, default={p.get('default', '?')}); "
-                            f"add `self.{name} = <default>` in Scenario.setup()."
-                        )
-
-            # agent.py: every agent_state_var must appear as self.X
-            agent_src = code_files.get("core/agent.py", "")
-            if agent_src.strip():
-                for v in spec.get("agent_state_vars", []) or []:
-                    name = v.get("name", "")
-                    if not name:
-                        continue
-                    if not _re.search(rf"\bself\.{_re.escape(name)}\b", agent_src):
-                        issues.append(
-                            f"agent.py: missing state variable `self.{name}`. "
-                            f"mechanism_spec.json declares it as an agent_state_var "
-                            f"(type={v.get('type', '?')}, init={v.get('init', '?')!r}); "
-                            f"initialize it in Agent.setup()."
-                        )
-
-            # Grid/Network contradiction check — surfaced by 2026-05-30 originate
-            # dogfood. When mechanism_spec.json's `topology` is non-null,
-            # TemplateGenerator emits model.py with `self.network = create_network()`
-            # + `setup_agent_connections(topology=...)`. If agent.py inherits
-            # GridAgent, Network.setup_agent_connections raises
-            # `AssertionError: isinstance(agent, NetworkAgent)` at sim time.
-            # Catch this before Phase 4 with an explicit fix message that
-            # routes the LLM back to mechanism_spec.json (set topology=null).
-            model_src = code_files.get("core/model.py", "")
-            spec_topology = spec.get("topology")
-            agent_inherits_grid = bool(
-                agent_src and _re.search(r"class\s+\w+\(\s*GridAgent\s*\)", agent_src)
-            )
-            model_uses_network = bool(
-                model_src and (
-                    "setup_agent_connections" in model_src
-                    or "create_network" in model_src
-                )
-            )
-            if agent_inherits_grid and model_uses_network:
-                spec_topo_type = (
-                    spec_topology.get("type")
-                    if isinstance(spec_topology, dict) else None
-                )
-                issues.append(
-                    f"Grid/Network contradiction: agent.py inherits GridAgent but "
-                    f"model.py wires a Network topology "
-                    f"(`{spec_topo_type or 'unknown'}`). The Network's add_agent "
-                    f"asserts `isinstance(agent, NetworkAgent)`, which will "
-                    f"crash at Phase 4. **Fix in mechanism_spec.json**: set "
-                    f"`\"topology\": null` for Grid / spatial / no-topology "
-                    f"models. TemplateGenerator will then emit a model.py "
-                    f"without Network setup, and CoderAgent owns Grid "
-                    f"placement inside agent.py / environment.py."
-                )
+            issues = _scan(spec, code_files)
 
             if not issues:
                 return ValidationOutcome(ok=True)
