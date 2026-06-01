@@ -231,16 +231,23 @@ def maybe_halt_on_diagnostics(workspace) -> tuple[bool, str]:
     except Exception:
         return False, ""
 
-    n_params = int(sig.get("n_params", 0))
-    n_flat = int(sig.get("n_flat_params", 0))
-    n_claims = int(sig.get("n_eps_claims", 0))
-    n_mismatch = int(sig.get("n_eps_mismatches", 0))
+    # The HALT DECISION is delegated to DiagnosticsHaltGate (ADR-013
+    # task 1b). The Gate's judge is pure (decision only); this function
+    # keeps the I/O shell — reading the signal file, composing the
+    # operator-facing prose, and writing kill_memo. So the decision logic
+    # lives in exactly one verified+self_tested place, while the side
+    # effects stay here where flow-control belongs.
+    from abm_auto.calibration.diagnostics_halt_gate import DiagnosticsHaltGate
 
-    all_flat = n_params > 0 and n_flat == n_params
-    all_mismatch = n_claims > 0 and n_mismatch == n_claims
-
-    if not (all_flat or all_mismatch):
+    verdict = DiagnosticsHaltGate().judge(sig)
+    if verdict.passed:  # not refuted as broken → no halt
         return False, ""
+
+    ev = verdict.evidence or {}
+    all_flat = bool(ev.get("all_flat"))
+    all_mismatch = bool(ev.get("all_mismatch"))
+    n_params = int(sig.get("n_params", 0))
+    n_claims = int(sig.get("n_eps_claims", 0))
 
     reasons: list[str] = []
     if all_flat:
