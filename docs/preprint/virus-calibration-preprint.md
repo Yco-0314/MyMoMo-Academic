@@ -250,7 +250,9 @@ lucky draw.)
 
 ### 3.2 Identifiability
 
-Profile likelihood curvature per parameter on the seeded baseline:
+Profile likelihood curvature, computed at the MAP of run 1 of the seeded
+N=5 (virus 4.11 / recovery 3.55 / resistance 29.12 — the same run
+reported in §3.1), each parameter swept on a 15-point grid (§2.5):
 
 | Parameter | MAP | Curvature | Verdict |
 |---|---|---|---|
