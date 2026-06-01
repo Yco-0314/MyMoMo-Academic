@@ -195,23 +195,27 @@ class CodegenPhase:
 
             Catches what dry_run sometimes lets slip: hallucinated names
             in branches not exercised at import time. Patterns sourced
-            from mymomo_knowledge/05-anti-patterns.md §1-3. Sourced
-            centrally from anti_patterns.scan() so the catalogue stays
-            in one place.
+            from mymomo_knowledge/05-anti-patterns.md §1-3.
+
+            Delegates to AntiPatternGate (ADR-013 task 1: first GVR
+            validator to consume a Gate in the production path). The Gate
+            wraps the same anti_patterns.scan() catalogue, so behavior is
+            identical; this routes the call through the verified seam +
+            its self_test rather than the bare function.
             """
-            from abm_auto.codegen.anti_patterns import scan as scan_anti_patterns
+            from abm_auto.codegen.anti_pattern_gate import AntiPatternGate
 
             code_files = ctx.workspace.read_model_files()
             if not code_files:
                 return ValidationOutcome(ok=True)
-            issues = scan_anti_patterns(code_files)
-            if not issues:
+            verdict = AntiPatternGate().judge(code_files)
+            if verdict.passed:
                 return ValidationOutcome(ok=True)
             return ValidationOutcome(
                 ok=False,
-                reasons=issues,
+                reasons=verdict.reasons,
                 severity="fatal",  # these patterns guarantee runtime failure
-                structured={"issue_count": len(issues)},
+                structured={"issue_count": len(verdict.reasons)},
             )
 
         def _dry_run_validator(_ignored) -> ValidationOutcome:
