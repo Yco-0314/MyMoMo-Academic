@@ -16,91 +16,14 @@ from __future__ import annotations
 
 import pytest
 
-from abm_auto.codegen.anti_patterns import ANTI_PATTERNS, scan
+from abm_auto.codegen.anti_patterns import ANTI_PATTERNS, TRIGGERS, scan
 
 
+# Single source of truth: the trigger snippets now live in the catalogue
+# (anti_patterns.TRIGGERS), shared with AntiPatternGate.self_test. These
+# fixtures derive from it so the test and the Gate can never drift.
 # Each tuple: (anti_pattern.name, synthetic code snippet that should trigger it)
-FIXTURES: list[tuple[str, str]] = [
-    # § 1 — Hallucinated class names
-    (
-        "hallucinated_NetworkGrid",
-        "from abm_auto.runtime import NetworkGrid\nclass M: pass\n",
-    ),
-    (
-        "hallucinated_GridNetwork",
-        "from abm_auto.runtime import GridNetwork\n",
-    ),
-    (
-        "hallucinated_NetworkModel",
-        "class MyModel(NetworkModel):\n    pass\n",
-    ),
-    (
-        "hallucinated_WattsStrogatzNetwork",
-        "self.network = WattsStrogatzNetwork(k=6, p=0.1)\n",
-    ),
-    (
-        "hallucinated_BarabasiAlbertGraph",
-        "self.network = BarabasiAlbertGraph(m=3)\n",
-    ),
-    (
-        "hallucinated_GridModel",
-        "class MyModel(GridModel):\n    pass\n",
-    ),
-    (
-        "hallucinated_NetworkAgentModel",
-        "class MyModel(NetworkAgentModel):\n    pass\n",
-    ),
-    (
-        "hallucinated_AgentScheduler",
-        "scheduler = AgentScheduler(self.agents)\n",
-    ),
-    (
-        "hallucinated_EventLoop",
-        "loop = EventLoop()\n",
-    ),
-    # § 2 — Hallucinated attributes / methods
-    (
-        "hallucinated_attr_gen_num",
-        "if agent.gen_num > 0:\n    pass\n",
-    ),
-    (
-        "hallucinated_attr_generation_num",
-        "print(agent.generation_num)\n",
-    ),
-    (
-        "hallucinated_method_shuffle",
-        "self.agents.shuffle()\n",
-    ),
-    (
-        "hallucinated_hook_after_setup",
-        "class M(Model):\n    def after_setup(self):\n        pass\n",
-    ),
-    (
-        "hallucinated_add_property",
-        "self.data_collector.add_property('count')\n",
-    ),
-    # § 3 — Removed string-based network API
-    (
-        "removed_api_network_type",
-        "self.network.setup_agent_connections(network_type='watts_strogatz_graph')\n",
-    ),
-    (
-        "removed_api_network_params",
-        "self.network.setup_agent_connections(network_params={'k': 6})\n",
-    ),
-    (
-        "bad_networkx_name_watts_strogatz",
-        "g = getattr(nx, 'watts_strogatz_graph')(150, k=6, p=0.1)\n",
-    ),
-    (
-        "bad_networkx_name_barabasi_albert",
-        "g = getattr(nx, 'barabasi_albert_graph')(150, m=3)\n",
-    ),
-    (
-        "bad_networkx_name_erdos_renyi",
-        "g = nx.erdos_renyi_graph(150, p=0.05)\n",
-    ),
-]
+FIXTURES: list[tuple[str, str]] = list(TRIGGERS.items())
 
 
 @pytest.mark.parametrize("expected_name,code", FIXTURES, ids=[name for name, _ in FIXTURES])
