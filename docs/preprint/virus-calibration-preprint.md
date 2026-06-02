@@ -438,11 +438,15 @@ We demonstrated an automated research pipeline that takes a natural-
 language problem statement and produces a calibrated agent-based model
 with identifiability-aware reporting, in ~6 minutes wall-clock at
 ~$0.04 in LLM costs. Applied to a SIR-on-network calibration problem,
-the pipeline reduces aggregate MSE from 1480 baseline to a mean of 48
-across five independent runs, recovering the most-identifiable
-parameter to within 2% relative error of the data-generating value.
-Identifiability diagnostics correctly distinguish well-constrained
-from poorly-constrained parameters. The auto-generated research
+the pipeline reduces aggregate MSE from 1480 baseline to a mean of 93.9
+across five seeded, exactly-reproducible runs, recovering the two
+well-identified parameters to within 8–14% relative error of the
+data-generating values. Identifiability diagnostics correctly
+distinguish well-constrained from poorly-constrained parameters — and,
+on this problem, the parameter the diagnostics flag as least
+identifiable (gain_resistance, lowest profile curvature) is exactly the
+one the calibrator recovers worst (63% error), a concrete instance of
+the diagnostics earning their place. The auto-generated research
 report covers the structural sections of a Results write-up and
 serves as a usable draft for further human refinement.
 
