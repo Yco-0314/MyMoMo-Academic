@@ -179,3 +179,80 @@ verification. The paradigm library is finite and human-audited.
 - **OQ3**: does `evidence` need any minimal common shape for the renderer,
   or is `salient_number` + a `summary() -> str` enough? Defer to first
   provenance implementation (C3).
+
+---
+
+## Implementation status (2026-06-03)
+
+The design above is fully implemented. Commits on `v3-substantial`:
+
+**Atoms — five Gates, each with a synthetic-ground-truth self_test:**
+- `AntiPatternGate` (verification) — wraps `anti_patterns.scan`. self_test
+  19/19 via the canonical `anti_patterns.TRIGGERS` map (debt 3a hoisted
+  the trigger snippets out of the test into the catalogue; fixture test +
+  Gate self_test now share one source).
+- `StructuralFidelityGate` (verification) — the canonical `_scan`; the
+  CodegenPhase closure + the test reference both delegate here (debt 3b
+  collapsed three copies to one).
+- `ExecutionDiffGate` (refutation) — the deterministic half of ε; proves
+  D-LLM (claim extraction is a generator, the diff is the Gate).
+- `NullGate` (refutation) — surrogate-null guard; the continuous-salient,
+  refutation-tier exemplar.
+- `DiagnosticsHaltGate` (refutation) — polarity-inverted (`passed = not
+  halt`); judges the signal dict purely (kill_memo stays the caller's).
+
+**Molecule — `Harness`** (`verification/harness.py`): family routing +
+tier-separated `HarnessReport` (verification = hard door; refutation =
+evidence record, never collapsed to a flat AND). B-aggregation, per D2.
+
+**Credential — `provenance.py`**: `build_provenance(report, artifacts)`
+→ content-addressed `provenance.json`. Auditability certificate, not a
+truth certificate (a passed refutation Gate stays "not refuted").
+Fabrication is structurally visible (a result points to no artifact →
+hash absent/mismatched on replay).
+
+**Production wiring (candidate 1 + 2):**
+- The two GVR Gate-validators (anti_pattern, structural_fidelity) now
+  translate via the single `outcome_from_verdict` adapter (candidate 1),
+  not hand-rolled per-validator wrapping. tier→severity is the consumer's
+  policy (default `verification→fatal`), salient_number preserved into
+  `structured`. ε's deterministic half is the production diagnostics
+  judge in `run_diagnostics` (the D-LLM split, live).
+- Provenance emitted end-to-end in `cross_domain_lean` (candidate 2,
+  B-pilot) — first `Harness.run + build_provenance` on a production-shaped
+  artifact, at zero production risk (benchmark script, not the pipeline).
+
+### OQ resolutions
+- **OQ1 (family taxonomy)**: families are concrete strings on each Gate
+  (`source_code` / `scalar_trajectory` / `trajectory_vs_claims` /
+  `diagnostics_signal` / `spec_and_code`). The interaction-graph family is
+  still unborn — defer until a Ricci Gate forces it (unchanged).
+- **OQ2 (routing table)**: resolved by NOT building a registry — `Harness.
+  run(gates, artifacts)` takes explicit `{family: payload}` and routes by
+  `gate.family`. The caller owns the routing set (local), Gates stay
+  autonomous. Self-registration was rejected as premature.
+- **OQ3 (evidence shape)**: `salient_number` + free-form `evidence` dict
+  sufficed for provenance; no common evidence schema was needed. The
+  renderer reads `salient_number` + `reasons`; provenance records
+  `evidence` opaquely. Closed.
+
+### Design inputs for接法 A (diagnostics → Harness — the deferred deep step)
+The B-pilot surfaced two real frictions, recorded so接法 A starts informed:
+1. **Fingerprint wrappers vs files.** The pilot fingerprinted
+   `ExecutionDiffInput` (a wrapper dataclass, `replay="weak"`), hiding the
+   sim CSV inside it. The CSV is the strong-replay (file sha256) evidence.
+   接法 A should pass underlying files/arrays as artifacts, not wrappers,
+   so file-level hashing applies.
+2. **β/ε have two parallel implementations.** `run_diagnostics` and
+   `cross_domain_lean` call raw `profile_likelihood` / `verify_execution`;
+   the Gate versions (`NullGate`/`ExecutionDiffGate`) are separate. 接法 A
+   (route diagnostics through Harness) would unify them — but that is a
+   real production-calibration refactor, and whether the raw-function path
+   has independent reason to exist must be weighed before merging. Held,
+   not done.
+
+### Status: design complete, atoms+molecule+credential shipped, two
+deeper steps held (接法 A diagnostics-through-Harness; GVR full Harness
+orchestration). The held steps are production refactors weighed as
+higher-risk/unclear-gain in their respective grilling sessions, not
+oversights.
