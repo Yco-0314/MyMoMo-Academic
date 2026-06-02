@@ -11,8 +11,8 @@ working together on one realistic model from start to finish.
 agents, calibrated against an observed (susceptible, infected, resistant)
 time series.
 
-The same model in CALIBRATION mode is what the BEHAVE 2025 benchmark
-exercises end-to-end (`benchmark_calibration_handcrafted.py`).
+The same model in CALIBRATION mode is what the virus-on-a-network
+calibration benchmark exercises end-to-end (`benchmark_calibration_handcrafted.py`).
 
 ---
 
@@ -132,7 +132,7 @@ id,run_num,periods,agent_num,average_degree,initial_outbreak_size,virus_check_fr
 0,1,250,150,6,3,1,0,4.4,0.3,25.0
 ```
 
-`4.4`, `0.3`, `25.0` are the truth values from BEHAVE 2025. In a real
+`4.4`, `0.3`, `25.0` are the truth values from the published challenge. In a real
 research run you would write **plausible defaults in the declared
 units** — `4.4` is fine (in range 0-20 percent). The
 BayesianCalibrator uses spec ranges, not CSV defaults, to build priors
@@ -376,7 +376,7 @@ The calibrator:
    (downstream phases see the calibrated configuration).
 
 `benchmark_calibration_handcrafted.py` runs exactly this pipeline against
-the BEHAVE 2025 ground truth.
+the published challenge's ground truth.
 
 ---
 
@@ -384,7 +384,7 @@ the BEHAVE 2025 ground truth.
 
 After a full pipeline run, open `<workspace>/audit_ledger.md` for a
 chronological record of every agent's decisions. Format (one bullet per
-event, real excerpt from a BEHAVE 2025 benchmark run):
+event, real excerpt from a calibration benchmark run):
 
 ```
 - `ev-0001` ℹ **info** [INFO] Phase -1 (by ModeDetector): Research mode FORCED by --mode flag: originate (user override; LLM detection skipped)

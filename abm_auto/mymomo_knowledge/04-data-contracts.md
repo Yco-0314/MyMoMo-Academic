@@ -154,7 +154,7 @@ mis-typed structural changes.
 **Multiple scenarios**: each row is a separate run. The Simulator iterates
 them in order, calling `model.create() → setup() → run()` per row.
 
-**Example** (BEHAVE 2025 virus challenge):
+**Example** (virus-on-a-network calibration challenge):
 ```csv
 id,run_num,periods,agent_num,average_degree,initial_outbreak_size,virus_check_frequency,seed,virus_spread_chance,recovery_chance,gain_resistance_chance
 0,1,250,150,6,3,1,0,4.4,0.3,25.0
@@ -228,7 +228,7 @@ Two files are written per Simulator run, named by convention:
 | `id` | agent's internal id |
 | ...one column per `add_agent_property()` call... | the agent's attribute at that period |
 
-Sample first row (BEHAVE 2025 virus benchmark):
+Sample first row (virus-on-a-network calibration benchmark):
 ```csv
 id_scenario,id_run,period,id,state,virus_check_timer
 0,0,0,0,S,1
