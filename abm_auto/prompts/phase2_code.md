@@ -69,6 +69,40 @@ class MyAgent(Agent):
         pass
 ```
 
+#### Learned operators (ONLY if `mechanism_spec.json` has `learned_operators`)
+
+If — and only if — the spec lists a `learned_operators` entry, the agent
+carries a trainable sub-model. **Use the runtime's `FeedforwardLearner`;
+never implement a neural network, training loop, softmax, or backprop
+yourself.** It is a library, exactly like `topologies` or `fit()`:
+
+```python
+from abm_auto.runtime import Agent, FeedforwardLearner
+
+class Innovator(Agent):
+    def setup(self):
+        # one learned_operator named "semantic_model", n_items=96, dims 16/16
+        self.semantic_model = FeedforwardLearner(
+            n_items=self.scenario.n_total_items,   # or the int literal from the spec
+            embed_dim=16, hidden_dim=16, learning_rate=0.001,
+        )
+        self.memory: list = []   # successful recipes, plain agent state
+
+    def step(self):
+        # PREDICT: forward pass, no math written here
+        complement = self.semantic_model.predict(seed_item)        # -> item index
+        # TRAIN: pass (input_item, target_item) index pairs; library does CE+backprop
+        self.semantic_model.train([(a, b) for (a, b) in pairs])
+        # GENERALIZE (a strategy YOU write): nearest item in embedding space
+        similar = self.semantic_model.nearest(some_item)
+```
+
+The library API is only: `predict(item)`, `predict_proba(item)`,
+`train(pairs, epochs=1)`, `nearest(item)`, `embedding_of(item)`. If the
+model inherits across generations (offspring inherit the parent's learned
+model), copy it in `model.setup()` with `copy.deepcopy(parent.semantic_model)`
+— the operator carries all its state (weights + embeddings).
+
 ### Environment (`core/environment.py`)
 ```python
 from abm_auto.runtime import Environment

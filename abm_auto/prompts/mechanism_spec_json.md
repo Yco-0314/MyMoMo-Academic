@@ -45,6 +45,7 @@ pipeline degrades to legacy LLM codegen — which has a known failure rate.
   "agent_state_vars": [
     {"name": "state", "type": "int", "init": "0"}
   ],
+  "learned_operators": [],
   "targets": ["count_s", "count_i", "count_r"],
   "env_step_pseudocode": "snapshot infecteds; spread to S-neighbors with prob...",
   "agent_step_pseudocode": null,
@@ -112,6 +113,43 @@ inheritance contradiction surfaces only at sim time).
   "initial_setup_pseudocode": "place agents on grid, assign group by ratio"
 }
 ```
+
+## Learned operators (agents that TRAIN a sub-model)
+
+`learned_operators` is **almost always `[]`** (empty). Set it ONLY when an
+agent in the source model **learns a representation it trains over time** —
+e.g. a neural network / embedding model the agent updates from experience.
+Fixed-rule agents (state machines, thresholds, probabilities) do NOT use
+this — leave it empty.
+
+If the model DOES have a per-agent trainable sub-model, do NOT try to
+describe the network's weights or training loop in `agent_state_vars` or
+pseudocode. The runtime provides the operator (`FeedforwardLearner`); you
+only declare its SHAPE here, and the agent code will call it:
+
+```json
+"learned_operators": [
+  {
+    "name": "semantic_model",
+    "n_items": "n_total_items",
+    "embed_dim": 16,
+    "hidden_dim": 16,
+    "learning_rate": 0.001,
+    "description": "per-agent distributional model: predicts which item completes a recipe"
+  }
+]
+```
+
+- `name` — the agent attribute (becomes `self.semantic_model`).
+- `n_items` — vocabulary/output size: an **integer** literal, OR the
+  **name of a scenario_param** holding it (must then appear in
+  `scenario_params`).
+- `embed_dim`, `hidden_dim`, `learning_rate` — small ints / float; use the
+  paper's values if stated, else 16 / 16 / 0.001.
+
+The agent will `self.<name> = FeedforwardLearner(n_items=..., ...)` and use
+`.train(pairs)` / `.predict(item)` / `.nearest(item)` — it never
+implements the network. (See the Phase-2 implementation prompt.)
 
 ## Param value forms
 
