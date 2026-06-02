@@ -117,7 +117,7 @@ def main() -> int:
     if not args.fixture.exists():
         print(f"ERROR: fixture not found: {args.fixture}")
         print("To regenerate the fixture, run NetLogo headless with the")
-        print("oracle_BEHAVE2025_GT experiment in tests/fixtures/netlogo/.")
+        print("oracle_sir_network_GT experiment in tests/fixtures/netlogo/.")
         return 1
 
     summary = generate_multi_seed_observed(args.fixture, args.out, args.mode)

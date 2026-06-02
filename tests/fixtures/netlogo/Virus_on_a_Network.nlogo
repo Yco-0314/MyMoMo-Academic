@@ -655,7 +655,7 @@ NetLogo 6.4.0
 @#$#@#$#@
 @#$#@#$#@
 <experiments>
-  <experiment name="oracle_BEHAVE2025_GT" repetitions="30" runMetricsEveryStep="true">
+  <experiment name="oracle_sir_network_GT" repetitions="30" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
     <timeLimit steps="250"/>

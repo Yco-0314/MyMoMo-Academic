@@ -1,6 +1,6 @@
 "BehaviorSpace results (NetLogo 6.4.0)","Table version 2.0"
 "tests/fixtures/netlogo/Virus_on_a_Network.nlogo"
-"oracle_BEHAVE2025_GT"
+"oracle_sir_network_GT"
 "05/28/2026 22:50:22:262 +0800"
 "min-pxcor","max-pxcor","min-pycor","max-pycor"
 "-20","20","-20","20"
