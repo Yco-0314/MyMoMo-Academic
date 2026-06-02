@@ -78,7 +78,30 @@ class DesignViabilityPhase:
             )
         )
 
-        # Hard-halt override: if best attempt is REALLY broken (≥4 reasons),
+        # Hard-halt override #1: an EMPTY / unusable DESIGN.md must halt.
+        # The GVR refine loop can leave a 0-byte DESIGN.md when the LLM
+        # returns nothing on its final attempt (a transient failure). An
+        # empty design has few "reasons" so it slips past the reasons>=4
+        # gate below, then crashes Phase 1d/1b downstream (ODD writer:
+        # "DESIGN.md is missing"). Catch it here and halt cleanly instead.
+        design_now = ctx.workspace.read_design()
+        if len(design_now.strip()) < 200:   # a real design is thousands of chars
+            console.print(
+                Panel.fit(
+                    "[bold red]Pipeline halted: DESIGN.md is empty or unusable "
+                    "after refinement.[/bold red]\n"
+                    "The design phase produced no usable design (likely a "
+                    "transient LLM failure on the final attempt). Re-run, or "
+                    "simplify the story.\n"
+                    f"See: {ctx.workspace.path / 'kill_memo.md'}",
+                    border_style="red",
+                )
+            )
+            ctx.pipeline_halted = True
+            ctx.halt_reason = "DESIGN.md empty/unusable after refinement"
+            return
+
+        # Hard-halt override #2: if best attempt is REALLY broken (≥4 reasons),
         # halt — proceeding produces garbage downstream.
         best_outcome = gvr.attempts[-1].outcome
         if len(best_outcome.reasons) >= 4:
