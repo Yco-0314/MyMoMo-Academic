@@ -99,12 +99,16 @@ class CodegenPhase:
             """
             import json
 
-            # Scan logic is the single source of truth in
-            # StructuralFidelityGate._scan (ADR-013 debt 3b). This closure
-            # owns only the workspace I/O + ValidationOutcome wrapping; the
-            # actual spec-vs-code check delegates, so the catalogue of
-            # structural rules lives in exactly one place.
-            from abm_auto.codegen.structural_fidelity_gate import _scan
+            # Consumes StructuralFidelityGate through the canonical Gate
+            # seam (ADR-013 task 1): this closure owns only workspace I/O;
+            # the spec-vs-code judgement is the Gate's, and the
+            # Verdict→ValidationOutcome translation is the single shared
+            # adapter (no hand-rolled severity wrapping here).
+            from abm_auto.codegen.structural_fidelity_gate import (
+                StructuralFidelityGate,
+                StructuralFidelityInput,
+            )
+            from abm_auto.verification.gate import outcome_from_verdict
 
             spec_path = ctx.workspace.path / "mechanism_spec.json"
             if not spec_path.exists():
@@ -115,16 +119,12 @@ class CodegenPhase:
                 return ValidationOutcome(ok=True)
 
             code_files = ctx.workspace.read_model_files()
-            issues = _scan(spec, code_files)
-
-            if not issues:
-                return ValidationOutcome(ok=True)
-            return ValidationOutcome(
-                ok=False,
-                reasons=issues,
-                severity="fatal",   # structural mismatches cause runtime AttributeError
-                structured={"issue_count": len(issues)},
+            verdict = StructuralFidelityGate().judge(
+                StructuralFidelityInput(spec=spec, code_files=code_files)
             )
+            # verification tier → fatal (default policy); structural
+            # mismatches cause runtime AttributeError, must block retry.
+            return outcome_from_verdict(verdict)
 
         def _targets_alignment_validator(_ignored) -> ValidationOutcome:
             """Verify LLM env.py sets every templated DataCollector attribute.
@@ -204,19 +204,14 @@ class CodegenPhase:
             its self_test rather than the bare function.
             """
             from abm_auto.codegen.anti_pattern_gate import AntiPatternGate
+            from abm_auto.verification.gate import outcome_from_verdict
 
             code_files = ctx.workspace.read_model_files()
             if not code_files:
                 return ValidationOutcome(ok=True)
-            verdict = AntiPatternGate().judge(code_files)
-            if verdict.passed:
-                return ValidationOutcome(ok=True)
-            return ValidationOutcome(
-                ok=False,
-                reasons=verdict.reasons,
-                severity="fatal",  # these patterns guarantee runtime failure
-                structured={"issue_count": len(verdict.reasons)},
-            )
+            # verification tier → fatal (default policy): these patterns
+            # guarantee runtime failure. Translation via the shared adapter.
+            return outcome_from_verdict(AntiPatternGate().judge(code_files))
 
         def _dry_run_validator(_ignored) -> ValidationOutcome:
             error = self.executor.dry_run()

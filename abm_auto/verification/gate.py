@@ -106,3 +106,42 @@ class Gate(Protocol):
     def judge(self, x) -> Verdict: ...
 
     def self_test(self) -> bool: ...
+
+
+def outcome_from_verdict(verdict: Verdict, *, fatal_tiers: frozenset[Tier] = frozenset({"verification"})):
+    """Adapt a Gate `Verdict` into the GVR loop's `ValidationOutcome`.
+
+    The single, canonical translation between the two verdict vocabularies
+    (ADR-013): Gate's (passed + tier) → GVR's (ok + severity). Replaces the
+    hand-rolled translation that each GVR validator previously inlined —
+    which dropped tier and salient_number every time.
+
+    severity policy is the CONSUMER's decision, not the Gate's: a tier is a
+    fixed property of a Gate, but "does failing it halt this loop" depends
+    on the loop. The default (`verification → fatal`, everything else soft)
+    matches GVR's current need — only verification-tier Gates run in GVR
+    today, and a structural defect must block the retry. The parameter
+    leaves the door open for a consumer (e.g. a future refutation Gate in
+    GVR, or provenance) to choose differently, without baking one policy in.
+
+    salient_number is preserved into `structured` (lossless) so a consumer
+    that wants the margin still has it — ValidationOutcome has no dedicated
+    field, but its `structured` dict is exactly for this.
+    """
+    from abm_auto.refinement import ValidationOutcome
+
+    if verdict.passed:
+        return ValidationOutcome(ok=True)
+
+    structured: dict = dict(verdict.evidence) if isinstance(verdict.evidence, dict) else {}
+    if verdict.salient_number is not None:
+        structured["salient_score"] = verdict.salient_number[0]
+        structured["salient_threshold"] = verdict.salient_number[1]
+    structured["tier"] = verdict.tier
+
+    return ValidationOutcome(
+        ok=False,
+        reasons=list(verdict.reasons),
+        severity="fatal" if verdict.tier in fatal_tiers else "soft",
+        structured=structured,
+    )
