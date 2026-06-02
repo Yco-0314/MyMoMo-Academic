@@ -1,8 +1,8 @@
 """
-Benchmark: BEHAVE 2025 Calibration Challenge.
+Benchmark: virus-on-a-network calibration challenge.
 
 Runs abm-auto end-to-end on the "Virus on a Network" calibration challenge
-from BEHAVE 2025 Advanced Week, then compares estimated parameters against the
+from a published ABM course, then compares estimated parameters against the
 inferred data-generating ground truth.
 
 Ground-truth note (2026-05-28 finding):
@@ -48,7 +48,7 @@ from rich.table import Table
 console = Console()
 
 
-# As-printed in the BEHAVE 2025 calibration_challenge_results.pdf (p9).
+# As-printed in the published calibration_challenge_results.pdf (p9).
 # Preserved for historical reference. NOT used for scoring — see module
 # docstring for why recovery_chance=0.3 cannot generate observed.csv.
 GROUND_TRUTH_AS_PRINTED = {
@@ -373,7 +373,7 @@ def write_summary(workspace_path: Path, wall_seconds: float, rows, estimated,
     else:
         lines.append("| _calibration did not run_ | — | — | — | — |")
 
-    lines += ["", "## Ground truth (from BEHAVE 2025 calibration_challenge_results.pdf)", ""]
+    lines += ["", "## Ground truth (from the published calibration_challenge_results.pdf)", ""]
     for k, v in GROUND_TRUTH.items():
         lines.append(f"- `{k}` = {v}")
 
@@ -382,7 +382,7 @@ def write_summary(workspace_path: Path, wall_seconds: float, rows, estimated,
             "",
             "## Calibration MSE (observed vs. simulated at best_params)",
             "",
-            "This is the metric the original BEHAVE 2025 calibration challenge used.",
+            "This is the metric the original calibration challenge used.",
             "It is **decoupled from parameter identifiability** — measures whether the",
             "calibrated model REPRODUCES THE OBSERVED DYNAMICS, regardless of whether",
             "our generated simulator's params map 1:1 to the source NetLogo model.",

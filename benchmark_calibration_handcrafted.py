@@ -67,7 +67,7 @@ def setup_workspace(name: str) -> Path:
     spec = {
         "mode": "originate",
         "paper_ref": "",
-        "phenomenon": "Virus on a network (BEHAVE 2025 calibration challenge)",
+        "phenomenon": "Virus on a network (calibration challenge)",
         "has_calibration_data": True,
         "calibration_data_path": "data/observed.csv",
         "calibration_targets": ["susceptible", "infected", "resistant"],

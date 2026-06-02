@@ -73,7 +73,7 @@ def run_one(max_sims: int, run_idx: int) -> dict | None:
         iterations=2,                  # ≥2 so the calibrate-or-optimize branch fires
                                        # (Pipeline guards Phase 6 with `i < iterations`)
         peer_review=False,
-        mode_override="reproduce",     # not generating a new story; reproducing BEHAVE 2025
+        mode_override="reproduce",     # not generating a new story; reproducing a published challenge
         auto_lit_review=False,         # skip Phase 0 net call
         external_model_path=str(MODEL_PATH),
         workspace_name=f"external_model_bench_{int(time.time())}_{run_idx}",
