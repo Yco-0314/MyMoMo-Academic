@@ -1,4 +1,4 @@
-# Dogfood report: codegen path on BEHAVE 2025 virus story
+# Dogfood report: codegen path on the virus-on-a-network story
 
 **Date**: 2026-05-31 08:56  
 **Story**: `examples/calibration_challenge_virus/story.md`  

@@ -532,7 +532,7 @@ branch in `LLMClient.__init__` — no caller changes needed.
 ### Calibration Benchmark Suite
 
 Three scripts for measuring the calibration pipeline against the inferred
-data-generating ground truth for the BEHAVE 2025 Brescia challenge
+data-generating ground truth for the virus-on-a-network calibration challenge
 (`virus_spread_chance=4.4`, `recovery_chance=2.5`, `gain_resistance_chance=25.0`).
 The PDF prints `recovery_chance=0.3` but that value is mathematically
 incompatible with observed.csv — parameter sweep against the observed
@@ -547,7 +547,7 @@ See `benchmark_calibration_challenge.py` docstring for the full diagnostic.
 3. `benchmark_calibration_stability.py` — runs (2) N times, reports
    variance. Tells us if calibration is reproducible vs RNG-flaky.
 
-Score format: per-parameter relative error + BEHAVE 2025-formula MSE (mean of
+Score format: per-parameter relative error + challenge-formula MSE (mean of
 squared errors across `susceptible`, `infected`, `resistant` columns,
 averaged over aligned ticks).
 

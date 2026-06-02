@@ -1,4 +1,4 @@
-# Dogfood report — α + β + ε on BEHAVE 2025 virus
+# Dogfood report — α + β + ε on the virus-on-a-network calibration
 
 **Date**: 2026-05-30 17:05  
 **Story**: `examples/calibration_challenge_virus/story.md`  
