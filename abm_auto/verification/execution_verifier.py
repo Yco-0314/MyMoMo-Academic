@@ -1,4 +1,4 @@
-"""Execution-based mechanism verifier — does sim BEHAVE as the story claims?
+"""Execution-based mechanism verifier — does the sim do what the story claims?
 
 Today's verifier chain (dry_run / anti_pattern / contract / fidelity /
 structural_fidelity / targets_alignment) looks at CODE. None look at
