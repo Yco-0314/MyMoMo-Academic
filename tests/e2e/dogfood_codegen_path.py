@@ -7,7 +7,7 @@ proves the CALIBRATION side of the pipeline works but says nothing about
 whether the full "story → working model → calibrated → report" promise
 actually delivers for users who *don't* have a handcrafted simulator.
 
-This script runs the full pipeline on the BEHAVE 2025 virus story without
+This script runs the full pipeline on the virus-on-a-network story without
 --external-model, captures stdout + workspace artifacts, computes 14
 metrics across codegen health / pipeline health / calibration health /
 UX, and writes a diagnostic markdown report.
@@ -231,7 +231,7 @@ def render_report(metrics: dict[str, Any]) -> str:
     cost = metrics.get("est_cost_usd", 0)
 
     lines = [
-        "# Dogfood report: codegen path on BEHAVE 2025 virus story",
+        "# Dogfood report: codegen path on the virus-on-a-network story",
         "",
         f"**Date**: {time.strftime('%Y-%m-%d %H:%M')}  ",
         f"**Story**: `examples/calibration_challenge_virus/story.md`  ",

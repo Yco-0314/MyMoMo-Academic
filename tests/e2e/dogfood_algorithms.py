@@ -1,4 +1,4 @@
-"""Dogfood α + β + ε on the BEHAVE 2025 virus calibration problem.
+"""Dogfood α + β + ε on the virus-on-a-network calibration problem.
 
 Three independent experiments validating today's algorithm work
 against a real handcrafted simulator + multi-seed observed.csv.
@@ -310,7 +310,7 @@ def exp_epsilon(map_params: dict[str, float]) -> dict[str, Any]:
 
 def render_report(alpha: dict, beta: dict, epsilon: dict) -> str:
     lines = [
-        "# Dogfood report — α + β + ε on BEHAVE 2025 virus",
+        "# Dogfood report — α + β + ε on the virus-on-a-network calibration",
         "",
         f"**Date**: {time.strftime('%Y-%m-%d %H:%M')}  ",
         f"**Story**: `examples/calibration_challenge_virus/story.md`  ",

@@ -47,7 +47,7 @@ def main() -> int:
     executor = Executor(ws, timeout=60)
     sim = SimulatorWrapper(ws, executor, base_run_id=99000)
 
-    # Priors matching the BEHAVE virus story spec
+    # Priors matching the virus-on-a-network story spec
     priors = {
         "virus_spread_chance": {"min": 0.0, "max": 20.0},
         "recovery_chance":     {"min": 0.0, "max": 5.0},
