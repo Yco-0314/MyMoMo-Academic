@@ -86,6 +86,28 @@ def test_n_items_param_ref_must_exist() -> None:
     assert any("ghost' is not a declared scenario_param" in e for e in spec.validate())
 
 
+def test_n_items_accepts_scenario_dot_prefix() -> None:
+    """The codebase's `scenario.X` reference convention (topology.params
+    uses it) must be accepted for n_items when the param exists — and
+    still rejected when it doesn't. Regression for the isolation-test
+    finding."""
+    ok = _base_spec(
+        scenario_params=[
+            ScenarioParam(name="n_total_items", type="int", default=96),
+            ScenarioParam(name="agent_num", type="int", default=100),
+            ScenarioParam(name="periods", type="int", default=50),
+        ],
+        learned_operators=[LearnedOperator(name="sm", n_items="scenario.n_total_items")],
+    )
+    assert ok.validate() == []
+
+    bad = _base_spec(
+        learned_operators=[LearnedOperator(name="sm", n_items="scenario.ghost")]
+    )
+    assert any("scenario.ghost' is not a declared scenario_param" in e
+               for e in bad.validate())
+
+
 def test_name_collision_with_state_var_rejected() -> None:
     spec = _base_spec(
         agent_state_vars=[AgentStateVar(name="semantic_model", type="int", init="0")],

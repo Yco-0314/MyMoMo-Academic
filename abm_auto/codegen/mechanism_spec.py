@@ -168,17 +168,22 @@ class LearnedOperator:
         errors: list[str] = []
         if not self.name or not self.name.isidentifier():
             errors.append(f"learned_operator.name={self.name!r} not a valid identifier")
-        # n_items: int literal >= 2, OR a non-empty identifier (scenario param ref)
+        # n_items: int literal >= 2, OR a scenario_param reference. The
+        # reference may be a bare name ("n_total_items") OR the codebase's
+        # "scenario.X" form (same convention topology.params uses) — accept
+        # both; the spec-level check strips the prefix when verifying the
+        # param exists.
         if isinstance(self.n_items, bool):  # bool is an int subclass — reject explicitly
             errors.append(f"learned_operator.{self.name}.n_items must be int or param name, got bool")
         elif isinstance(self.n_items, int):
             if self.n_items < 2:
                 errors.append(f"learned_operator.{self.name}.n_items={self.n_items} must be >= 2")
         elif isinstance(self.n_items, str):
-            if not self.n_items.isidentifier():
+            bare = self.n_items[len("scenario."):] if self.n_items.startswith("scenario.") else self.n_items
+            if not bare.isidentifier():
                 errors.append(
                     f"learned_operator.{self.name}.n_items={self.n_items!r} is neither an int "
-                    f"nor a valid scenario_param name"
+                    f"nor a valid scenario_param name (or 'scenario.<param>' reference)"
                 )
         else:
             errors.append(
@@ -343,11 +348,14 @@ class MechanismSpec:
                     f"learned_operators: name {lo.name!r} collides with an agent_state_var"
                 )
             var_names_seen.add(lo.name)
-            if isinstance(lo.n_items, str) and lo.n_items not in param_names_seen:
-                errors.append(
-                    f"learned_operators[{lo.name}]: n_items={lo.n_items!r} is not a "
-                    f"declared scenario_param"
-                )
+            if isinstance(lo.n_items, str):
+                # accept bare name or "scenario.<param>" (topology's convention)
+                ref = lo.n_items[len("scenario."):] if lo.n_items.startswith("scenario.") else lo.n_items
+                if ref not in param_names_seen:
+                    errors.append(
+                        f"learned_operators[{lo.name}]: n_items={lo.n_items!r} is not a "
+                        f"declared scenario_param"
+                    )
         # Targets non-empty (otherwise DataCollector produces no data → calibration impossible)
         if not self.targets:
             errors.append("targets is empty — no metrics will be collected (calibration impossible)")

@@ -141,15 +141,28 @@ only declare its SHAPE here, and the agent code will call it:
 ```
 
 - `name` — the agent attribute (becomes `self.semantic_model`).
-- `n_items` — vocabulary/output size: an **integer** literal, OR the
-  **name of a scenario_param** holding it (must then appear in
-  `scenario_params`).
+  **DO NOT also list this name in `agent_state_vars`** — a learned
+  operator IS the agent attribute; listing it in both is a duplicate that
+  will be rejected. The operator is the ONLY place it belongs.
+- `n_items` — vocabulary/output size. EITHER an **integer literal**
+  (e.g. `96`), OR a **scenario_param reference** (e.g.
+  `"scenario.n_total_items"` or the bare name `"n_total_items"`). If you
+  use a param reference, that param **MUST also appear in
+  `scenario_params`** — add it there (type `"int"`) if it is not already
+  present, or just use the integer literal to avoid the dependency.
 - `embed_dim`, `hidden_dim`, `learning_rate` — small ints / float; use the
   paper's values if stated, else 16 / 16 / 0.001.
 
 The agent will `self.<name> = FeedforwardLearner(n_items=..., ...)` and use
 `.train(pairs)` / `.predict(item)` / `.nearest(item)` — it never
 implements the network. (See the Phase-2 implementation prompt.)
+
+The agent's OTHER state (inventory, memory, etc.) goes in
+`agent_state_vars` as usual — but those must be scalar types
+(`int`/`float`/`bool`/`str`). A list/set inventory should be declared as
+`"str"` with an init expression like `"list(range(6))"` or `"set()"`
+(the type field constrains the column, the init expression is real
+Python). Do NOT put `"list"` or `"set"` in the `type` field.
 
 ## Param value forms
 
