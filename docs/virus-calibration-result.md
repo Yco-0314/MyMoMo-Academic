@@ -341,7 +341,7 @@ Composite reliability: **40% full success**, **100% failure detection
 via diagnostics**, **0% silent broken output** (when diagnostics are
 checked). The thesis "calibration as first-class with first-class
 identifiability diagnostics" (W1 + W4 from ADR-010) is empirically
-validated — diagnostics behave as designed even when the upstream
+validated — diagnostics work as designed even when the upstream
 codegen layer fails.
 
 ---

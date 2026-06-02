@@ -42,7 +42,7 @@ def nelder_mead_refine(
 
     Walks downhill on ||sim_stats - obs_stats|| from start_params, clipped
     to the prior box. Uses scipy 1.7+ bounded NM with `adaptive=True` (Gao
-    & Han 2012), which scales simplex moves with dimensionality and behaves
+    & Han 2012), which scales simplex moves with dimensionality and performs
     better than classic NM in 3+ dimensions.
 
     Tolerances (xatol, fatol) are deliberately loose: the simulator is

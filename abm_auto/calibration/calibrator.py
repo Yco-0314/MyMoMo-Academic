@@ -148,7 +148,7 @@ def fit(
     observed, larger agent populations) — opt in explicitly there. See
     ADR-008.
 
-    When `use_multi_fidelity=False` (default), behaves like the pre-MF
+    When `use_multi_fidelity=False` (default), runs like the pre-MF
     single-stage screening at full fidelity. This is the regression-safe
     path and the one cross-domain CI exercises.
 
