@@ -140,6 +140,62 @@ class AgentStateVar:
 
 
 @dataclass
+class LearnedOperator:
+    """One per-agent learned sub-model (ADR-013 W2 wall fix).
+
+    Configures a `runtime.FeedforwardLearner` that a generated agent
+    CARRIES and TRAINS — the schema concept that was missing when the
+    Yaman reproduction (Path 1) flattened a trainable semantic net into a
+    scalar. This describes only the operator's SHAPE; the runtime library
+    owns the math (forward / cross-entropy / backprop), so generated agent
+    code never reimplements training — it calls `.train()` / `.predict()`
+    / `.nearest()`, exactly as models call `topologies.<x>(...)` or
+    calibration calls `fit(...)`.
+
+    Minimal scope: a single-hidden-layer feedforward item→item predictor
+    with trainable embeddings (the only learned-operator the runtime
+    provides today). `n_items` is the vocabulary size; it may be an
+    integer literal or the name of a scenario_param holding it.
+    """
+    name: str                       # the agent attribute, e.g. "semantic_model"
+    n_items: Any                    # int literal, or a scenario_param name (str)
+    embed_dim: int = 16
+    hidden_dim: int = 16
+    learning_rate: float = 0.001
+    description: str = ""
+
+    def validate(self) -> list[str]:
+        errors: list[str] = []
+        if not self.name or not self.name.isidentifier():
+            errors.append(f"learned_operator.name={self.name!r} not a valid identifier")
+        # n_items: int literal >= 2, OR a non-empty identifier (scenario param ref)
+        if isinstance(self.n_items, bool):  # bool is an int subclass — reject explicitly
+            errors.append(f"learned_operator.{self.name}.n_items must be int or param name, got bool")
+        elif isinstance(self.n_items, int):
+            if self.n_items < 2:
+                errors.append(f"learned_operator.{self.name}.n_items={self.n_items} must be >= 2")
+        elif isinstance(self.n_items, str):
+            if not self.n_items.isidentifier():
+                errors.append(
+                    f"learned_operator.{self.name}.n_items={self.n_items!r} is neither an int "
+                    f"nor a valid scenario_param name"
+                )
+        else:
+            errors.append(
+                f"learned_operator.{self.name}.n_items must be an int or a scenario_param "
+                f"name (str), got {type(self.n_items).__name__}"
+            )
+        for label, val in (("embed_dim", self.embed_dim), ("hidden_dim", self.hidden_dim)):
+            if not isinstance(val, int) or isinstance(val, bool) or val < 1:
+                errors.append(f"learned_operator.{self.name}.{label}={val!r} must be a positive int")
+        if not isinstance(self.learning_rate, (int, float)) or self.learning_rate <= 0:
+            errors.append(
+                f"learned_operator.{self.name}.learning_rate={self.learning_rate!r} must be > 0"
+            )
+        return errors
+
+
+@dataclass
 class MechanismSpec:
     """Full structured spec — the contract between MechanismExtractor and the
     template-driven codegen pipeline.
@@ -173,6 +229,9 @@ class MechanismSpec:
     # ── Data ──
     scenario_params: list[ScenarioParam] = field(default_factory=list)
     agent_state_vars: list[AgentStateVar] = field(default_factory=list)
+    # Per-agent learned sub-models (ADR-013 W2 fix). Usually empty — only
+    # set for learning-representation agents (e.g. Yaman's semantic model).
+    learned_operators: list[LearnedOperator] = field(default_factory=list)
     targets: list[str] = field(default_factory=list)   # env attributes data_collector tracks
 
     # ── LLM-filled regions (kept as pseudocode) ──
@@ -205,6 +264,7 @@ class MechanismSpec:
             )
         scenario_params = [ScenarioParam(**p) for p in data.get("scenario_params", [])]
         agent_state_vars = [AgentStateVar(**v) for v in data.get("agent_state_vars", [])]
+        learned_operators = [LearnedOperator(**lo) for lo in data.get("learned_operators", [])]
         return cls(
             project_name=data.get("project_name", "ABMProject"),
             model_class_name=data.get("model_class_name", "MyModel"),
@@ -217,6 +277,7 @@ class MechanismSpec:
             periods_param=data.get("periods_param", "periods"),
             scenario_params=scenario_params,
             agent_state_vars=agent_state_vars,
+            learned_operators=learned_operators,
             targets=list(data.get("targets", [])),
             env_step_pseudocode=data.get("env_step_pseudocode", ""),
             agent_step_pseudocode=data.get("agent_step_pseudocode"),
@@ -272,6 +333,21 @@ class MechanismSpec:
             if v.name in var_names_seen:
                 errors.append(f"agent_state_vars: duplicate name {v.name!r}")
             var_names_seen.add(v.name)
+        # Learned operators (per-agent sub-models). Validate each, ensure no
+        # name collision with an agent_state_var (both become agent attrs),
+        # and that a string n_items refers to a real scenario_param.
+        for lo in self.learned_operators:
+            errors.extend(f"learned_operators[{lo.name}]: {e}" for e in lo.validate())
+            if lo.name in var_names_seen:
+                errors.append(
+                    f"learned_operators: name {lo.name!r} collides with an agent_state_var"
+                )
+            var_names_seen.add(lo.name)
+            if isinstance(lo.n_items, str) and lo.n_items not in param_names_seen:
+                errors.append(
+                    f"learned_operators[{lo.name}]: n_items={lo.n_items!r} is not a "
+                    f"declared scenario_param"
+                )
         # Targets non-empty (otherwise DataCollector produces no data → calibration impossible)
         if not self.targets:
             errors.append("targets is empty — no metrics will be collected (calibration impossible)")
