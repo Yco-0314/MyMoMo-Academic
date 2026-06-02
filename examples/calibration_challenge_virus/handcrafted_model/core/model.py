@@ -49,7 +49,7 @@ class VirusModel(Model):
         self.environment.count_r = sum(1 for a in self.agents if a.state == 2)
 
     def run(self):
-        # Collect tick 0 BEFORE any step, so output aligns with BEHAVE 2025 format
+        # Collect tick 0 BEFORE any step, so output aligns with the challenge's expected format
         # (observed.csv row 0 is the initial state).
         for t in self.iterator(self.scenario.periods):
             self._refresh_counts()

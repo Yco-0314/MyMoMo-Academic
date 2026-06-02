@@ -1,8 +1,8 @@
 """
-Benchmark: BEHAVE 2025 Calibration Challenge.
+Benchmark: virus-on-a-network calibration challenge.
 
 Runs abm-auto end-to-end on the "Virus on a Network" calibration challenge
-from BEHAVE 2025 Advanced Week, then compares estimated parameters against the
+from a published ABM course, then compares estimated parameters against the
 published ground truth.
 
 Ground truth (from calibration_challenge_results.pdf, page 9):
@@ -333,7 +333,7 @@ def write_summary(workspace_path: Path, wall_seconds: float, rows, estimated,
     else:
         lines.append("| _calibration did not run_ | — | — | — | — |")
 
-    lines += ["", "## Ground truth (from BEHAVE 2025 calibration_challenge_results.pdf)", ""]
+    lines += ["", "## Ground truth (from the published calibration_challenge_results.pdf)", ""]
     for k, v in GROUND_TRUTH.items():
         lines.append(f"- `{k}` = {v}")
 
@@ -342,7 +342,7 @@ def write_summary(workspace_path: Path, wall_seconds: float, rows, estimated,
             "",
             "## Calibration MSE (observed vs. simulated at best_params)",
             "",
-            "This is the metric the original BEHAVE 2025 calibration challenge used.",
+            "This is the metric the original calibration challenge used.",
             "It is **decoupled from parameter identifiability** — measures whether the",
             "calibrated model REPRODUCES THE OBSERVED DYNAMICS, regardless of whether",
             "our generated simulator's params map 1:1 to the source NetLogo model.",

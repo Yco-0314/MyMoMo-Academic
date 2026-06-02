@@ -15,7 +15,7 @@ Why this exists (vs. benchmark_calibration_challenge.py):
 
   Cleanly separates "is calibration broken?" from "is codegen broken?".
 
-Ground truth (BEHAVE 2025 calibration_challenge_results.pdf p9):
+Ground truth (the published calibration_challenge_results.pdf p9):
   virus_spread_chance    = 4.4    (% per neighbour per tick)
   recovery_chance        = 0.3    (% per infected per check)
   gain_resistance_chance = 25.0   (% at recovery)
@@ -65,7 +65,7 @@ def setup_workspace(name: str) -> Path:
     spec = {
         "mode": "originate",
         "paper_ref": "",
-        "phenomenon": "Virus on a network (BEHAVE 2025 calibration challenge)",
+        "phenomenon": "Virus on a network (calibration challenge)",
         "has_calibration_data": True,
         "calibration_data_path": "data/observed.csv",
         "calibration_targets": ["susceptible", "infected", "resistant"],
