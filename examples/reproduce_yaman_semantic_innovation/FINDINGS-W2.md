@@ -85,3 +85,27 @@ running, not assumed:
   run can confirm P6 (agent.py actually instantiates the learner).
 - Path 2 (hand-write the reference model) for the actual scientific
   reproduction.
+
+---
+
+## Design-phase fix verified (task 1, 2026-06-03)
+
+The orthogonal design-phase bug (empty DESIGN.md → downstream crash) is
+fixed and verified by re-run:
+
+- **run2** (after W2 fix, before design fix): Traceback=1 — crashed in
+  Phase 1b with "DESIGN.md is missing".
+- **run3** (after design fix): Traceback=0, clean halt=1 — "Pipeline
+  halted: DESIGN.md is empty or unusable after refinement." Controlled
+  stop with a clear reason, no crash.
+
+**A real finding this surfaced**: the Yaman model is too complex for the
+viability gate — every refine attempt produced 8–11 AI-ASSUMPTION tags
+(limit 5), so the FULL-pipeline path never reaches codegen; viability
+correctly rejects it as under-specified for one-shot generation. So P6
+(full-pipeline agent.py instantiating the learner) cannot be shown
+through the full pipeline ON THIS MODEL — not because of W2, but because
+the model's complexity hits the viability gate. The isolated P8
+confirmation remains the valid W2 evidence (it tests the exact md→json
+transition, bypassing viability). And the viability block is precisely
+why Path 2 (hand-write the reference model) exists.
