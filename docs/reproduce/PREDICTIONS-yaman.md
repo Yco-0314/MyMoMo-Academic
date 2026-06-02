@@ -103,3 +103,32 @@ missing wall" from a claim into measured evidence.
 
 After running: compare each Pn to the real outcome. Record matches AND
 misses. A miss is the valuable result. No prediction edited after a run.
+
+---
+
+## Post-fix prediction (block 1+2+3 shipped, before re-run) — 2026-06-03
+
+After the W2 fix (FeedforwardLearner library + LearnedOperator schema +
+prompt guidance), re-running the SAME Yaman story.md:
+
+**P6 — Prediction: the generated agent.py now CONTAINS a real
+FeedforwardLearner (imported from runtime, instantiated, .train/.predict
+called), NOT a degraded `random()<P_S`.** The mechanism survives because
+the LLM now has (a) a schema slot for it and (b) explicit "use the
+library, don't implement the NN" guidance.
+**Confidence: 55%.** Lower than it sounds — the prompts now PERMIT and
+GUIDE it, but Stage-2 must still choose to emit a `learned_operators`
+entry, and CoderAgent must wire it. Two LLM decisions can still drop it.
+
+**P7 — Prediction: even if the learner is wired, the FULL Yaman result
+(semantic > non-semantic synergy with social learning) will NOT
+reproduce in one pipeline run** — the recipe-tree/Totem task + Moran
+inheritance + the exact strategy branching are too much for codegen to
+get all-correct at once. A wired-but-imperfect model is the likely best
+case, and is already strong evidence the W2 wall moved.
+**Confidence: 75% it won't fully reproduce the science even if NN wired.**
+
+Falsification: P6 false (NN still dropped) → the wall is deeper than
+schema+prompt; the fix needs TemplateGenerator to emit the
+instantiation (3A), not just guide the LLM (3B). That would itself be a
+finding about where the 3B boundary fails.
