@@ -20,7 +20,7 @@ Two built-in adapters cover the common cases:
     only about average/extreme behavior (e.g., "fit the steady-state
     price" not "fit the price curve").
 
-Background: a 2026-05-28 benchmark of the BEHAVE 2025 virus challenge
+Background: a 2026-05-28 benchmark of the virus-on-a-network calibration challenge
 revealed that mean_std_last was destroying signal — the calibrator's NM
 refinement landed on absurd points (virus≈0, virus≈14) because the 9-D
 summary had wide flat regions. Switching to full_trajectory restored the

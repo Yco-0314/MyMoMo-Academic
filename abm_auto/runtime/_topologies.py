@@ -11,7 +11,7 @@ research models actually use. The most important is `netlogo_spatially_clustered
 — it replicates NetLogo's `setup-spatially-clustered-network` algorithm
 bit-for-bit (iterative random-node → nearest-non-neighbor linking, no per-node
 degree cap, terminating at n*avg_degree/2 total edges), enabling faithful
-reproduction of BEHAVE 2025-style benchmarks.
+reproduction of SIR-on-network calibration benchmarks.
 
 Determinism contract: every adapter must consume randomness ONLY from its `rng`
 argument. Calls to the global `random` module break the seam's reproducibility

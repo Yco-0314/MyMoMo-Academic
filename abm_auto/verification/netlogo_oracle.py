@@ -1,7 +1,7 @@
 """NetLogo headless as a verification oracle for ABM Auto ports.
 
 When a topology adapter or mechanism is supposed to mirror NetLogo's
-behavior (e.g. `netlogo_spatially_clustered`, the BEHAVE 2025 virus
+behavior (e.g. `netlogo_spatially_clustered`, the virus-on-a-network
 SIR mechanism), this module is how we check: drive NetLogo via headless,
 capture trajectories or network stats, compare statistically to our
 Python output.

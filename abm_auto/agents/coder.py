@@ -315,7 +315,7 @@ class CoderAgent(BaseAgent):
         Loads the API canon + the anti-patterns catalogue. The API canon
         tells the LLM what classes/methods exist; the anti-patterns
         catalogue directly addresses the most-frequent codegen mistakes
-        observed during BEHAVE 2025 benchmark runs.
+        observed during the SIR-on-network calibration benchmark runs.
         """
         parts = []
         for name in ("01-runtime-api", "05-anti-patterns"):

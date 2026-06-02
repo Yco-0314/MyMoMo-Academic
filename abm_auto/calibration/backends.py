@@ -20,7 +20,7 @@ Point-estimate convention (2026-05-28 revision):
 Why we changed ABC/RF away from posterior mean (Beaumont 2010): at small
 budgets (max_sims ≤ 300, wide uniform priors), the top-K accepted samples
 have wide spread and their mean collapses toward the prior midpoint.
-Empirical evidence on the BEHAVE 2025 virus challenge: posterior-mean
+Empirical evidence on the virus-on-a-network calibration benchmark: posterior-mean
 converged to (10.2, 2.5, 50) = exactly the prior midpoint, regardless of
 whether N=30, 100, or 300; the true minimum was at (4.4, 2.5, 25) with MSE
 217 vs prior-mean's 3461. The closest-sample estimator lands in the basin
