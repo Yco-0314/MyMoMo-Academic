@@ -92,7 +92,7 @@ cp .env.example .env
 # Edit .env: ANTHROPIC_API_KEY=sk-ant-...
 #       or: DEEPSEEK_API_KEY=sk-... + LLM_PROVIDER=deepseek
 
-# 3. Run a calibration example end-to-end (BEHAVE 2025 SIR — ~5 min, ~$0.03)
+# 3. Run a calibration example end-to-end (virus-on-a-network SIR — ~5 min, ~$0.03)
 uv run abm-auto run examples/calibration_challenge_virus/story.md \
     --mode reproduce \
     --no-lit-review \

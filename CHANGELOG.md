@@ -247,7 +247,7 @@ where pipeline died in Sanity_fix loop with `count_r constant 0`.
   TypeError when assigning a float to an int64-inferred CSV column.
   `try/except` swallowed all 100 sample sims silently. Fix: widen
   column dtype before assignment. (35adc7d)
-- **GROUND_TRUTH typo** — BEHAVE 2025 PDF prints `recovery_chance = 0.3`
+- **GROUND_TRUTH typo** — the published challenge PDF prints `recovery_chance = 0.3`
   but observed.csv requires `recovery_chance ≈ 2.5` (math-implied).
   Now `GROUND_TRUTH_INFERRED` (2.5) vs `GROUND_TRUTH_AS_PRINTED` (0.3)
   exposed; scoring uses inferred. (c08ddba)
@@ -282,7 +282,7 @@ where pipeline died in Sanity_fix loop with `count_r constant 0`.
 
 | Indicator | v0.1 | v0.2 |
 |---|---|---|
-| Calibration MSE (codegen path, BEHAVE virus) | crashed | **180.3** (full Layer 3) / **23.3** (legacy codegen) |
+| Calibration MSE (codegen path, virus-on-a-network) | crashed | **180.3** (full Layer 3) / **23.3** (legacy codegen) |
 | Calibration MSE (lean path) | 1480 | **99 ± 59** |
 | Pipeline god method | 522 LoC inline | **23 phase adapters** |
 | CoderAgent god class | 542 LoC inline | **4 fixups extracted, ~360 LoC remaining** |

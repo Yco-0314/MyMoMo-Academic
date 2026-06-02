@@ -1,6 +1,6 @@
 name: Dogfood (codegen path end-to-end)
 
-# Runs the full LLM-driven pipeline on the BEHAVE 2025 SIR story
+# Runs the full LLM-driven pipeline on the virus-on-a-network SIR story
 # without --external-model, asserting:
 #   - exit code 0 (pipeline completes)
 #   - pipeline does not halt (no fatal viability / fatal codegen failure)
