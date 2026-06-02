@@ -88,11 +88,11 @@ class Innovator(Agent):
         t1 = rng.choice(list(self.inventory))
         T = {t1}
         if n >= 2:
-            t2 = self._predict_owned(t1, exclude=T)
+            t2 = self._predict_owned(t1, exclude=T, rng=rng)
             if t2 is not None:
                 T.add(t2)
                 if n >= 3:
-                    t3 = self._predict_owned(t2, exclude=T)
+                    t3 = self._predict_owned(t2, exclude=T, rng=rng)
                     if t3 is not None:
                         T.add(t3)
         return T
@@ -113,16 +113,27 @@ class Innovator(Agent):
             T.add(tk)
         return T
 
-    def _predict_owned(self, t: int, exclude: set):
-        """argmax_y p(y | t) over y in inventory, excluding `exclude`."""
+    def _predict_owned(self, t: int, exclude: set, rng):
+        """Sample y ~ p(y | t) restricted to owned items (renormalised),
+        excluding `exclude`. SAMPLING, not argmax: the paper's semantic model
+        is a distribution that is sampled; argmax collapses to a single
+        repeated partner and explores worse than random (see probe_semantic.py
+        / FINDINGS-science.md run 1)."""
         proba = self.semantic_model.predict_proba(t)
-        best, best_p = None, -1.0
-        for it in self.inventory:
-            if it == t or it in exclude:
-                continue
-            if proba[it] > best_p:
-                best_p, best = float(proba[it]), it
-        return best
+        cand = [it for it in self.inventory if it != t and it not in exclude]
+        if not cand:
+            return None
+        weights = [float(proba[it]) for it in cand]
+        total = sum(weights)
+        if total <= 0.0:
+            return cand[rng.randint(0, len(cand) - 1)]
+        r = rng.random() * total
+        acc = 0.0
+        for it, w in zip(cand, weights):
+            acc += w
+            if r <= acc:
+                return it
+        return cand[-1]
 
     def _nearest_owned(self, t: int, exclude: set):
         """Owned item whose embedding is nearest to t's (Euclidean)."""

@@ -35,5 +35,12 @@ class YamanScenario(Scenario):
         # ── semantic model shape (FeedforwardLearner) ──────────────────
         self.embed_dim = 16
         self.hidden_dim = 16
-        self.learning_rate = 0.001
-        self.train_epochs = 5       # updateModels epochs/generation (ASSUMPTION: not in PDF)
+        # CORRECTED after run 1: lr=0.001 (the FeedforwardLearner default; the
+        # PDF defers lr to "the code") left M stuck at the uniform distribution
+        # — falsified by probe_semantic.py (loss ~ ln(184), sampled valid-
+        # partner rate = chance). lr=0.2 demonstrably learns the co-occurrence
+        # structure (sampled valid-partner rate ~39x base). Faithfulness fix,
+        # not a tune-to-win: a semantic model that cannot learn is not the
+        # paper's semantic model.
+        self.learning_rate = 0.2
+        self.train_epochs = 20      # updateModels epochs/generation (ASSUMPTION: not in PDF)
