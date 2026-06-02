@@ -76,8 +76,15 @@ from abm_auto.calibration.summary_stats import full_trajectory
 from abm_auto.runner.executor import Executor
 from abm_auto.verification.execution_verifier import (
     VerificationResult,
+    extract_qualitative_claims,
     verify_execution,
 )
+from abm_auto.verification.execution_diff_gate import (
+    ExecutionDiffGate,
+    ExecutionDiffInput,
+)
+from abm_auto.verification.harness import Harness
+from abm_auto.verification.provenance import build_provenance
 
 
 @dataclass
@@ -276,6 +283,45 @@ def _run_diagnostics(
     return status, flat, report_path
 
 
+def _emit_provenance(
+    workspace,
+    domain: Domain,
+    final_sim_csv: Path,
+    llm_caller: Optional[Callable[..., str]],
+) -> Path | None:
+    """B-pilot (ADR-013 candidate 2): route the ε check through
+    ExecutionDiffGate + Harness on the REAL final-sim artifact, and emit a
+    replayable provenance.json.
+
+    This is the first end-to-end Harness.run + build_provenance on a
+    production-shaped artifact (claims + sim CSV), proving the credential
+    pipeline outside unit tests. Runs only when an LLM caller is available
+    (ε needs claim extraction); otherwise no provenance is emitted (and the
+    summary table's ε column reads "skipped").
+
+    Zero production risk: cross_domain_lean is a test/benchmark script, not
+    the calibration pipeline. The existing ε summary path is untouched.
+    """
+    if llm_caller is None or not domain.story or not domain.story.exists():
+        return None
+    try:
+        story_text = domain.story.read_text(encoding="utf-8")
+        claims = extract_qualitative_claims(story_text, domain.targets, llm_caller)
+        artifacts = {
+            "trajectory_vs_claims": ExecutionDiffInput(
+                claims=claims, sim_csv=final_sim_csv, targets=domain.targets,
+            ),
+        }
+        report = Harness().run([ExecutionDiffGate()], artifacts)
+        prov = build_provenance(report, artifacts)
+        out = workspace.path / "provenance.json"
+        prov.write(out)
+        return out
+    except Exception as e:
+        print(f"  provenance emit failed: {type(e).__name__}: {e}", flush=True)
+        return None
+
+
 def run_domain(domain: Domain, llm_caller: Optional[Callable[..., str]]) -> DomainResult:
     """Lean fit_from_files + final validation sim per domain.
 
@@ -348,6 +394,12 @@ def run_domain(domain: Domain, llm_caller: Optional[Callable[..., str]]) -> Doma
     eps_status, eps_mismatches = _run_execution_verify(
         domain, final_csv, llm_caller,
     )
+
+    # B-pilot: emit replayable provenance.json via Harness + build_provenance.
+    prov_path = _emit_provenance(ws, domain, final_csv, llm_caller)
+    if prov_path:
+        print(f"  provenance: {prov_path}", flush=True)
+
     wall = time.time() - t0  # include diag + eps wall
 
     return DomainResult(
