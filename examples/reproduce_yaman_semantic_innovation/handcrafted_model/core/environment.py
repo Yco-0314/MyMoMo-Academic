@@ -1,0 +1,104 @@
+"""Algorithm 1 — one generation of cumulative cultural evolution.
+
+Per SI pseudocode (Algorithm 1):
+  1. Attempts phase: repeat N x n_attempts times, each time a RANDOM
+     individual (with budget left) makes one attempt — w.p. P_SL a social-
+     learning attempt (copy a craftable recipe off the highest-scoring
+     individual), else an individual attempt (Algorithm 2). Random
+     interleaving lets a same-generation discovery be copied within the
+     same generation.
+  2. updateModels: every individual trains its semantic model on all
+     recipes it has acquired (individual + social).
+  3. Death: each individual dies w.p. P_D = a * exp(b * age)  (Gompertz;
+     a=0.0001365, b=0.2097 — SI lines 270-272).
+  4. Moran turnover: dead slots are refilled by offspring of survivors
+     selected with probability proportional to score; offspring inherit the
+     parent's trained semantic model but reset to the base inventory.
+
+HARVEST NOTE (Path-2 → architecture): steps 3-4 are a self-contained
+"Moran/Wright-Fisher population-dynamics" operator (W4 candidate) — fixed
+N, fitness-proportional selection, inheritance hook. A research model
+should declare "turnover: moran, fitness: score" and get this, not write
+selection loops the viability gate then flags as assumptions.
+"""
+from __future__ import annotations
+
+import math
+
+from abm_auto.runtime import Environment
+
+# Gompertz mortality constants (SI lines 270-272). Death rises with age.
+_DEATH_A = 0.0001365
+_DEATH_B = 0.2097
+
+
+def death_probability(age: int) -> float:
+    return min(1.0, _DEATH_A * math.exp(_DEATH_B * age))
+
+
+class YamanEnvironment(Environment):
+    def setup(self):
+        # Metrics recomputed each generation by the model; declared here so
+        # the DataCollector can read them as environment properties.
+        self.repertoire_size = 0      # distinct non-base items the population holds
+        self.max_level = 0            # deepest innovation level reached
+        self.mean_score = 0.0
+        self.max_score = 0.0
+        self.mean_inventory = 0.0
+
+    # ── one generation ────────────────────────────────────────────────────
+
+    def step(self, agents, scenario, task, rng) -> None:
+        self._attempts_phase(agents, scenario, rng)
+        for a in agents:
+            a.update_semantic_model(int(scenario.train_epochs))
+        self._turnover(agents, rng)
+
+    def _attempts_phase(self, agents, scenario, rng) -> None:
+        p_social = float(scenario.p_social)
+        p_semantic = float(scenario.p_semantic)
+        p_generalize = float(scenario.p_generalize)
+        budget = {a.id: int(scenario.n_attempts) for a in agents}
+        remaining = [a for a in agents if budget[a.id] > 0]
+
+        while remaining:
+            agent = rng.choice(remaining)
+            if rng.random() < p_social:
+                demo = max(agents, key=lambda x: x.score)
+                agent.try_social_learning(demo, rng)   # attempt spent either way
+            else:
+                agent.individual_attempt(rng, p_semantic, p_generalize)
+            budget[agent.id] -= 1
+            if budget[agent.id] <= 0:
+                remaining = [a for a in remaining if a.id != agent.id]
+
+    def _turnover(self, agents, rng) -> None:
+        """Gompertz death + fitness-proportional Moran rebirth, fixed N."""
+        dead = [a for a in agents if rng.random() < death_probability(a.age)]
+        survivors = [a for a in agents if a not in dead]
+        if not survivors:
+            # everyone rolled death — skip this turnover, just age them
+            for a in agents:
+                a.age += 1
+            return
+
+        weights = [max(0.0, s.score) for s in survivors]
+        total = sum(weights)
+        for d in dead:
+            parent = self._select(survivors, weights, total, rng)
+            d.reborn_from(parent)
+        for s in survivors:
+            s.age += 1
+
+    @staticmethod
+    def _select(survivors, weights, total, rng):
+        """Pick a parent ∝ score; uniform fallback when all scores are 0."""
+        if total <= 0:
+            return survivors[rng.randint(0, len(survivors) - 1)]
+        r = rng.random() * total
+        acc = 0.0
+        for s, w in zip(survivors, weights):
+            acc += w
+            if r <= acc:
+                return s
+        return survivors[-1]

@@ -155,3 +155,48 @@ it for a TRUE reproduction).
 Find the released code repo (true reproduction vs re-implementation),
 then resolve the ⛔ baselines, then implement. No implementation in this
 artifact.
+
+---
+
+## UPDATE 2026-06-03 — gap RESOLVED with real data + implemented (Path 2)
+
+The two blockers above are closed.
+
+**The ⛔ recipe-tree gap is resolved with the REAL released data, not a
+re-implementation guess.** The paper's OSF repo (osf.io/m642a) was pulled
+via its API; `data/empirical/rules_tidied.csv` is the exact 184-item
+innovation tree (`c1,c2,c3 -> item`, `given`, real `point` scores,
+semantic captions). Saved to
+`examples/reproduce_yaman_semantic_innovation/reference_data/`. Loading it
+and computing levels reproduces the paper's distribution exactly:
+`[6,4,2,2,2,3,3,7,11,48,96]`. Recipe sizes: 4 one-item, 98 two-item,
+76 three-item. Items 32 & 35 are hubs feeding all 96 level-10 totems as
+`{32,35,X}` — the structural source of similarity-based generalization.
+
+**The ⚠️ trainable-ANN wall is closed by W2.** The SI ANN (1 hidden layer,
+16 ReLU, softmax, cross-entropy, backprop — SI lines 380-387) IS
+`abm_auto.runtime.FeedforwardLearner`. The agent never implements the net.
+
+**Real algorithms (SI Algorithms 1 & 2), now implemented:**
+- Alg 1 (generation): N×n_attempts random-interleaved attempts (each
+  w.p. P_SL social-learning, else individual) → updateModels (train each
+  agent's M on its successful recipes) → Gompertz death
+  `P_D=0.0001365·e^(0.2097·age)` → fitness-proportional Moran rebirth
+  (offspring inherits parent's M, resets to base inventory).
+- Alg 2 (individual): `rand>P_S` random; else `rand>P_G` semantic
+  Predict-chain; else generalization (swap a recipe item for its
+  embedding-nearest neighbour).
+
+**Parameters (SI Tables 1 & 2), main-text defaults bolded in paper:**
+N∈{25,**50**,100}, n_attempts∈{5,**10**,15}, embed/hidden∈{8,**16**,32},
+P_S/P_SL/P_G∈{**0**,0.1,0.5,0.9}, lr=0.001.
+
+**Documented assumptions (PDF defers to code; OSF code folder is empty):**
+max generations (we use 150), train_epochs/generation (5), exact Alg-2
+rand-draw semantics (we use independent draws for P_S then P_G), and
+Predict/nearest restricted to OWNED items (you can only combine items you
+hold). Score is NOT assumed — we use the real per-item `point` values.
+
+**Implementation:** `handcrafted_model/` (6-file abm-auto contract +
+`task.py` loader + `run_experiment.py`). Pre-registered science
+predictions: `PREDICTIONS-yaman-science.md` (committed before the run).

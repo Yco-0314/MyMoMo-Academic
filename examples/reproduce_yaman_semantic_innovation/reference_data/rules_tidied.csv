@@ -1,0 +1,185 @@
+c1,c2,c3,item,given,point,caption_semantic,name_simplified
+0,0,0,1,1,0,a big tree,tree
+0,0,0,2,1,0,a small tree ,tree
+0,0,0,3,1,0,a stone,stone
+0,0,0,4,1,0,a bunch of red berries,rasberry
+0,0,0,5,1,0,a bunch of blue berries,blueberry
+0,0,0,6,1,0,a deer antler,antler
+3,0,0,12,0,15,a leaf shaped stone,stone
+2,0,0,14,0,15,a stick,stick
+1,0,0,15,0,15,a bark,bark
+12,15,0,16,0,15,some fibers,fiber
+16,0,0,17,0,15,a rope,rope
+12,14,17,18,0,15,an axe,axe
+2,18,0,19,0,65,a raw log,log
+12,19,0,20,0,115,a smooth log without bark,log
+18,19,0,22,0,15,a quarter of log,log
+3,6,0,23,0,15,a refined antler,antler
+12,23,0,24,0,15,a teardrop shaped stone,stone
+23,24,0,26,0,15,a knife shaped stone,stone
+14,26,0,31,0,15,a small stick,stick
+16,17,31,32,0,15,a brush,brush
+22,24,0,33,0,15,a wooden container,container
+4,23,33,34,0,15,red paint,paint
+5,23,33,35,0,15,blue paint,paint
+1,18,0,36,0,335,a big log with bark,log
+12,36,0,37,0,395,a big log  without bark,log
+20,24,0,101,0,165,a wooden log with a elliptical shape hole in the body,totem
+12,20,0,102,0,215,a wooden log with a rectangular shape hole in the body,totem
+20,26,0,103,0,225,a wooden log with a rhombus-like hole in the body,totem
+34,101,0,104,0,285,a red wooden log with a elliptical shape hole in the body,totem
+34,102,0,105,0,475,a red wooden log with a rectangular shape hole in the body,totem
+34,103,0,106,0,405,a red wooden log with a rhombus-like shape hole in the body,totem
+35,101,0,107,0,275,a blue wooden log with a elliptical shape hole in the body,totem
+35,102,0,108,0,465,a blue wooden log with a rectangular shape hole in the body,totem
+35,103,0,109,0,385,a blue wooden log with a rhombus-like shape hole in the body,totem
+32,34,101,110,0,565,a wooden log with a red elliptical shape hole in the body,totem
+32,34,102,111,0,795,a wooden log with a red rectangular shape hole in the body,totem
+32,34,103,112,0,575,a wooden log with a red rhombus-like shape hole in the body,totem
+32,35,101,113,0,545,a wooden log with a blue elliptical shape hole in the body,totem
+32,35,102,114,0,805,a wooden log with a blue rectangular shape hole in the body,totem
+32,35,103,115,0,535,a wooden log with a blue rhombus-like shape hole in the body,totem
+34,110,0,116,0,645,a red wooden log with a red elliptical shape hole in the body,totem
+34,111,0,117,0,905,a red wooden log with a red rectangular shape hole in the body,totem
+34,112,0,118,0,705,a red wooden log with a red rhombus-like shape hole in the body,totem
+34,113,0,119,0,835,a red wooden log with a blue elliptical shape hole in the body,totem
+34,114,0,120,0,985,a red wooden log with a blue rectangular shape hole in the body,totem
+34,115,0,121,0,825,a red wooden log with a blue rhombus-like shape hole in the body,totem
+35,110,0,122,0,785,a blue wooden log with a red elliptical shape hole in the body,totem
+35,111,0,123,0,975,a blue wooden log with a red rectangular shape hole in the body,totem
+35,112,0,124,0,775,a blue wooden log with a red rhombus-like shape hole in the body,totem
+35,113,0,125,0,655,a blue wooden log with a blue elliptical shape hole in the body,totem
+35,114,0,126,0,895,a blue wooden log with a blue rectangular shape hole in the body,totem
+35,115,0,127,0,695,a blue wooden log with a blue rhombus-like shape hole in the body,totem
+32,34,104,128,0,645,a red wooden log with a red elliptical shape hole in the body,totem
+32,34,105,129,0,905,a red wooden log with a red rectangular shape hole in the body,totem
+32,34,106,130,0,705,a red wooden log with a red rhombus-like shape hole in the body,totem
+32,34,107,131,0,785,a blue wooden log with a red elliptical shape hole in the body,totem
+32,34,108,132,0,975,a blue wooden log with a red rectangular shape hole in the body,totem
+32,34,109,133,0,775,a blue wooden log with a red rhombus-like shape hole in the body,totem
+32,35,104,134,0,835,a red wooden log with a blue elliptical shape hole in the body,totem
+32,35,105,135,0,985,a red wooden log with a blue rectangular shape hole in the body,totem
+32,35,106,136,0,825,a red wooden log with a blue rhombus-like shape hole in the body,totem
+32,35,107,137,0,655,a blue wooden log with a blue elliptical shape hole in the body,totem
+32,35,108,138,0,895,a blue wooden log with a blue rectangular shape hole in the body,totem
+32,35,109,139,0,695,a blue wooden log with a blue rhombus-like shape hole in the body,totem
+24,37,0,201,0,455,a wooden stool with two circular eye-like holes on it,totem
+12,37,0,202,0,525,a wooden stool with two square eye-like holes on it,totem
+26,37,0,203,0,555,a wooden stool with two rhombus eye-like holes on it,totem
+24,201,0,204,0,585,a wooden stool with three circular holes making it looks like a face,totem
+24,202,0,205,0,685,a wooden stool with two square holes and one circular hole making it looks like a face,totem
+24,203,0,206,0,665,a wooden stool with two rhombus holes and one circular hole making it looks like a face,totem
+12,201,0,207,0,725,a wooden stool with two circular holes and one rectangular hole making it looks like a face,totem
+12,202,0,208,0,675,a wooden stool with three rectangular holes making it looks like a face,totem
+12,203,0,209,0,815,a wooden stool with two rhombus holes and one rectangular hole making it looks like a face,totem
+26,201,0,210,0,715,a wooden stool with two circular holes and two rhombus holes making it looks like a face,totem
+26,202,0,211,0,845,a wooden stool with two rectangular holes and two rhombus holes making it looks like a face,totem
+26,203,0,212,0,635,a wooden stool with four rhombus holes making it looks like a face,totem
+34,204,0,213,0,965,a red wooden stool with three circular holes making it looks like a face,totem
+34,205,0,214,0,1125,a red wooden stool with two square holes and one circular hole making it looks like a face,totem
+34,206,0,215,0,1035,a red wooden stool with two rhombus holes and one circular hole making it looks like a face,totem
+34,207,0,216,0,1055,a red wooden stool with two circular holes and one rectangular hole making it looks like a face,totem
+34,208,0,217,0,1115,a red wooden stool with three rectangular holes making it looks like a face,totem
+34,209,0,218,0,1215,a red wooden stool with two rhombus holes and one rectangular hole making it looks like a face,totem
+34,210,0,219,0,1075,a red wooden stool with two circular holes and two rhombus holes making it looks like a face,totem
+34,211,0,220,0,1205,a red wooden stool with two rectangular holes and two rhombus holes making it looks like a face,totem
+34,212,0,221,0,1095,a red wooden stool with four rhombus holes making it looks like a face,totem
+35,204,0,222,0,955,a blue wooden stool with three circular holes making it looks like a face,totem
+35,205,0,223,0,1105,a blue wooden stool with two square holes and one circular hole making it looks like a face,totem
+35,206,0,224,0,1085,a blue wooden stool with two rhombus holes and one circular hole making it looks like a face,totem
+35,207,0,225,0,1065,a blue wooden stool with two circular holes and one rectangular hole making it looks like a face,totem
+35,208,0,226,0,1135,a blue wooden stool with three rectangular holes making it looks like a face,totem
+35,209,0,227,0,1195,a blue wooden stool with two rhombus holes and one rectangular hole making it looks like a face,totem
+35,210,0,228,0,1045,a blue wooden stool with two circular holes and two rhombus holes making it looks like a face,totem
+35,211,0,229,0,1225,a blue wooden stool with two rectangular holes and two rhombus holes making it looks like a face,totem
+35,212,0,230,0,1145,a blue wooden stool with four rhombus holes making it looks like a face,totem
+32,34,204,231,0,1335,a wooden stool with three red circular holes making it looks like a face,totem
+32,34,205,232,0,1565,a wooden stool with two red square holes and one red circular hole making it looks like a face,totem
+32,34,206,233,0,1275,a wooden stool with two red rhombus holes and one red circular hole making it looks like a face,totem
+32,34,207,234,0,1405,a wooden stool with two red circular holes and one red rectangular hole making it looks like a face,totem
+32,34,208,235,0,1395,a wooden stool with three red rectangular holes making it looks like a face,totem
+32,34,209,236,0,1475,a wooden stool with two red rhombus holes and one red rectangular hole making it looks like a face,totem
+32,34,210,237,0,1325,a wooden stool with two red circular holes and two red rhombus holes making it looks like a face,totem
+32,34,211,238,0,1525,a wooden stool with two red rectangular holes and two red rhombus holes making it looks like a face,totem
+32,34,212,239,0,1285,a wooden stool with four red rhombus holes making it looks like a face,totem
+32,35,204,240,0,1305,a wooden stool with three blue circular holes making it looks like a face,totem
+32,35,205,241,0,1545,a wooden stool with two blue square holes and one blue circular hole making it looks like a face,totem
+32,35,206,242,0,1345,a wooden stool with two blue rhombus holes and one blue circular hole making it looks like a face,totem
+32,35,207,243,0,1485,a wooden stool with two blue circular holes and one blue rectangular hole making it looks like a face,totem
+32,35,208,244,0,1495,a wooden stool with three blue rectangular holes making it looks like a face,totem
+32,35,209,245,0,1435,a wooden stool with two blue rhombus holes and one blue rectangular hole making it looks like a face,totem
+32,35,210,246,0,1315,a wooden stool with two blue circular holes and two blue rhombus holes making it looks like a face,totem
+32,35,211,247,0,1515,a wooden stool with two blue rectangular holes and two blue rhombus holes making it looks like a face,totem
+32,35,212,248,0,1295,a wooden stool with four blue rhombus holes making it looks like a face,totem
+34,231,0,249,0,1425,a red wooden stool with three red circular holes making it looks like a face,totem
+34,232,0,250,0,1785,a red wooden stool with two red square holes and one red circular hole making it looks like a face,totem
+34,233,0,251,0,1415,a red wooden stool with two red rhombus holes and one red circular hole making it looks like a face,totem
+34,234,0,252,0,1625,a red wooden stool with two red circular holes and one red rectangular hole making it looks like a face,totem
+34,235,0,253,0,1665,a red wooden stool with three red rectangular holes making it looks like a face,totem
+34,236,0,254,0,1655,a red wooden stool with two red rhombus holes and one red rectangular hole making it looks like a face,totem
+34,237,0,255,0,1555,a red wooden stool with two red circular holes and two red rhombus holes making it looks like a face,totem
+34,238,0,256,0,1695,a red wooden stool with two red rectangular holes and two red rhombus holes making it looks like a face,totem
+34,239,0,257,0,1465,a red wooden stool with four red rhombus holes making it looks like a face,totem
+34,240,0,258,0,1635,a red wooden stool with three blue circular holes making it looks like a face,totem
+34,241,0,259,0,1875,a red wooden stool with two blue square holes and one blue circular hole making it looks like a face,totem
+34,242,0,260,0,1775,a red wooden stool with two blue rhombus holes and one blue circular hole making it looks like a face,totem
+34,243,0,261,0,1895,a red wooden stool with two blue circular holes and one blue rectangular hole making it looks like a face,totem
+34,244,0,262,0,1855,a red wooden stool with three blue rectangular holes making it looks like a face,totem
+34,245,0,263,0,1915,a red wooden stool with two blue rhombus holes and one blue rectangular hole making it looks like a face,totem
+34,246,0,264,0,1645,a red wooden stool with two blue circular holes and two blue rhombus holes making it looks like a face,totem
+34,247,0,265,0,1905,a red wooden stool with two blue rectangular holes and two blue rhombus holes making it looks like a face,totem
+34,248,0,266,0,1675,a red wooden stool with four blue rhombus holes making it looks like a face,totem
+35,231,0,267,0,1745,a blue wooden stool with three red circular holes making it looks like a face,totem
+35,232,0,268,0,1925,a blue wooden stool with two red square holes and one red circular hole making it looks like a face,totem
+35,233,0,269,0,1725,a blue wooden stool with two red rhombus holes and one red circular hole making it looks like a face,totem
+35,234,0,270,0,1845,a blue wooden stool with two red circular holes and one red rectangular hole making it looks like a face,totem
+35,235,0,271,0,1835,a blue wooden stool with three red rectangular holes making it looks like a face,totem
+35,236,0,272,0,1885,a blue wooden stool with two red rhombus holes and one red rectangular hole making it looks like a face,totem
+35,237,0,273,0,1685,a blue wooden stool with two red circular holes and two red rhombus holes making it looks like a face,totem
+35,238,0,274,0,1865,a blue wooden stool with two red rectangular holes and two red rhombus holes making it looks like a face,totem
+35,239,0,275,0,1705,a blue wooden stool with four red rhombus holes making it looks like a face,totem
+35,240,0,276,0,1505,a blue wooden stool with three blue circular holes making it looks like a face,totem
+35,241,0,277,0,1715,a blue wooden stool with two blue square holes and one blue circular hole making it looks like a face,totem
+35,242,0,278,0,1455,a blue wooden stool with two blue rhombus holes and one blue circular hole making it looks like a face,totem
+35,243,0,279,0,1765,a blue wooden stool with two blue circular holes and one blue rectangular hole making it looks like a face,totem
+35,244,0,280,0,1735,a blue wooden stool with three blue rectangular holes making it looks like a face,totem
+35,245,0,281,0,1755,a blue wooden stool with two blue rhombus holes and one blue rectangular hole making it looks like a face,totem
+35,246,0,282,0,1535,a blue wooden stool with two blue circular holes and two blue rhombus holes making it looks like a face,totem
+35,247,0,283,0,1615,a blue wooden stool with two blue rectangular holes and two blue rhombus holes making it looks like a face,totem
+35,248,0,284,0,1445,a blue wooden stool with four blue rhombus holes making it looks like a face,totem
+32,34,213,285,0,1425,a red wooden stool with three red circular holes making it looks like a face,totem
+32,34,214,286,0,1785,a red wooden stool with two red square holes and one red circular hole making it looks like a face,totem
+32,34,215,287,0,1415,a red wooden stool with two red rhombus holes and one red circular hole making it looks like a face,totem
+32,34,216,288,0,1625,a red wooden stool with two red circular holes and one red rectangular hole making it looks like a face,totem
+32,34,217,289,0,1665,a red wooden stool with three red rectangular holes making it looks like a face,totem
+32,34,218,290,0,1655,a red wooden stool with two red rhombus holes and one red rectangular hole making it looks like a face,totem
+32,34,219,291,0,1555,a red wooden stool with two red circular holes and two red rhombus holes making it looks like a face,totem
+32,34,220,292,0,1695,a red wooden stool with two red rectangular holes and two red rhombus holes making it looks like a face,totem
+32,34,221,293,0,1465,a red wooden stool with four red rhombus holes making it looks like a face,totem
+32,34,222,294,0,1745,a blue wooden stool with three red circular holes making it looks like a face,totem
+32,34,223,295,0,1925,a blue wooden stool with two red square holes and one red circular hole making it looks like a face,totem
+32,34,224,296,0,1725,a blue wooden stool with two red rhombus holes and one red circular hole making it looks like a face,totem
+32,34,225,297,0,1845,a blue wooden stool with two red circular holes and one red rectangular hole making it looks like a face,totem
+32,34,226,298,0,1835,a blue wooden stool with three red rectangular holes making it looks like a face,totem
+32,34,227,299,0,1885,a blue wooden stool with two red rhombus holes and one red rectangular hole making it looks like a face,totem
+32,34,228,300,0,1685,a blue wooden stool with two red circular holes and two red rhombus holes making it looks like a face,totem
+32,34,229,301,0,1865,a blue wooden stool with two red rectangular holes and two red rhombus holes making it looks like a face,totem
+32,34,230,302,0,1705,a blue wooden stool with four red rhombus holes making it looks like a face,totem
+32,35,213,303,0,1635,a red wooden stool with three blue circular holes making it looks like a face,totem
+32,35,214,304,0,1875,a red wooden stool with two blue square holes and one blue circular hole making it looks like a face,totem
+32,35,215,305,0,1775,a red wooden stool with two blue rhombus holes and one blue circular hole making it looks like a face,totem
+32,35,216,306,0,1895,a red wooden stool with two blue circular holes and one blue rectangular hole making it looks like a face,totem
+32,35,217,307,0,1855,a red wooden stool with three blue rectangular holes making it looks like a face,totem
+32,35,218,308,0,1915,a red wooden stool with two blue rhombus holes and one blue rectangular hole making it looks like a face,totem
+32,35,219,309,0,1645,a red wooden stool with two blue circular holes and two blue rhombus holes making it looks like a face,totem
+32,35,220,310,0,1905,a red wooden stool with two blue rectangular holes and two blue rhombus holes making it looks like a face,totem
+32,35,221,311,0,1675,a red wooden stool with four blue rhombus holes making it looks like a face,totem
+32,35,222,312,0,1505,a blue wooden stool with three blue circular holes making it looks like a face,totem
+32,35,223,313,0,1715,a blue wooden stool with two blue square holes and one blue circular hole making it looks like a face,totem
+32,35,224,314,0,1455,a blue wooden stool with two blue rhombus holes and one blue circular hole making it looks like a face,totem
+32,35,225,315,0,1765,a blue wooden stool with two blue circular holes and one blue rectangular hole making it looks like a face,totem
+32,35,226,316,0,1735,a blue wooden stool with three blue rectangular holes making it looks like a face,totem
+32,35,227,317,0,1755,a blue wooden stool with two blue rhombus holes and one blue rectangular hole making it looks like a face,totem
+32,35,228,318,0,1535,a blue wooden stool with two blue circular holes and two blue rhombus holes making it looks like a face,totem
+32,35,229,319,0,1615,a blue wooden stool with two blue rectangular holes and two blue rhombus holes making it looks like a face,totem
+32,35,230,320,0,1445,a blue wooden stool with four blue rhombus holes making it looks like a face,totem
