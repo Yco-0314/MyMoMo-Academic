@@ -1,5 +1,7 @@
 # ADR-008: Multi-Fidelity Calibration — Coarse-to-Fine Sim Budget Split
 
+> _Editorial note (2026-06-02): the original challenge's event name has been neutralized to "the virus-on-a-network (SIR-on-network) calibration challenge"; the decision and rationale below are unchanged._
+
 **Status**: Accepted (default OFF; opt-in for expensive sim contexts)
 **Date**: 2026-05-31
 **Deciders**: yco + Claude (Opus 4.7)
@@ -11,7 +13,7 @@
 
 After ADR-006's calibration recovery (MSE 1480 → 47.4), the remaining wall
 cost was dominated by simulator iteration. A single `fit_from_files`
-across three BEHAVE 2025 domains (SIR / Opinion / Schelling) takes ~4.4
+across three calibration domains (SIR / Opinion / Schelling) takes ~4.4
 minutes end-to-end in CI; the full-Pipeline path with LLM phases takes
 ~29 minutes per domain (90 min for three), forcing the 2026-05-31
 cross-domain CI to pivot to the lean path. Every Pipeline-mediated
@@ -68,7 +70,7 @@ backend fails (degenerate prior, NaN posterior), the next one runs.
 
 ## Why coarse=0.4, medium=0.7 (post-tuning)
 
-The initial proposal was `coarse=0.2` (50 ticks on the BEHAVE 2025 SIR
+The initial proposal was `coarse=0.2` (50 ticks on the SIR
 challenge), reasoning that 50 ticks captures the epidemic peak. The
 first cross-domain MF run proved this wrong: SIR MSE regressed
 36.875 → 1250 because at 50 ticks the trajectory has barely passed peak;
@@ -83,7 +85,7 @@ Tuning iteration produced the current values:
   first half of relaxation. RF surrogate now aligns directionally with
   full-fidelity loss in the SIR challenge's three-param space.
 - **0.7 medium** (175 ticks): runs through the late relaxation. Stage
-  B's MAP differs from full-fidelity MAP by < 5% across the BEHAVE
+  B's MAP differs from full-fidelity MAP by < 5% across the benchmark
   examples.
 
 The trade-off: coarse=0.4 saves ~50% per-sim wall instead of ~70%, but
@@ -119,7 +121,7 @@ Cut `n_agents` instead of `periods`. Rejected because:
 
 Run full-length sims but record every Nth tick. Rejected because:
 - Wall cost stays at full-fidelity (the iteration loop, not CSV
-  writes, is the bottleneck on most BEHAVE 2025 sims)
+  writes, is the bottleneck on most calibration sims)
 - Provides no actual speedup
 
 ### Alternative C: Surrogate model only (no fine refinement)
@@ -138,7 +140,7 @@ schedule captures most of the benefit with one clean knob.
 
 ## Empirical findings (the reason MF defaults to OFF)
 
-Cross-domain lean dogfood on three BEHAVE 2025 examples:
+Cross-domain lean dogfood on three calibration examples:
 
 | Domain | Single-fidelity MSE | MF MSE | Wall (single) | Wall (MF) |
 |--------|---------------------|--------|---------------|-----------|

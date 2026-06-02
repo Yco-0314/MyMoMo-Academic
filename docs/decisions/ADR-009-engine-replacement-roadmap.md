@@ -1,5 +1,7 @@
 # ADR-009: Engine Replacement Roadmap — Phased Melodie Decommission
 
+> _Editorial note (2026-06-02): the original challenge's event name has been neutralized to "the virus-on-a-network (SIR-on-network) calibration challenge"; the decision and rationale below are unchanged._
+
 **Status**: Roadmap (no code changes this ADR)
 **Date**: 2026-05-31
 **Deciders**: yco + Claude (Opus 4.7)
@@ -26,7 +28,7 @@ Three things motivate replacement:
 
 1. **Strategic positioning** — owning the engine is the difference
    between "thin wrapper over a third-party simulator" and "calibration
-   research platform." For BEHAVE 2025 and follow-on academic work, the
+   research platform." For the calibration benchmark and follow-on academic work, the
    former is hard to defend as a contribution.
 2. **Pin specific Melodie versions** has bitten us — the published
    `Melodie==2.x` shipped without `setup-spatially-clustered-network`

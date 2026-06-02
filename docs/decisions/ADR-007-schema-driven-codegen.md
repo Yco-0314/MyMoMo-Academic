@@ -7,13 +7,15 @@ supersedes: (extends ADR-006 calibration recovery)
 
 # ADR-007: Schema-driven codegen via MechanismSpec + TemplateGenerator
 
+> _Editorial note (2026-06-02): the original challenge's event name has been neutralized to "the virus-on-a-network (SIR-on-network) calibration challenge"; the decision and rationale below are unchanged._
+
 ## Context
 
 abm-auto's value proposition is "story.md → working calibrated ABM
 model". Until 2026-05-29 that promise rested entirely on the LLM
 (CoderAgent) writing all 7 model files from a free-form DESIGN.md.
 End-to-end dogfooding revealed this fragile: **0% codegen success rate
-on the BEHAVE 2025 SIR story** after the Topology callable seam (commit
+on the virus-on-a-network SIR story** after the Topology callable seam (commit
 276c1a9) replaced the old `network_type=str` string API.
 
 Root cause: boilerplate code that wires Topology / Network / Scenario /
@@ -132,7 +134,7 @@ fallback) and validates against `MechanismSpec.validate()`.
 
 ## Empirical evidence
 
-Dogfood progression on the BEHAVE 2025 SIR story (2026-05-29):
+Dogfood progression on the virus-on-a-network SIR story (2026-05-29):
 
 | Run | Codegen path | Calibration MSE | best_params |
 |---|---|---|---|

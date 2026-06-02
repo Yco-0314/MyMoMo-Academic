@@ -1,5 +1,7 @@
 # ADR-006: Calibration MSE Recovery — Diagnosing and Fixing the 14× Gap
 
+> _Editorial note (2026-06-02): the original challenge's event name has been neutralized to "the virus-on-a-network (SIR-on-network) calibration challenge"; the decision and rationale below are unchanged._
+
 **Status**: Accepted
 **Date**: 2026-05-28
 **Deciders**: yco + Claude (Opus 4.7)
@@ -9,7 +11,7 @@
 
 ## Context and Problem Statement
 
-The BEHAVE 2025 Brescia calibration challenge ("Virus on a Network") was
+The "Virus on a Network" calibration challenge was
 abm-auto's flagship benchmark. For weeks the calibrator produced parameter
 estimates 2-8× off the published ground truth — `(virus, recov, resist) =
 (10.2, 2.5, 50)` instead of the paper's `(4.4, 0.3, 25)`. The discrepancy
