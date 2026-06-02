@@ -132,3 +132,27 @@ Falsification: P6 false (NN still dropped) → the wall is deeper than
 schema+prompt; the fix needs TemplateGenerator to emit the
 instantiation (3A), not just guide the LLM (3B). That would itself be a
 finding about where the 3B boundary fails.
+
+---
+
+## Isolated W2 test prediction (before run) — 2026-06-03
+
+Bypassing the design-phase bug: feed Path-1's GOOD mechanism_spec.md +
+DESIGN.md (which fully describe the NN) into the W2-UPDATED Stage-2
+MechanismExtractor (`_extract_json_spec`). Same input the OLD extractor
+flattened; does the NEW prompt make Stage-2 emit a `learned_operators`
+entry?
+
+**P8 — Prediction: the updated Stage-2 NOW emits a non-empty
+`learned_operators` with a FeedforwardLearner-shaped semantic_model
+(name, n_items, embed_dim, hidden_dim).** This isolates the W2 fix from
+the design-phase bug. Same NN-describing input, new prompt → the schema
+slot + guidance should make the LLM populate it.
+**Confidence: 70%.** Higher than P6 because this removes the design-phase
+failure and tests exactly the md→json transition where Path 1 lost the
+NN. Residual risk: the LLM may still under-use the new section.
+
+Falsification: P8 false (learned_operators still empty given an
+NN-describing markdown + the new prompt) → 3B prompt-guidance is
+insufficient at the extraction stage; the fix needs the extractor to
+detect "trainable sub-model" structurally, not rely on prompt guidance.
