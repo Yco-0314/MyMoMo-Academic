@@ -129,3 +129,39 @@ W2 FeedforwardLearner. Residual: semantic-SOLO advantage (P-A) is not yet
 reproduced and is hypothesised to need P_G>0; that is the obvious run-3.
 Two reusable operators were scouted along the way (task-graph loader,
 Moran turnover) for the codegen architecture work.
+
+## CORRECTION (verify_lr.py) — run-2's "synergy" claim was OVERSTATED
+
+While preparing run 3 I found a harness bug and a deeper mechanism problem.
+Both correct the run-2 interpretation above. Recorded honestly, not erased.
+
+**Harness bug.** `run_experiment.run_one` hardcoded `learning_rate=0.001,
+train_epochs=5` into the scenario CSV, which OVERRIDES `scenario.setup()`.
+So my run-2 "lr 0.001 -> 0.2" fix never took effect — run 2 ran at
+lr=0.001. `verify_lr.py` confirms: at lr=0.001/ep5, semantic-solo=12.2 and
+sem+soc=33.2, matching the recorded run-2 (11.8 / 33.4).
+
+**The "synergy" was an artifact, not semantic guidance.** At lr=0.001 the
+semantic model M never trains off the uniform distribution (the probe
+already showed this). So the "semantic" individual attempts were just
+sampling ~uniformly over owned items — i.e. essentially random. sem+soc
+(33.2) was therefore ~ social (31.2) plus noise; the +2.2 interaction is
+within the per-cell spread (±4-5). **It was not semantic knowledge
+producing synergy. The run-2 P-B/P-D "HIT" is withdrawn.**
+
+**And training M properly makes it WORSE, not better.** At lr=0.2/ep20,
+verify_lr gives semantic-solo=10.5 and sem+soc=**9.0** (all four seeds
+exactly 9 — a collapse). A sharply-trained M concentrates the predict
+distribution on PAST successful co-occurrences, so the agent re-proposes
+already-discovered recipes (skipped as in-memory) and explores almost
+nothing new. Over-exploitation kills discovery.
+
+**Conclusion: the predict-chain mechanism (P_G=0) does not reproduce
+semantic guidance at ANY lr** — undertrained it is neutral (≈random),
+trained it is harmful (over-exploitation). This is a real, honest negative
+result. It relocates the test to the paper's *similarity-based
+generalization* branch (P_G > 0), which proposes NOVEL combinations by
+analogy (swap an item in a known recipe for an embedding-neighbour) rather
+than re-treading known co-occurrences. That is run 3 — and it must vary lr
+too (0.001 is dead, 0.2 collapses; a moderate lr is needed for embeddings
+to be meaningful without over-sharpening).

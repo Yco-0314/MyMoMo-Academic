@@ -43,6 +43,12 @@ PERIODS = 150
 N = 50
 ATTEMPTS = 10
 REPS = 16
+# Semantic-model training regime. NB run_one writes these into the scenario
+# CSV, which OVERRIDES scenario.setup() defaults — so these constants are the
+# single source of truth for the sweep (a harness bug had hardcoded 0.001/5
+# here, silently overriding the corrected scenario defaults in run 2).
+LR = 0.2
+TRAIN_EPOCHS = 20
 CONDITIONS = [
     # label,      p_semantic, p_social
     ("random",    0.0, 0.0),
@@ -60,11 +66,13 @@ def _write_scenario(**p) -> None:
 
 
 def run_one(seed: int, p_semantic: float, p_social: float,
+            p_generalize: float = 0.0, lr: float = LR,
+            train_epochs: int = TRAIN_EPOCHS,
             periods: int = PERIODS, n: int = N) -> list[dict]:
     _write_scenario(id=0, run_num=1, periods=periods, agent_num=n,
                     n_attempts=ATTEMPTS, seed=seed, p_semantic=p_semantic,
-                    p_social=p_social, p_generalize=0.0, embed_dim=16,
-                    hidden_dim=16, learning_rate=0.001, train_epochs=5)
+                    p_social=p_social, p_generalize=p_generalize, embed_dim=16,
+                    hidden_dim=16, learning_rate=lr, train_epochs=train_epochs)
     config = Config(project_name="YamanSemanticInnovation", project_root=HERE,
                     input_folder="data/input", output_folder="data/output")
     Simulator(config=config, model_cls=YamanModel, scenario_cls=YamanScenario).run()
