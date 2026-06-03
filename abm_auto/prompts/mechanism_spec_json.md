@@ -47,6 +47,7 @@ pipeline degrades to legacy LLM codegen — which has a known failure rate.
   ],
   "learned_operators": [],
   "population_dynamics": null,
+  "reference_assets": [],
   "targets": ["count_s", "count_i", "count_r"],
   "env_step_pseudocode": "snapshot infecteds; spread to S-neighbors with prob...",
   "agent_step_pseudocode": null,
@@ -205,6 +206,44 @@ the operator (`MoranProcess`); you only declare its SHAPE:
 The generated `environment.step` will call
 `self.moran.turnover(agents, inherit=...)` once per generation — it never
 writes the death/selection loop. (See the Phase-2 implementation prompt.)
+
+## Reference assets (external data tables)
+
+`reference_assets` is **almost always `[]`**. Set it ONLY when the model is
+driven by an **external rule / recipe / transition / payoff TABLE** whose
+contents are DATA in a file (a recipe or tech tree, a reaction network, a
+state-transition table), not a formula. The design will have declared the
+file and its column roles; copy that here. The runtime provides the operator
+(`RuleTable`) — you declare the table's SHAPE, the model loads it, and you
+NEVER enumerate the rows.
+
+```json
+"reference_assets": [
+  {
+    "name": "rules",
+    "filename": "rules_tidied.csv",
+    "output_col": "item",
+    "input_cols": ["c1", "c2", "c3"],
+    "given_col": "given",
+    "weight_col": "point",
+    "label_col": "name_simplified",
+    "description": "Totem innovation tree: ingredient columns -> produced item"
+  }
+]
+```
+
+- `name` — the model attribute (becomes `self.rules`).
+- `filename` — the data file basename; the pipeline copies it into the
+  generated model's `data/input/`.
+- `output_col` — the column naming the item each row produces (REQUIRED).
+- `input_cols` — the columns whose item ids form the combination key
+  (REQUIRED; empty cells are ignored).
+- `given_col` / `weight_col` / `label_col` — optional: an initial-item flag,
+  a score/payoff, a human label.
+
+The model will `self.rules = RuleTable.from_csv(path, input_cols=..., ...)`
+and call `.combine(items)` / `.recipe_for(x)` / `.given_indices()` — it never
+hard-codes the table. (See the Phase-2 implementation prompt.)
 
 ## Param value forms
 

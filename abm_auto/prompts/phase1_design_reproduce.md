@@ -222,6 +222,15 @@ the paper's mechanism, realised by a provided operator). Do **NOT**:
 |---|---|---|
 | a per-agent **trainable sub-model** (a neural net / embedding learned from experience) | "each agent carries a trained model predicting X from Y" | `FeedforwardLearner` |
 | **birth-death population turnover** with fitness-based selection (Moran / Wright-Fisher / evolutionary / cultural evolution) | "population undergoes Moran turnover; survivors reproduce ∝ <fitness>; offspring inherit <X>, reset <Y>" | `MoranProcess` |
+| an **external rule / recipe / transition / payoff TABLE** — a DATA FILE, not a formula (a recipe or tech tree, a reaction network, a transition table) | "items combine per an external rule table (file `X.csv`; input columns …, output column …); the model LOADS it" | `RuleTable` (reference asset) |
+
+**The CONTENTS of a reference table never cost assumptions.** If the source
+model's combinations / recipes / transitions live in a released data file,
+DECLARE the table (its filename and column roles) and move on. Do NOT
+enumerate the rows, and do NOT write `AI-ASSUMPTION` for "I assume item 12
+combines with item 14" — that data is provided, not invented. (Only tag an
+assumption if the table itself is genuinely unavailable and you must guess its
+*structure* — and say so explicitly.)
 
 This keeps the AI-ASSUMPTION budget for genuinely unstated RESEARCH choices
 (a rate the paper omitted), not for standard mechanisms the paper specifies

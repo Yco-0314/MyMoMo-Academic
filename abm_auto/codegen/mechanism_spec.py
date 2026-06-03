@@ -257,6 +257,52 @@ class PopulationDynamicsSpec:
 
 
 @dataclass
+class ReferenceAsset:
+    """An external data file the model loads via `runtime.RuleTable`
+    (ADR-013 W3 harvest).
+
+    Set this when the source model is driven by an external rule / recipe /
+    transition / payoff TABLE whose contents are DATA, not a formula (the
+    Yaman recipe tree; a tech tree; a reaction network). The pipeline copies
+    ``filename`` from the workspace assets dir into the generated model's
+    data/input/, and the model loads it with `RuleTable` — it never
+    enumerates or assumes the rows. This is what lets a design DECLARE such a
+    table instead of spending several `AI-ASSUMPTION` tags inventing its
+    encoding.
+
+    ``input_cols`` are the columns whose item ids form a combination key;
+    ``output_col`` is the produced item; ``given_col`` flags rows available at
+    the start; ``weight_col`` / ``label_col`` are optional score and name.
+    """
+    name: str                                       # model attribute, e.g. "rules"
+    filename: str                                   # data file basename (in the assets dir)
+    output_col: str                                 # the produced-item column
+    kind: str = "rule_table"                        # only kind today
+    input_cols: list = field(default_factory=list)  # combination key columns
+    given_col: str = ""                             # optional initial-item flag column
+    weight_col: str = ""                            # optional score / payoff column
+    label_col: str = ""                             # optional human label column
+    description: str = ""
+
+    def validate(self) -> list[str]:
+        errors: list[str] = []
+        if not self.name or not self.name.isidentifier():
+            errors.append(f"reference_asset.name={self.name!r} not a valid identifier")
+        if not self.filename:
+            errors.append(f"reference_asset.{self.name}.filename is required")
+        if self.kind != "rule_table":
+            errors.append(
+                f"reference_asset.{self.name}.kind={self.kind!r} unsupported "
+                f"(only 'rule_table' today)"
+            )
+        if not self.input_cols:
+            errors.append(f"reference_asset.{self.name}.input_cols is empty")
+        if not self.output_col:
+            errors.append(f"reference_asset.{self.name}.output_col is required")
+        return errors
+
+
+@dataclass
 class MechanismSpec:
     """Full structured spec — the contract between MechanismExtractor and the
     template-driven codegen pipeline.
@@ -296,6 +342,9 @@ class MechanismSpec:
     # Population turnover (ADR-013 W4). None = no birth-death dynamics (the
     # common case). Set for Moran / evolutionary / cultural-evolution models.
     population_dynamics: Optional[PopulationDynamicsSpec] = None
+    # External data tables the model loads via RuleTable (ADR-013 W3). Usually
+    # empty — set when the model is driven by an external rule/recipe table.
+    reference_assets: list[ReferenceAsset] = field(default_factory=list)
     targets: list[str] = field(default_factory=list)   # env attributes data_collector tracks
 
     # ── LLM-filled regions (kept as pseudocode) ──
@@ -333,6 +382,7 @@ class MechanismSpec:
         population_dynamics = (
             PopulationDynamicsSpec(**pd_raw) if pd_raw not in (None, {}) else None
         )
+        reference_assets = [ReferenceAsset(**a) for a in data.get("reference_assets", [])]
         return cls(
             project_name=data.get("project_name", "ABMProject"),
             model_class_name=data.get("model_class_name", "MyModel"),
@@ -347,6 +397,7 @@ class MechanismSpec:
             agent_state_vars=agent_state_vars,
             learned_operators=learned_operators,
             population_dynamics=population_dynamics,
+            reference_assets=reference_assets,
             targets=list(data.get("targets", [])),
             env_step_pseudocode=data.get("env_step_pseudocode", ""),
             agent_step_pseudocode=data.get("agent_step_pseudocode"),
@@ -435,6 +486,13 @@ class MechanismSpec:
                             f"population_dynamics.{label}: {nm!r} is not a declared "
                             f"agent_state_var or learned_operator"
                         )
+        # Reference assets (ADR-013 W3). Validate each + no duplicate names.
+        asset_names_seen: set[str] = set()
+        for a in self.reference_assets:
+            errors.extend(f"reference_assets[{a.name}]: {e}" for e in a.validate())
+            if a.name in asset_names_seen:
+                errors.append(f"reference_assets: duplicate name {a.name!r}")
+            asset_names_seen.add(a.name)
         # Targets non-empty (otherwise DataCollector produces no data → calibration impossible)
         if not self.targets:
             errors.append("targets is empty — no metrics will be collected (calibration impossible)")

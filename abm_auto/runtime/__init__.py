@@ -54,6 +54,7 @@ from abm_auto.runtime._scenario import Scenario  # standalone (ADR-009 Phase 1)
 from abm_auto.runtime._data_collector import DataCollector  # standalone (ADR-009 Phase 2)
 from abm_auto.runtime._learner import FeedforwardLearner  # learned-operator (ADR-013 W2 wall fix)
 from abm_auto.runtime._population import MoranProcess  # population-dynamics operator (ADR-013 W4 harvest)
+from abm_auto.runtime._rule_table import RuleTable  # reference-data operator (ADR-013 W3 harvest)
 from abm_auto.runtime import _topologies as topologies  # noqa: F401  exposed as `runtime.topologies`
 
 # ── Still delegated to MyMoMo Runtime (complex CSV/DB machinery) ────────────────────
@@ -75,6 +76,7 @@ __all__ = [
     "DataCollector",
     "FeedforwardLearner",
     "MoranProcess",
+    "RuleTable",
     "Scenario",
     "Config",
     "Simulator",

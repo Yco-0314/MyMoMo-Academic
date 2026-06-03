@@ -43,6 +43,13 @@ Each agent (the population is 100 individuals) holds:
   is 6, 4, 2, 2, 2, 3, 3, 7, 11, 48, 96.
 - A recipe is "valid" if it matches a defined combination; a valid recipe
   the agent has not seen yields a new item added to its inventory.
+- **The specific recipes are NOT a formula — they are released data.** The
+  full innovation tree is provided in the paper's data file
+  `rules_tidied.csv` (from the OSF repository): one row per item, with
+  ingredient columns `c1,c2,c3` (item ids, `0` = empty slot), the produced
+  `item`, a `given` flag for the 6 base items, a `point` score, and a
+  `name_simplified` label. The model LOADS this table; it does not enumerate
+  or invent the combinations.
 
 ## What an agent does on one innovation attempt (Algorithm 2)
 
