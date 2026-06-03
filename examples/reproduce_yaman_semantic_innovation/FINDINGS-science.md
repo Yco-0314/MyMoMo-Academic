@@ -228,3 +228,52 @@ speculative re-implementation, not reproduction, without the released code.
 **Status: faithful partial reproduction.** Mechanics + social-learning
 effect reproduced from real data; semantic-guidance claim not reproducible
 from the public artifacts. Recorded as-is.
+
+## Run 4 (stochastic soft-nearest) — P-H MISS. The negative is now robust.
+
+The last named gap: deterministic `nearest` was replaced with a stochastic
+soft-nearest (p ∝ exp(−dist/mean_dist)) — the same argmax→sampling fix that
+helped the predict-chain. One bounded test, no temperature sweep.
+
+| cell          | repertoire | max_level |
+|---------------|-----------|-----------|
+| random        | 11.8 ± 1.2 | 5.2 |
+| social        | 31.2 ± 4.4 | 8.4 |
+| sem_g9_lo     | 8.4 ± 0.6 | 3.3 |
+| sem_g9_hi     | 8.6 ± 0.9 | 3.4 |
+| semsoc_g9_lo  | 17.4 ± 10.2 | 5.6 |
+| semsoc_g9_hi  | 14.9 ± 9.2 | 5.2 |
+
+**P-H MISS.** Best semantic-solo (8.6) is still BELOW random (11.8), still
+shallow (level 3.3-3.4). Stochastic nearest did not help. **Determinism was
+not the blocker.** Per the pre-registered falsification, tuning stops here.
+
+## FINAL VERDICT (runs 1-4)
+
+The semantic-guidance benefit does NOT reproduce under ANY mechanism
+variant tried:
+- predict-chain: argmax (run 1, harmful) and sampling (run 2, neutral),
+  across lr ∈ {.001, .05, .2};
+- generalization: deterministic nearest (run 3, harmful) and stochastic
+  nearest (run 4, harmful), across P_G ∈ {.5, .9} × lr ∈ {.02, .08}.
+
+In every case semantic agents underperform uniform random and converge
+shallow (level 3-4 vs random 5.2, social 8.4): the semantic model becomes
+an exploitation bias that suppresses exploration. Pure social learning is
+the robust winner (31.2, level 8.4), faithful to the paper's Fig 2A.
+
+**This is a faithful PARTIAL reproduction**: the Totem task, crafting
+dynamics, and social-learning effect reproduce from the real recipe tree +
+SI algorithms + the W2 operator; the paper's headline semantic-guidance
+claim is NOT reproducible from the public artifacts. The most likely cause
+is that the SI under-specifies the productive semantic mechanism and the
+released ABM code is absent from OSF (empty folders). Recovering it (the
+authors' GitHub, or contacting them) is the only path to a TRUE test of the
+semantic claim; everything beyond run 4 would be speculative re-
+implementation, which is not reproduction.
+
+The process is the result: locking predictions and reading real output
+turned what an earlier (fabricating) version of this project would have
+called a "successful reproduction" into an honest, well-evidenced negative
+— and caught two of my own premature conclusions along the way. That is the
+Gate/Harness discipline (ADR-012/013) doing exactly its job.
