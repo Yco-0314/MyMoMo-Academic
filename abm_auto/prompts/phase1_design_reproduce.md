@@ -200,6 +200,28 @@ Reason: [why this default is defensible — e.g., "standard in ABM literature fo
 
 **Quality bar**: A faithful reproduction should have **≤ 5 AI-ASSUMPTION tags**, and every one must include the source-check trace above. The Viability Gate will reject designs with more than 5.
 
+### Runtime operator vocabulary (these cost ZERO assumptions)
+
+The runtime provides verified, reusable **operators** — standard mechanisms
+the codegen pipeline supplies fully-formed. When the source paper's model
+uses one, **name it plainly** and tag its origin `[paper-canonical]` (it is
+the paper's mechanism, realised by a provided operator). Do **NOT**:
+- wrap it in `AI-ASSUMPTION` (you are not assuming it — the paper states the
+  mechanism and the runtime provides the implementation);
+- describe or invent its internals (network architecture, training loop,
+  selection math) — the runtime owns those.
+
+| If the source model has… | State it as (origin `[paper-canonical]`) | Provided by |
+|---|---|---|
+| a per-agent **trainable sub-model** (a neural net / embedding learned from experience) | "each agent carries a trained model predicting X from Y" | `FeedforwardLearner` |
+| **birth-death population turnover** with fitness-based selection (Moran / Wright-Fisher / evolutionary / cultural evolution) | "population undergoes Moran turnover; survivors reproduce ∝ <fitness>; offspring inherit <X>, reset <Y>" | `MoranProcess` |
+
+This keeps the AI-ASSUMPTION budget for genuinely unstated RESEARCH choices
+(a rate the paper omitted), not for standard mechanisms the paper specifies
+and the runtime implements. A complex paper that is mostly provided-operators
++ a handful of stated parameters is a FAITHFUL, viable reproduction — it
+should NOT trip the ≤5 limit just because the mechanism is sophisticated.
+
 ---
 
 ## 5. Architecture Guide (use the source paper's choices)
