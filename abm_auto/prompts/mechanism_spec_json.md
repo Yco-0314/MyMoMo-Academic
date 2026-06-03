@@ -46,6 +46,7 @@ pipeline degrades to legacy LLM codegen — which has a known failure rate.
     {"name": "state", "type": "int", "init": "0"}
   ],
   "learned_operators": [],
+  "population_dynamics": null,
   "targets": ["count_s", "count_i", "count_r"],
   "env_step_pseudocode": "snapshot infecteds; spread to S-neighbors with prob...",
   "agent_step_pseudocode": null,
@@ -163,6 +164,47 @@ The agent's OTHER state (inventory, memory, etc.) goes in
 `"str"` with an init expression like `"list(range(6))"` or `"set()"`
 (the type field constrains the column, the init expression is real
 Python). Do NOT put `"list"` or `"set"` in the `type` field.
+
+## Population dynamics (birth-death turnover)
+
+`population_dynamics` is **almost always `null`**. Set it ONLY when the
+source model has **population replacement**: individuals die and are
+replaced by offspring of selected survivors (a Moran process, a Wright-
+Fisher generation, evolutionary/cultural-evolution selection). Models with
+a FIXED set of agents that just update state (epidemics, opinion dynamics,
+Schelling) leave it `null`.
+
+When the model DOES have selection-driven turnover, do NOT describe the
+death loop or the selection mechanics in pseudocode. The runtime provides
+the operator (`MoranProcess`); you only declare its SHAPE:
+
+```json
+"population_dynamics": {
+  "fitness_attr": "score",
+  "death_model": "gompertz",
+  "gompertz_a": 0.0001365,
+  "gompertz_b": 0.2097,
+  "inherit_attrs": ["semantic_model"],
+  "reset_attrs": ["inventory", "score"],
+  "description": "Moran turnover: offspring inherit the trained model, reset inventory"
+}
+```
+
+- `fitness_attr` — the agent attribute selection is proportional to (e.g.
+  `"score"`). Must be a real agent attribute.
+- `death_model` — `"constant"` (give `death_rate`, a probability in (0,1))
+  or `"gompertz"` (age-based `P = a·e^(b·age)`; give `gompertz_a`,
+  `gompertz_b`, or use the defaults).
+- `inherit_attrs` — agent attributes the OFFSPRING deep-copies from its
+  parent (e.g. a `learned_operators` model the lineage keeps training).
+  Each name MUST be a declared `agent_state_var` or `learned_operator`.
+- `reset_attrs` — agent attributes the offspring RESETS to their
+  `agent_state_var` init (e.g. `"inventory"`, `"score"`). Also must name
+  declared attributes. (Age is reset by the operator automatically.)
+
+The generated `environment.step` will call
+`self.moran.turnover(agents, inherit=...)` once per generation — it never
+writes the death/selection loop. (See the Phase-2 implementation prompt.)
 
 ## Param value forms
 

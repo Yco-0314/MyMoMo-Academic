@@ -115,6 +115,41 @@ class MyEnvironment(Environment):
         pass
 ```
 
+#### Population dynamics (ONLY if `mechanism_spec.json` has `population_dynamics`)
+
+If — and only if — the spec sets `population_dynamics`, the model has
+birth-death turnover. **Use the runtime's `MoranProcess`; never write the
+death / selection / reproduction loop yourself.** Construct it once (in
+`Model.setup`, store on the model), and call `turnover` once per generation
+inside `environment.step`. The ONLY model-specific code is the one-line
+`inherit(child, parent)` hook built from `inherit_attrs` / `reset_attrs`.
+
+```python
+# in core/model.py — Model.setup(), after agents exist:
+import copy
+from abm_auto.runtime import MoranProcess
+# spec: death_model="gompertz", fitness_attr="score",
+#       inherit_attrs=["semantic_model"], reset_attrs=["inventory", "score"]
+self.moran = MoranProcess(fitness_attr="score", death_model="gompertz",
+                          seed=int(getattr(self.scenario, "seed", 0)))
+
+def _inherit(child, parent):
+    child.semantic_model = copy.deepcopy(parent.semantic_model)  # inherit_attrs
+    child.inventory = set(self._base_items)                      # reset_attrs → init
+    child.score = 0.0
+self._inherit = _inherit
+```
+
+```python
+# in core/environment.py — once per generation, at the END of step():
+#   (the model passes itself / the hook in; or call from Model.run after step)
+self.model.moran.turnover(agents, inherit=self.model._inherit)
+```
+
+`turnover` handles death (constant or Gompertz on `age`), fitness-
+proportional parent selection, holding N constant, and ageing. Do not
+re-implement any of it.
+
 ### DataCollector (`core/data_collector.py`)
 ```python
 from abm_auto.runtime import DataCollector

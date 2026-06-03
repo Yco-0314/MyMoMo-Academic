@@ -200,6 +200,62 @@ class LearnedOperator:
         return errors
 
 
+VALID_DEATH_MODELS = {"constant", "gompertz"}
+
+
+@dataclass
+class PopulationDynamicsSpec:
+    """Declares a `runtime.MoranProcess` overlapping-generations turnover
+    (ADR-013 W4 harvest).
+
+    Set this when the model has BIRTH-DEATH population replacement with
+    fitness-proportional selection (Moran / cultural-evolution / evolutionary-
+    game ABMs). It replaces the several `AI-ASSUMPTION` tags the design phase
+    used to spend inventing a "Moran-style selection process", a death rule,
+    and an inheritance rule — those are now a provided operator, not gaps.
+
+    The runtime owns the error-prone parts (who dies, who reproduces ∝
+    fitness, holding N constant). The generated `inherit(child, parent)` hook
+    is the only model-specific line: ``inherit_attrs`` are deep-copied from
+    parent to offspring (e.g. a learned operator), ``reset_attrs`` are reset
+    to their agent_state_var init (e.g. inventory, score). Age is handled by
+    the operator.
+    """
+    fitness_attr: str = "score"           # agent attr selection is proportional to
+    death_model: str = "constant"         # "constant" | "gompertz"
+    death_rate: float = 0.05              # used when death_model == "constant"
+    gompertz_a: float = 0.0001365         # used when death_model == "gompertz"
+    gompertz_b: float = 0.2097
+    age_attr: str = "age"
+    inherit_attrs: list = field(default_factory=list)   # offspring deep-copies these from parent
+    reset_attrs: list = field(default_factory=list)     # offspring resets these to init
+    description: str = ""
+
+    def validate(self) -> list[str]:
+        errors: list[str] = []
+        if self.death_model not in VALID_DEATH_MODELS:
+            errors.append(
+                f"population_dynamics.death_model={self.death_model!r} not in "
+                f"{sorted(VALID_DEATH_MODELS)}"
+            )
+        if self.death_model == "constant" and not (0.0 < self.death_rate < 1.0):
+            errors.append(
+                f"population_dynamics.death_rate={self.death_rate} must be in (0, 1) "
+                f"for the constant death model"
+            )
+        if self.death_model == "gompertz" and (self.gompertz_a <= 0 or self.gompertz_b <= 0):
+            errors.append("population_dynamics gompertz_a and gompertz_b must be > 0")
+        for label, name in (("fitness_attr", self.fitness_attr), ("age_attr", self.age_attr)):
+            if not name or not name.isidentifier():
+                errors.append(f"population_dynamics.{label}={name!r} not a valid identifier")
+        for label, names in (("inherit_attrs", self.inherit_attrs),
+                             ("reset_attrs", self.reset_attrs)):
+            for nm in names:
+                if not isinstance(nm, str) or not nm.isidentifier():
+                    errors.append(f"population_dynamics.{label} entry {nm!r} not a valid identifier")
+        return errors
+
+
 @dataclass
 class MechanismSpec:
     """Full structured spec — the contract between MechanismExtractor and the
@@ -237,6 +293,9 @@ class MechanismSpec:
     # Per-agent learned sub-models (ADR-013 W2 fix). Usually empty — only
     # set for learning-representation agents (e.g. Yaman's semantic model).
     learned_operators: list[LearnedOperator] = field(default_factory=list)
+    # Population turnover (ADR-013 W4). None = no birth-death dynamics (the
+    # common case). Set for Moran / evolutionary / cultural-evolution models.
+    population_dynamics: Optional[PopulationDynamicsSpec] = None
     targets: list[str] = field(default_factory=list)   # env attributes data_collector tracks
 
     # ── LLM-filled regions (kept as pseudocode) ──
@@ -270,6 +329,10 @@ class MechanismSpec:
         scenario_params = [ScenarioParam(**p) for p in data.get("scenario_params", [])]
         agent_state_vars = [AgentStateVar(**v) for v in data.get("agent_state_vars", [])]
         learned_operators = [LearnedOperator(**lo) for lo in data.get("learned_operators", [])]
+        pd_raw = data.get("population_dynamics")
+        population_dynamics = (
+            PopulationDynamicsSpec(**pd_raw) if pd_raw not in (None, {}) else None
+        )
         return cls(
             project_name=data.get("project_name", "ABMProject"),
             model_class_name=data.get("model_class_name", "MyModel"),
@@ -283,6 +346,7 @@ class MechanismSpec:
             scenario_params=scenario_params,
             agent_state_vars=agent_state_vars,
             learned_operators=learned_operators,
+            population_dynamics=population_dynamics,
             targets=list(data.get("targets", [])),
             env_step_pseudocode=data.get("env_step_pseudocode", ""),
             agent_step_pseudocode=data.get("agent_step_pseudocode"),
@@ -356,6 +420,21 @@ class MechanismSpec:
                         f"learned_operators[{lo.name}]: n_items={lo.n_items!r} is not a "
                         f"declared scenario_param"
                     )
+        # Population dynamics (ADR-013 W4). Validate the operator spec when
+        # present; cross-check that inherited/reset attrs name known agent
+        # attributes (agent_state_vars or learned_operators) — catches typos
+        # in the one model-specific part of the operator.
+        if self.population_dynamics is not None:
+            errors.extend(
+                f"population_dynamics: {e}" for e in self.population_dynamics.validate()
+            )
+            for label in ("inherit_attrs", "reset_attrs"):
+                for nm in getattr(self.population_dynamics, label):
+                    if nm not in var_names_seen:
+                        errors.append(
+                            f"population_dynamics.{label}: {nm!r} is not a declared "
+                            f"agent_state_var or learned_operator"
+                        )
         # Targets non-empty (otherwise DataCollector produces no data → calibration impossible)
         if not self.targets:
             errors.append("targets is empty — no metrics will be collected (calibration impossible)")

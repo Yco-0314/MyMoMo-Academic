@@ -159,6 +159,28 @@ AI-ASSUMPTION: Network topology set to Watts-Strogatz small-world (k=4, p=0.1)
 because STORY.md describes social influence but does not specify topology.
 ```
 
+### Runtime operator vocabulary (do NOT tag these as assumptions)
+
+The runtime provides verified, reusable **operators** — standard mechanisms
+the codegen pipeline supplies fully-formed. When the source model uses one,
+**name it plainly and move on**. Choosing a provided operator is NOT an
+assumption: do not wrap it in `AI-ASSUMPTION`, and do not invent or describe
+its internals (architecture, training loop, selection math) — the runtime
+owns those.
+
+| If the model has… | Declare it as | Provided by |
+|---|---|---|
+| a per-agent **trainable sub-model** (a small neural net / embedding it learns from experience) | "each agent carries a trained model that predicts X from Y" | `FeedforwardLearner` (learned operator) |
+| **birth-death population turnover** with fitness-based selection (Moran / Wright-Fisher / evolutionary / cultural-evolution) | "the population undergoes Moran turnover; survivors reproduce in proportion to <fitness>; offspring inherit <X>, reset <Y>" | `MoranProcess` (population-dynamics operator) |
+
+This matters: an honest design for a complex but STANDARD model should spend
+its `AI-ASSUMPTION` budget only on genuinely unspecified RESEARCH choices (a
+rate the paper left unstated, an initialisation the story omitted) — never
+on "I assume a Moran selection process" or "I assume a feed-forward network
+with backprop". Those are provided operators, so they cost ZERO assumptions.
+A model that is mostly provided-operators + a few real parameter choices is
+viable, not "mostly AI-invented".
+
 ---
 
 ## 5. Architecture Guide
