@@ -636,6 +636,20 @@ codegen can emit a known-answer self-test that passes. "Is it buildable?"
 becomes "can we verify the build?" — ADR-012's anti-fabrication move
 applied to coverage.
 
+**Synthesis Phase**  
+The bounded self-extension layer (ADR-015) above the Coverage Gate. On a
+HALT, if the gap mechanism's class has a known-answer **oracle paradigm**
+in the human-audited paradigm library, the agent synthesizes the operator,
+binds the LIBRARY oracle (never a generated one) as its self-test, and
+**internalizes** it only if that self-test passes — the same way W2/W3/W4
+earned trust. No oracle → the agent emits a proposal for human audit; the
+halt stands. The trust law: a generator may not certify itself, so the
+oracle must be independent. The frontier of safe self-extension equals the
+frontier of strong known-answer oracles equals the audited paradigm
+library. Ungated synthesis would be architecture-level fabrication
+(disguising "cannot build this" as "did build this"). See
+[ADR-015](../decisions/ADR-015-synthesis-phase.md).
+
 ---
 
 ## Related Documentation
