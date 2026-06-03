@@ -65,10 +65,33 @@ noisy for reasons unrelated to W3. Chasing a clean PASS by further counter or
 prompt tweaks would be fighting noise and risks manufacturing the result —
 declined, consistent with the discipline throughout this work.
 
-## Deferred (Layer 2 — codegen completeness, not the structural proof)
+## Layer 2 (codegen completeness) — DONE
 
-For a generated model to actually RUN with a reference asset: the pipeline
-must copy the declared `filename` from the workspace assets dir into the
-generated `data/input/`, and `phase2_code.md` must show the model calling
-`RuleTable.from_csv(...)`. That is the codegen-completeness layer; the
-structural gate-side proof above does not depend on it.
+The pipeline now copies a declared asset `filename` into the generated
+model's `data/input/`, and `phase2_code.md` shows the model calling
+`RuleTable.from_csv(...)` (commit "W3 Layer 2").
+
+## End-to-end validation: operators are BYTE-IDENTICAL to the hand-written code
+
+The strongest proof that the three harvested operators actually work — not
+just pass unit tests — is to run a REAL model on them. The Yaman reference
+model (`handcrafted_model/`) was refactored to use the operators it was
+scouted from: `RuleTable` replaces the hand-written `task.py`; `MoranProcess`
+replaces the hand-written `_turnover`/`_select`/`death_probability`;
+`FeedforwardLearner` was already in use. The agent calls the operator API
+(`combine` / `weight_of` / `given_indices` / `recipe_for`).
+
+Verification (deterministic, no LLM): run the refactored model, `git stash`
+the three files back to the hand-written original, run again, diff the output.
+
+**Result: BYTE-IDENTICAL** `Result_Simulator_Environment.csv` (final row
+`period=150, repertoire=9, max_level=4, mean_score=135.0` in both). The
+operators reproduce the hand-written behaviour exactly — the rng draw order
+of `MoranProcess.turnover` matches the hand-written loop, and `RuleTable`'s
+densified index space matches `task.py`. So the science results (runs 1-4)
+are unchanged by the refactor, AND the operators are proven to compose into a
+real, running, behaviour-preserving model.
+
+This closes the harvest loop: operators extracted FROM the reference model now
+drive that same model, identically, and are the same operators the codegen
+pipeline provides.

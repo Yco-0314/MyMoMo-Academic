@@ -47,7 +47,7 @@ class Innovator(Agent):
         seed its inventory with the base items."""
         self._task = task
         self.semantic_model = semantic_model
-        self.inventory = set(task.base_indices)
+        self.inventory = set(task.given_indices())
         self.memory = set()
         self.successful = []
         self.age = 0
@@ -60,7 +60,7 @@ class Innovator(Agent):
         import copy
 
         self.semantic_model = copy.deepcopy(parent.semantic_model)
-        self.inventory = set(self._task.base_indices)
+        self.inventory = set(self._task.given_indices())
         self.memory = set()
         self.successful = []
         self.age = 0
@@ -173,10 +173,10 @@ class Innovator(Agent):
         if key in self.memory:
             return
         self.memory.add(key)
-        product = self._task.craft(key)
+        product = self._task.combine(key)
         if product is not None and product not in self.inventory:
             self.inventory.add(product)
-            self.score += self._task.score[product]
+            self.score += self._task.weight_of(product)
             self.successful.append(key)
 
     # ── social learning (called by the environment / Algorithm 1) ─────────
@@ -190,14 +190,14 @@ class Innovator(Agent):
         for item in demonstrator.inventory:
             if item in self.inventory:
                 continue
-            rec = self._task.product2recipe.get(item)
+            rec = self._task.recipe_for(item)
             if rec is not None and rec <= self.inventory:
                 candidates.append((rec, item))
         if not candidates:
             return False
         rec, item = candidates[rng.randint(0, len(candidates) - 1)]
         self.inventory.add(item)
-        self.score += self._task.score[item]
+        self.score += self._task.weight_of(item)
         self.successful.append(rec)        # socially-acquired recipes train M too
         self.memory.add(rec)
         return True

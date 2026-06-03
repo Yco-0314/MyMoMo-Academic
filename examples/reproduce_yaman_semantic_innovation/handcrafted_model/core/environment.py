@@ -23,17 +23,7 @@ selection loops the viability gate then flags as assumptions.
 """
 from __future__ import annotations
 
-import math
-
 from abm_auto.runtime import Environment
-
-# Gompertz mortality constants (SI lines 270-272). Death rises with age.
-_DEATH_A = 0.0001365
-_DEATH_B = 0.2097
-
-
-def death_probability(age: int) -> float:
-    return min(1.0, _DEATH_A * math.exp(_DEATH_B * age))
 
 
 class YamanEnvironment(Environment):
@@ -48,11 +38,14 @@ class YamanEnvironment(Environment):
 
     # ── one generation ────────────────────────────────────────────────────
 
-    def step(self, agents, scenario, task, rng) -> None:
+    def step(self, agents, scenario, task, moran, rng) -> None:
         self._attempts_phase(agents, scenario, rng)
         for a in agents:
             a.update_semantic_model(int(scenario.train_epochs))
-        self._turnover(agents, rng)
+        # W4 MoranProcess operator owns death + fitness-proportional rebirth +
+        # fixed N + ageing. The inherit hook is the one model-specific line:
+        # offspring inherits the trained model, resets to the base inventory.
+        moran.turnover(agents, inherit=lambda c, p: c.reborn_from(p), rng=rng)
 
     def _attempts_phase(self, agents, scenario, rng) -> None:
         p_social = float(scenario.p_social)
@@ -71,34 +64,3 @@ class YamanEnvironment(Environment):
             budget[agent.id] -= 1
             if budget[agent.id] <= 0:
                 remaining = [a for a in remaining if a.id != agent.id]
-
-    def _turnover(self, agents, rng) -> None:
-        """Gompertz death + fitness-proportional Moran rebirth, fixed N."""
-        dead = [a for a in agents if rng.random() < death_probability(a.age)]
-        survivors = [a for a in agents if a not in dead]
-        if not survivors:
-            # everyone rolled death — skip this turnover, just age them
-            for a in agents:
-                a.age += 1
-            return
-
-        weights = [max(0.0, s.score) for s in survivors]
-        total = sum(weights)
-        for d in dead:
-            parent = self._select(survivors, weights, total, rng)
-            d.reborn_from(parent)
-        for s in survivors:
-            s.age += 1
-
-    @staticmethod
-    def _select(survivors, weights, total, rng):
-        """Pick a parent ∝ score; uniform fallback when all scores are 0."""
-        if total <= 0:
-            return survivors[rng.randint(0, len(survivors) - 1)]
-        r = rng.random() * total
-        acc = 0.0
-        for s, w in zip(survivors, weights):
-            acc += w
-            if r <= acc:
-                return s
-        return survivors[-1]

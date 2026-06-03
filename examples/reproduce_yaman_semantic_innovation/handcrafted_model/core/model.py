@@ -10,14 +10,14 @@ collectively discovered, recorded once per generation.
 """
 from __future__ import annotations
 
+import os
 import random
 
-from abm_auto.runtime import FeedforwardLearner, Model
+from abm_auto.runtime import FeedforwardLearner, Model, MoranProcess, RuleTable
 
 from .agent import Innovator
 from .data_collector import YamanDataCollector
 from .environment import YamanEnvironment
-from .task import load_totem_task
 
 
 class YamanModel(Model):
@@ -33,7 +33,18 @@ class YamanModel(Model):
         seed = int(getattr(self.scenario, "seed", 0)) * 100000 + run_id
         self._rng = random.Random(seed)
 
-        self._task = load_totem_task()
+        # The harvested operators (ADR-013): the recipe tree is the W3
+        # RuleTable, the turnover the W4 MoranProcess — the same operators the
+        # codegen pipeline now provides, exercised in a real running model.
+        rules_path = os.path.join(
+            os.path.dirname(__file__), "..", "..", "reference_data", "rules_tidied.csv"
+        )
+        self._task = RuleTable.from_csv(
+            rules_path, input_cols=["c1", "c2", "c3"], output_col="item",
+            given_col="given", weight_col="point", label_col="name_simplified",
+        )
+        self._moran = MoranProcess(fitness_attr="score", death_model="gompertz",
+                                   age_attr="age")
         self.agents.setup_agents(agents_num=int(self.scenario.agent_num))
 
         ed = int(self.scenario.embed_dim)
@@ -50,7 +61,7 @@ class YamanModel(Model):
         self._refresh_metrics()
 
     def _refresh_metrics(self):
-        base = set(self._task.base_indices)
+        base = set(self._task.given_indices())
         discovered = set()
         for a in self.agents:
             discovered |= a.inventory
@@ -58,7 +69,7 @@ class YamanModel(Model):
 
         env = self.environment
         env.repertoire_size = len(discovered)
-        env.max_level = max((self._task.level[i] for i in discovered), default=0)
+        env.max_level = max((self._task.level_of(i) for i in discovered), default=0)
         scores = [a.score for a in self.agents]
         env.mean_score = sum(scores) / len(scores) if scores else 0.0
         env.max_score = max(scores) if scores else 0.0
@@ -72,7 +83,7 @@ class YamanModel(Model):
         for t in self.iterator(periods):
             self._refresh_metrics()
             self.data_collector.collect(t)
-            self.environment.step(self.agents, self.scenario, self._task, self._rng)
+            self.environment.step(self.agents, self.scenario, self._task, self._moran, self._rng)
         # capture the end state after the final generation
         self._refresh_metrics()
         self.data_collector.collect(periods)

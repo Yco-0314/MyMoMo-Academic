@@ -1,0 +1,2 @@
+id,run_num,periods,agent_num,n_attempts,seed,p_semantic,p_social,p_generalize,embed_dim,hidden_dim,learning_rate,train_epochs
+0,1,150,50,10,15,0.9,0.9,0.9,16,16,0.08,20
