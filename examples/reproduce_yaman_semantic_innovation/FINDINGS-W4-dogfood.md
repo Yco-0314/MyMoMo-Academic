@@ -60,3 +60,40 @@ it is dominated by boilerplate over-tagging + duplication + a regex false
 positive — a gate-counting problem distinct from operator expressiveness, and
 now the cheapest next fix. n=1; the qualitative finding (operators declared,
 count polluted by artifacts) is robust regardless of the exact number.
+
+## Counter hardening — outcome (honest, and it caught me twice)
+
+`viability_checker.count_assumptions()` now: requires a real tag form
+(bracketed `[AI-ASSUMPTION…]` or colon `**AI-ASSUMPTION**:`), skips the
+rule-explanation heading, de-duplicates the same SUBJECT restated inline +
+in §Assumptions, and skips template-owned boilerplate (`id`, `scenario_id`,
+…). Unit-tested.
+
+Two under-count bugs surfaced by reading real output (not assuming the fix
+worked):
+1. The first cut required a colon directly after the token, so it MISSED the
+   §Assumptions bold form `**AI-ASSUMPTION**:` — dropping the real recipe-tree
+   and death assumptions, giving a false "13→5 PASS". Reading the kept list
+   showed the recipe tree was missing → fixed (allow emphasis before colon).
+2. After that it still missed the BARE `[AI-ASSUMPTION]` marker (no colon),
+   under-counting `max_generations`. Fixed (count the bracket form too).
+
+Honest result, corrected:
+- On the original 13-tag design: raw 13 → hardened **7** (removed the heading
+  false-positive, the inline+§6 identifier duplicates, and `id`/`scenario_id`
+  boilerplate; recipe-tree and death correctly RETAINED).
+- After also adding the prompt's boilerplate-discipline, a fresh design run:
+  raw 7 → hardened **6** (n=1).
+- Genuine DISTINCT assumptions are ~4 (params + death + recipe tree). The
+  residual over-count is **prose-vs-identifier duplication** the LLM produced
+  (the same assumption tagged once as prose and once as a named param) — regex
+  cannot semantically dedup these, and the prompt's "tag each assumption once"
+  is the source-level fix as that discipline takes hold.
+
+**What is NOT claimed:** a clean deterministic gate PASS for Yaman. The
+hardening removes the COUNTING ARTIFACTS (tested) and the operator vocabulary
+removes the operator assumptions (confirmed), which together move Yaman from a
+hard reject (raw 8-13, all counted) to the gate boundary (hardened ~6, n=1).
+Forcing it under 5 by further counter tweaks would be manufacturing the result
+— refused. The last genuine structural assumption is the recipe tree, which
+is what W3 (task-graph + reference-asset) removes.

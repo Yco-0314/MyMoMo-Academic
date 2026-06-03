@@ -20,6 +20,7 @@ import re
 
 from abm_auto import config
 from abm_auto.agents.designer import DesignAgent
+from abm_auto.agents.viability_checker import count_assumptions
 from abm_auto.llm import make_client
 from abm_auto.runner.workspace import Workspace
 
@@ -34,10 +35,13 @@ client = make_client(provider=config.LLM_PROVIDER, api_key=config.get_api_key(),
                      base_url=config.get_base_url(), timeout=180.0)
 design = DesignAgent(client, ws).run()
 
-n = len(re.findall(r"AI[-_]ASSUMPTION", design, re.IGNORECASE))
+raw = len(re.findall(r"AI[-_]ASSUMPTION", design, re.IGNORECASE))
+hardened = count_assumptions(design)   # what the gate now actually counts
 print("\n=== DOGFOOD W4 RESULT ===")
-print(f"AI-ASSUMPTION tags: {n}   (baseline 8-11; gate limit 5; n=1 run)")
-print(f"gate verdict: {'PASS' if n <= 5 else 'FAIL'} (limit 5)")
+print(f"raw findall tags: {raw}   (old gate metric; baseline 8-11)")
+print(f"HARDENED count:   {hardened}   (gate limit 5; n=1 run)")
+print(f"gate verdict: {'PASS' if hardened <= 5 else 'FAIL'} (limit 5)")
+n = hardened
 
 print("operator mentions:")
 for term in ("Moran", "FeedforwardLearner", "MoranProcess", "semantic model",

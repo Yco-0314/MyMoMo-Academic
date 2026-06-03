@@ -200,6 +200,13 @@ Reason: [why this default is defensible — e.g., "standard in ABM literature fo
 
 **Quality bar**: A faithful reproduction should have **≤ 5 AI-ASSUMPTION tags**, and every one must include the source-check trace above. The Viability Gate will reject designs with more than 5.
 
+**AI-ASSUMPTION is for unstated MODEL MECHANISM or PARAMETER choices only.** Do NOT spend a tag on:
+- **template-owned fields** — `id`, `scenario_id`, `run_num`, `id_scenario`, `id_run`: the code generator creates these. They are not design choices.
+- **infrastructure / computing** — parallel cores, file formats, random-seed plumbing, run repetitions for averaging. Pick a sensible value silently.
+- **routine output metrics** you add for analysis (you choose what to record; that is not an assumption about the model).
+
+And tag each real assumption **exactly once** — in §6 Assumptions. Do not also restate it inline; one assumption, one tag.
+
 ### Runtime operator vocabulary (these cost ZERO assumptions)
 
 The runtime provides verified, reusable **operators** — standard mechanisms

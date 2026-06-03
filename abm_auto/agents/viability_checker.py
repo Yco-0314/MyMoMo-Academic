@@ -56,6 +56,74 @@ _DEFAULT_LLM_QUESTION = (
     "PASS if the design is implementable even with some assumptions."
 )
 
+# ── Assumption counting (hardened: ADR-013 W4 dogfood) ──────────────────────
+# A real tag is either BRACKETED (`[AI-ASSUMPTION]` / `[AI-ASSUMPTION: …]`,
+# incl. an inline bare marker) or COLON-form (`**AI-ASSUMPTION**:` in the
+# §Assumptions section; the colon may be separated from the token by markdown
+# emphasis / whitespace). A bare PROSE mention without a bracket or a colon —
+# the rule-explanation heading, e.g. "Assumptions (AI-ASSUMPTION only — last
+# resort)" / "（AI-ASSUMPTION——最后手段）" — is NOT a tag.
+_TAG_RE = re.compile(
+    r"\[\s*AI[-_]ASSUMPTION|AI[-_]ASSUMPTION[\s*_]*[:：]", re.IGNORECASE
+)
+
+# Identifiers the TEMPLATE generator OWNS — tagging them is a category error
+# (boilerplate, not a research assumption). Excluded from the count.
+_TEMPLATE_BOILERPLATE_SUBJECTS = {
+    "id", "id_scenario", "id_run", "scenario_id", "run_id", "run_num",
+    "agent_id", "period", "id_agent",
+}
+
+# Phrases that echo the token "AI-ASSUMPTION" as RULE TEXT / section headings,
+# not as an actual assertion. Lines containing these are scaffolding.
+_SCAFFOLD_MARKERS = (
+    "ai-assumption only", "仅ai-assumption", "ai-assumption rule",
+    "ai-assumption tag", "ai-assumption item", "ai-assumption count",
+    "list any ai-assumption", "list all ai-assumption",
+)
+
+
+def _subject_key(line: str) -> "str | None":
+    """Best-effort subject of an assumption line, for de-duplication: a
+    backticked `name`, or the LHS of a `name = value`. Returns a normalised
+    identifier, or None when the line names no code subject."""
+    m = re.search(r"`([A-Za-z_][A-Za-z0-9_]*)`", line)
+    if m:
+        return m.group(1).lower()
+    tail = _TAG_RE.split(line, maxsplit=1)[-1]
+    m = re.search(r"([A-Za-z_][A-Za-z0-9_]{2,})\s*[=＝]", tail)
+    if m:
+        return m.group(1).lower()
+    return None
+
+
+def count_assumptions(design_text: str) -> int:
+    """Count DISTINCT, real AI-ASSUMPTION tags in DESIGN.md.
+
+    Hardened (ADR-013 W4 dogfood) against three artifacts that inflated the
+    raw ``findall`` count and pushed complex-but-standard models past the
+    gate: (1) the gate's own rule-explanation headings; (2) the same
+    assumption restated inline AND in the §Assumptions section (double
+    count); (3) template-owned boilerplate (``id``, ``scenario_id``, …)
+    tagged in error. Counting expressiveness, not string occurrences.
+    """
+    seen: set[str] = set()
+    count = 0
+    for line in design_text.splitlines():
+        if not _TAG_RE.search(line):
+            continue                                    # not a real `AI-ASSUMPTION:` tag
+        if any(marker in line.lower() for marker in _SCAFFOLD_MARKERS):
+            continue                                    # rule text / section heading
+        subject = _subject_key(line)
+        if subject in _TEMPLATE_BOILERPLATE_SUBJECTS:
+            continue                                    # generator boilerplate, not research
+        if subject is not None:
+            if subject in seen:
+                continue                                # inline + §Assumptions → count once
+            seen.add(subject)
+        count += 1
+    return count
+
 
 @dataclass
 class ViabilityResult:
@@ -117,8 +185,8 @@ class ViabilityChecker(BaseAgent):
         design_text = design_path.read_text(encoding="utf-8")
         story_text = story_path.read_text(encoding="utf-8") if story_path.exists() else ""
 
-        # ── Rule 1: Count AI-ASSUMPTION tags ──────────────────────────────────
-        assumption_count = len(re.findall(r"AI[-_]ASSUMPTION", design_text, re.IGNORECASE))
+        # ── Rule 1: Count AI-ASSUMPTION tags (hardened — ADR-013 W4 dogfood) ──
+        assumption_count = count_assumptions(design_text)
 
         # ── Rule 2: Check for missing required design elements ─────────────────
         # An element counts as present if ANY of its keyword aliases (across
