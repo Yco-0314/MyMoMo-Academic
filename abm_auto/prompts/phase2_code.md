@@ -150,6 +150,32 @@ self.model.moran.turnover(agents, inherit=self.model._inherit)
 proportional parent selection, holding N constant, and ageing. Do not
 re-implement any of it.
 
+#### Reference assets (ONLY if `mechanism_spec.json` has `reference_assets`)
+
+If — and only if — the spec lists a `reference_assets` entry, the model is
+driven by an external data table. **Use the runtime's `RuleTable`; never
+hard-code or enumerate the rows.** The pipeline has already copied the data
+file into `data/input/<filename>`. Load it once in `Model.setup`:
+
+```python
+# in core/model.py — Model.setup(), using the spec's reference_asset fields
+import os
+from abm_auto.runtime import RuleTable
+# asset: name="rules", filename="rules_tidied.csv", output_col="item",
+#        input_cols=["c1","c2","c3"], given_col="given", weight_col="point"
+path = os.path.join(self.config.project_root, self.config.input_folder, "rules_tidied.csv")
+self.rules = RuleTable.from_csv(
+    path, input_cols=["c1", "c2", "c3"], output_col="item",
+    given_col="given", weight_col="point", label_col="name_simplified",
+)
+```
+
+Then agents/environment use it: `self.rules.combine(items)` returns the
+produced item index for a combination (or None), `self.rules.given_indices()`
+the starting items, `self.rules.weight_of(idx)` the score. The item index
+space (`self.rules.n_items`) is the shared vocabulary a `learned_operators`
+model indexes into (pass `n_items=scenario...` or the table's `n_items`).
+
 ### DataCollector (`core/data_collector.py`)
 ```python
 from abm_auto.runtime import DataCollector

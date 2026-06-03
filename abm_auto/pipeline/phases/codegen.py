@@ -367,6 +367,10 @@ def _try_run_template_generator(ctx: PipelineContext) -> bool:
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(content, encoding="utf-8")
 
+    # ADR-013 W3 Layer 2: copy declared reference-asset data files into the
+    # generated model's data/input/ so RuleTable.from_csv can load them.
+    _copy_reference_assets(ctx, spec)
+
     console.print(
         f"  [green]✓ TemplateGenerator wrote {len(files)} files "
         f"(LLM does NOT touch these): {', '.join(TEMPLATE_FILES)}[/green]"
@@ -382,6 +386,47 @@ def _try_run_template_generator(ctx: PipelineContext) -> bool:
     except Exception:
         pass
     return True
+
+
+def _copy_reference_assets(ctx: PipelineContext, spec: MechanismSpec) -> None:
+    """Copy each declared ReferenceAsset data file into the generated model's
+    data/input/ (ADR-013 W3 Layer 2).
+
+    Source: the workspace assets dir (``workspace/assets/<filename>``), with
+    the workspace root as a fallback (a user may drop the file next to
+    STORY.md). The generated model then loads it via ``RuleTable.from_csv``.
+    A declared-but-missing asset fails fast with an actionable message — the
+    model cannot run without its data.
+    """
+    if not spec.reference_assets:
+        return
+    import shutil
+
+    dest_dir = ctx.workspace.model_dir / "data" / "input"
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    for asset in spec.reference_assets:
+        candidates = [
+            ctx.workspace.assets_dir / asset.filename,
+            ctx.workspace.path / asset.filename,
+        ]
+        src = next((c for c in candidates if c.exists()), None)
+        if src is None:
+            raise FileNotFoundError(
+                f"reference_asset {asset.name!r} declares filename "
+                f"{asset.filename!r}, but no such file was found in "
+                f"{ctx.workspace.assets_dir} or the workspace root. Place the "
+                f"data file there so the generated model can load it."
+            )
+        shutil.copy2(src, dest_dir / asset.filename)
+        try:
+            ctx.workspace.audit.info(
+                phase="Phase 2 (TemplateGenerator)",
+                text=f"Copied reference asset {asset.filename} → model/data/input/",
+                actor="TemplateGenerator",
+                structured={"asset": asset.name, "filename": asset.filename},
+            )
+        except Exception:
+            pass
 
 
 def _revert_template_files(ctx: PipelineContext) -> None:

@@ -19,6 +19,9 @@ class Workspace:
         self.mechanism_spec_path = path / "mechanism_spec.md"
         self.design_path = path / "DESIGN.md"
         self.model_dir = path / "model"
+        # External data files declared via reference_assets (ADR-013 W3) live
+        # here; the codegen phase copies them into model/data/input/.
+        self.assets_dir = path / "assets"
         self.results_dir = path / "results"
         self.report_path = path / "report.md"
         self.params_history_path = path / "params_history.json"
