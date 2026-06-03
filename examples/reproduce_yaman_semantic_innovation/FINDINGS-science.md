@@ -165,3 +165,66 @@ analogy (swap an item in a known recipe for an embedding-neighbour) rather
 than re-treading known co-occurrences. That is run 3 — and it must vary lr
 too (0.001 is dead, 0.2 collapses; a moderate lr is needed for embeddings
 to be meaningful without over-sharpening).
+
+## Run 3 (generalization sweep) — pre-registered NEGATIVE. All MISS.
+
+P_G ∈ {.5,.9} × lr ∈ {.02,.08}, N=50, gen=150, 16 reps. Final repertoire:
+
+| cell          | P_S | P_SL | P_G | lr   | repertoire | max_level |
+|---------------|-----|------|-----|------|-----------|-----------|
+| random        | 0   | 0    | 0   | .05  | 11.8 ± 1.2 | 5.2 |
+| social        | 0   | .9   | 0   | .05  | **31.2 ± 4.4** | **8.4** |
+| sem_g0        | .9  | 0    | 0   | .05  | 10.1 ± 1.5 | 4.3 |
+| sem_g5_lo     | .9  | 0    | .5  | .02  | 8.9 ± 0.8 | 3.8 |
+| sem_g9_lo     | .9  | 0    | .9  | .02  | 7.9 ± 0.5 | 3.1 |
+| sem_g5_hi     | .9  | 0    | .5  | .08  | 9.4 ± 1.0 | 4.1 |
+| sem_g9_hi     | .9  | 0    | .9  | .08  | 8.2 ± 0.4 | 3.2 |
+| semsoc_g9_lo  | .9  | .9   | .9  | .02  | 14.1 ± 7.9 | 5.3 |
+| semsoc_g9_hi  | .9  | .9   | .9  | .08  | 12.9 ± 6.7 | 5.0 |
+
+- **P-E (generalization rescues solo): MISS.** Best solo gen cell (9.4) is
+  BELOW random (11.8). Generalization makes semantic-solo WORSE.
+- **P-F (generalization > predict): MISS.** 9.4 < sem_g0 10.1.
+- **P-G (generalization+social synergy): MISS.** semsoc 14.1 ≪ social 31.2.
+
+More generalization is monotonically WORSE (P_G .5→.9 lowers repertoire),
+and semantic agents converge SHALLOW (max_level 3-4 vs random 5.2, social
+8.4). The deterministic `nearest` collapses generalization into a narrow
+neighbourhood of the same few known recipes (the same failure mode as
+argmax), and the per-agent M starves for training data solo.
+
+## Overall conclusion (runs 1-3): MECHANICS reproduce, SEMANTIC BENEFIT does not
+
+What reproduces, from the REAL recipe tree + SI algorithms + the W2 operator:
+- the Totem task and crafting dynamics;
+- **social learning robustly increases the cultural repertoire and depth
+  (31.2, level 8.4) — faithful to the paper's Fig 2A** and the single
+  largest effect here.
+
+What does NOT reproduce: **the paper's headline novel claim — that semantic
+knowledge guides innovation and synergises with social learning.** Across
+runs 1-3, EVERY semantic configuration (predict-chain at lr∈{.001,.05,.2};
+generalization at P_G∈{.5,.9}×lr∈{.02,.08}) UNDERPERFORMS uniform random,
+and adding semantics to social learning HURTS rather than helps. No tested
+configuration shows a semantic benefit.
+
+This is an honest negative, and it is the disciplined process working: an
+earlier version of this project fabricated a successful method-transfer
+result; here, locking predictions and reading real output before believing
+the story caught two of my own premature "reproductions" (run-2's artifact
+synergy; the lr non-application) and produced a truthful negative instead
+of a manufactured HIT.
+
+**Most likely cause: the SI pseudocode under-specifies the productive
+semantic mechanism** (the paper repeatedly defers to "the code provided
+with the paper", which is ABSENT from OSF — the ABM/ and script/ folders
+are empty). The Predict/generalization details that make semantic guidance
+*exploratory rather than exploitative* are not in the text we have. Named
+candidate gaps (pre-registered): deterministic `nearest`/argmax collapse,
+the owned-only restriction on Predict, the independent-draw reading of
+P_S/P_G, and per-agent training-data starvation for M. Closing them is
+speculative re-implementation, not reproduction, without the released code.
+
+**Status: faithful partial reproduction.** Mechanics + social-learning
+effect reproduced from real data; semantic-guidance claim not reproducible
+from the public artifacts. Recorded as-is.
