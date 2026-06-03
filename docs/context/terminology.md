@@ -609,6 +609,33 @@ verification; "synthetic signal-vs-noise discrimination" and
 human-audited and finite; a generated Gate that cannot bind to one is
 tagged `unverified` and its Verdict can never claim verification.
 
+**Coverage Gate**  
+A verification Gate (ADR-014) inserted after extraction, before codegen,
+that checks **buildability** — distinct from the viability gate's
+**spec quality**. The two diverge for deep-ML methods: a model can be
+perfectly specified yet impossible for the pipeline to generate (a
+conditional GAN). The Coverage Gate halts with the **missing capability
+named** ("needs an operator for adversarial multi-network training"), so
+operator-vocabulary growth is demand-driven and measurable. See
+[ADR-014](../decisions/ADR-014-coverage-gate.md).
+
+**Operator contract**  
+The closed-enum triple `(input_kind, output_kind, training_signal)` each
+operator advertises. The Coverage Gate covers a mechanism only on an
+exact triple-match — not architectural resemblance. The `training_signal`
+dimension (`supervised_pairs` vs `reward_td` vs `adversarial`) is what
+stops an RL Q-network from flattening onto `FeedforwardLearner`.
+
+**Coverage ladder**  
+Four tiers by build risk: **operator** (verified library) · **ordinary**
+(rules/arithmetic the CoderAgent writes safely) · **stdlib-standard** (a
+named standard algorithm — Kalman, a simple LP — with a numpy/scipy path)
+· **uncovered** (deep/custom, halt). The fuzzy stdlib-standard tier is
+resolved not by a classifier but by **verifiability**: it passes only if
+codegen can emit a known-answer self-test that passes. "Is it buildable?"
+becomes "can we verify the build?" — ADR-012's anti-fabrication move
+applied to coverage.
+
 ---
 
 ## Related Documentation
