@@ -131,3 +131,33 @@ semsoc_g9_lo(.9,.9,.9,.02), semsoc_g9_hi(.9,.9,.9,.08).
 
 A negative run 3 is reported as negative. The goal is to learn what the
 implementation actually does, not to manufacture a HIT.
+
+---
+
+# Run 4 — the last named gap: stochastic `nearest` (one bounded test)
+
+**Committed BEFORE run 4.** Run 3 showed generalization HURTS with a
+DETERMINISTIC `nearest` (always the single closest owned item), which
+collapses the analogy into one neighbour — the same failure mode argmax had
+for the predict-chain. This run applies the SAME fix that worked there:
+make `nearest` STOCHASTIC. Implementation fixed in advance (no temperature
+sweep, to avoid fishing): sample an owned item with probability
+∝ exp(−dist / mean_dist) — a soft nearest, biased toward similar items but
+diverse. One setting, tested once.
+
+Runner: `run4_stochastic.py` → `results/experiment_run4.csv`. Grid:
+random(0,0), social(0,.9), sem_g9 (.9,0,P_G=.9) at lr∈{.02,.08},
+semsoc_g9 (.9,.9,P_G=.9) at lr∈{.02,.08}. N=50, gen=150, 16 reps.
+
+## Prediction
+
+- **P-H — stochastic nearest rescues generalization.** The best
+  semantic-solo cell (sem_g9 over lr∈{.02,.08}) exceeds random + sd(random).
+
+## Falsification
+
+- P-H refuted if best semantic-solo ≤ random+sd. Then determinism was NOT
+  the blocker, and the negative across runs 1-4 is robust: the
+  semantic-guidance benefit does not reproduce from the public artifacts
+  under any mechanism variant tried (predict-chain, generalization,
+  stochastic or deterministic). That conclusion stands; no further tuning.

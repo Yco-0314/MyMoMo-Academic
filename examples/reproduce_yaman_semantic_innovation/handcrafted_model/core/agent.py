@@ -106,7 +106,7 @@ class Innovator(Agent):
             return {rng.choice(inv), rng.choice(inv)}
         base_recipe = list(rng.choice([list(s) for s in self.successful]))
         tj = rng.choice(base_recipe)
-        tk = self._nearest_owned(tj, exclude=set(base_recipe))
+        tk = self._sample_near_owned(tj, exclude=set(base_recipe), rng=rng)
         T = set(base_recipe)
         if tk is not None:
             T.discard(tj)
@@ -135,18 +135,35 @@ class Innovator(Agent):
                 return it
         return cand[-1]
 
-    def _nearest_owned(self, t: int, exclude: set):
-        """Owned item whose embedding is nearest to t's (Euclidean)."""
+    def _sample_near_owned(self, t: int, exclude: set, rng):
+        """Sample an owned item with probability decreasing in embedding
+        distance to t (soft nearest): p ∝ exp(-dist / mean_dist).
+
+        Stochastic counterpart of a deterministic argmin-nearest. Run 3
+        showed deterministic nearest collapses generalization into a single
+        repeated neighbour (the same failure mode argmax had for the
+        predict-chain); sampling keeps the analogy diverse while still biased
+        toward similar items. (The prior deterministic version is preserved
+        in git at the run-3 commit.)"""
         E = self.semantic_model.E
         v = E[t]
-        best, best_d = None, np.inf
-        for it in self.inventory:
-            if it == t or it in exclude:
-                continue
-            d = float(np.linalg.norm(E[it] - v))
-            if d < best_d:
-                best_d, best = d, it
-        return best
+        cand = [it for it in self.inventory if it != t and it not in exclude]
+        if not cand:
+            return None
+        dists = np.array([float(np.linalg.norm(E[it] - v)) for it in cand])
+        scale = float(dists.mean()) + 1e-9
+        w = np.exp(-dists / scale)
+        total = float(w.sum())
+        if total <= 0.0:
+            return cand[rng.randint(0, len(cand) - 1)]
+        w = w / total
+        r = rng.random()
+        acc = 0.0
+        for it, wi in zip(cand, w):
+            acc += float(wi)
+            if r <= acc:
+                return it
+        return cand[-1]
 
     def _attempt(self, T: set) -> None:
         """Execute a combination: if novel, valid, and productive, innovate."""
