@@ -1,0 +1,19 @@
+Phase 1: Designing ABM...
+  Using prompt: phase1_design_reproduce.md (mode=reproduce)
+  → LLM (deepseek-chat, lang=zh, max_tokens=6144)
+  ✓ DESIGN.md generated
+
+=== BOUNDARY DOGFOOD RESULT (portfolio GAN) ===
+raw AI-ASSUMPTION: 7   hardened: 4   gate: PASS (limit 5)
+how the GAN was handled (mentions):
+  'FeedforwardLearner': 0
+  'learned_operator': 0
+  'GAN': 13
+  'discriminator': 13
+  'generator': 6
+  'adversarial': 8
+  'VAE': 5
+  'attention': 3
+  'neural': 3
+flattened onto FeedforwardLearner? no
+saved dogfood_DESIGN.md (13128 chars)
