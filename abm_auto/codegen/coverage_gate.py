@@ -19,6 +19,7 @@ Coverage ladder (by build risk):
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 
 # ── closed vocabularies (the LLM classifies into these; the judge uses them) ──
@@ -127,6 +128,65 @@ def classify(m: Mechanism) -> tuple[str, str | None]:
     # reinforcement_learning, generative_model, bayesian_filter, optimization,
     # market_mechanism, pde_diffusion: no operator today → tier-3 or uncovered.
     return _resolve_tier3(m)
+
+
+# ── deterministic stub extraction (ADR-014 phase 1a; the LLM half is 1b) ─────
+# Strong prose markers -> (capability, extra markers, std_algorithm). Tight
+# multi-word phrases only, to avoid flagging casual mentions ("pay attention",
+# "reward") in ordinary ABMs. Crude but catches the clear uncovered cases (a
+# GAN); the LLM extraction (1b) replaces this with accurate per-mechanism records.
+_PROSE_SIGNALS = [
+    (r"generative adversarial|\bgan\b|adversarial training|discriminator network",
+     "generative_model", {"adversarial", "multi_network"}, None),
+    (r"variational autoencoder|\bvae\b",
+     "generative_model", {"encoder_decoder", "multi_network"}, None),
+    (r"multi-head attention|attention mechanism|transformer encoder",
+     "learned_predictor", {"deep_attention", "multi_network"}, None),
+    (r"tabular q-learning|tabular q learning",
+     "reinforcement_learning", {"reward"}, "tabular_q_learning"),
+    (r"reinforcement learning|q-learning|policy gradient|actor-critic",
+     "reinforcement_learning", {"reward"}, None),
+    (r"kalman filter", "bayesian_filter", set(), "kalman_filter"),
+    (r"particle filter", "bayesian_filter", set(), None),
+    (r"market clearing|double auction|order book|limit order",
+     "market_mechanism", set(), None),
+    (r"linear program|linear programming", "optimization", set(), "linear_program"),
+    (r"mixed-integer|\bmilp\b|bespoke solver", "optimization", set(), None),
+]
+
+
+def extract_mechanisms_heuristic(spec, prose: str) -> list[Mechanism]:
+    """Deterministic stub extraction (no LLM): typed operator slots become
+    COVERED mechanisms; strong prose markers become candidate UNCOVERED/tier-3
+    mechanisms. Enough to wire the gate in and catch the clear cases; the LLM
+    extraction (1b) is the accurate upgrade, gated by the same verdict."""
+    mechs: list[Mechanism] = []
+    if spec is not None:
+        for lo in getattr(spec, "learned_operators", []) or []:
+            mechs.append(Mechanism(lo.name, "learned_predictor",
+                                   "single_item", "item_distribution", "supervised_pairs"))
+        if getattr(spec, "population_dynamics", None) is not None:
+            mechs.append(Mechanism("population_turnover", "population_process"))
+        for ra in getattr(spec, "reference_assets", []) or []:
+            mechs.append(Mechanism(ra.name, "lookup_table"))
+    low = (prose or "").lower()
+    # One mechanism per capability: merge markers, and prefer a named
+    # std_algorithm when several signals of the same capability match (a
+    # specific phrase like "tabular q-learning" and the generic "q-learning"
+    # both fire — keep the coverable reading). This dedup is what makes the
+    # stub robust without regex lookbehind hacks. The rare mixed case (e.g.
+    # tabular AND deep RL in one design) is left to the accurate 1b extractor.
+    by_cap: dict = {}
+    for rx, cap, markers, std in _PROSE_SIGNALS:
+        if re.search(rx, low):
+            cur_markers, cur_std = by_cap.get(cap, (set(), None))
+            by_cap[cap] = (cur_markers | set(markers), cur_std or std)
+    for cap, (markers, std) in by_cap.items():
+        mechs.append(Mechanism(f"prose:{cap}", cap,
+                               markers=frozenset(markers), std_algorithm=std))
+    if not mechs:
+        mechs.append(Mechanism("env_logic", "ordinary_logic"))
+    return mechs
 
 
 class CoverageGate:

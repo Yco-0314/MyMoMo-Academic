@@ -174,6 +174,7 @@ class Pipeline:
             TrajectoryPhase,
         )
         from abm_auto.pipeline.phases.codegen import CodegenPhase
+        from abm_auto.pipeline.phases.coverage import CoverageGatePhase
         from abm_auto.pipeline.phases.design import DesignViabilityPhase
         from abm_auto.pipeline.phases.enrichment import (
             BaselinePhase,
@@ -232,6 +233,7 @@ class Pipeline:
             DesignViabilityPhase(designer=self.designer, viability=self.viability_checker),
             ExternalModelInjectionPhase(),
             MechanismExtractorPhase(self.mechanism_extractor),
+            CoverageGatePhase(),
             OddPhase(self.odd_writer),
             CodegenPhase(coder=self.coder, verifier=self.verifier, executor=self.executor, max_retries=self.max_retries),
             SeedInjectionPhase(),
