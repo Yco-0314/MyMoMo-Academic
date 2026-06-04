@@ -130,6 +130,26 @@ word.
   paradigm for class M?") + the internalize/re-gate plumbing first (self-
   testable); the LLM synthesis step second (a proposal, gated by the oracle).
 
+## Prior art: synthesis should be a SEARCH, not single-shot (cf. DataMaster)
+
+DataMaster (arXiv:2605.10906, SJTU) does autonomous data-engineering as a
+**tree-structured search**: a DataTree (explore branches / exploit-refine), a
+shared Data Pool (reusable candidates), and Global Memory (outcomes across
+rounds). That machinery is the right shape for the LLM synthesis step here,
+which is currently single-shot (draft ONE candidate operator → gate it).
+Adopt it: **explore candidate operator implementations, refine the promising
+ones, prune by the oracle, pool partial successes, carry findings across
+attempts.**
+
+But adopt the SEARCH only, not its oracle. DataMaster's validator is downstream
+**benchmark performance — the very metric it optimizes**, which is gameable
+(optimize-against-your-own-judge — the self-certification this ADR forbids).
+Our pruning signal stays the **independent known-answer oracle**: search for
+efficiency, independent oracle for honesty. A bonus our discipline buys:
+DataMaster suffers DELAYED, noisy validation (you learn a data choice's value
+only after downstream training); our oracles are immediate + deterministic, so
+the search can prune far harder.
+
 ## Status note
 
 Design only, no code — same discipline as ADR-013/014. This ADR exists so
