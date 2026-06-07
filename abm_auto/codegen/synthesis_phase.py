@@ -21,6 +21,7 @@ from dataclasses import dataclass, field
 from typing import Any, Callable
 
 from .coverage_gate import Mechanism
+from .synthesis_oracles import REAL_ORACLES
 
 
 # ── the human-audited oracle library: paradigm name -> known-answer oracle ──
@@ -41,13 +42,13 @@ def _oracle_affine_recovery(candidate: Callable) -> bool:
 
 
 # Membership here is the trust frontier (audited, finite). Adding a paradigm is
-# a human act; the agent extends only WITHIN this set.
+# a human act; the agent extends only WITHIN this set. The real paradigms live
+# in synthesis_oracles.py — each a known-answer test, self-tested against a
+# reference-correct AND a reference-buggy candidate, so passing one is genuinely
+# a verification.
 ORACLE_LIBRARY: dict[str, Callable[[Any], bool]] = {
-    "affine_recovery": _oracle_affine_recovery,
-    # real paradigms bind here after human audit:
-    #   "kalman_filter": _oracle_track_known_linear_gaussian_signal,
-    #   "tabular_q_learning": _oracle_solve_known_mdp,
-    #   "linear_program": _oracle_match_known_optimum,
+    "affine_recovery": _oracle_affine_recovery,    # the plumbing toy
+    **REAL_ORACLES,                                 # tabular_q_learning / kalman_filter / linear_program
 }
 
 
@@ -94,6 +95,44 @@ class SynthesisPhase:
         return SynthesisResult(
             "internalized", mechanism.name,
             f"passed independent oracle {oracle_paradigm!r}; registered as {operator_name}",
+        )
+
+    def synthesize(self, mechanism: Mechanism, *, oracle_paradigm: str,
+                   draft: Callable, max_tries: int = 4) -> SynthesisResult:
+        """Bounded SEARCH (cf. DataMaster) — but pruned by our INDEPENDENT library
+        oracle, not a benchmark the searcher optimizes (that would be
+        self-certification). Draft a candidate, verify with the library oracle,
+        retry-with-feedback on failure, internalize the FIRST that passes.
+
+        ``draft(feedback)`` produces a candidate conforming to the paradigm's
+        protocol; it is the ONLY drafter seam (a hand-written one in tests, the
+        LLM later). Everything else — the oracle, the internalize gate — is
+        deterministic. Unbudgeted search would be self-deception; the oracle and
+        the try budget bound it.
+        """
+        if oracle_paradigm not in self.oracles:
+            return SynthesisResult(
+                "proposed", mechanism.name,
+                f"no audited oracle for {oracle_paradigm!r}; halt stands; proposal "
+                f"(candidate + candidate oracle) emitted for human audit",
+            )
+        oracle = self.oracles[oracle_paradigm]
+        feedback = None
+        for i in range(max(1, max_tries)):
+            candidate = draft(feedback)
+            if oracle(candidate):
+                operator_name = f"Synthesized_{mechanism.capability}"
+                self.internalized[mechanism.capability] = operator_name
+                return SynthesisResult(
+                    "internalized", mechanism.name,
+                    f"passed independent oracle {oracle_paradigm!r} on try {i + 1}/"
+                    f"{max_tries}; registered as {operator_name}",
+                )
+            feedback = f"candidate failed the {oracle_paradigm!r} oracle (try {i + 1})"
+        return SynthesisResult(
+            "rejected", mechanism.name,
+            f"no candidate passed the {oracle_paradigm!r} oracle in {max_tries} "
+            f"tries; NOT internalized (halt stands)",
         )
 
     def covers(self, mechanism: Mechanism) -> bool:
