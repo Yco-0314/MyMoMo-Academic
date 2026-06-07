@@ -29,7 +29,8 @@ CAPABILITIES = {
     "learned_predictor",     # supervised item->item / regression net
     "lookup_table",          # static ORDER-FREE combination/reaction table (RuleTable)
     "payoff_game",           # ordered, dual-output 2-player game matrix (PayoffGame)
-    "population_process",    # birth-death fitness turnover
+    "population_process",    # FIXED-N fitness turnover (MoranProcess)
+    "variable_population",   # variable-N energy birth/death (VitalDynamics)
     "reinforcement_learning",# reward-driven policy/value learning
     "generative_model",      # GAN / VAE / diffusion-net (deep generative)
     "bayesian_filter",       # belief update (Kalman / particle)
@@ -50,6 +51,7 @@ OPERATOR_FOR_CAPABILITY = {
     "lookup_table": "RuleTable",
     "payoff_game": "PayoffGame",
     "population_process": "MoranProcess",
+    "variable_population": "VitalDynamics",
 }
 
 # Learned operators carry a CONTRACT TRIPLE; coverage requires an exact match
