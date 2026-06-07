@@ -27,7 +27,8 @@ from dataclasses import dataclass, field
 # A mechanism's capability class.
 CAPABILITIES = {
     "learned_predictor",     # supervised item->item / regression net
-    "lookup_table",          # static combination/reaction/payoff/transition table
+    "lookup_table",          # static ORDER-FREE combination/reaction table (RuleTable)
+    "payoff_game",           # ordered, dual-output 2-player game matrix (PayoffGame)
     "population_process",    # birth-death fitness turnover
     "reinforcement_learning",# reward-driven policy/value learning
     "generative_model",      # GAN / VAE / diffusion-net (deep generative)
@@ -47,6 +48,7 @@ DEEP_MARKERS = {"adversarial", "multi_network", "generative", "encoder_decoder",
 # Operators backed by a verified library, keyed by the capability they cover.
 OPERATOR_FOR_CAPABILITY = {
     "lookup_table": "RuleTable",
+    "payoff_game": "PayoffGame",
     "population_process": "MoranProcess",
 }
 
