@@ -352,6 +352,43 @@ class PayoffGameSpec:
 
 
 @dataclass
+class VitalDynamicsSpec:
+    """Declares a `runtime.VitalDynamics` — variable-N birth/death (ADR-014
+    Phase 2).
+
+    Set this for an energy/resource ECOLOGY whose population grows and shrinks
+    (wolf-sheep, rabbits-grass, daisyworld). Distinct from `population_dynamics`
+    (Moran, fixed-N). The agent code applies energy changes each step, then the
+    operator removes the dead (energy <= death_at) and spawns offspring from
+    agents that reproduce (energy >= reproduce_at, OR with reproduce_prob).
+    """
+    name: str                                       # model attribute, e.g. "vital"
+    energy_attr: str = "energy"                     # agent_state_var holding energy
+    death_at: float = 0.0
+    reproduce_at: Optional[float] = None            # energy-threshold reproduction
+    reproduce_prob: Optional[float] = None          # per-step probabilistic reproduction
+    split_energy: bool = True
+    max_population: Optional[int] = None            # carrying-capacity cap
+    description: str = ""
+
+    def validate(self) -> list[str]:
+        errors: list[str] = []
+        if not self.name or not self.name.isidentifier():
+            errors.append(f"vital_dynamics.name={self.name!r} not a valid identifier")
+        if not self.energy_attr or not self.energy_attr.isidentifier():
+            errors.append(f"vital_dynamics.{self.name}.energy_attr={self.energy_attr!r} not an identifier")
+        if self.reproduce_at is None and self.reproduce_prob is None:
+            errors.append(f"vital_dynamics.{self.name} needs reproduce_at OR reproduce_prob")
+        if self.reproduce_prob is not None and not (0.0 <= self.reproduce_prob <= 1.0):
+            errors.append(f"vital_dynamics.{self.name}.reproduce_prob={self.reproduce_prob} must be in [0, 1]")
+        if self.max_population is not None and (not isinstance(self.max_population, int)
+                                                or isinstance(self.max_population, bool)
+                                                or self.max_population < 1):
+            errors.append(f"vital_dynamics.{self.name}.max_population must be a positive int")
+        return errors
+
+
+@dataclass
 class MechanismSpec:
     """Full structured spec — the contract between MechanismExtractor and the
     template-driven codegen pipeline.
@@ -397,6 +434,9 @@ class MechanismSpec:
     # Game-theoretic payoff matrices (ADR-014 Phase 2). Usually empty — set for
     # game-theory / evolutionary-game models. Composes with population_dynamics.
     payoff_games: list[PayoffGameSpec] = field(default_factory=list)
+    # Variable-N ecologies (ADR-014 Phase 2). Usually empty — set for energy/
+    # resource birth-death models (wolf-sheep, rabbits-grass). VitalDynamics.
+    vital_dynamics: list[VitalDynamicsSpec] = field(default_factory=list)
     targets: list[str] = field(default_factory=list)   # env attributes data_collector tracks
 
     # ── LLM-filled regions (kept as pseudocode) ──
@@ -436,6 +476,7 @@ class MechanismSpec:
         )
         reference_assets = [ReferenceAsset(**a) for a in data.get("reference_assets", [])]
         payoff_games = [PayoffGameSpec(**g) for g in data.get("payoff_games", [])]
+        vital_dynamics = [VitalDynamicsSpec(**v) for v in data.get("vital_dynamics", [])]
         return cls(
             project_name=data.get("project_name", "ABMProject"),
             model_class_name=data.get("model_class_name", "MyModel"),
@@ -452,6 +493,7 @@ class MechanismSpec:
             population_dynamics=population_dynamics,
             reference_assets=reference_assets,
             payoff_games=payoff_games,
+            vital_dynamics=vital_dynamics,
             targets=list(data.get("targets", [])),
             env_step_pseudocode=data.get("env_step_pseudocode", ""),
             agent_step_pseudocode=data.get("agent_step_pseudocode"),
@@ -558,6 +600,19 @@ class MechanismSpec:
             if g.strategy_var and g.strategy_var not in var_names_seen:
                 errors.append(
                     f"payoff_games[{g.name}]: strategy_var={g.strategy_var!r} is not a "
+                    f"declared agent_state_var"
+                )
+        # Variable-N ecologies (ADR-014 Phase 2). Validate each + no duplicate
+        # names; energy_attr must reference a declared agent_state_var.
+        vital_names_seen: set[str] = set()
+        for v in self.vital_dynamics:
+            errors.extend(f"vital_dynamics[{v.name}]: {e}" for e in v.validate())
+            if v.name in vital_names_seen:
+                errors.append(f"vital_dynamics: duplicate name {v.name!r}")
+            vital_names_seen.add(v.name)
+            if v.energy_attr and v.energy_attr not in var_names_seen:
+                errors.append(
+                    f"vital_dynamics[{v.name}]: energy_attr={v.energy_attr!r} is not a "
                     f"declared agent_state_var"
                 )
         # Targets non-empty (otherwise DataCollector produces no data → calibration impossible)

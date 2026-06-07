@@ -204,6 +204,37 @@ play to accumulate `score`, then `self.moran.turnover(...)` selects ∝ score.
 Never re-implement the matrix or the dual payoff — call `.play` / `.payoff` /
 `.best_response`.
 
+#### Vital dynamics (ONLY if `mechanism_spec.json` has `vital_dynamics`)
+
+If — and only if — the spec lists a `vital_dynamics` entry, the population SIZE
+varies (energy ecology: wolf-sheep, rabbits-grass). **Use the runtime's
+`VitalDynamics`; never hand-write the death-filter + energy-split + list
+rebuild (the classic add/remove-while-iterating bug).** Build it once in
+`Model.setup`, apply the per-step energy dynamics yourself, then call `step`:
+
+```python
+# in core/model.py — Model.setup(), from the spec's vital_dynamics fields
+from abm_auto.runtime import VitalDynamics
+self.vital = VitalDynamics(energy_attr="energy", death_at=0,
+                           reproduce_prob=0.04, max_population=3000,
+                           seed=int(getattr(self.scenario, "seed", 0)))
+```
+
+```python
+# in core/environment.py (or model.run) — once per tick, AFTER energy changes:
+def _spawn():
+    child = self.agents.add(AgentClass)   # framework's agent factory
+    return child
+def _on_birth(parent, child):
+    self.grid.move_agent(child, parent.x, parent.y)   # place offspring (domain bit)
+births, deaths = self.vital.step(self.agents, spawn=_spawn, on_birth=_on_birth)
+```
+
+`VitalDynamics` owns who dies (energy ≤ death_at), who reproduces (threshold or
+probability), the energy split, the carrying-capacity cap, and the safe list
+rebuild. The model supplies only the energy dynamics + `spawn` / `on_birth`.
+For a FIXED-N selection turnover use `population_dynamics`/`MoranProcess` instead.
+
 ### DataCollector (`core/data_collector.py`)
 ```python
 from abm_auto.runtime import DataCollector

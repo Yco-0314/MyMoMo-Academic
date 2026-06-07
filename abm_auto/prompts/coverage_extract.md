@@ -42,7 +42,10 @@ Each object:
   opponent), dual-output (each gets a payoff). Use this for any game-theoretic
   payoff (prisoner's dilemma, hawk-dove, public goods) — NOT `lookup_table`,
   whose order-free single-output shape cannot represent a payoff matrix.
-- `population_process` — birth-death turnover with fitness selection
+- `population_process` — FIXED-size birth-death turnover (one death per birth)
+- `variable_population` — energy/resource birth & death where the population SIZE
+  grows and shrinks (wolf-sheep, rabbits-grass, daisyworld) — NOT
+  `population_process`, which holds N constant
 - `reinforcement_learning` — a policy/value learned from REWARD
 - `generative_model` — GAN / VAE / diffusion-net (deep generative / adversarial)
 - `bayesian_filter` — a belief update (Kalman, particle filter)

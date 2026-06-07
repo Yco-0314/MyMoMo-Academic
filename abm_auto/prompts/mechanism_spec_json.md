@@ -49,6 +49,7 @@ pipeline degrades to legacy LLM codegen — which has a known failure rate.
   "population_dynamics": null,
   "reference_assets": [],
   "payoff_games": [],
+  "vital_dynamics": [],
   "targets": ["count_s", "count_i", "count_r"],
   "env_step_pseudocode": "snapshot infecteds; spread to S-neighbors with prob...",
   "agent_step_pseudocode": null,
@@ -279,6 +280,41 @@ The agent will `self.game = PayoffGame.prisoners_dilemma(**params)` (or
 `PayoffGame.from_matrix(matrix)`) and call `.play(a, b)` / `.payoff(a, b)` /
 `.best_response(b)`. Pairs naturally with `population_dynamics` (Moran) —
 play → accumulate payoff as fitness → turnover = evolutionary game theory.
+
+## Vital dynamics (variable-population birth/death)
+
+`vital_dynamics` is **almost always `[]`**. Set it for an **energy/resource
+ecology** whose population SIZE grows and shrinks — wolf-sheep, rabbits-grass,
+daisyworld, predator-prey. This is DIFFERENT from `population_dynamics` (Moran),
+which is FIXED-N (one death per birth). Here births and deaths are independent:
+agents below a death threshold are removed; agents that meet a reproduction
+condition spawn offspring. The runtime provides `VitalDynamics`.
+
+```json
+"vital_dynamics": [
+  {
+    "name": "vital",
+    "energy_attr": "energy",
+    "death_at": 0,
+    "reproduce_prob": 0.04,
+    "max_population": 3000,
+    "description": "sheep die at 0 energy, reproduce w.p. 0.04 splitting energy"
+  }
+]
+```
+
+- `name` — the model attribute (becomes `self.vital`).
+- `energy_attr` — the `agent_state_vars` field holding energy (must be declared).
+- `death_at` — agents with energy ≤ this are removed (default 0).
+- Give EITHER `reproduce_at` (energy threshold) OR `reproduce_prob` (per-step
+  probability; the NetLogo wolf-sheep style). On reproduction the parent's
+  energy is split with the offspring unless `split_energy: false`.
+- `max_population` — optional carrying-capacity cap.
+
+The model calls `self.vital.step(agents, spawn=..., on_birth=...)` once per
+tick — `spawn` creates a blank offspring, `on_birth(parent, child)` finishes it
+(position, etc.). NEVER hand-write the death-filter / energy-split / list
+rebuild. For a FIXED-size selection turnover use `population_dynamics` instead.
 
 ## Param value forms
 
