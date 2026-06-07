@@ -36,7 +36,12 @@ Each object:
 ### `capability` — pick exactly one (closed set)
 
 - `learned_predictor` — a supervised net/embedding trained on (input,target) pairs
-- `lookup_table` — a static combination / reaction / payoff / transition table
+- `lookup_table` — a static ORDER-FREE combination / reaction table (a set of
+  inputs → one output; e.g. a crafting recipe)
+- `payoff_game` — a 2-player game payoff matrix: ORDERED (a player's payoff vs an
+  opponent), dual-output (each gets a payoff). Use this for any game-theoretic
+  payoff (prisoner's dilemma, hawk-dove, public goods) — NOT `lookup_table`,
+  whose order-free single-output shape cannot represent a payoff matrix.
 - `population_process` — birth-death turnover with fitness selection
 - `reinforcement_learning` — a policy/value learned from REWARD
 - `generative_model` — GAN / VAE / diffusion-net (deep generative / adversarial)
