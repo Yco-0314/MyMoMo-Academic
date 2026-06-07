@@ -16,7 +16,12 @@ from __future__ import annotations
 from rich.console import Console
 from rich.panel import Panel
 
-from abm_auto.codegen.coverage_gate import CoverageGate, extract_mechanisms_heuristic
+from abm_auto.codegen.coverage_gate import (
+    CoverageGate,
+    extract_mechanisms_heuristic,
+    merge_mechanisms,
+    recall_floor,
+)
 from abm_auto.codegen.mechanism_spec import MechanismSpec
 from abm_auto.pipeline.phase import PipelineContext
 
@@ -25,9 +30,18 @@ console = Console()
 
 class CoverageGatePhase:
     """Halt on an unbuildable mechanism; pass otherwise (noting any tier-3
-    build-and-verify mechanisms for the codegen self-test step)."""
+    build-and-verify mechanisms for the codegen self-test step).
+
+    Extraction: the LLM CoverageExtractor (1b) when injected, else the
+    deterministic stub (1a). Either way the result is folded with the recall
+    floor (always-uncovered ceiling cases the LLM could miss) and judged by the
+    SAME deterministic verdict — the LLM is evidence, not the decision.
+    """
 
     name = "Phase 1e (Coverage Gate)"
+
+    def __init__(self, extractor=None):
+        self.extractor = extractor
 
     def should_run(self, ctx: PipelineContext) -> bool:
         if getattr(ctx, "using_external_model", False):
@@ -42,7 +56,15 @@ class CoverageGatePhase:
             spec = None
         prose = f"{ctx.workspace.read_design()}\n{ctx.workspace.read_mechanism_spec()}"
 
-        mechs = extract_mechanisms_heuristic(spec, prose)
+        primary = None
+        if self.extractor is not None:
+            try:
+                primary = self.extractor.extract(prose)
+            except Exception:
+                primary = None
+        if not primary:        # no extractor / LLM failed / empty → stub (recall floor)
+            primary = extract_mechanisms_heuristic(spec, prose)
+        mechs = merge_mechanisms(primary, recall_floor(prose))
         verdict = CoverageGate().check(mechs)
 
         if verdict.passed:

@@ -189,6 +189,42 @@ def extract_mechanisms_heuristic(spec, prose: str) -> list[Mechanism]:
     return mechs
 
 
+# High-precision recall floor for the LLM extractor (1b). These markers are
+# NEVER buildable (no operator, no stdlib oracle), so flagging them can't cause
+# a false-halt — they backstop the LLM, which (unlike the gate) could MISS a
+# mechanism. Even if the LLM forgets the GAN, the floor catches it. RL /
+# optimization / Bayesian are deliberately NOT here: they have buildable
+# variants, so only the LLM's accurate, per-mechanism reading decides them.
+_ALWAYS_UNCOVERED = [
+    (r"generative adversarial|\bgan\b|adversarial training|discriminator network",
+     "generative_model", {"adversarial", "multi_network"}),
+    (r"variational autoencoder|\bvae\b",
+     "generative_model", {"encoder_decoder", "multi_network"}),
+]
+
+
+def recall_floor(prose: str) -> list[Mechanism]:
+    """The always-uncovered ceiling cases (GAN/VAE), one per capability. Backstops
+    the LLM extractor against missing a mechanism (a missed uncovered mechanism is
+    a false-pass — the bug the gate exists to prevent)."""
+    low = (prose or "").lower()
+    out: list[Mechanism] = []
+    seen: set = set()
+    for rx, cap, markers in _ALWAYS_UNCOVERED:
+        if cap not in seen and re.search(rx, low):
+            seen.add(cap)
+            out.append(Mechanism(f"floor:{cap}", cap, markers=frozenset(markers)))
+    return out
+
+
+def merge_mechanisms(primary: list[Mechanism], extra: list[Mechanism]) -> list[Mechanism]:
+    """Add `extra` mechanisms whose capability is not already represented in
+    `primary`. Used to fold the recall floor onto the LLM/stub extraction without
+    double-flagging a capability the primary already caught."""
+    have = {m.capability for m in primary}
+    return list(primary) + [m for m in extra if m.capability not in have]
+
+
 class CoverageGate:
     """Verification Gate (ADR-013/014). PASS iff nothing is uncovered."""
 

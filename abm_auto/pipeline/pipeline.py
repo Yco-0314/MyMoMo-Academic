@@ -23,6 +23,7 @@ from abm_auto.agents.coder import CoderAgent
 from abm_auto.agents.designer import DesignAgent
 from abm_auto.agents.hypothesis_agent import HypothesisAgent
 from abm_auto.agents.lit_reviewer import LitReviewAgent
+from abm_auto.agents.coverage_extractor import CoverageExtractor
 from abm_auto.agents.mechanism_extractor import MechanismExtractor
 from abm_auto.agents.mode_detector import ModeDetector
 from abm_auto.agents.analyzer import AnalyzerAgent
@@ -134,6 +135,8 @@ class Pipeline:
         self.mode_detector = ModeDetector(self.client, self.workspace, model=model, **agent_kw)
         self.hypothesis_agent = HypothesisAgent(self.client, self.workspace, model=strong_model, **agent_kw)
         self.mechanism_extractor = MechanismExtractor(self.client, self.workspace, model=strong_model, **agent_kw)
+        self.coverage_extractor = CoverageExtractor(self.client, self.workspace, model=model, **agent_kw)
+        self.coverage_extractor = CoverageExtractor(self.client, self.workspace, model=model, **agent_kw)
         self.what_if_oracle = WhatIfOracle(self.client, self.workspace, model=strong_model, **agent_kw)
         self.bayesian_calibrator = BayesianCalibrator(self.client, self.workspace, model=model, **agent_kw)
 
@@ -233,7 +236,7 @@ class Pipeline:
             DesignViabilityPhase(designer=self.designer, viability=self.viability_checker),
             ExternalModelInjectionPhase(),
             MechanismExtractorPhase(self.mechanism_extractor),
-            CoverageGatePhase(),
+            CoverageGatePhase(extractor=self.coverage_extractor),
             OddPhase(self.odd_writer),
             CodegenPhase(coder=self.coder, verifier=self.verifier, executor=self.executor, max_retries=self.max_retries),
             SeedInjectionPhase(),
