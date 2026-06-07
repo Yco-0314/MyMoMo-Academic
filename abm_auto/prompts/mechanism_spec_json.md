@@ -48,6 +48,7 @@ pipeline degrades to legacy LLM codegen — which has a known failure rate.
   "learned_operators": [],
   "population_dynamics": null,
   "reference_assets": [],
+  "payoff_games": [],
   "targets": ["count_s", "count_i", "count_r"],
   "env_step_pseudocode": "snapshot infecteds; spread to S-neighbors with prob...",
   "agent_step_pseudocode": null,
@@ -244,6 +245,40 @@ NEVER enumerate the rows.
 The model will `self.rules = RuleTable.from_csv(path, input_cols=..., ...)`
 and call `.combine(items)` / `.recipe_for(x)` / `.given_indices()` — it never
 hard-codes the table. (See the Phase-2 implementation prompt.)
+
+## Payoff games (game-theoretic interactions)
+
+`payoff_games` is **almost always `[]`**. Set it when agents play a 2-player
+game with a **payoff matrix** (prisoner's dilemma, hawk-dove, public goods,
+coordination). A payoff is ORDERED (a player's payoff vs an opponent) and
+dual-output — do NOT model it as a `reference_assets` rule table (order-free,
+single-output cannot represent it). The runtime provides `PayoffGame`; you
+declare the game, the agent code calls it.
+
+```json
+"payoff_games": [
+  {
+    "name": "game",
+    "game": "prisoners_dilemma",
+    "params": {"T": 5, "R": 3, "P": 1, "S": 0},
+    "strategy_var": "strategy",
+    "description": "agents play PD each round; payoff feeds Moran fitness"
+  }
+]
+```
+
+- `name` — the model attribute (becomes `self.game`).
+- `game` — one of `prisoners_dilemma` | `hawk_dove` | `rock_paper_scissors` |
+  `stag_hunt` | `matrix`. For `matrix`, give an n×n `matrix` of numbers instead
+  of `params`.
+- `params` — named-game parameters (PD: T,R,P,S; hawk_dove: V,C).
+- `strategy_var` — optional: the `agent_state_vars` entry holding the agent's
+  strategy index (must be declared there).
+
+The agent will `self.game = PayoffGame.prisoners_dilemma(**params)` (or
+`PayoffGame.from_matrix(matrix)`) and call `.play(a, b)` / `.payoff(a, b)` /
+`.best_response(b)`. Pairs naturally with `population_dynamics` (Moran) —
+play → accumulate payoff as fitness → turnover = evolutionary game theory.
 
 ## Param value forms
 

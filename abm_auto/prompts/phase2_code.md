@@ -176,6 +176,34 @@ the starting items, `self.rules.weight_of(idx)` the score. The item index
 space (`self.rules.n_items`) is the shared vocabulary a `learned_operators`
 model indexes into (pass `n_items=scenario...` or the table's `n_items`).
 
+#### Payoff games (ONLY if `mechanism_spec.json` has `payoff_games`)
+
+If — and only if — the spec lists a `payoff_games` entry, agents play a
+2-player game. **Use the runtime's `PayoffGame`; never hand-build the payoff
+matrix lookup.** Construct it once in `Model.setup`:
+
+```python
+# in core/model.py — Model.setup(), from the spec's payoff_game fields
+from abm_auto.runtime import PayoffGame
+# game="prisoners_dilemma", params={"T":5,"R":3,"P":1,"S":0}
+self.game = PayoffGame.prisoners_dilemma(T=5, R=3, P=1, S=0)
+# (or, game="matrix": self.game = PayoffGame.from_matrix(matrix))
+```
+
+In the interaction, each agent has a `strategy` (the declared `strategy_var`,
+an int 0..n_strategies-1). An encounter pays both players:
+
+```python
+pa, pb = self.game.play(a.strategy, b.strategy)   # ordered, dual payoff
+a.score += pa
+b.score += pb
+```
+
+Pair with `population_dynamics` (Moran) for evolutionary game theory: agents
+play to accumulate `score`, then `self.moran.turnover(...)` selects ∝ score.
+Never re-implement the matrix or the dual payoff — call `.play` / `.payoff` /
+`.best_response`.
+
 ### DataCollector (`core/data_collector.py`)
 ```python
 from abm_auto.runtime import DataCollector

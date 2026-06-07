@@ -302,6 +302,55 @@ class ReferenceAsset:
         return errors
 
 
+VALID_GAMES = {"matrix", "prisoners_dilemma", "hawk_dove",
+               "rock_paper_scissors", "stag_hunt"}
+
+
+@dataclass
+class PayoffGameSpec:
+    """Declares a `runtime.PayoffGame` — a symmetric 2-player game (ADR-014
+    Phase 2).
+
+    Set this when agents play a game-theoretic interaction with a payoff
+    MATRIX. A payoff matrix is ordered + dual-output, which `RuleTable` cannot
+    represent, so this is its own operator. Composes with `population_dynamics`
+    (Moran) to give evolutionary game theory.
+
+    Either a `game` name with `params` (prisoners_dilemma {T,R,P,S},
+    hawk_dove {V,C}, …) OR an explicit `matrix` (game="matrix"). The agent code
+    calls `self.<name>.play(a, b)` / `.payoff(a, b)` / `.best_response(b)`.
+    """
+    name: str                                       # model attribute, e.g. "game"
+    game: str = "matrix"                            # one of VALID_GAMES
+    matrix: list = field(default_factory=list)      # n x n payoffs (game == "matrix")
+    params: dict = field(default_factory=dict)      # named-game params
+    strategy_var: str = ""                          # optional agent_state_var holding the strategy
+    description: str = ""
+
+    def validate(self) -> list[str]:
+        errors: list[str] = []
+        if not self.name or not self.name.isidentifier():
+            errors.append(f"payoff_game.name={self.name!r} not a valid identifier")
+        if self.game not in VALID_GAMES:
+            errors.append(
+                f"payoff_game.{self.name}.game={self.game!r} not in {sorted(VALID_GAMES)}"
+            )
+        if self.game == "matrix":
+            n = len(self.matrix)
+            if n < 2:
+                errors.append(f"payoff_game.{self.name}.matrix needs >= 2 strategies")
+            elif any(len(row) != n for row in self.matrix):
+                errors.append(f"payoff_game.{self.name}.matrix must be square")
+            else:
+                for row in self.matrix:
+                    if any(not isinstance(x, (int, float)) or isinstance(x, bool) for x in row):
+                        errors.append(f"payoff_game.{self.name}.matrix entries must be numbers")
+                        break
+        if self.strategy_var and not self.strategy_var.isidentifier():
+            errors.append(f"payoff_game.{self.name}.strategy_var={self.strategy_var!r} not an identifier")
+        return errors
+
+
 @dataclass
 class MechanismSpec:
     """Full structured spec — the contract between MechanismExtractor and the
@@ -345,6 +394,9 @@ class MechanismSpec:
     # External data tables the model loads via RuleTable (ADR-013 W3). Usually
     # empty — set when the model is driven by an external rule/recipe table.
     reference_assets: list[ReferenceAsset] = field(default_factory=list)
+    # Game-theoretic payoff matrices (ADR-014 Phase 2). Usually empty — set for
+    # game-theory / evolutionary-game models. Composes with population_dynamics.
+    payoff_games: list[PayoffGameSpec] = field(default_factory=list)
     targets: list[str] = field(default_factory=list)   # env attributes data_collector tracks
 
     # ── LLM-filled regions (kept as pseudocode) ──
@@ -383,6 +435,7 @@ class MechanismSpec:
             PopulationDynamicsSpec(**pd_raw) if pd_raw not in (None, {}) else None
         )
         reference_assets = [ReferenceAsset(**a) for a in data.get("reference_assets", [])]
+        payoff_games = [PayoffGameSpec(**g) for g in data.get("payoff_games", [])]
         return cls(
             project_name=data.get("project_name", "ABMProject"),
             model_class_name=data.get("model_class_name", "MyModel"),
@@ -398,6 +451,7 @@ class MechanismSpec:
             learned_operators=learned_operators,
             population_dynamics=population_dynamics,
             reference_assets=reference_assets,
+            payoff_games=payoff_games,
             targets=list(data.get("targets", [])),
             env_step_pseudocode=data.get("env_step_pseudocode", ""),
             agent_step_pseudocode=data.get("agent_step_pseudocode"),
@@ -493,6 +547,19 @@ class MechanismSpec:
             if a.name in asset_names_seen:
                 errors.append(f"reference_assets: duplicate name {a.name!r}")
             asset_names_seen.add(a.name)
+        # Payoff games (ADR-014 Phase 2). Validate each + no duplicate names;
+        # strategy_var, when set, must reference a declared agent_state_var.
+        game_names_seen: set[str] = set()
+        for g in self.payoff_games:
+            errors.extend(f"payoff_games[{g.name}]: {e}" for e in g.validate())
+            if g.name in game_names_seen:
+                errors.append(f"payoff_games: duplicate name {g.name!r}")
+            game_names_seen.add(g.name)
+            if g.strategy_var and g.strategy_var not in var_names_seen:
+                errors.append(
+                    f"payoff_games[{g.name}]: strategy_var={g.strategy_var!r} is not a "
+                    f"declared agent_state_var"
+                )
         # Targets non-empty (otherwise DataCollector produces no data → calibration impossible)
         if not self.targets:
             errors.append("targets is empty — no metrics will be collected (calibration impossible)")
