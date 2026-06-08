@@ -158,11 +158,14 @@ def _render_turnover_call(spec: MechanismSpec) -> str:
 
 def _render_inherit_method(spec: MechanismSpec) -> str:
     """The Moran inherit hook: offspring deep-copies inherit_attrs, resets
-    reset_attrs to their agent_state_var init."""
+    reset_attrs to their agent_state_var init, then (if mutation_rate > 0)
+    re-draws mutation_attr with that probability so a monomorphic start can be
+    invaded. random is module-seeded in setup(), so mutation is reproducible."""
     pd = spec.population_dynamics
     if pd is None:
         return ""
     inits = {v.name: v.init for v in spec.agent_state_vars}
+    mutates = bool(pd.mutation_rate and pd.mutation_rate > 0.0 and pd.mutation_attr)
     body = ["    def _moran_inherit(self, child, parent):"]
     if pd.inherit_attrs or pd.reset_attrs:
         body.append("        import copy")
@@ -170,7 +173,10 @@ def _render_inherit_method(spec: MechanismSpec) -> str:
         body.append(f"        child.{attr} = copy.deepcopy(parent.{attr})")
     for attr in pd.reset_attrs:
         body.append(f"        child.{attr} = {inits.get(attr, '0')}")
-    if not (pd.inherit_attrs or pd.reset_attrs):
+    if mutates:
+        body.append(f"        if random.random() < {pd.mutation_rate}:")
+        body.append(f"            child.{pd.mutation_attr} = random.choice({pd.mutation_values!r})")
+    if not (pd.inherit_attrs or pd.reset_attrs or mutates):
         body.append("        pass")
     return "\n" + "\n".join(body) + "\n"
 

@@ -220,6 +220,13 @@ class PopulationDynamicsSpec:
     parent to offspring (e.g. a learned operator), ``reset_attrs`` are reset
     to their agent_state_var init (e.g. inventory, score). Age is handled by
     the operator.
+
+    ``mutation_rate`` (optional) adds undirected mutation to the inheritance
+    rule: with this per-offspring probability, ``mutation_attr`` is re-drawn
+    uniformly from ``mutation_values`` instead of inherited. This is what lets
+    a monomorphic start (e.g. all-Hawk) be invaded and reach a polymorphic
+    ESS — pure Moran inheritance from a single type is otherwise absorbing.
+    Default 0.0 = no mutation (backward-compatible).
     """
     fitness_attr: str = "score"           # agent attr selection is proportional to
     death_model: str = "constant"         # "constant" | "gompertz"
@@ -229,6 +236,9 @@ class PopulationDynamicsSpec:
     age_attr: str = "age"
     inherit_attrs: list = field(default_factory=list)   # offspring deep-copies these from parent
     reset_attrs: list = field(default_factory=list)     # offspring resets these to init
+    mutation_rate: float = 0.0            # per-offspring P(re-draw mutation_attr); 0 = off
+    mutation_attr: str = ""               # which inherited attr mutates (e.g. "strategy")
+    mutation_values: list = field(default_factory=list)  # discrete values mutation draws from
     description: str = ""
 
     def validate(self) -> list[str]:
@@ -253,6 +263,20 @@ class PopulationDynamicsSpec:
             for nm in names:
                 if not isinstance(nm, str) or not nm.isidentifier():
                     errors.append(f"population_dynamics.{label} entry {nm!r} not a valid identifier")
+        if not (0.0 <= self.mutation_rate <= 1.0):
+            errors.append(
+                f"population_dynamics.mutation_rate={self.mutation_rate} must be in [0, 1]"
+            )
+        if self.mutation_rate > 0.0:
+            if not self.mutation_attr or not self.mutation_attr.isidentifier():
+                errors.append(
+                    f"population_dynamics.mutation_attr={self.mutation_attr!r} must be a valid "
+                    f"identifier when mutation_rate > 0"
+                )
+            if not self.mutation_values:
+                errors.append(
+                    "population_dynamics.mutation_values must be non-empty when mutation_rate > 0"
+                )
         return errors
 
 

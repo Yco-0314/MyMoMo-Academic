@@ -27,16 +27,23 @@ fight cost C = 4. The payoff to the row player is:
    1 + score so fitness stays positive.
 2. The population then undergoes a **Moran process**: some individuals die and
    are replaced by offspring of survivors chosen with probability proportional
-   to fitness (score). Offspring inherit the parent's strategy. Population size
-   is constant.
+   to fitness (score). Offspring inherit the parent's strategy, except that with
+   a small mutation probability μ = 0.01 an offspring instead adopts a random
+   strategy (Hawk or Dove). Mutation is what lets a uniform population be
+   invaded. Population size is constant.
 
 ## Parameters
 
 - Population size N = 200
 - 300 generations
 - V = 2, C = 4
+- Mutation probability μ = 0.01
+- Initial condition: every agent starts as Hawk (an all-Hawk population)
 
 ## What to reproduce
 
-The fraction of Hawks converges to the evolutionarily stable strategy
-p* = V / C = 0.5, approached from either an all-Hawk or an all-Dove start.
+Starting from an all-Hawk population, the fraction of Hawks converges down to the
+evolutionarily stable strategy p* = V / C = 0.5: mutation seeds a few invading
+Doves, and fitness-proportional selection then balances the two strategies at the
+ESS. (Without mutation an all-Hawk start would stay frozen — selection alone
+cannot create the Doves it needs.)

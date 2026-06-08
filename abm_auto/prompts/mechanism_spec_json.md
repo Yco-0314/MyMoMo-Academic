@@ -189,6 +189,7 @@ the operator (`MoranProcess`); you only declare its SHAPE:
   "gompertz_b": 0.2097,
   "inherit_attrs": ["semantic_model"],
   "reset_attrs": ["inventory", "score"],
+  "mutation_rate": 0.0,
   "description": "Moran turnover: offspring inherit the trained model, reset inventory"
 }
 ```
@@ -204,6 +205,15 @@ the operator (`MoranProcess`); you only declare its SHAPE:
 - `reset_attrs` — agent attributes the offspring RESETS to their
   `agent_state_var` init (e.g. `"inventory"`, `"score"`). Also must name
   declared attributes. (Age is reset by the operator automatically.)
+- `mutation_rate` / `mutation_attr` / `mutation_values` — set these ONLY when
+  the source text says offspring sometimes MUTATE (adopt a random trait
+  instead of inheriting). `mutation_rate` is the per-offspring probability
+  (e.g. `0.01`); `mutation_attr` is the inherited attribute that mutates (a
+  declared `agent_state_var`, e.g. `"strategy"`); `mutation_values` is the
+  discrete set it is re-drawn from (e.g. `[0, 1]` for a binary strategy).
+  Mutation is REQUIRED for a monomorphic start (all one strategy) to reach a
+  polymorphic equilibrium — pure inheritance from a single type is otherwise
+  frozen. Omit (rate stays `0.0`) when the text describes no mutation.
 
 The generated `environment.step` will call
 `self.moran.turnover(agents, inherit=...)` once per generation — it never

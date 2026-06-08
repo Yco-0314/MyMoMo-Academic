@@ -118,3 +118,36 @@ def test_network_variant_also_emits_operators() -> None:
     assert "self.environment.game = self.game" in code
     assert code.index("self.environment.game = self.game") < code.index("initialize(")
     compile(code, "model.py", "exec")
+
+
+def test_moran_mutation_emitted_in_inherit_hook() -> None:
+    """mutation_rate>0 → _moran_inherit re-draws mutation_attr (lets an all-Hawk
+    start be invaded). The Hawk-Dove story-consistency fix."""
+    spec = _base(population_dynamics=PopulationDynamicsSpec(
+        fitness_attr="fitness", death_rate=0.5,
+        inherit_attrs=["strategy"], reset_attrs=["score"],
+        mutation_rate=0.01, mutation_attr="strategy", mutation_values=[0, 1]))
+    code = generate_model_py(spec)
+    assert "if random.random() < 0.01:" in code
+    assert "child.strategy = random.choice([0, 1])" in code
+    # inheritance still happens (mutation is the exception, not the rule)
+    assert "child.strategy = copy.deepcopy(parent.strategy)" in code
+    compile(code, "model.py", "exec")
+
+
+def test_no_mutation_by_default() -> None:
+    """Default mutation_rate=0.0 → no mutation code (backward-compatible)."""
+    spec = _base(population_dynamics=PopulationDynamicsSpec(
+        fitness_attr="fitness", death_rate=0.5, inherit_attrs=["strategy"]))
+    code = generate_model_py(spec)
+    assert "random.choice" not in code
+
+
+def test_mutation_spec_validation() -> None:
+    """mutation_rate>0 requires a valid attr + non-empty values; rate must be in [0,1]."""
+    ok = PopulationDynamicsSpec(mutation_rate=0.01, mutation_attr="strategy",
+                                mutation_values=[0, 1])
+    assert ok.validate() == []
+    assert PopulationDynamicsSpec(mutation_rate=1.5).validate()          # rate out of range
+    assert PopulationDynamicsSpec(mutation_rate=0.1).validate()          # missing attr+values
+    assert PopulationDynamicsSpec(mutation_rate=0.1, mutation_attr="s").validate()  # missing values
