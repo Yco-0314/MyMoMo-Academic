@@ -187,11 +187,20 @@ def test_strategy_var_not_duplicated_when_already_inherited() -> None:
     assert spec.population_dynamics.inherit_attrs.count("strategy") == 1
 
 
-def test_strategy_var_not_added_when_in_reset_attrs() -> None:
-    """Defensive: don't create an inherit+reset contradiction on the same attr."""
+def test_strategy_var_moved_out_of_reset_into_inherit() -> None:
+    """re-run #4: extraction put strategy in reset_attrs, so every offspring's
+    strategy reset to init=Hawk each generation and the population froze. The
+    selected trait must be inherited and NEVER reset — move it."""
     spec = MechanismSpec.from_dict(
         _evo_game_dict(inherit_attrs=[], reset_attrs=["strategy", "score"]))
-    assert "strategy" not in spec.population_dynamics.inherit_attrs
+    pd = spec.population_dynamics
+    assert "strategy" in pd.inherit_attrs       # now inherited
+    assert "strategy" not in pd.reset_attrs      # and no longer reset
+    assert "score" in pd.reset_attrs             # other resets untouched
+    # the generated hook inherits (not resets) strategy
+    code = generate_model_py(spec)
+    assert "child.strategy = copy.deepcopy(parent.strategy)" in code
+    assert "child.strategy = 1" not in code
 
 
 # ── bug C: a degenerate constant-Moran death_rate freezes the dynamics ──
