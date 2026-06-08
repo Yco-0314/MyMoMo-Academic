@@ -33,6 +33,7 @@ examples/adversarial_codegen/data/output/
 # In-flight design docs (not yet ADR'd; kept locally during drafting)
 docs/mymomo-simulation-engine-evolution-plan.md
 docs/mymomo-world-model-roadmap.md
+docs/mymomo-universal-simulation-layer-roadmap.md
 
 # Dogfood run artifacts (transient stdout / scorecards / logs from pipeline dogfoods)
 docs/dogfood/
