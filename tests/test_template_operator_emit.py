@@ -192,3 +192,20 @@ def test_strategy_var_not_added_when_in_reset_attrs() -> None:
     spec = MechanismSpec.from_dict(
         _evo_game_dict(inherit_attrs=[], reset_attrs=["strategy", "score"]))
     assert "strategy" not in spec.population_dynamics.inherit_attrs
+
+
+# ── bug C: a degenerate constant-Moran death_rate freezes the dynamics ──
+
+
+def test_death_rate_floor_rejects_degenerate_turnover() -> None:
+    """re-run #3 froze on death_rate=0.001 (valid in (0,1) but glacial). validate()
+    now rejects sub-floor constant-Moran turnover so the spec stage re-extracts."""
+    assert PopulationDynamicsSpec(death_model="constant", death_rate=0.001).validate()
+    assert PopulationDynamicsSpec(death_model="constant", death_rate=0.009).validate()
+
+
+def test_sane_death_rate_passes() -> None:
+    assert PopulationDynamicsSpec(death_model="constant", death_rate=0.05).validate() == []
+    assert PopulationDynamicsSpec(death_model="constant", death_rate=0.5).validate() == []
+    # the floor is constant-only; gompertz is age-based and unaffected
+    assert PopulationDynamicsSpec(death_model="gompertz").validate() == []

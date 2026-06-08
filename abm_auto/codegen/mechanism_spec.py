@@ -202,6 +202,14 @@ class LearnedOperator:
 
 VALID_DEATH_MODELS = {"constant", "gompertz"}
 
+# Sane floor for a CONSTANT-death Moran turnover (Hawk-Dove e2e re-run #3, bug C).
+# Below ~1% replacement per generation the dynamics freeze: almost nothing turns
+# over, so neither selection nor mutation takes hold and the population stays
+# monomorphic. Extraction hits this when the source gives no rate — it anchors on
+# the rejected 0.0 and creeps just over the (0,1) floor (0.001). Reject it so the
+# spec stage re-extracts a real turnover instead of silently freezing.
+MORAN_DEATH_RATE_FLOOR = 0.01
+
 
 @dataclass
 class PopulationDynamicsSpec:
@@ -252,6 +260,15 @@ class PopulationDynamicsSpec:
             errors.append(
                 f"population_dynamics.death_rate={self.death_rate} must be in (0, 1) "
                 f"for the constant death model"
+            )
+        elif self.death_model == "constant" and self.death_rate < MORAN_DEATH_RATE_FLOOR:
+            errors.append(
+                f"population_dynamics.death_rate={self.death_rate} is below the sane "
+                f"floor {MORAN_DEATH_RATE_FLOOR} for a constant-death Moran: under "
+                f"{MORAN_DEATH_RATE_FLOOR:.0%} of the population turns over per "
+                f"generation, so the dynamics freeze (neither selection nor mutation "
+                f"takes hold and the population stays monomorphic). Use the turnover "
+                f"the source specifies — commonly 0.05–0.5 per generation."
             )
         if self.death_model == "gompertz" and (self.gompertz_a <= 0 or self.gompertz_b <= 0):
             errors.append("population_dynamics gompertz_a and gompertz_b must be > 0")

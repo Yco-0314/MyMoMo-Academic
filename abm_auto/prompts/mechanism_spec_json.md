@@ -198,7 +198,10 @@ the operator (`MoranProcess`); you only declare its SHAPE:
   `"score"`). Must be a real agent attribute.
 - `death_model` — `"constant"` (give `death_rate`, a probability in (0,1))
   or `"gompertz"` (age-based `P = a·e^(b·age)`; give `gompertz_a`,
-  `gompertz_b`, or use the defaults).
+  `gompertz_b`, or use the defaults). `death_rate` is the FRACTION of the
+  population replaced per generation — use the turnover the source specifies,
+  typically **0.05–0.5**. Do NOT pick a near-zero value (e.g. 0.001): under ~1%
+  turnover the dynamics freeze (nothing evolves) and the spec is rejected.
 - `inherit_attrs` — agent attributes the OFFSPRING deep-copies from its
   parent (e.g. a `learned_operators` model the lineage keeps training).
   Each name MUST be a declared `agent_state_var` or `learned_operator`.
