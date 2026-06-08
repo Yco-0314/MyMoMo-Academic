@@ -1,0 +1,14 @@
+{
+  "opinion_network": {
+    "Result_Simulator_Environment.csv": "537bab91a984c0c700e5706abc80e675"
+  },
+  "schelling_grid": {
+    "Result_Simulator_Environment.csv": "528d7d5b4afdbfdad6f283b50ae98667"
+  },
+  "virus_network": {
+    "Result_Simulator_Environment.csv": "11ee5b942234208771954ecf073a8244"
+  },
+  "yaman_operators": {
+    "Result_Simulator_Environment.csv": "bf697cf82d29fe91c4bf059e85d4f05e"
+  }
+}
