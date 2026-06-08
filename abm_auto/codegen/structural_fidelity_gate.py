@@ -24,6 +24,7 @@ the self-test can prove both directions — known-bad caught, clean passes.
 """
 from __future__ import annotations
 
+import ast
 import re
 from dataclasses import dataclass
 
@@ -40,6 +41,56 @@ class StructuralFidelityInput:
 
 # Import Verdict lazily-safe at module top (no heavy deps).
 from abm_auto.verification.gate import Verdict
+
+
+def _env_step_reachable_src(env_src: str) -> str:
+    """Source reachable from `environment.step()` — the method body plus every
+    env method it transitively calls via `self.<m>(...)`.
+
+    The framework calls ONLY `environment.step()` each tick (model.run drives it,
+    plus the model-owned turnover); `agent.step()` is NEVER called. So an
+    interaction operator is on the EXECUTION PATH only if it appears in code
+    reachable from `environment.step()`. Run #4 put `self.model.game.play()` in
+    `agent.step()` and left `environment.step()` to only count hawks — the
+    operator was referenced but orphaned, and the join-the-files scan passed it.
+    This isolates what step() actually reaches so the scan can tell the two apart.
+
+    Best-effort: on any parse failure, or when there is no `step` method, fall
+    back to the whole `env_src` (the pre-reachability behaviour — safe, just less
+    precise: it won't catch an operator stranded in an unreachable env helper).
+    """
+    if not env_src.strip():
+        return env_src
+    try:
+        tree = ast.parse(env_src)
+    except SyntaxError:
+        return env_src
+    methods: dict[str, ast.AST] = {}
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            methods.setdefault(node.name, node)
+    if "step" not in methods:
+        return env_src
+    seen: set[str] = set()
+    chunks: list[str] = []
+
+    def walk_method(name: str, depth: int) -> None:
+        if name in seen or depth > 4 or name not in methods:
+            return
+        seen.add(name)
+        fn = methods[name]
+        seg = ast.get_source_segment(env_src, fn)
+        if seg:
+            chunks.append(seg)
+        for n in ast.walk(fn):
+            # self.<m>(...) → recurse into the env helper <m>
+            if (isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
+                    and isinstance(n.func.value, ast.Name)
+                    and n.func.value.id == "self"):
+                walk_method(n.func.attr, depth + 1)
+
+    walk_method("step", 0)
+    return "\n".join(chunks)
 
 
 def _scan(spec: dict, code_files: dict[str, str]) -> list[str]:
@@ -110,9 +161,15 @@ def _scan(spec: dict, code_files: dict[str, str]) -> list[str]:
     # always references the operator (it builds + wires it), so scanning it would
     # never catch the hand-roll. MoranProcess (population_dynamics) is model-driven
     # turnover and is intentionally NOT required in the interaction body.
-    interaction_src = "\n".join(
-        code_files.get(f, "") or "" for f in ("core/environment.py", "core/agent.py")
-    )
+    env_src = code_files.get("core/environment.py", "") or ""
+    agent_src = code_files.get("core/agent.py", "") or ""
+    interaction_src = "\n".join((env_src, agent_src))
+    # The operator is on the EXECUTION PATH only if reached from environment.step()
+    # (the framework's sole per-tick call; agent.step() is never invoked). Run #4
+    # stranded the operator in agent.step() — referenced but never reached. Scan
+    # the step-reachable env source for "reached", the joined files for "referenced
+    # at all", so the message can tell an orphan from an outright hand-roll.
+    env_reach_src = _env_step_reachable_src(env_src)
     if interaction_src.strip():
         op_kinds = (
             ("payoff_games", "PayoffGame", "pa, pb = self.{n}.play(a.strategy, b.strategy)"),
@@ -125,11 +182,23 @@ def _scan(spec: dict, code_files: dict[str, str]) -> list[str]:
                 if not name:
                     continue
                 # accept the wired env attr `self.<name>` or `self.model.<name>`
-                if not re.search(rf"\bself\.(?:model\.)?{re.escape(name)}\b", interaction_src):
+                pat = rf"\bself\.(?:model\.)?{re.escape(name)}\b"
+                if re.search(pat, env_reach_src):
+                    continue  # reached from environment.step() — on the path
+                if re.search(pat, interaction_src):
+                    issues.append(
+                        f"environment.py: declared {opname} `self.{name}` is referenced "
+                        f"but never REACHED from environment.step(). The framework calls "
+                        f"only environment.step() each tick (plus the model-driven "
+                        f"turnover) — agent.step() is NEVER called, so interaction logic "
+                        f"placed there is dead code. Drive it from environment.step(): "
+                        f"iterate the agents and call `{call_hint.format(n=name)}` there."
+                    )
+                else:
                     issues.append(
                         f"environment.py/agent.py: declared {opname} `self.{name}` is "
                         f"never called. model.py constructs it and wires it onto the "
-                        f"environment as `self.{name}` — the interaction body must CALL "
+                        f"environment as `self.{name}` — environment.step() must CALL "
                         f"it (`{call_hint.format(n=name)}`), not hand-roll the mechanism. "
                         f"A declared operator that is never used is a codegen-fidelity "
                         f"failure (the operator exists to replace the hand-roll)."
@@ -194,9 +263,11 @@ class StructuralFidelityGate:
           (f) declared interaction operator never called → caught
           (g) population_dynamics + a hand-rolled turnover method → caught
           (h) population_dynamics + no hand-rolled turnover → pass
+          (i) operator only in agent.step() (orphaned, not reached) → caught
+          (j) operator reached via an env helper step() calls → pass
 
-        Pure, no I/O. (b)-(d),(f),(g) are the known-bad end; (a),(e),(h) guard
-        against over-firing. Exhaustive over the five check families → the
+        Pure, no I/O. (b)-(d),(f),(g),(i) are the known-bad end; (a),(e),(h),(j)
+        guard against over-firing. Exhaustive over the check families → the
         completeness that earns verification tier.
         """
         aligned_spec = {
@@ -244,6 +315,24 @@ class StructuralFidelityGate:
         op_bad = {"core/environment.py":
                   "class E:\n    def step(self, agents):\n        pa = agents[0].play_against(agents[1])\n"}
         if self.judge(StructuralFidelityInput(op_spec, op_bad)).passed:
+            return False
+
+        # (i) operator referenced ONLY in agent.step() — never reached from
+        #     environment.step() (the framework's only per-tick call) → caught (re-run #4)
+        op_orphan = {
+            "core/environment.py":
+                "class E:\n    def step(self, agents):\n        n = sum(1 for a in agents if a.strategy)\n",
+            "core/agent.py":
+                "class A:\n    def step(self):\n        pa, pb = self.model.game.play(self.strategy, 0)\n",
+        }
+        if self.judge(StructuralFidelityInput(op_spec, op_orphan)).passed:
+            return False
+
+        # (j) operator reached via an env helper that step() calls → pass
+        op_helper = {"core/environment.py":
+                     "class E:\n    def step(self, agents):\n        self._play(agents)\n"
+                     "    def _play(self, agents):\n        pa, pb = self.game.play(0, 1)\n"}
+        if not self.judge(StructuralFidelityInput(op_spec, op_helper)).passed:
             return False
 
         # (g) population_dynamics declared + env hand-rolls a turnover → caught

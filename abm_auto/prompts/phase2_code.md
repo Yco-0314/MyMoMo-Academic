@@ -66,6 +66,11 @@ class MyAgent(Agent):
         self.some_property: float = 0.0
 
     def step(self):
+        # The framework does NOT call agent.step() automatically. The ONLY
+        # per-tick entry point is environment.step() (see below). Put the
+        # interaction THERE — iterate the agents from environment.step() and act
+        # on them. Code in agent.step() runs only if environment.step() calls it
+        # explicitly; otherwise it is dead.
         pass
 ```
 
@@ -132,10 +137,14 @@ So in `environment.py` you must:
 
 The same rule holds for the other declared operators below: `model.py`
 CONSTRUCTS them and WIRES the interaction ones onto the environment as
-`self.<name>` (`self.<game>`, `self.<rules>`, `self.<vital>`); your job in
-`agent.py` / `environment.py` is to CALL `self.<name>`, never to re-build or
-hand-roll them. A declared operator that you never call is a fidelity bug — the
-structural gate fails the build until the interaction actually uses it.
+`self.<name>` (`self.<game>`, `self.<rules>`, `self.<vital>`). **CALL `self.<name>`
+from inside `environment.step()`** — iterate the agents there and invoke the
+operator (e.g. `pa, pb = self.game.play(a.strategy, b.strategy)`; accumulate into
+`a.score`; set `a.fitness`). Do NOT place the operator call in `agent.step()`: the
+framework never calls `agent.step()`, so it would be dead code and the population
+would never actually play. A declared operator that is never re-built but also
+never REACHED from `environment.step()` is a fidelity bug — the structural gate
+fails the build until `environment.step()` actually calls it.
 
 `turnover` handles death (constant or Gompertz on `age`), fitness-
 proportional parent selection, holding N constant, and ageing. Do not
