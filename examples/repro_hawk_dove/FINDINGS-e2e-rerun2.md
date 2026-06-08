@@ -111,3 +111,28 @@ model, don't re-roll it).
   COMPLETE turnover — `inherit_attrs=[]` silently drops strategy inheritance, the
   LLM compensates in dead code, and a V/C=0.5 coincidence almost let a broken
   mechanism pass as a reproduction. Bugs A and B are the clean next pieces.
+
+## A-fix confirmation (deterministic, no LLM run) — commit `6fd4d14`
+
+After fixing bug A (`_normalize_heritable_strategy` puts the strategy back in
+`inherit_attrs`) the model.py was regenerated from this same spec and re-run on
+the SAME workspace (same GVR-fixed env.py calling `self.game.play`, same seed 42).
+Only the inherit hook changed (it now does `child.strategy =
+copy.deepcopy(parent.strategy)` before the mutation). `trajectory-A-fixed-deterministic.csv`:
+
+| | run #2 (broken, inherit_attrs=[]) | A-fixed (inherit_attrs=[strategy]) |
+|---|---|---|
+| mechanism | mutation drift | fitness selection |
+| first hawk_fraction ≤ 0.55 | never (plateau 0.66) | **gen 9** |
+| endpoint | 0.66 (mutation eq, ≠ ESS) | **fluctuates around 0.5** (last-30 mean 0.531) |
+| mean_fitness | stuck ≈ +2 | rises to ≈ +5 |
+
+Selection now drives all-Hawk → ESS 0.5 quickly and the population fluctuates
+around it (0.40–0.64, finite-N noise at N=200) — the textbook evolutionary-game
+result, reached for the RIGHT reason. The broken run's coincidental 0.66 is gone.
+This isolates the fix: nothing but the heritability normalization changed, and it
+turned a mutation-drift false-pass into a genuine selection-driven reproduction.
+
+A full live re-run (#3) would additionally confirm that extraction now keeps the
+strategy heritable end-to-end and that bug B's gate stops the dead `moran_process`
+from being written — but the mechanism itself is proven here, deterministically.
