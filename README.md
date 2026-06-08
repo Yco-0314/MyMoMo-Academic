@@ -1,5 +1,7 @@
 # abm-auto
 
+> Also known as **MyMoMo-Academic** — the repository / project name. `abm-auto` is the Python package and CLI; both refer to the same system.
+
 **Autonomous Agent-Based Modeling Research Pipeline** — from natural language to simulation results in one command.
 
 `abm-auto` is a fully autonomous ABM research system that takes a plain-text research scenario and produces executable simulations, parameter explorations, and academic-quality research reports — with zero human intervention.
