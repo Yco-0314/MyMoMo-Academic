@@ -17,11 +17,45 @@ Regimes (ADR-015):
 """
 from __future__ import annotations
 
+import os
+import subprocess
+import sys
+import tempfile
 from dataclasses import dataclass, field
-from typing import Any, Callable
+from typing import Any, Callable, Optional
 
 from .coverage_gate import Mechanism
 from .synthesis_oracles import REAL_ORACLES
+
+
+def verify_in_subprocess(code: str, oracle_paradigm: str, *, timeout: float = 10.0,
+                         sandbox_cmd: Optional[list] = None) -> bool:
+    """Verify synthesized candidate CODE in an ISOLATED, timeout-bounded process
+    (ADR-015 option B). The subprocess execs the candidate and runs the AUDITED
+    oracle on it (so a candidate cannot supply its own judge); the parent reads
+    only a PASS/FAIL string and NEVER execs untrusted code. A hang/crash/escape
+    is contained by the separate process + the timeout-kill.
+
+    ``sandbox_cmd`` prefixes the command with an OS sandbox (e.g.
+    ``["firejail", "--net=none", "--private"]``) for untrusted input — a plain
+    subprocess is isolation, not a hard security boundary.
+    """
+    cmd = list(sandbox_cmd or []) + [
+        sys.executable, "-m", "abm_auto.codegen._synthesis_sandbox_runner", oracle_paradigm,
+    ]
+    # The runner must import abm_auto (for the audited oracle) regardless of cwd
+    # (kept at a temp dir for fs isolation), so put the project root on PYTHONPATH.
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    env = {
+        "PATH": os.environ.get("PATH", ""),
+        "PYTHONPATH": os.pathsep.join(p for p in (project_root, os.environ.get("PYTHONPATH", "")) if p),
+    }
+    try:
+        proc = subprocess.run(cmd, input=code, capture_output=True, text=True,
+                              timeout=timeout, env=env, cwd=tempfile.gettempdir())
+    except (subprocess.TimeoutExpired, Exception):
+        return False
+    return proc.stdout.strip().splitlines()[-1:] == ["PASS"]
 
 
 # ── the human-audited oracle library: paradigm name -> known-answer oracle ──
@@ -133,6 +167,40 @@ class SynthesisPhase:
             "rejected", mechanism.name,
             f"no candidate passed the {oracle_paradigm!r} oracle in {max_tries} "
             f"tries; NOT internalized (halt stands)",
+        )
+
+    def synthesize_sandboxed(self, mechanism: Mechanism, *, oracle_paradigm: str,
+                             draft_code: Callable, max_tries: int = 4,
+                             timeout: float = 10.0, sandbox_cmd=None) -> SynthesisResult:
+        """Bounded search where the candidate is CODE, verified in an ISOLATED
+        subprocess (ADR-015 option B) — the path for the LLM drafter, whose
+        output is executed. Same trust law as ``synthesize``: only an audited
+        paradigm is verifiable, the subprocess runs the AUDITED oracle (never a
+        caller's), pass → internalize. ``draft_code(feedback)`` returns the
+        candidate's Python source (defining ``build``)."""
+        if oracle_paradigm not in REAL_ORACLES:
+            return SynthesisResult(
+                "proposed", mechanism.name,
+                f"no audited sandbox oracle for {oracle_paradigm!r}; halt stands; "
+                f"proposal for human audit",
+            )
+        feedback = None
+        for i in range(max(1, max_tries)):
+            code = draft_code(feedback)
+            if verify_in_subprocess(code, oracle_paradigm, timeout=timeout,
+                                    sandbox_cmd=sandbox_cmd):
+                operator_name = f"Synthesized_{mechanism.capability}"
+                self.internalized[mechanism.capability] = operator_name
+                return SynthesisResult(
+                    "internalized", mechanism.name,
+                    f"passed audited oracle {oracle_paradigm!r} in a sandbox on try "
+                    f"{i + 1}/{max_tries}; registered as {operator_name}",
+                )
+            feedback = f"candidate failed the sandboxed {oracle_paradigm!r} oracle (try {i + 1})"
+        return SynthesisResult(
+            "rejected", mechanism.name,
+            f"no sandboxed candidate passed {oracle_paradigm!r} in {max_tries} tries; "
+            f"NOT internalized",
         )
 
     def covers(self, mechanism: Mechanism) -> bool:
