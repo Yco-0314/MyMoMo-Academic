@@ -17,7 +17,7 @@ All generated model code imports from here::
 
 **Exposed surface**
     Agent, AgentList, Model, Environment, DataCollector, Scenario, Config,
-    Simulator, Grid, GridAgent, Network, NetworkAgent, Calibrator, Trainer
+    Simulator, Grid, GridAgent, Network, NetworkAgent
 
 **Key improvements over raw MyMoMo Runtime**
     - Agent._safe_attr(name, default): prevents setup() from overwriting CSV values
@@ -31,9 +31,10 @@ All generated model code imports from here::
     - Environment: standalone (no Melodie import)
 
 **Route C progress**
-    Standalone (no Melodie import): Agent wrappers, Grid, Network, Model, Environment
-    Still delegated to MyMoMo Runtime: AgentList, DataCollector, Scenario, Config, Simulator,
-                                Calibrator, Trainer
+    Standalone (no Melodie import): Agent wrappers, Grid, Network, Model, Environment,
+                                Scenario, DataCollector
+    Still delegated to MyMoMo Runtime: AgentList, Config, Simulator
+                                (Calibrator/Trainer removed — unused; use abm_auto.calibration)
 """
 
 try:
@@ -65,8 +66,6 @@ from Melodie import (
     AgentList,
     Config,
     Simulator,
-    Calibrator,
-    Trainer,
 )
 
 __all__ = [
@@ -91,9 +90,6 @@ __all__ = [
     "Network",
     "NetworkAgent",
     "topologies",
-    # Optimization
-    "Calibrator",
-    "Trainer",
     # Meta
     "RUNTIME_ENGINE",
 ]
