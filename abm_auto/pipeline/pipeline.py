@@ -11,6 +11,7 @@ External contract (unchanged from the pre-refactor god method):
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Optional
 
@@ -24,6 +25,8 @@ from abm_auto.agents.designer import DesignAgent
 from abm_auto.agents.hypothesis_agent import HypothesisAgent
 from abm_auto.agents.lit_reviewer import LitReviewAgent
 from abm_auto.agents.coverage_extractor import CoverageExtractor
+from abm_auto.agents.coverage_synthesizer import OperatorSynthesizer
+from abm_auto.codegen.synthesis_phase import SynthesisPhase
 from abm_auto.agents.mechanism_extractor import MechanismExtractor
 from abm_auto.agents.mode_detector import ModeDetector
 from abm_auto.agents.analyzer import AnalyzerAgent
@@ -136,7 +139,8 @@ class Pipeline:
         self.hypothesis_agent = HypothesisAgent(self.client, self.workspace, model=strong_model, **agent_kw)
         self.mechanism_extractor = MechanismExtractor(self.client, self.workspace, model=strong_model, **agent_kw)
         self.coverage_extractor = CoverageExtractor(self.client, self.workspace, model=model, **agent_kw)
-        self.coverage_extractor = CoverageExtractor(self.client, self.workspace, model=model, **agent_kw)
+        self.coverage_synthesizer = OperatorSynthesizer(self.client, self.workspace, model=model, **agent_kw)
+        self.synthesis_phase = SynthesisPhase()
         self.what_if_oracle = WhatIfOracle(self.client, self.workspace, model=strong_model, **agent_kw)
         self.bayesian_calibrator = BayesianCalibrator(self.client, self.workspace, model=model, **agent_kw)
 
@@ -236,7 +240,14 @@ class Pipeline:
             DesignViabilityPhase(designer=self.designer, viability=self.viability_checker),
             ExternalModelInjectionPhase(),
             MechanismExtractorPhase(self.mechanism_extractor),
-            CoverageGatePhase(extractor=self.coverage_extractor),
+            CoverageGatePhase(
+                extractor=self.coverage_extractor,
+                synthesizer=self.coverage_synthesizer,
+                synthesis=self.synthesis_phase,
+                # ADR-015 self-extension is OPT-IN (executes generated code,
+                # sandboxed) — off unless ABM_ENABLE_SYNTHESIS=1.
+                enable_synthesis=os.getenv("ABM_ENABLE_SYNTHESIS", "") == "1",
+            ),
             OddPhase(self.odd_writer),
             CodegenPhase(coder=self.coder, verifier=self.verifier, executor=self.executor, max_retries=self.max_retries),
             SeedInjectionPhase(),

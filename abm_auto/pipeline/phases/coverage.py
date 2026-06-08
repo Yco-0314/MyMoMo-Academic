@@ -40,8 +40,15 @@ class CoverageGatePhase:
 
     name = "Phase 1e (Coverage Gate)"
 
-    def __init__(self, extractor=None):
+    def __init__(self, extractor=None, synthesizer=None, synthesis=None,
+                 enable_synthesis=False):
         self.extractor = extractor
+        # ADR-015 self-extension (opt-in, OFF by default — it executes generated
+        # code, sandboxed). `synthesizer` = the LLM drafter, `synthesis` = the
+        # SynthesisPhase holding the sandbox + the internalized registry.
+        self.synthesizer = synthesizer
+        self.synthesis = synthesis
+        self.enable_synthesis = enable_synthesis
 
     def should_run(self, ctx: PipelineContext) -> bool:
         if getattr(ctx, "using_external_model", False):
@@ -65,7 +72,17 @@ class CoverageGatePhase:
         if not primary:        # no extractor / LLM failed / empty → stub (recall floor)
             primary = extract_mechanisms_heuristic(spec, prose)
         mechs = merge_mechanisms(primary, recall_floor(prose))
-        verdict = CoverageGate().check(mechs)
+        internalized = self.synthesis.internalized if self.synthesis else None
+        verdict = CoverageGate().check(mechs, internalized=internalized)
+
+        # ADR-015 (opt-in): autonomously PROMOTE verifiable (stdlib-tier)
+        # mechanisms to operators — draft a candidate, verify it in a sandbox via
+        # the audited oracle, internalize on pass. Re-check after, so a
+        # synthesized operator shows as tier-1 covered this run + persists.
+        if (self.enable_synthesis and self.synthesizer is not None
+                and self.synthesis is not None and verdict.build_and_verify):
+            self._promote_verifiable(mechs, ctx)
+            verdict = CoverageGate().check(mechs, internalized=self.synthesis.internalized)
 
         if verdict.passed:
             console.print(
@@ -111,3 +128,30 @@ class CoverageGatePhase:
             )
         except Exception:
             pass
+
+    def _promote_verifiable(self, mechs, ctx) -> None:
+        """Synthesize + sandbox-verify + internalize an operator for each
+        stdlib-tier (verifiable) mechanism not already internalized. The
+        synthesized operator is registered on the SynthesisPhase; the re-check
+        then classifies the mechanism as a tier-1 operator (ADR-015)."""
+        from abm_auto.codegen.coverage_gate import classify
+
+        for m in mechs:
+            tier, paradigm = classify(m, self.synthesis.internalized)
+            if tier != "stdlib" or m.capability in self.synthesis.internalized:
+                continue
+            result = self.synthesis.synthesize_sandboxed(
+                m, oracle_paradigm=paradigm,
+                draft_code=lambda fb, mm=m, pp=paradigm: self.synthesizer.draft_code(mm, pp, fb),
+                max_tries=3, timeout=30,
+            )
+            console.print(f"  [dim]synthesis[{m.capability}]: {result.outcome}[/dim]")
+            try:
+                ctx.workspace.audit.info(
+                    phase="Phase 1e",
+                    text=f"synthesis {result.outcome}: {result.detail}",
+                    actor="SynthesisPhase",
+                    structured={"capability": m.capability, "outcome": result.outcome},
+                )
+            except Exception:
+                pass

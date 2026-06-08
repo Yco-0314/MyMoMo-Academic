@@ -113,8 +113,16 @@ def _resolve_tier3(m: Mechanism) -> tuple[str, str | None]:
     return ("uncovered", None)
 
 
-def classify(m: Mechanism) -> tuple[str, str | None]:
-    """Deterministic tier for one mechanism. Returns (tier, detail)."""
+def classify(m: Mechanism, internalized: "dict | None" = None) -> tuple[str, str | None]:
+    """Deterministic tier for one mechanism. Returns (tier, detail).
+
+    ``internalized`` (capability -> synthesized-operator name) is the Synthesis
+    Phase's registry (ADR-015): a mechanism whose capability has an
+    autonomously-synthesized, oracle-verified operator is now operator-covered.
+    This is what closes the loop — a re-gate after synthesis sees the new operator.
+    """
+    if internalized and m.capability in internalized:
+        return ("operator", internalized[m.capability])
     cap = m.capability
     if cap == "ordinary_logic":
         return ("ordinary", None)
@@ -232,8 +240,8 @@ def merge_mechanisms(primary: list[Mechanism], extra: list[Mechanism]) -> list[M
 class CoverageGate:
     """Verification Gate (ADR-013/014). PASS iff nothing is uncovered."""
 
-    def check(self, mechanisms: list[Mechanism]) -> CoverageVerdict:
-        tiers = {m.name: classify(m) for m in mechanisms}
+    def check(self, mechanisms: list[Mechanism], internalized: "dict | None" = None) -> CoverageVerdict:
+        tiers = {m.name: classify(m, internalized) for m in mechanisms}
         uncovered = [n for n, (t, _) in tiers.items() if t == "uncovered"]
         build_and_verify = [n for n, (t, _) in tiers.items() if t == "stdlib"]
         return CoverageVerdict(
