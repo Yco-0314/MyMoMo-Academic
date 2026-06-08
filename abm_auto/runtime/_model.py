@@ -27,6 +27,15 @@ class Model(_Model):
     and can resolve neighbour IDs without caller help.
     """
 
+    def create_agent_list(self, agent_class: Type):
+        """Create an AgentList using ABM Auto's standalone container (ADR-009
+        Phase 3) instead of Melodie's — same constructor and API. Not a
+        ``super()`` call: the base returns ``Melodie.AgentList``.
+        """
+        from abm_auto.runtime._agent_list import AgentList as _AgentList
+
+        return _AgentList(agent_class, model=self)
+
     def create_grid(
         self,
         grid_cls: Optional[Type] = None,

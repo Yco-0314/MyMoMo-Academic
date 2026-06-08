@@ -32,8 +32,8 @@ All generated model code imports from here::
 
 **Route C progress**
     Standalone (no Melodie import): Agent wrappers, Grid, Network, Model, Environment,
-                                Scenario, DataCollector
-    Still delegated to MyMoMo Runtime: AgentList, Config, Simulator
+                                Scenario, DataCollector, AgentList
+    Still delegated to MyMoMo Runtime: Config, Simulator
                                 (Calibrator/Trainer removed — unused; use abm_auto.calibration)
 """
 
@@ -53,6 +53,7 @@ from abm_auto.runtime._model import Model
 from abm_auto.runtime._environment import Environment
 from abm_auto.runtime._scenario import Scenario  # standalone (ADR-009 Phase 1)
 from abm_auto.runtime._data_collector import DataCollector  # standalone (ADR-009 Phase 2)
+from abm_auto.runtime._agent_list import AgentList  # standalone (ADR-009 Phase 3)
 from abm_auto.runtime._learner import FeedforwardLearner  # learned-operator (ADR-013 W2 wall fix)
 from abm_auto.runtime._population import MoranProcess  # population-dynamics operator (ADR-013 W4 harvest)
 from abm_auto.runtime._rule_table import RuleTable  # reference-data operator (ADR-013 W3 harvest)
@@ -63,7 +64,6 @@ from abm_auto.runtime import _topologies as topologies  # noqa: F401  exposed as
 # ── Still delegated to MyMoMo Runtime (complex CSV/DB machinery) ────────────────────
 
 from Melodie import (
-    AgentList,
     Config,
     Simulator,
 )
