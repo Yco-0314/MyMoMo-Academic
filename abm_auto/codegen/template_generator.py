@@ -67,6 +67,102 @@ def _render_param_value(value: Any) -> str:
 # ── model.py ─────────────────────────────────────────────────────────────
 
 
+# ── operator emission (ADR-014 codegen fidelity) ─────────────────────────────
+# The Hawk-Dove e2e showed the CoderAgent hand-rolls a DECLARED operator (the
+# payoff matrix, the Moran loop) instead of calling it. So — exactly as topology
+# is wired — the TemplateGenerator now emits operator CONSTRUCTION + the turnover
+# CALL deterministically from the spec slots. The CoderAgent can no longer
+# construct-drift or hand-roll a declared operator; it only fills the truly-custom
+# interaction body.
+
+
+def _param_value(v) -> str:
+    """Render a payoff/operator param value: a 'scenario.X' ref -> self.scenario.X,
+    else a Python literal."""
+    if isinstance(v, str) and v.startswith("scenario."):
+        return f"self.scenario.{v[len('scenario.'):]}"
+    return repr(v)
+
+
+def _operator_runtime_imports(spec: MechanismSpec) -> list[str]:
+    names = []
+    if spec.payoff_games:
+        names.append("PayoffGame")
+    if spec.population_dynamics is not None:
+        names.append("MoranProcess")
+    if spec.vital_dynamics:
+        names.append("VitalDynamics")
+    if spec.reference_assets:
+        names.append("RuleTable")
+    return names
+
+
+def _render_operator_construction(spec: MechanismSpec) -> str:
+    """Lines for Model.setup(): construct each declared model-level operator."""
+    lines: list[str] = []
+    for g in spec.payoff_games:
+        if g.game == "matrix":
+            lines.append(f"        self.{g.name} = PayoffGame.from_matrix({g.matrix!r})")
+        else:
+            params = ", ".join(f"{k}={_param_value(v)}" for k, v in (g.params or {}).items())
+            lines.append(f"        self.{g.name} = PayoffGame.{g.game}({params})")
+    pd = spec.population_dynamics
+    if pd is not None:
+        extra = (f", gompertz_a={pd.gompertz_a}, gompertz_b={pd.gompertz_b}"
+                 if pd.death_model == "gompertz" else f", death_rate={pd.death_rate}")
+        lines.append(
+            f"        self._moran = MoranProcess(fitness_attr={pd.fitness_attr!r}, "
+            f"death_model={pd.death_model!r}{extra}, age_attr={pd.age_attr!r}, "
+            f"seed=int(getattr(self.scenario, 'seed', 0)))"
+        )
+    for v in spec.vital_dynamics:
+        repro = (f"reproduce_at={v.reproduce_at}" if v.reproduce_at is not None
+                 else f"reproduce_prob={v.reproduce_prob}")
+        cap = f", max_population={v.max_population}" if v.max_population is not None else ""
+        lines.append(
+            f"        self.{v.name} = VitalDynamics(energy_attr={v.energy_attr!r}, "
+            f"death_at={v.death_at}, {repro}{cap}, "
+            f"seed=int(getattr(self.scenario, 'seed', 0)))"
+        )
+    for a in spec.reference_assets:
+        cols = f"input_cols={a.input_cols!r}, output_col={a.output_col!r}"
+        for opt in ("given_col", "weight_col", "label_col"):
+            val = getattr(a, opt)
+            if val:
+                cols += f", {opt}={val!r}"
+        lines.append(
+            f"        self.{a.name} = RuleTable.from_csv(__import__('os').path.join("
+            f"self.config.project_root, self.config.input_folder, {a.filename!r}), {cols})"
+        )
+    return "\n".join(lines)
+
+
+def _render_turnover_call(spec: MechanismSpec) -> str:
+    """The per-tick Moran turnover call for Model.run() (population_dynamics)."""
+    if spec.population_dynamics is None:
+        return ""
+    return "            self._moran.turnover(self.agents, inherit=self._moran_inherit)\n"
+
+
+def _render_inherit_method(spec: MechanismSpec) -> str:
+    """The Moran inherit hook: offspring deep-copies inherit_attrs, resets
+    reset_attrs to their agent_state_var init."""
+    pd = spec.population_dynamics
+    if pd is None:
+        return ""
+    inits = {v.name: v.init for v in spec.agent_state_vars}
+    body = ["    def _moran_inherit(self, child, parent):"]
+    if pd.inherit_attrs or pd.reset_attrs:
+        body.append("        import copy")
+    for attr in pd.inherit_attrs:
+        body.append(f"        child.{attr} = copy.deepcopy(parent.{attr})")
+    for attr in pd.reset_attrs:
+        body.append(f"        child.{attr} = {inits.get(attr, '0')}")
+    if not (pd.inherit_attrs or pd.reset_attrs):
+        body.append("        pass")
+    return "\n" + "\n".join(body) + "\n"
+
+
 def generate_model_py(spec: MechanismSpec) -> str:
     """Emit core/model.py — branches on whether the model has a network topology.
 
@@ -89,16 +185,26 @@ def generate_model_py(spec: MechanismSpec) -> str:
 
 def _generate_model_py_network(spec: MechanismSpec) -> str:
     """Network-based model.py: Network + topology adapter call in setup()."""
+    op_imports = "".join(f", {n}" for n in _operator_runtime_imports(spec))
+    construction = _render_operator_construction(spec)
+    construction_block = (
+        "\n        # 4. Construct declared operators DETERMINISTICALLY from the spec.\n"
+        "        #    The CoderAgent must CALL these (self.<name>.play/turnover/...),\n"
+        "        #    never re-build the matrix / turnover loop (codegen fidelity).\n"
+        + construction + "\n"
+    ) if construction else ""
+    turnover = _render_turnover_call(spec)
+    inherit = _render_inherit_method(spec)
     return f'''"""Generated by abm_auto.codegen.template_generator. DO NOT EDIT.
 
 The mechanism body lives in environment.py / agent.py; this file is pure
-plumbing (imports, lifecycle, network construction). Regenerated from
-mechanism_spec.json on every codegen run — manual edits are silently
-overwritten.
+plumbing (imports, lifecycle, network construction, declared operators).
+Regenerated from mechanism_spec.json on every codegen run — manual edits are
+silently overwritten.
 """
 import random
 
-from abm_auto.runtime import Model, topologies
+from abm_auto.runtime import Model, topologies{op_imports}
 
 from .agent import {spec.agent_class_name}
 from .data_collector import {spec.data_collector_class_name}
@@ -131,15 +237,15 @@ class {spec.model_class_name}(Model):
         #    handles (e.g., seeding K initial infected agents).
         if hasattr(self.environment, "initialize"):
             self.environment.initialize(self.agents, self.network, self.scenario)
-
+{construction_block}
     def run(self):
-        # Collect tick 0 BEFORE any step (so output aligns with observed.csv
-        # conventions where row 0 = initial state)
+        # Per tick: the environment does the interaction (LLM-owned), the model
+        # drives the declared turnover operator (deterministic), then we record.
         for t in self.iterator(self.scenario.{spec.periods_param}):
             self.environment.step(self.agents, self.network, self.scenario)
             self.data_collector.collect(t)
-        self.data_collector.save()
-'''
+{turnover}        self.data_collector.save()
+{inherit}'''
 
 
 def _generate_model_py_topology_free(spec: MechanismSpec) -> str:
@@ -150,16 +256,27 @@ def _generate_model_py_topology_free(spec: MechanismSpec) -> str:
     for any spatial structure (Grid, custom spatial index) and for
     agent-to-agent interaction patterns.
     """
+    op_imports = "".join(f", {n}" for n in _operator_runtime_imports(spec))
+    construction = _render_operator_construction(spec)
+    construction_block = (
+        "\n        # 2. Construct declared operators DETERMINISTICALLY from the spec.\n"
+        "        #    The CoderAgent must CALL these (self.<name>.play/turnover/...),\n"
+        "        #    never re-build the matrix / turnover loop (codegen fidelity).\n"
+        + construction + "\n"
+    ) if construction else ""
+    turnover = _render_turnover_call(spec)
+    inherit = _render_inherit_method(spec)
     return f'''"""Generated by abm_auto.codegen.template_generator. DO NOT EDIT.
 
 Network-FREE model: spec.topology is None (Grid-based, spatial-free, or
 custom-spatial mechanism). Network setup is omitted — environment.py
 (LLM-owned) is responsible for any spatial structure beyond the agents
-themselves. Regenerated on every codegen run.
+themselves. Declared operators are constructed + driven here. Regenerated on
+every codegen run.
 """
 import random
 
-from abm_auto.runtime import Model
+from abm_auto.runtime import Model{op_imports}
 
 from .agent import {spec.agent_class_name}
 from .data_collector import {spec.data_collector_class_name}
@@ -178,8 +295,8 @@ class {spec.model_class_name}(Model):
 
         # 1. Create agents
         self.agents.setup_agents(agents_num=self.scenario.{spec.n_agents_param})
-
-        # 2. Defer model-specific initial state setup to the environment.
+{construction_block}
+        # 3. Defer model-specific initial state setup to the environment.
         #    The environment is LLM-owned; CoderAgent fills .initialize()
         #    (when needed) to set up Grid / spatial structures + seed any
         #    initial agent states.
@@ -187,13 +304,13 @@ class {spec.model_class_name}(Model):
             self.environment.initialize(self.agents, self.scenario)
 
     def run(self):
-        # Collect tick 0 BEFORE any step (so output aligns with observed.csv
-        # conventions where row 0 = initial state)
+        # Per tick: the environment does the interaction (LLM-owned), the model
+        # drives the declared turnover operator (deterministic), then we record.
         for t in self.iterator(self.scenario.{spec.periods_param}):
             self.environment.step(self.agents, self.scenario)
             self.data_collector.collect(t)
-        self.data_collector.save()
-'''
+{turnover}        self.data_collector.save()
+{inherit}'''
 
 
 # NB: _render_initial_setup was removed in commit deleting the LLM-FILL
