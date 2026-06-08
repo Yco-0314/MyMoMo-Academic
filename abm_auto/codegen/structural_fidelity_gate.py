@@ -13,10 +13,13 @@ truth. Logged, not done, to avoid touching Pipeline in this step.)
 
 Tier = "verification". The checks prove a COMPLETE structural property
 over the spec: every declared scenario_param appears as `self.X` in
-scenario.py, every declared agent_state_var appears in agent.py, and a
-GridAgent never coexists with Network wiring. These are exhaustive over
-the spec's declarations (like the anti-pattern catalogue), so the
-self-test can prove both directions — known-bad caught, clean passes.
+scenario.py, every declared agent_state_var appears in agent.py, a
+GridAgent never coexists with Network wiring, and every declared
+INTERACTION operator (PayoffGame / RuleTable / VitalDynamics) is actually
+called in the LLM-owned interaction body (`self.<name>`), never hand-rolled.
+These are exhaustive over the spec's declarations (like the anti-pattern
+catalogue), so the self-test can prove both directions — known-bad caught,
+clean passes.
 """
 from __future__ import annotations
 
@@ -97,6 +100,40 @@ def _scan(spec: dict, code_files: dict[str, str]) -> list[str]:
             f'"topology": null for Grid / spatial / no-topology models.'
         )
 
+    # Operator USE (ADR-014 codegen fidelity — Hawk-Dove e2e E5b). An INTERACTION
+    # operator (PayoffGame / RuleTable / VitalDynamics) is constructed in
+    # template-owned model.py AND wired onto the environment as `self.<name>`. The
+    # LLM-owned interaction body (environment.py / agent.py) MUST CALL it; a
+    # declared-but-uncalled operator means the LLM hand-rolled the mechanism (the
+    # constructed operator is dead code). model.py is excluded on purpose — it
+    # always references the operator (it builds + wires it), so scanning it would
+    # never catch the hand-roll. MoranProcess (population_dynamics) is model-driven
+    # turnover and is intentionally NOT required in the interaction body.
+    interaction_src = "\n".join(
+        code_files.get(f, "") or "" for f in ("core/environment.py", "core/agent.py")
+    )
+    if interaction_src.strip():
+        op_kinds = (
+            ("payoff_games", "PayoffGame", "pa, pb = self.{n}.play(a.strategy, b.strategy)"),
+            ("reference_assets", "RuleTable", "self.{n}.combine(items) / self.{n}.given_indices()"),
+            ("vital_dynamics", "VitalDynamics", "self.{n}.step(agents, spawn=..., on_birth=...)"),
+        )
+        for spec_key, opname, call_hint in op_kinds:
+            for op in spec.get(spec_key, []) or []:
+                name = op.get("name", "")
+                if not name:
+                    continue
+                # accept the wired env attr `self.<name>` or `self.model.<name>`
+                if not re.search(rf"\bself\.(?:model\.)?{re.escape(name)}\b", interaction_src):
+                    issues.append(
+                        f"environment.py/agent.py: declared {opname} `self.{name}` is "
+                        f"never called. model.py constructs it and wires it onto the "
+                        f"environment as `self.{name}` — the interaction body must CALL "
+                        f"it (`{call_hint.format(n=name)}`), not hand-roll the mechanism. "
+                        f"A declared operator that is never used is a codegen-fidelity "
+                        f"failure (the operator exists to replace the hand-roll)."
+                    )
+
     return issues
 
 
@@ -129,9 +166,11 @@ class StructuralFidelityGate:
           (b) missing scenario_param → caught
           (c) missing agent_state_var → caught
           (d) Grid/Network contradiction → caught
+          (e) declared interaction operator CALLED → pass
+          (f) declared interaction operator never called → caught
 
-        Pure, no I/O. (b)-(d) are the known-bad end; (a) guards against
-        over-firing. Exhaustive over the three check families → the
+        Pure, no I/O. (b)-(d),(f) are the known-bad end; (a),(e) guard
+        against over-firing. Exhaustive over the four check families → the
         completeness that earns verification tier.
         """
         aligned_spec = {
@@ -165,6 +204,20 @@ class StructuralFidelityGate:
             "core/model.py": "class M:\n    def setup(self):\n        self.network = self.create_network()\n",
         }
         if self.judge(StructuralFidelityInput(contra_spec, contra_code)).passed:
+            return False
+
+        # (e) declared interaction operator CALLED in the body → pass
+        op_spec = {"scenario_params": [], "agent_state_vars": [], "topology": None,
+                   "payoff_games": [{"name": "game"}]}
+        op_ok = {"core/environment.py":
+                 "class E:\n    def step(self, agents):\n        pa, pb = self.game.play(0, 1)\n"}
+        if not self.judge(StructuralFidelityInput(op_spec, op_ok)).passed:
+            return False
+
+        # (f) declared interaction operator NEVER called (hand-rolled) → caught
+        op_bad = {"core/environment.py":
+                  "class E:\n    def step(self, agents):\n        pa = agents[0].play_against(agents[1])\n"}
+        if self.judge(StructuralFidelityInput(op_spec, op_bad)).passed:
             return False
 
         return True

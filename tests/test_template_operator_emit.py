@@ -63,6 +63,10 @@ def test_payoff_and_moran_are_constructed_and_driven() -> None:
     assert "self.game = PayoffGame.hawk_dove(V=self.scenario.V, C=self.scenario.C)" in code
     assert "self._moran = MoranProcess(fitness_attr='fitness'" in code
     assert "self._moran.turnover(self.agents, inherit=self._moran_inherit)" in code
+    # #1a: the PayoffGame is WIRED onto the environment (interaction operator),
+    # so env.step() can call self.game.play(...). Moran is model-driven — NOT wired.
+    assert "self.environment.game = self.game" in code
+    assert "self.environment._moran" not in code
     # inherit hook from inherit_attrs / reset_attrs (reset -> the agent_state_var init)
     assert "child.strategy = copy.deepcopy(parent.strategy)" in code
     assert "child.score = 0.0" in code
@@ -84,6 +88,7 @@ def test_vital_dynamics_constructed() -> None:
     assert "from abm_auto.runtime import Model, VitalDynamics" in code
     assert "self.vital = VitalDynamics(energy_attr='score'" in code
     assert "reproduce_prob=0.04" in code and "max_population=3000" in code
+    assert "self.environment.vital = self.vital" in code   # #1a wired onto env
     compile(code, "model.py", "exec")
 
 
@@ -93,16 +98,23 @@ def test_reference_asset_loaded() -> None:
                        input_cols=["c1", "c2"], given_col="given")]))
     assert "RuleTable" in code
     assert "self.rules = RuleTable.from_csv(" in code and "'rules.csv'" in code
+    assert "self.environment.rules = self.rules" in code   # #1a wired onto env
     compile(code, "model.py", "exec")
 
 
 def test_network_variant_also_emits_operators() -> None:
     spec = _base(
         topology=TopologySpec(type="watts_strogatz", params={"k": 4, "p": 0.1}),
+        payoff_games=[PayoffGameSpec(name="game", game="hawk_dove",
+                                     params={"V": 2, "C": 4})],
         population_dynamics=PopulationDynamicsSpec(
             fitness_attr="fitness", inherit_attrs=["strategy"], reset_attrs=["score"]),
     )
     code = generate_model_py(spec)
     assert "MoranProcess" in code
     assert "self._moran.turnover(self.agents, inherit=self._moran_inherit)" in code
+    # #1a: wiring present in the network variant too, and BEFORE initialize()
+    # (so the env owns the operator when its initialize hook runs).
+    assert "self.environment.game = self.game" in code
+    assert code.index("self.environment.game = self.game") < code.index("initialize(")
     compile(code, "model.py", "exec")

@@ -99,6 +99,26 @@ class SimulatePhase:
         def _gen(feedback):
             err_to_fix = feedback if feedback is not None else initial_error
             self.verifier.fix(err_to_fix)
+            # Template-ownership through the fix loop (F1): the Verifier is
+            # LLM-driven and CAN rewrite the DO-NOT-EDIT template files
+            # (model.py etc.) — the Hawk-Dove re-run caught a Sanity_fix editing
+            # model.py's _moran_inherit. Re-restore so the guarantee holds beyond
+            # Phase 2, not just after codegen. _revert_template_files self-gates
+            # (no/invalid spec → no-op) and touches only the 5 template files, so
+            # agent.py / environment.py fixes survive. A revert here is a signal
+            # the Verifier tried to patch a deterministic file → surface it.
+            from abm_auto.pipeline.phases.codegen import _revert_template_files
+            reverted = _revert_template_files(ctx, editor="Verifier fix loop")
+            if reverted:
+                ctx.workspace.audit.raise_issue(
+                    phase="Phase 4-6 (fix loop)",
+                    severity="MEDIUM",
+                    text=(f"Verifier edited {reverted} template-owned file(s) during a "
+                          f"fix; reverted to the deterministic template. If a template "
+                          f"file genuinely needs changing, fix mechanism_spec.json or "
+                          f"TemplateGenerator — not the generated file."),
+                    actor="Pipeline",
+                )
             return None
 
         def _val(_ignored) -> ValidationOutcome:

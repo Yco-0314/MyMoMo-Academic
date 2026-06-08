@@ -98,7 +98,16 @@ def _operator_runtime_imports(spec: MechanismSpec) -> list[str]:
 
 
 def _render_operator_construction(spec: MechanismSpec) -> str:
-    """Lines for Model.setup(): construct each declared model-level operator."""
+    """Lines for Model.setup(): construct each declared model-level operator AND
+    hand the INTERACTION operators (PayoffGame / VitalDynamics / RuleTable) to the
+    environment as `self.environment.<name>`.
+
+    Construction alone was not enough (Hawk-Dove e2e E5b): the CoderAgent
+    re-derived the payoff matrix by hand because the constructed operator was not
+    in the path of `environment.step()`. Wiring it onto the env as `self.<name>`
+    makes `self.<name>.play(...)` the path of least resistance — the env owns it
+    like any other attribute, no signature change. MoranProcess is NOT wired (it
+    is model-driven turnover in run(), never called from the interaction body)."""
     lines: list[str] = []
     for g in spec.payoff_games:
         if g.game == "matrix":
@@ -106,6 +115,7 @@ def _render_operator_construction(spec: MechanismSpec) -> str:
         else:
             params = ", ".join(f"{k}={_param_value(v)}" for k, v in (g.params or {}).items())
             lines.append(f"        self.{g.name} = PayoffGame.{g.game}({params})")
+        lines.append(f"        self.environment.{g.name} = self.{g.name}  # interaction body calls self.{g.name}.play(a, b)")
     pd = spec.population_dynamics
     if pd is not None:
         extra = (f", gompertz_a={pd.gompertz_a}, gompertz_b={pd.gompertz_b}"
@@ -124,6 +134,7 @@ def _render_operator_construction(spec: MechanismSpec) -> str:
             f"death_at={v.death_at}, {repro}{cap}, "
             f"seed=int(getattr(self.scenario, 'seed', 0)))"
         )
+        lines.append(f"        self.environment.{v.name} = self.{v.name}  # interaction body calls self.{v.name}.step(...)")
     for a in spec.reference_assets:
         cols = f"input_cols={a.input_cols!r}, output_col={a.output_col!r}"
         for opt in ("given_col", "weight_col", "label_col"):
@@ -134,6 +145,7 @@ def _render_operator_construction(spec: MechanismSpec) -> str:
             f"        self.{a.name} = RuleTable.from_csv(__import__('os').path.join("
             f"self.config.project_root, self.config.input_folder, {a.filename!r}), {cols})"
         )
+        lines.append(f"        self.environment.{a.name} = self.{a.name}  # interaction body calls self.{a.name}.combine(...)")
     return "\n".join(lines)
 
 
@@ -188,9 +200,10 @@ def _generate_model_py_network(spec: MechanismSpec) -> str:
     op_imports = "".join(f", {n}" for n in _operator_runtime_imports(spec))
     construction = _render_operator_construction(spec)
     construction_block = (
-        "\n        # 4. Construct declared operators DETERMINISTICALLY from the spec.\n"
-        "        #    The CoderAgent must CALL these (self.<name>.play/turnover/...),\n"
-        "        #    never re-build the matrix / turnover loop (codegen fidelity).\n"
+        "\n        # 3. Construct declared operators DETERMINISTICALLY from the spec,\n"
+        "        #    and hand the interaction ones to the environment as self.<name>.\n"
+        "        #    The CoderAgent CALLS these (self.<name>.play/step/combine/...),\n"
+        "        #    never re-builds the matrix / table / birth-death (codegen fidelity).\n"
         + construction + "\n"
     ) if construction else ""
     turnover = _render_turnover_call(spec)
@@ -230,14 +243,14 @@ class {spec.model_class_name}(Model):
             agent_lists=[self.agents],
             topology={_render_topology_call(spec.topology)},
         )
-
-        # 3. Defer model-specific initial state setup to the environment.
+{construction_block}
+        # 4. Defer model-specific initial state setup to the environment.
         #    The environment is LLM-owned; CoderAgent fills .initialize()
         #    if the mechanism needs initial state beyond what agent.setup()
         #    handles (e.g., seeding K initial infected agents).
         if hasattr(self.environment, "initialize"):
             self.environment.initialize(self.agents, self.network, self.scenario)
-{construction_block}
+
     def run(self):
         # Per tick: the environment does the interaction (LLM-owned), the model
         # drives the declared turnover operator (deterministic), then we record.
@@ -259,9 +272,10 @@ def _generate_model_py_topology_free(spec: MechanismSpec) -> str:
     op_imports = "".join(f", {n}" for n in _operator_runtime_imports(spec))
     construction = _render_operator_construction(spec)
     construction_block = (
-        "\n        # 2. Construct declared operators DETERMINISTICALLY from the spec.\n"
-        "        #    The CoderAgent must CALL these (self.<name>.play/turnover/...),\n"
-        "        #    never re-build the matrix / turnover loop (codegen fidelity).\n"
+        "\n        # 2. Construct declared operators DETERMINISTICALLY from the spec,\n"
+        "        #    and hand the interaction ones to the environment as self.<name>.\n"
+        "        #    The CoderAgent CALLS these (self.<name>.play/step/combine/...),\n"
+        "        #    never re-builds the matrix / table / birth-death (codegen fidelity).\n"
         + construction + "\n"
     ) if construction else ""
     turnover = _render_turnover_call(spec)

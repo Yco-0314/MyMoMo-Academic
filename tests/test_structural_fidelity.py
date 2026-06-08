@@ -206,3 +206,64 @@ def test_pure_network_passes_no_contradiction() -> None:
         ),
     }
     assert _scan(spec, files) == []
+
+
+# ── Operator USE (codegen fidelity, Hawk-Dove e2e E5b) ──────────────────────
+
+
+def test_declared_payoff_game_called_passes() -> None:
+    """A declared PayoffGame that the env CALLS via the wired self.<name> is clean."""
+    spec = {"scenario_params": [], "agent_state_vars": [],
+            "payoff_games": [{"name": "game", "game": "hawk_dove"}]}
+    files = {
+        "core/environment.py": (
+            "class E(Environment):\n"
+            "    def step(self, agents):\n"
+            "        pa, pb = self.game.play(agents[0].strategy, agents[1].strategy)\n"
+        ),
+    }
+    assert _scan(spec, files) == []
+
+
+def test_declared_payoff_game_handrolled_caught() -> None:
+    """The real E5b failure: the operator is declared+wired but env hand-rolls
+    the matrix (self.game never called) → must be caught."""
+    spec = {"scenario_params": [], "agent_state_vars": [],
+            "payoff_games": [{"name": "game", "game": "hawk_dove"}]}
+    files = {
+        "core/environment.py": (
+            "class E(Environment):\n"
+            "    def step(self, agents):\n"
+            "        pa = agents[0].play_against(agents[1])\n"
+        ),
+        "core/agent.py": (
+            "class P(Agent):\n"
+            "    def play_against(self, other):\n"
+            "        return 2 if self.strategy else 0\n"
+        ),
+    }
+    issues = _scan(spec, files)
+    assert len(issues) == 1
+    assert "self.game" in issues[0] and "never called" in issues[0]
+
+
+def test_declared_operator_via_self_model_passes() -> None:
+    """Reaching the operator through self.model.<name> also counts as use."""
+    spec = {"scenario_params": [], "agent_state_vars": [],
+            "vital_dynamics": [{"name": "vital"}]}
+    files = {
+        "core/environment.py": (
+            "class E(Environment):\n"
+            "    def step(self, agents):\n"
+            "        self.model.vital.step(agents, spawn=lambda: None)\n"
+        ),
+    }
+    assert _scan(spec, files) == []
+
+
+def test_operator_check_silent_without_interaction_files() -> None:
+    """No env.py/agent.py yet (early codegen) → operator check stays silent."""
+    spec = {"scenario_params": [], "agent_state_vars": [],
+            "payoff_games": [{"name": "game"}]}
+    assert _scan(spec, {}) == []
+    assert _scan(spec, {"core/model.py": "self.game = PayoffGame.hawk_dove()"}) == []

@@ -131,8 +131,11 @@ So in `environment.py` you must:
   `step()` returns each generation.
 
 The same rule holds for the other declared operators below: `model.py`
-CONSTRUCTS them (`self.<game>`, `self.<rules>`, `self.<vital>`); your job in
-`agent.py` / `environment.py` is to CALL them, never to re-build or hand-roll them.
+CONSTRUCTS them and WIRES the interaction ones onto the environment as
+`self.<name>` (`self.<game>`, `self.<rules>`, `self.<vital>`); your job in
+`agent.py` / `environment.py` is to CALL `self.<name>`, never to re-build or
+hand-roll them. A declared operator that you never call is a fidelity bug — the
+structural gate fails the build until the interaction actually uses it.
 
 `turnover` handles death (constant or Gompertz on `age`), fitness-
 proportional parent selection, holding N constant, and ageing. Do not
@@ -141,75 +144,57 @@ re-implement any of it.
 #### Reference assets (ONLY if `mechanism_spec.json` has `reference_assets`)
 
 If — and only if — the spec lists a `reference_assets` entry, the model is
-driven by an external data table. **Use the runtime's `RuleTable`; never
-hard-code or enumerate the rows.** The pipeline has already copied the data
-file into `data/input/<filename>`. Load it once in `Model.setup`:
+driven by an external data table. **`core/model.py` ALREADY loads it**: the
+template constructs `self.<name> = RuleTable.from_csv(...)` and **wires it onto
+the environment as `self.<name>`** (DO NOT EDIT model.py; never re-load the file
+or enumerate the rows). In `environment.py` / `agent.py`, just CALL the wired
+table — it is `self.<name>` on the environment:
 
 ```python
-# in core/model.py — Model.setup(), using the spec's reference_asset fields
-import os
-from abm_auto.runtime import RuleTable
-# asset: name="rules", filename="rules_tidied.csv", output_col="item",
-#        input_cols=["c1","c2","c3"], given_col="given", weight_col="point"
-path = os.path.join(self.config.project_root, self.config.input_folder, "rules_tidied.csv")
-self.rules = RuleTable.from_csv(
-    path, input_cols=["c1", "c2", "c3"], output_col="item",
-    given_col="given", weight_col="point", label_col="name_simplified",
-)
+# in core/environment.py — self.<name> is the wired RuleTable (e.g. self.rules)
+produced = self.rules.combine(items)      # produced item index for a combo (or None)
+starts   = self.rules.given_indices()     # the starting items
+w        = self.rules.weight_of(idx)      # the score for an item
 ```
 
-Then agents/environment use it: `self.rules.combine(items)` returns the
-produced item index for a combination (or None), `self.rules.given_indices()`
-the starting items, `self.rules.weight_of(idx)` the score. The item index
-space (`self.rules.n_items`) is the shared vocabulary a `learned_operators`
-model indexes into (pass `n_items=scenario...` or the table's `n_items`).
+The item index space (`self.rules.n_items`) is the shared vocabulary a
+`learned_operators` model indexes into.
 
 #### Payoff games (ONLY if `mechanism_spec.json` has `payoff_games`)
 
 If — and only if — the spec lists a `payoff_games` entry, agents play a
-2-player game. **Use the runtime's `PayoffGame`; never hand-build the payoff
-matrix lookup.** Construct it once in `Model.setup`:
+2-player game. **`core/model.py` ALREADY constructs the `PayoffGame` and wires
+it onto the environment as `self.<name>`** (e.g. `self.game`) — DO NOT EDIT
+model.py, and **never hand-build the payoff matrix**: no `play_against` method
+on the agent, no `if strategy == 1: return V` ladder anywhere. That hand-roll is
+exactly what the operator exists to prevent. Each agent has a `strategy` (the
+declared `strategy_var`, an int 0..n_strategies-1). In `environment.py`'s
+`step()`, ONE call to the wired game pays BOTH players:
 
 ```python
-# in core/model.py — Model.setup(), from the spec's payoff_game fields
-from abm_auto.runtime import PayoffGame
-# game="prisoners_dilemma", params={"T":5,"R":3,"P":1,"S":0}
-self.game = PayoffGame.prisoners_dilemma(T=5, R=3, P=1, S=0)
-# (or, game="matrix": self.game = PayoffGame.from_matrix(matrix))
-```
-
-In the interaction, each agent has a `strategy` (the declared `strategy_var`,
-an int 0..n_strategies-1). An encounter pays both players:
-
-```python
+# in core/environment.py — self.<name> is the wired PayoffGame (e.g. self.game)
 pa, pb = self.game.play(a.strategy, b.strategy)   # ordered, dual payoff
 a.score += pa
 b.score += pb
 ```
 
-Pair with `population_dynamics` (Moran) for evolutionary game theory: agents
-play to accumulate `score`, then `self.moran.turnover(...)` selects ∝ score.
-Never re-implement the matrix or the dual payoff — call `.play` / `.payoff` /
-`.best_response`.
+`play` returns the ordered pair `(payoff_to_a, payoff_to_b)` — re-deriving it by
+hand is the bug the operator removes. Pair with `population_dynamics` (Moran):
+agents accumulate `score`; the MODEL's `turnover` then selects ∝ score — you do
+NOT call turnover and do NOT touch `self._moran`.
 
 #### Vital dynamics (ONLY if `mechanism_spec.json` has `vital_dynamics`)
 
 If — and only if — the spec lists a `vital_dynamics` entry, the population SIZE
-varies (energy ecology: wolf-sheep, rabbits-grass). **Use the runtime's
-`VitalDynamics`; never hand-write the death-filter + energy-split + list
-rebuild (the classic add/remove-while-iterating bug).** Build it once in
-`Model.setup`, apply the per-step energy dynamics yourself, then call `step`:
+varies (energy ecology: wolf-sheep, rabbits-grass). **`core/model.py` ALREADY
+constructs the `VitalDynamics` and wires it onto the environment as
+`self.<name>`** (e.g. `self.vital`) — DO NOT EDIT model.py, and **never
+hand-write the death-filter + energy-split + list rebuild** (the classic
+add/remove-while-iterating bug). In `environment.py`, apply the per-step energy
+dynamics yourself, then call the wired operator's `step`:
 
 ```python
-# in core/model.py — Model.setup(), from the spec's vital_dynamics fields
-from abm_auto.runtime import VitalDynamics
-self.vital = VitalDynamics(energy_attr="energy", death_at=0,
-                           reproduce_prob=0.04, max_population=3000,
-                           seed=int(getattr(self.scenario, "seed", 0)))
-```
-
-```python
-# in core/environment.py (or model.run) — once per tick, AFTER energy changes:
+# in core/environment.py — once per tick, AFTER energy changes; self.<name> is wired
 def _spawn():
     child = self.agents.add(AgentClass)   # framework's agent factory
     return child
@@ -218,10 +203,10 @@ def _on_birth(parent, child):
 births, deaths = self.vital.step(self.agents, spawn=_spawn, on_birth=_on_birth)
 ```
 
-`VitalDynamics` owns who dies (energy ≤ death_at), who reproduces (threshold or
-probability), the energy split, the carrying-capacity cap, and the safe list
-rebuild. The model supplies only the energy dynamics + `spawn` / `on_birth`.
-For a FIXED-N selection turnover use `population_dynamics`/`MoranProcess` instead.
+`VitalDynamics` owns who dies (energy ≤ death_at), who reproduces, the energy
+split, the carrying-capacity cap, and the safe list rebuild. You supply only the
+energy dynamics + `spawn` / `on_birth`. For a FIXED-N selection turnover the spec
+uses `population_dynamics`/`MoranProcess` instead (model-driven; don't touch it).
 
 ### DataCollector (`core/data_collector.py`)
 ```python

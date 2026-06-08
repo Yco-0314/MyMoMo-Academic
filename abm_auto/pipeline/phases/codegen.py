@@ -429,21 +429,33 @@ def _copy_reference_assets(ctx: PipelineContext, spec: MechanismSpec) -> None:
             pass
 
 
-def _revert_template_files(ctx: PipelineContext) -> None:
-    """Re-emit template files after CoderAgent runs.
+def _revert_template_files(ctx: PipelineContext, editor: str = "CoderAgent") -> int:
+    """Re-emit template files after an LLM step that may have touched them.
 
-    CoderAgent may have edited / rewritten the template-owned files
-    even when told not to (LLMs ignore directives sometimes). Running
-    the generator again is idempotent — restores the deterministic
-    contents. Cheap (~milliseconds; all string ops).
+    The 5 template-owned files (model.py, scenario.py, data_collector.py,
+    main.py, SimulatorScenarios.csv) carry a "DO NOT EDIT" banner, but LLMs
+    ignore directives — both the CoderAgent (Phase 2) AND the GVR fix loop
+    (Phase 4 Simulation/Sanity fixes) can rewrite them. Running the generator
+    again is idempotent: it restores the deterministic, spec-faithful contents
+    and drops any LLM edit. Cheap (~ms; all string ops). Only the 5 template
+    files are regenerated — agent.py / environment.py (LLM-owned) are untouched.
+
+    Returns the number of files whose on-disk content was reverted (0 = the LLM
+    left the template files alone).
     """
     json_path = ctx.workspace.path / "mechanism_spec.json"
     if not json_path.exists():
-        return
+        return 0
     try:
         spec = MechanismSpec.from_json(json_path.read_text(encoding="utf-8"))
     except Exception:
-        return
+        return 0
+    # Self-gate on validity: an invalid-but-parseable spec means templates were
+    # NOT used (see _try_run_template_generator) and model.py is LLM-owned —
+    # regenerating here would clobber it. Mirror that gate so this is safe to
+    # call unconditionally (Phase 2 AND the GVR fix loop).
+    if spec.validate():
+        return 0
     files = generate_all(spec)
     model_dir = ctx.workspace.model_dir
     overwrote = 0
@@ -457,9 +469,10 @@ def _revert_template_files(ctx: PipelineContext) -> None:
         target.write_text(content, encoding="utf-8")
     if overwrote:
         console.print(
-            f"  [dim]TemplateGenerator restored {overwrote} file(s) that "
-            f"CoderAgent had edited[/dim]"
+            f"  [dim]TemplateGenerator restored {overwrote} template file(s) that "
+            f"{editor} had edited[/dim]"
         )
+    return overwrote
 
 
 def _check_calibration_contract(ctx: PipelineContext) -> list[str]:
