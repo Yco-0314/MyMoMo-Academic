@@ -34,6 +34,9 @@ examples/adversarial_codegen/data/output/
 docs/mymomo-simulation-engine-evolution-plan.md
 docs/mymomo-world-model-roadmap.md
 
+# Dogfood run artifacts (transient stdout / scorecards / logs from pipeline dogfoods)
+docs/dogfood/
+
 # macOS
 .DS_Store
 
