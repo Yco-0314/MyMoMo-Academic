@@ -650,6 +650,30 @@ library. Ungated synthesis would be architecture-level fabrication
 (disguising "cannot build this" as "did build this"). See
 [ADR-015](../decisions/ADR-015-synthesis-phase.md).
 
+**Codegen-fidelity wall**  
+The fidelity counterpart to the Coverage Gate's expressibility: a spec can be
+covered and its boilerplate template-owned, yet the LLM-owned bodies
+(`agent.py` / `environment.py` + extraction slots) still mis-wire a declared
+operator — the model runs but reproduces nothing, or the right number for the
+wrong reason. The Hawk-Dove e2e proved the wall is **six distinct layers**
+(hand-rolled operator · selected trait not inherited · dead hand-rolled
+turnover · degenerate rate · trait wrongly reset · interaction orphaned),
+each closed by a deterministic **invariant** (spec normalization) or
+**reachability** check (structural gate) — never the generator's word. The
+catalogue is open: other operators will expose more layers. See
+[ADR-016](../decisions/ADR-016-codegen-fidelity-wall.md).
+
+**Interaction-completeness (reached-from-step)**  
+The layer-6 fidelity check: a declared interaction operator must be REACHED
+from `environment.step()` — the framework's only per-tick call — not merely
+referenced somewhere. "Referenced ≠ reached": run #4 passed the operator-USE
+scan because `self.game` appeared in an orphaned `agent.step()` the framework
+never calls, so the game never played and selection went neutral.
+`StructuralFidelityGate._env_step_reachable_src` walks the AST from
+`environment.step()` through the env helpers it calls and requires the operator
+to appear in that reachable source. The general lesson: a fidelity gate must
+check the operator is on the execution path, not just present in the file.
+
 ---
 
 ## Related Documentation
