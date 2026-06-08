@@ -267,3 +267,33 @@ def test_operator_check_silent_without_interaction_files() -> None:
             "payoff_games": [{"name": "game"}]}
     assert _scan(spec, {}) == []
     assert _scan(spec, {"core/model.py": "self.game = PayoffGame.hawk_dove()"}) == []
+
+
+# ── Hand-rolled turnover (bug B): Moran is model-driven, env must not re-roll it ──
+
+
+def test_handrolled_turnover_caught_when_pop_dynamics_declared() -> None:
+    """The re-run #2 dead `moran_process` in env.py — flagged now."""
+    spec = {"scenario_params": [], "agent_state_vars": [],
+            "population_dynamics": {"fitness_attr": "score"}}
+    files = {"core/environment.py":
+             "class E(Environment):\n    def moran_process(self, agents, scenario):\n        return agents\n"}
+    issues = _scan(spec, files)
+    assert len(issues) == 1
+    assert "moran_process" in issues[0] and "hand-rolled population turnover" in issues[0]
+
+
+def test_no_handrolled_turnover_passes() -> None:
+    spec = {"scenario_params": [], "agent_state_vars": [],
+            "population_dynamics": {"fitness_attr": "score"}}
+    files = {"core/environment.py":
+             "class E(Environment):\n    def step(self, agents, scenario):\n        for a in agents:\n            a.score += 1\n"}
+    assert _scan(spec, files) == []
+
+
+def test_turnover_check_silent_without_pop_dynamics() -> None:
+    """No population_dynamics → a method named e.g. reproduce is the model's own
+    business, not flagged."""
+    spec = {"scenario_params": [], "agent_state_vars": []}
+    files = {"core/environment.py": "class E:\n    def reproduce(self):\n        pass\n"}
+    assert _scan(spec, files) == []

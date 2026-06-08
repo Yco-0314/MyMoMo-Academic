@@ -412,6 +412,33 @@ class VitalDynamicsSpec:
         return errors
 
 
+def _normalize_heritable_strategy(population_dynamics, payoff_games, agent_state_vars) -> None:
+    """Enforce the heritability invariant in-place (Hawk-Dove e2e re-run #2, bug A).
+
+    In an evolutionary game the strategy under selection MUST be heritable, or the
+    Moran turnover is a no-op on it: the offspring keeps the dead agent's own
+    strategy and fitness-proportional selection never propagates the fit parent's.
+    Extraction routinely drops the strategy from `inherit_attrs` — it describes
+    "offspring inherit strategy" in prose but leaves the field empty — and the LLM
+    then compensates with a (dead) hand-rolled turnover. So when both
+    `population_dynamics` and `payoff_games` are present, every
+    `payoff_games[].strategy_var` that names a real agent_state_var is added to
+    `inherit_attrs` (unless it is already inherited, or — defensively — listed
+    under reset_attrs, which would be a separate contradiction). This is a
+    structural necessity, not a judgement call: selection on a non-heritable trait
+    is meaningless.
+    """
+    if population_dynamics is None or not payoff_games:
+        return
+    state_var_names = {v.name for v in agent_state_vars}
+    for g in payoff_games:
+        sv = getattr(g, "strategy_var", "")
+        if (sv and sv in state_var_names
+                and sv not in population_dynamics.inherit_attrs
+                and sv not in population_dynamics.reset_attrs):
+            population_dynamics.inherit_attrs.append(sv)
+
+
 @dataclass
 class MechanismSpec:
     """Full structured spec — the contract between MechanismExtractor and the
@@ -501,6 +528,7 @@ class MechanismSpec:
         reference_assets = [ReferenceAsset(**a) for a in data.get("reference_assets", [])]
         payoff_games = [PayoffGameSpec(**g) for g in data.get("payoff_games", [])]
         vital_dynamics = [VitalDynamicsSpec(**v) for v in data.get("vital_dynamics", [])]
+        _normalize_heritable_strategy(population_dynamics, payoff_games, agent_state_vars)
         return cls(
             project_name=data.get("project_name", "ABMProject"),
             model_class_name=data.get("model_class_name", "MyModel"),

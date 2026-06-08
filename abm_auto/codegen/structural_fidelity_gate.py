@@ -14,12 +14,13 @@ truth. Logged, not done, to avoid touching Pipeline in this step.)
 Tier = "verification". The checks prove a COMPLETE structural property
 over the spec: every declared scenario_param appears as `self.X` in
 scenario.py, every declared agent_state_var appears in agent.py, a
-GridAgent never coexists with Network wiring, and every declared
-INTERACTION operator (PayoffGame / RuleTable / VitalDynamics) is actually
-called in the LLM-owned interaction body (`self.<name>`), never hand-rolled.
-These are exhaustive over the spec's declarations (like the anti-pattern
-catalogue), so the self-test can prove both directions — known-bad caught,
-clean passes.
+GridAgent never coexists with Network wiring, every declared INTERACTION
+operator (PayoffGame / RuleTable / VitalDynamics) is actually called in the
+LLM-owned interaction body (`self.<name>`) and never hand-rolled, and — when
+population_dynamics is declared — the interaction body never defines its own
+turnover / selection / reproduction method (that is model-driven). These are
+exhaustive over the spec's declarations (like the anti-pattern catalogue), so
+the self-test can prove both directions — known-bad caught, clean passes.
 """
 from __future__ import annotations
 
@@ -134,6 +135,29 @@ def _scan(spec: dict, code_files: dict[str, str]) -> list[str]:
                         f"failure (the operator exists to replace the hand-roll)."
                     )
 
+    # Hand-rolled turnover (Hawk-Dove e2e re-run #2, bug B). When
+    # population_dynamics is declared, MoranProcess turnover is MODEL-driven —
+    # model.run() calls self._moran.turnover() with the _moran_inherit hook. The
+    # LLM-owned env/agent must NOT define its own selection / reproduction /
+    # turnover method. Re-run #2's env.py defined a `moran_process` that re-rolled
+    # roulette selection + mutation; it was dead (uncalled) but is the same
+    # hand-roll instinct the operator removes, and if ever wired it double-counts
+    # births or drifts from the spec. Flag any such method definition.
+    if spec.get("population_dynamics") and interaction_src.strip():
+        m = re.search(
+            r"def\s+(\w*(?:moran|turnover|reproduc|wright_fisher|birth_death)\w*)\s*\(",
+            interaction_src, re.IGNORECASE,
+        )
+        if m:
+            issues.append(
+                f"environment.py/agent.py defines `{m.group(1)}` — a hand-rolled "
+                f"population turnover. population_dynamics is declared, so turnover is "
+                f"MODEL-driven: model.run() calls self._moran.turnover(self.agents, "
+                f"inherit=self._moran_inherit). Delete this method and let the operator "
+                f"run it — re-implementing selection/reproduction double-counts births "
+                f"or drifts from the spec's death_rate / inheritance."
+            )
+
     return issues
 
 
@@ -168,9 +192,11 @@ class StructuralFidelityGate:
           (d) Grid/Network contradiction → caught
           (e) declared interaction operator CALLED → pass
           (f) declared interaction operator never called → caught
+          (g) population_dynamics + a hand-rolled turnover method → caught
+          (h) population_dynamics + no hand-rolled turnover → pass
 
-        Pure, no I/O. (b)-(d),(f) are the known-bad end; (a),(e) guard
-        against over-firing. Exhaustive over the four check families → the
+        Pure, no I/O. (b)-(d),(f),(g) are the known-bad end; (a),(e),(h) guard
+        against over-firing. Exhaustive over the five check families → the
         completeness that earns verification tier.
         """
         aligned_spec = {
@@ -218,6 +244,20 @@ class StructuralFidelityGate:
         op_bad = {"core/environment.py":
                   "class E:\n    def step(self, agents):\n        pa = agents[0].play_against(agents[1])\n"}
         if self.judge(StructuralFidelityInput(op_spec, op_bad)).passed:
+            return False
+
+        # (g) population_dynamics declared + env hand-rolls a turnover → caught
+        pd_spec = {"scenario_params": [], "agent_state_vars": [], "topology": None,
+                   "population_dynamics": {"fitness_attr": "score"}}
+        pd_bad = {"core/environment.py":
+                  "class E:\n    def moran_process(self, agents):\n        return agents\n"}
+        if self.judge(StructuralFidelityInput(pd_spec, pd_bad)).passed:
+            return False
+
+        # (h) population_dynamics declared + env does NOT re-roll turnover → pass
+        pd_ok = {"core/environment.py":
+                 "class E:\n    def step(self, agents):\n        for a in agents:\n            a.score += 1\n"}
+        if not self.judge(StructuralFidelityInput(pd_spec, pd_ok)).passed:
             return False
 
         return True

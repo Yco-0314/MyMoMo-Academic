@@ -151,3 +151,44 @@ def test_mutation_spec_validation() -> None:
     assert PopulationDynamicsSpec(mutation_rate=1.5).validate()          # rate out of range
     assert PopulationDynamicsSpec(mutation_rate=0.1).validate()          # missing attr+values
     assert PopulationDynamicsSpec(mutation_rate=0.1, mutation_attr="s").validate()  # missing values
+
+
+# ── bug A: the selected strategy MUST be heritable (from_dict normalization) ──
+
+
+def _evo_game_dict(*, inherit_attrs, reset_attrs=None):
+    return {
+        "topology": None,
+        "scenario_params": [{"name": "agent_num", "type": "int", "default": 200},
+                            {"name": "periods", "type": "int", "default": 300}],
+        "n_agents_param": "agent_num", "periods_param": "periods",
+        "env_step_pseudocode": "play", "targets": ["h"],
+        "agent_state_vars": [{"name": "strategy", "type": "int", "init": "1"},
+                             {"name": "score", "type": "float", "init": "0.0"}],
+        "payoff_games": [{"name": "game", "game": "hawk_dove", "strategy_var": "strategy"}],
+        "population_dynamics": {"fitness_attr": "score", "death_rate": 0.5,
+                                "inherit_attrs": inherit_attrs,
+                                "reset_attrs": reset_attrs or ["score"]},
+    }
+
+
+def test_strategy_var_auto_added_to_inherit_attrs() -> None:
+    """The re-run #2 bug: extraction left inherit_attrs=[] so the Moran turnover
+    never propagated the fit parent's strategy. from_dict must add it back."""
+    spec = MechanismSpec.from_dict(_evo_game_dict(inherit_attrs=[]))
+    assert "strategy" in spec.population_dynamics.inherit_attrs
+    # and the inheritance line is now emitted, so selection actually acts on strategy
+    code = generate_model_py(spec)
+    assert "child.strategy = copy.deepcopy(parent.strategy)" in code
+
+
+def test_strategy_var_not_duplicated_when_already_inherited() -> None:
+    spec = MechanismSpec.from_dict(_evo_game_dict(inherit_attrs=["strategy"]))
+    assert spec.population_dynamics.inherit_attrs.count("strategy") == 1
+
+
+def test_strategy_var_not_added_when_in_reset_attrs() -> None:
+    """Defensive: don't create an inherit+reset contradiction on the same attr."""
+    spec = MechanismSpec.from_dict(
+        _evo_game_dict(inherit_attrs=[], reset_attrs=["strategy", "score"]))
+    assert "strategy" not in spec.population_dynamics.inherit_attrs
