@@ -1,67 +1,98 @@
-"""
-ABM Auto Runtime — Agent base classes.
+"""ABM Auto Runtime — Agent base classes (ADR-009 Phase 4, Stage C).
 
-Wraps MyMoMo Runtime's Agent/GridAgent/NetworkAgent and fixes known gotchas:
-  - Agent: adds _safe_attr() to prevent setup() from overwriting CSV-loaded values
-  - GridAgent: provides default set_category() so subclasses don't need to override
-    unless they have multiple agent types on the same grid
-  - NetworkAgent: same default set_category() as GridAgent
+Standalone reimplementation of Melodie's ``Element`` / ``Agent`` +
+``GridItem`` / ``GridAgent`` (from grid.py) + ``NetworkAgent`` (from network.py)
+— no Melodie import. Faithful to the lifecycle (``id`` + scenario/model
+injection + ``setup()``), ``set_params`` / ``to_dict`` / ``to_json``, grid
+membership (``grid`` / ``x`` / ``y`` / ``category``) and network membership
+(``category`` / ``network``). ABM Auto additions retained: ``_safe_attr`` (keeps
+CSV-loaded values through ``setup()``) and a default ``set_category()``→0 (so
+single-type models need not override it).
 """
 from __future__ import annotations
 
-from typing import Any
-
-from Melodie import Agent as _Agent
-from Melodie import GridAgent as _GridAgent
-from Melodie import NetworkAgent as _NetworkAgent
+from typing import Any, Dict, List, Optional
 
 
-class Agent(_Agent):
-    """Base agent class for ABM Auto simulations.
+class _Element:
+    """Param/serialization mixin (Melodie's ``Element``)."""
 
-    Key addition over raw MyMoMo Runtime Agent:
-      Use ``self._safe_attr(name, default)`` inside ``setup()`` for any attribute
-      that may be pre-loaded from AgentParams.csv.  This preserves the CSV value
-      instead of overwriting it with the default.
+    _unserializable_props_: tuple = ()
 
-    Example::
+    def set_params(self, params: Dict[str, Any]) -> None:
+        for name, value in params.items():
+            if name in self.__dict__:
+                setattr(self, name, value)
 
-        def setup(self):
-            # state may come from AgentParams.csv — preserve it
-            self.state: int = self._safe_attr("state", 0)
-            # infection_prob is never in CSV — plain assignment is fine
-            self.infection_prob: float = 0.0
+    def to_dict(self, properties: Optional[List[str]] = None) -> Dict:
+        if properties is None:
+            properties = self.__dict__.keys()
+        return {p: self.__dict__[p] for p in properties}
+
+    def to_json(self, properties: Optional[List[str]] = None) -> Dict:
+        if properties is None:
+            properties = self.__dict__.keys()
+        return {
+            p: self.__dict__[p]
+            for p in properties
+            if p not in self._unserializable_props_
+        }
+
+
+class Agent(_Element):
+    """Base agent: ``id`` + scenario/model refs + a ``setup()`` hook.
+
+    Use ``self._safe_attr(name, default)`` inside ``setup()`` for any attribute
+    that may be pre-loaded from a CSV — it preserves the loaded value instead of
+    overwriting it with the default.
     """
 
-    def _safe_attr(self, name: str, default: Any) -> Any:
-        """Return the current value of *name* if already set, else *default*.
+    _unserializable_props_ = ("model", "scenario")
 
-        Use inside ``setup()`` for attributes that are loaded from CSV before
-        ``setup()`` is called by the MyMoMo Runtime runtime.
-        """
+    def __init__(self, agent_id: int) -> None:
+        self.id = agent_id
+        self.scenario = None
+        self.model = None
+
+    def setup(self) -> None:
+        """Declare agent properties with initial values. Overridden per model."""
+        pass
+
+    def _safe_attr(self, name: str, default: Any) -> Any:
         return getattr(self, name, default)
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} id={getattr(self, 'id', '?')}>"
 
 
-class GridAgent(_GridAgent):
-    """Grid-aware agent with a safe default category.
+class GridItem(Agent):
+    _unserializable_props_ = ("model", "scenario", "grid")
 
-    MyMoMo Runtime's GridAgent raises ``NotImplementedError`` if ``set_category()``
-    is not overridden.  ABM Auto's GridAgent defaults to category 0, which is
-    correct for models with a single agent type.  Override only when you have
-    multiple agent types sharing the same grid.
+    def __init__(self, agent_id: int, grid=None, x: int = 0, y: int = 0) -> None:
+        super().__init__(agent_id)
+        self.grid = grid
+        self.x = x
+        self.y = y
 
-    Also inherits ``_safe_attr()`` from Agent for CSV-loading safety.
-    """
 
-    def _safe_attr(self, name: str, default: Any) -> Any:
-        return getattr(self, name, default)
+class GridAgent(GridItem):
+    """Grid-aware agent. Defaults ``category`` to 0 (single-type grid); override
+    ``set_category()`` when multiple agent types share a grid."""
+
+    def __init__(self, agent_id: int, x: int = 0, y: int = 0, grid=None) -> None:
+        super().__init__(agent_id, grid, x, y)
+        self.category = -1
+        self.set_category()
+        assert self.category >= 0, "category should be >= 0"
 
     def set_category(self) -> None:
-        """Default category for single-type grid models.  Override when needed."""
+        """Default category for single-type grid models. Override when needed."""
         self.category = 0
+
+    def rand_move_agent(self, x_range, y_range) -> None:
+        if self.grid is None:
+            raise ValueError("GridAgent has not been registered onto a grid")
+        self.x, self.y = self.grid.rand_move_agent(self, self.category, x_range, y_range)
 
     def __repr__(self) -> str:
         x = getattr(self, "x", "?")
@@ -69,18 +100,19 @@ class GridAgent(_GridAgent):
         return f"<{self.__class__.__name__} id={getattr(self, 'id', '?')} pos=({x},{y})>"
 
 
-class NetworkAgent(_NetworkAgent):
-    """Network-aware agent with a safe default category.
+class NetworkAgent(Agent):
+    """Network-aware agent. Defaults ``category`` to 0; override
+    ``set_category()`` for multi-type networks."""
 
-    Same rationale as GridAgent: defaults to category 0 for single-type networks.
-    """
-
-    def _safe_attr(self, name: str, default: Any) -> Any:
-        return getattr(self, name, default)
+    def _set_network(self, network) -> None:
+        self.network = network
 
     def set_category(self) -> None:
-        """Default category for single-type network models.  Override when needed."""
+        """Default category for single-type network models. Override when needed."""
         self.category = 0
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} id={getattr(self, 'id', '?')}>"
+
+
+__all__ = ["Agent", "GridItem", "GridAgent", "NetworkAgent"]

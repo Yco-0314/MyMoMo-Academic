@@ -6,43 +6,29 @@ All generated model code imports from here::
     from abm_auto.runtime import Agent, Model, Grid, ...
 
 **Architecture**
-    Custom wrapper and standalone classes in ``abm_auto/runtime/`` fix known
-    MyMoMo Runtime gotchas and provide a cleaner research-oriented API.  MyMoMo Runtime
-    handles the underlying simulation mechanics (CSV loading, iteration, output
-    collection) where we have not yet replaced it.
-
-**Engine replacement contract**
-    To swap the underlying simulation engine, update ONLY this file.
-    Everything else (templates, prompts, generated model code) remains unchanged.
+    A fully self-developed engine (ADR-009 complete). Every class here is
+    standalone Python — Agent/AgentList/Grid/Network/Spot/Edge, Model + the
+    Simulator/Config/DataLoader orchestrator, Scenario, DataCollector, and the
+    library operators. There is **no Melodie dependency** anywhere in the package
+    (the engine was decommissioned in five oracle-gated steps; the original
+    Melodie-delegated implementation is gone).
 
 **Exposed surface**
     Agent, AgentList, Model, Environment, DataCollector, Scenario, Config,
-    Simulator, Grid, GridAgent, Network, NetworkAgent
+    Simulator, Grid, GridAgent, Network, NetworkAgent, topologies, + operators.
 
-**Key improvements over raw MyMoMo Runtime**
-    - Agent._safe_attr(name, default): prevents setup() from overwriting CSV values
-    - GridAgent.set_category(): default implementation (category=0), no more NotImplementedError
-    - NetworkAgent.set_category(): same default
-    - Model.create_grid(): injects self.agents → get_neighbors() needs no agent_list arg
-    - Model.create_network(): same injection for networks
-    - Grid.get_neighbors(agent): returns Agent objects, agent_list auto-resolved
-    - Grid.width / Grid.height: public properties
-    - Network.get_neighbors(agent): returns Agent objects, agent_list auto-resolved
-    - Environment: standalone (no Melodie import)
-
-**Route C progress**
-    Standalone (no Melodie import): Agent wrappers, Grid, Network, Model, Environment,
-                                Scenario, DataCollector, AgentList
-    Still delegated to MyMoMo Runtime: Config, Simulator
-                                (Calibrator/Trainer removed — unused; use abm_auto.calibration)
+**Design notes**
+    - Agent._safe_attr(name, default): keeps CSV-loaded values through setup()
+    - GridAgent/NetworkAgent.set_category(): default category 0 (single-type)
+    - Model.create_grid()/create_network(): inject self.agents so get_neighbors()
+      needs no agent_list arg; Grid.width/height are properties
+    - Grid/Network.get_neighbors(agent): return Agent objects, auto-resolved
+    - byte-for-byte equivalence to the former engine is pinned by
+      ``engine_oracle.py`` over the handcrafted corpus.
 """
 
-try:
-    import Melodie as _melodie_pkg
-    _melodie_version = getattr(_melodie_pkg, "__version__", "unknown")
-    RUNTIME_ENGINE: str = f"ABM Auto Runtime (MyMoMo Runtime {_melodie_version})"
-except Exception:
-    RUNTIME_ENGINE = "ABM Auto Runtime"
+# ADR-009 complete: the runtime no longer imports Melodie anywhere.
+RUNTIME_ENGINE: str = "ABM Auto Runtime"
 
 # ── Custom classes (fix gotchas, extend API, or fully standalone) ─────────────
 
@@ -63,9 +49,7 @@ from abm_auto.runtime._payoff_game import PayoffGame  # game-theory operator (AD
 from abm_auto.runtime._vital_dynamics import VitalDynamics  # variable-N birth/death (ADR-014 Phase 2 harvest)
 from abm_auto.runtime import _topologies as topologies  # noqa: F401  exposed as `runtime.topologies`
 
-# ── Still wrapping MyMoMo Runtime internally (Phase 4 Stage B/C targets) ──────
-#    Config + Simulator are now standalone (above); Model/Agent/Network still
-#    subclass/wrap Melodie classes — un-wrapped in Stage B/C.
+# ADR-009 complete — no Melodie import remains; every export above is standalone.
 
 __all__ = [
     # Core

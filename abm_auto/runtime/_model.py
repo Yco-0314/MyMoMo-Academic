@@ -114,9 +114,7 @@ class Model:
         if grid_cls is None:
             grid_cls = _Grid
         if spot_cls is None:
-            # Stage B: our Grid still wraps Melodie's Grid, which needs a Spot.
-            # Stage C replaces this with our own Spot.
-            from MelodieInfra.core import Spot as spot_cls  # type: ignore
+            from abm_auto.runtime._grid import Spot as spot_cls
         grid = grid_cls(spot_cls, self.scenario)
         self.initialization_queue.append(grid)
         if getattr(self, "agents", None) is not None:

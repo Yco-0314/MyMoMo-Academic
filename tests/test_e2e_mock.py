@@ -72,7 +72,7 @@ Contact model: Moore neighborhood.
 """
 
 MOCK_CODE = """=== FILE: core/agent.py ===
-from Melodie import Agent
+from abm_auto.runtime import Agent
 class Person(Agent):
     def setup(self):
         self.state = 'S'
@@ -80,7 +80,7 @@ class Person(Agent):
         pass
 
 === FILE: core/model.py ===
-from Melodie import Model
+from abm_auto.runtime import Model
 class SIRModel(Model):
     def setup(self):
         pass
@@ -88,17 +88,17 @@ class SIRModel(Model):
         pass
 
 === FILE: core/environment.py ===
-from Melodie import Environment
+from abm_auto.runtime import Environment
 class SIREnvironment(Environment):
     pass
 
 === FILE: core/scenario.py ===
-from Melodie import Scenario
+from abm_auto.runtime import Scenario
 class SIRScenario(Scenario):
     pass
 
 === FILE: core/data_collector.py ===
-from Melodie import DataCollector
+from abm_auto.runtime import DataCollector
 class SIRCollector(DataCollector):
     pass
 
