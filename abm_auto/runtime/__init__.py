@@ -54,6 +54,8 @@ from abm_auto.runtime._environment import Environment
 from abm_auto.runtime._scenario import Scenario  # standalone (ADR-009 Phase 1)
 from abm_auto.runtime._data_collector import DataCollector  # standalone (ADR-009 Phase 2)
 from abm_auto.runtime._agent_list import AgentList  # standalone (ADR-009 Phase 3)
+from abm_auto.runtime._config import Config  # standalone (ADR-009 Phase 4, Stage A)
+from abm_auto.runtime._simulator import Simulator  # standalone (ADR-009 Phase 4, Stage A)
 from abm_auto.runtime._learner import FeedforwardLearner  # learned-operator (ADR-013 W2 wall fix)
 from abm_auto.runtime._population import MoranProcess  # population-dynamics operator (ADR-013 W4 harvest)
 from abm_auto.runtime._rule_table import RuleTable  # reference-data operator (ADR-013 W3 harvest)
@@ -61,12 +63,9 @@ from abm_auto.runtime._payoff_game import PayoffGame  # game-theory operator (AD
 from abm_auto.runtime._vital_dynamics import VitalDynamics  # variable-N birth/death (ADR-014 Phase 2 harvest)
 from abm_auto.runtime import _topologies as topologies  # noqa: F401  exposed as `runtime.topologies`
 
-# ── Still delegated to MyMoMo Runtime (complex CSV/DB machinery) ────────────────────
-
-from Melodie import (
-    Config,
-    Simulator,
-)
+# ── Still wrapping MyMoMo Runtime internally (Phase 4 Stage B/C targets) ──────
+#    Config + Simulator are now standalone (above); Model/Agent/Network still
+#    subclass/wrap Melodie classes — un-wrapped in Stage B/C.
 
 __all__ = [
     # Core
