@@ -1,15 +1,23 @@
-"""Engine-equivalence oracle — the byte-diff gate for the ADR-009 Melodie
-decommission (Phase 4 and beyond).
+"""Engine oracle — validation gates for the ABM Auto runtime (ADR-009).
 
-Runs each handcrafted reference model end-to-end and hashes its output CSV(s).
-`--record` writes the golden hashes (captured while the CURRENT engine is in
-place); `--check` re-runs and asserts byte-identical output. Every step of the
-engine replacement (standalone Config / DataLoader / Simulator / Model / Agent)
-must keep these hashes unchanged — same discipline that pinned Phase 3's
-AgentList (Schelling md5 528d7d5b).
+Runs each handcrafted reference model end-to-end and validates it two ways:
 
-    python engine_oracle.py --record   # capture golden (run on current engine)
-    python engine_oracle.py --check    # verify a replacement is byte-identical
+    python engine_oracle.py --science  # behavioral: does it reproduce the right SCIENCE?
+    python engine_oracle.py --check    # byte regression: same output as the recorded golden?
+    python engine_oracle.py --record   # re-capture golden (after an intended engine change)
+
+`--science` is the primary, design-stable gate: it asserts each model still
+shows the right qualitative outcome (Schelling segregates, SIR peaks, opinion
+converges, Yaman innovation grows) regardless of exact trajectory. It survives
+RNG/iteration-order changes, so it remains valid when the engine is redesigned
+rather than copied.
+
+`--check` is a forward regression gate on *this* engine's reference output:
+golden hashes pin the current bytes so accidental drift is caught. (During the
+Melodie decommission it doubled as a byte-equivalence gate; once the Grid was
+redesigned away from a faithful copy that equivalence no longer holds — the
+golden was re-recorded against the redesigned engine, and `--science` is what
+vouches for correctness across that change.)
 
 Models are deterministic (scenario.seed fixed). Yaman is heavier; pass
 `--fast` to skip it.

@@ -119,6 +119,7 @@ class Model:
         self.initialization_queue.append(grid)
         if getattr(self, "agents", None) is not None:
             grid._agent_list_ref = self.agents
+        grid.seed(int(getattr(self.scenario, "seed", 0)))
         return grid
 
     def create_network(self, network_cls: Optional[Type] = None, edge_cls: Optional[Type] = None):
