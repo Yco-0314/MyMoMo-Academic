@@ -184,4 +184,4 @@ Environment variables (`.env`):
 
 ## License
 
-MIT
+[Apache License 2.0](LICENSE) — Copyright 2026 Cong Yu. See also [NOTICE](NOTICE).
