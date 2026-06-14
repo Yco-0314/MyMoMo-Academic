@@ -32,7 +32,20 @@ class ModeDetectorPhase:
         return True   # always
 
     def run(self, ctx: PipelineContext) -> None:
-        ctx.spec = self.agent.run(mode_override=ctx.mode_override)
+        ctx.spec = self.agent.run(
+            mode_override=ctx.mode_override,
+            intent_override=ctx.intent_override,
+        )
+        # An `idea` or a low-confidence classification can't drive an honest run.
+        # Halt with the clarifying questions already written to clarification.md
+        # rather than feed a vague task into codegen.
+        if ctx.spec is not None and ctx.spec.needs_clarification:
+            ctx.pipeline_halted = True
+            ctx.halt_reason = (
+                f"intent '{ctx.spec.intent}' needs clarification "
+                f"(confidence {ctx.spec.confidence:.0%}). "
+                f"See clarification.md, or re-run with --intent."
+            )
 
 
 class ExternalModelDeclarationPhase:

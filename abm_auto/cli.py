@@ -36,7 +36,8 @@ def run(
     fetch_citations: bool = typer.Option(False, "--fetch-citations", help="Fetch real citations from Semantic Scholar (requires API key)"),
     baseline: Optional[Path] = typer.Option(None, "--baseline", help="Path to baseline CSV for comparison (time,metric1,metric2,...)"),
     no_lit_review: bool = typer.Option(False, "--no-lit-review", help="Skip Phase 0 automatic literature search"),
-    mode: Optional[str] = typer.Option(None, "--mode", help="Force research mode: 'reproduce' or 'originate'. Default: auto-detect from story.md (LLM)."),
+    mode: Optional[str] = typer.Option(None, "--mode", help="Legacy alias for --intent (accepts 'reproduce' or 'originate')."),
+    intent: Optional[str] = typer.Option(None, "--intent", help="Declare research intent: 'reproduce', 'originate', 'cross_domain', or 'idea'. Default: auto-detect from story.md; low-confidence or 'idea' halts with clarifying questions."),
     external_model: Optional[str] = typer.Option(None, "--external-model", help="Path to prebuilt Python model dir (main.py + core/). When set, Phase 1d / 2 / 3 are skipped — dir is copied into workspace/model/ and Phase 4+ runs against it. Useful for reproducing established models without LLM codegen drift."),
     observed: Optional[Path] = typer.Option(None, "--observed", help="Path to observed.csv for calibration. Copied into workspace/data/ before Phase 4. Without this (or a data/observed.csv next to STORY.md), Phase 6 silently falls back from BayesianCalibrator to heuristic OptimizerAgent."),
 ):
@@ -81,6 +82,7 @@ def run(
         baseline_path=baseline,
         auto_lit_review=not no_lit_review,
         mode_override=mode,
+        intent_override=intent,
         external_model_path=external_model,
         observed_path=str(observed) if observed else None,
     )

@@ -74,6 +74,7 @@ class Pipeline:
         baseline_path: Optional[Path] = None,
         auto_lit_review: bool = True,
         mode_override: Optional[str] = None,
+        intent_override: Optional[str] = None,
         external_model_path: Optional[str] = None,
         observed_path: Optional[str] = None,
     ):
@@ -163,6 +164,7 @@ class Pipeline:
             baseline_path=Path(baseline_path) if baseline_path else None,
             auto_lit_review=auto_lit_review,
             mode_override=mode_override,
+            intent_override=intent_override,
             external_model_path=external_model_path,
             observed_path=observed_path,
             sensitivity_method=sensitivity_method,
