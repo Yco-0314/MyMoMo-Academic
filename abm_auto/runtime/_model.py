@@ -1,26 +1,19 @@
-"""ABM Auto Runtime — standalone ``Model`` (ADR-009 Phase 4, Stage B).
+"""ABM Auto Runtime — ``Model``: the per-run lifecycle.
 
-No longer subclasses ``Melodie.Model``. Reimplements the model lifecycle
-faithfully — the same contract the Simulator drives and generated/handcrafted
-models rely on:
+Owns one simulation run and the contract the Simulator drives and
+generated/handcrafted models rely on:
 
     Model(config, scenario, run_id_in_scenario) → _setup() [create() → setup()
     → each queued component's _setup()] → run()   (loop via iterator(period))
 
 What it owns: ``__init__``, the ``create_*`` factories (agent_list / environment
 / grid / network / data_collector), ``iterator`` + the run-loop routine, and
-``_setup``. Melodie machinery dropped: the sqlite ``create_db_conn``, the legacy
-``create_agent_container``, ``table_generator`` (no corpus/codegen model uses
-them). ``_visualizer_step`` is kept as a no-op so generated ``iterator`` loops
+``_setup``. ``_visualizer_step`` is a no-op kept so generated ``iterator`` loops
 are unchanged.
 
-Stage B keeps the (Stage-A) Melodie-wrapped Grid/Network/Agent — our Model
-provides the duck-typed attributes they read (``config``, ``scenario``,
-``agents``). Stage C un-wraps those, after which ``import Melodie`` leaves the
-runtime entirely. Gated by the byte-diff engine oracle.
-
-Key fix retained from earlier (Candidate 3): ``create_grid`` / ``create_network``
-inject ``self.agents`` so ``get_neighbors()`` needs no agent_list argument.
+``create_grid`` / ``create_network`` inject ``self.agents`` and a
+scenario-seeded RNG, so ``get_neighbors()`` needs no agent_list argument and
+placement/wiring are reproducible.
 """
 from __future__ import annotations
 
@@ -29,8 +22,8 @@ from typing import List, Optional, Type, Union
 
 
 class _ModelRunRoutine:
-    """The run-loop iterator (mirrors Melodie's ``ModelRunRoutine``): yields the
-    current step 0..period_num-1, advancing the visualizer (a no-op here)."""
+    """The run-loop iterator: yields the current step 0..period_num-1,
+    advancing the visualizer (a no-op here)."""
 
     def __init__(self, max_step: int, model: "Model") -> None:
         self._current_step = -1

@@ -1,20 +1,17 @@
-"""ABM Auto Runtime — standalone ``DataLoader`` (ADR-009 Phase 4, Stage A).
+"""ABM Auto Runtime — ``DataLoader``: scenario discovery and construction.
 
 The multi-scenario heart: scans ``config.input_folder`` for the standard
 ``SimulatorScenarios`` table, loads it, and turns each row into a ``Scenario``
-(``scenario_cls()._setup(row)``). Drop-in for ``Melodie.DataLoader`` on the
-Simulator path. The pickled-cache, sqlite, and parallel-subworker machinery is
-dropped (verified: no model in the corpus or codegen uses
-``register_dataframe`` / ``dataframe_generator`` / ``load_matrix`` /
-``get_dataframe``). ``load_matrix`` / ``register_dataframe`` are kept as thin
-parity stubs in case a future model needs them.
+(``scenario_cls()._setup(row)``). ``load_matrix`` / ``register_dataframe`` are
+thin stubs for models that register extra input tables; the corpus and codegen
+paths don't use them.
 """
 from __future__ import annotations
 
 import os
 from typing import List
 
-# the five standard scenario tables Melodie auto-discovers in the input folder
+# the five standard scenario tables auto-discovered in the input folder
 _STANDARD_TABLES = {
     "SimulatorScenarios",
     "TrainerScenarios",
@@ -30,7 +27,7 @@ def _first_char_upper(word: str) -> str:
 
 def _underline_to_camel(s: str) -> str:
     """``simulator_scenarios`` → ``SimulatorScenarios``; leaves an
-    already-camel name untouched (Melodie's ``underline_to_camel``)."""
+    already-camel name untouched."""
     return "".join(_first_char_upper(w) for w in s.split("_"))
 
 
@@ -58,7 +55,7 @@ class DataLoader:
         self.setup()
 
     def setup(self) -> None:
-        """Override hook (Melodie parity)."""
+        """Override hook for subclasses that need extra load-time setup."""
         pass
 
     def load_scenarios(self) -> None:

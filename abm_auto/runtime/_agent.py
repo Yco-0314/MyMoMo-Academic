@@ -1,13 +1,13 @@
-"""ABM Auto Runtime — Agent base classes (ADR-009 Phase 4, Stage C).
+"""ABM Auto Runtime — Agent base classes.
 
-Standalone reimplementation of Melodie's ``Element`` / ``Agent`` +
-``GridItem`` / ``GridAgent`` (from grid.py) + ``NetworkAgent`` (from network.py)
-— no Melodie import. Faithful to the lifecycle (``id`` + scenario/model
-injection + ``setup()``), ``set_params`` / ``to_dict`` / ``to_json``, grid
-membership (``grid`` / ``x`` / ``y`` / ``category``) and network membership
-(``category`` / ``network``). ABM Auto additions retained: ``_safe_attr`` (keeps
-CSV-loaded values through ``setup()``) and a default ``set_category()``→0 (so
-single-type models need not override it).
+The agent hierarchy: a serialization/param mixin (``_Element``), the base
+``Agent`` (``id`` + scenario/model refs + a ``setup()`` hook), and the two
+space-aware specializations — ``GridAgent`` (carries ``grid`` / ``x`` / ``y`` /
+``category``) and ``NetworkAgent`` (carries ``category`` / ``network``).
+
+Two conveniences worth knowing: ``_safe_attr(name, default)`` keeps a value that
+was pre-loaded from CSV instead of overwriting it in ``setup()``, and
+``set_category()`` defaults to 0 so single-type models need not override it.
 """
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ from typing import Any, Dict, List, Optional
 
 
 class _Element:
-    """Param/serialization mixin (Melodie's ``Element``)."""
+    """Param/serialization mixin: ``set_params`` + ``to_dict`` / ``to_json``."""
 
     _unserializable_props_: tuple = ()
 

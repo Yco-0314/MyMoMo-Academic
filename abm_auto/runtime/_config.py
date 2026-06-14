@@ -53,7 +53,7 @@ class Config:
         return path
 
     def setup(self) -> None:
-        """Override hook (Melodie parity)."""
+        """Override hook for subclasses that need extra config-time setup."""
         pass
 
     def output_tables_path(self) -> str:

@@ -1,14 +1,11 @@
-"""ABM Auto Runtime — standalone Scenario.
-
-Phase 1 of the ADR-009 engine replacement roadmap. Replaces
-``Melodie.Scenario`` with a pure-Python implementation.
+"""ABM Auto Runtime — ``Scenario``: the parameters for one run.
 
 What this class does
 --------------------
 A Scenario carries the parameters for a single simulation run. Users
-subclass it and override ``setup()`` to assign attributes; the framework
-then overrides those attributes from a CSV row, and the resulting
-object is handed to the Model.
+subclass it and override ``setup()`` to declare attributes; the framework
+then overrides those attributes from a CSV row, and the resulting object is
+handed to the Model.
 
 Lifecycle (called by the framework, not by users):
 
@@ -17,18 +14,9 @@ Lifecycle (called by the framework, not by users):
     s._setup(row_dict)               # setup() → setattr-from-row → load_data() → setup_data()
 
 Per-run, the simulator deep-copies via ``s.copy()`` before assigning
-``s.id_run``.
-
-Why standalone
---------------
-Melodie's Simulator (verified 2026-05-31 source-read of
-``Melodie/simulator.py`` + ``Melodie/data_loader.py``) does NOT
-``isinstance`` check on scenario instances. It only calls a small
-surface (``__init__()``, ``_setup(row)``, ``copy()``, ``to_dict()``,
-mutable ``manager`` and ``id_run`` attrs). That makes Phase 1 a
-direct drop-in replacement — no Melodie inheritance needed.
-
-See `docs/decisions/ADR-009-engine-replacement-roadmap.md` Amend 1.
+``s.id_run``. The surface the orchestrator depends on is small and duck-typed:
+``__init__()``, ``_setup(row)``, ``copy()``, ``to_dict()``, and the mutable
+``manager`` / ``id_run`` attributes.
 """
 from __future__ import annotations
 
@@ -37,7 +25,7 @@ from typing import Any, Optional, Union
 
 
 class Scenario:
-    """Standalone scenario carrier. Drop-in for ``Melodie.Scenario``.
+    """Scenario carrier: the parameters for one run.
 
     Subclass and override :meth:`setup` to declare scenario attributes.
     Framework-called hooks (``load_data``, ``setup_data``) default to
@@ -78,8 +66,8 @@ class Scenario:
 
     def _setup(self, data: Optional[dict] = None) -> None:
         """Lifecycle: ``setup()`` then setattr-from-row then ``load_data()``
-        then ``setup_data()``. Mirrors Melodie's Scenario._setup order so
-        existing user code observes the same attribute-load timing.
+        then ``setup_data()`` — declared defaults first, CSV overrides next, so
+        a subclass sees row values by the time ``load_data``/``setup_data`` run.
         """
         self.setup()
         if data is not None:

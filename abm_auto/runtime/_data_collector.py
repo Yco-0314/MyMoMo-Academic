@@ -1,8 +1,6 @@
-"""ABM Auto Runtime — standalone DataCollector with pluggable streaming backends.
+"""ABM Auto Runtime — DataCollector with pluggable streaming backends.
 
-Phase 2 of the ADR-009 engine roadmap replaced ``Melodie.DataCollector``
-with a pandas-backed CSV-only implementation. Phase 3 (this file, also
-ADR-011 wedge W6 "scale-portable") adds:
+A pandas-backed, CSV-first collector (ADR-011 wedge W6 "scale-portable"):
 
   - A ``TableWriter`` Protocol — the pluggable-backend seam.
   - ``CsvTableWriter`` (default) + ``ParquetTableWriter`` — two adapters,
@@ -13,10 +11,10 @@ ADR-011 wedge W6 "scale-portable") adds:
 
 Design invariants
 -----------------
-1. **CSV default stays byte-equal.** With ``flush_every=None`` (default)
-   the collector buffers everything and does ONE write at ``save()`` —
-   byte-identical to the Phase 2 implementation (header=True, mode='w',
-   CRLF). The byte-equal SIR fixture (tests/e2e/...) gates this.
+1. **CSV default stays byte-stable.** With ``flush_every=None`` (default)
+   the collector buffers everything and does ONE write at ``save()``
+   (header=True, mode='w', CRLF). A byte-diff SIR fixture (tests/e2e/...)
+   gates this.
 2. **Streaming CSV == non-streaming CSV.** Chunked append produces the
    same bytes as a single write. Tested directly.
 3. **Scale is configuration, not rewrite.** A user opts into streaming /
@@ -25,8 +23,8 @@ Design invariants
 
 Config channel
 --------------
-``Model.create_data_collector(cls)`` instantiates ``cls()`` with no args
-(Melodie convention), so configuration travels via class attributes:
+``Model.create_data_collector(cls)`` instantiates ``cls()`` with no args, so
+configuration travels via class attributes:
 
     class BigRunCollector(DataCollector):
         flush_every = 1000        # flush every 1000 ticks
@@ -34,14 +32,13 @@ Config channel
         def setup(self):
             self.add_environment_property("count_s")
 
-Defaults (``flush_every=None``, ``backend_type="csv"``) reproduce Phase 2
-behaviour exactly.
+Defaults are ``flush_every=None``, ``backend_type="csv"``.
 
-What stays dropped from Melodie (per ADR-009 Phase 2)
-----------------------------------------------------
+Intentionally omitted
+---------------------
 SQLite target, add_custom_collector, calc_time, get_single_agent_data.
 SQLite remains a Protocol-ready slot (TableWriter) but is NOT built —
-zero use in our codebase, deferred under anti-wedge A4 until a multi-
+zero use in this codebase, deferred under anti-wedge A4 until a multi-
 scenario relational-query need surfaces.
 
 Downstream note
@@ -59,22 +56,19 @@ from typing import Any, Dict, List, Optional, Protocol, Type
 
 import pandas as pd
 
-# Output filename for the environment-properties table. Must match
-# Melodie's ``MelodieInfra.db.DBConn.ENVIRONMENT_RESULT_TABLE`` constant
-# so SimulatorWrapper's CSV-reading layer keeps working unchanged.
+# Output filename for the environment-properties table. The calibration
+# layer's CSV reader keys off this exact name, so keep it stable.
 _ENV_TABLE = "Result_Simulator_Environment"
 
-# Melodie's writer emits CRLF line endings (Python csv module default in
-# text mode on the version Melodie ships). Pandas defaults to LF, which
-# would break byte-equal regression with pre-swap reference CSVs. Force
-# CRLF here so the swap stays a true drop-in.
+# Output uses CRLF line endings. Pandas defaults to LF; we force CRLF so the
+# output is byte-stable against the recorded reference CSVs (the byte-diff
+# regression fixtures).
 _LINE_TERMINATOR = "\r\n"
 
 
 def _underline_to_camel(s: str) -> str:
-    """snake_case → CamelCase. Matches Melodie's util semantics for the
-    agent-properties table filename (``Result_Simulator_<ContainerCamel>``).
-    """
+    """snake_case → CamelCase for the agent-properties table filename
+    (``Result_Simulator_<ContainerCamel>``)."""
     return "".join(part.capitalize() for part in s.split("_"))
 
 
@@ -100,7 +94,7 @@ class CsvTableWriter:
     """CSV adapter. First chunk writes header (mode='w'); subsequent
     chunks append headerless (mode='a'). Concatenation is byte-identical
     to a single ``DataFrame.to_csv`` of all rows — the single-chunk case
-    reduces exactly to the Phase 2 write.
+    reduces exactly to one buffered write.
     """
 
     def __init__(self, path: str, lineterminator: str = _LINE_TERMINATOR) -> None:
@@ -190,7 +184,7 @@ class DataCollector:
     Subclass and override :meth:`setup` to register collected properties.
     Optionally set ``flush_every`` (ticks between flushes) and
     ``backend_type`` ("csv" | "parquet") as class attributes to opt into
-    streaming / columnar output. Defaults reproduce Phase 2 behaviour.
+    streaming / columnar output. Defaults give the buffered single-write CSV.
 
     Framework wires ``model``/``scenario``/``config`` back-refs via
     ``Model.create_data_collector``; from then on ``collect()`` /
@@ -201,19 +195,19 @@ class DataCollector:
 
     # ── configuration (override in subclass) ──────────────────────────
     #: Ticks between streaming flushes. None = buffer all, write once at
-    #: save() (Phase 2 behaviour; byte-equal CSV default).
+    #: save() (the byte-stable CSV default).
     flush_every: Optional[int] = None
     #: Output backend. "csv" (default) | "parquet".
     backend_type: str = "csv"
 
     def __init__(self, target: Optional[str] = None):
-        # `target` is the legacy Melodie knob ("sqlite"/"csv"); superseded
-        # by `backend_type` but kept in the signature for source-compat.
+        # `target` is a legacy knob ("sqlite"/"csv"); superseded by
+        # `backend_type` but kept in the signature for source-compat.
         if target not in {None, "csv"}:
             raise ValueError(
                 f"DataCollector legacy target only supports 'csv', got {target!r}. "
                 f"Use the `backend_type` class attribute for 'parquet'. "
-                f"SQLite was dropped in ADR-009 Phase 2 (unused)."
+                f"SQLite output is not built (unused)."
             )
 
         # Back-refs assigned by Model.create_data_collector
@@ -245,8 +239,8 @@ class DataCollector:
 
     @property
     def status(self) -> bool:
-        """Always True. Melodie skipped collection under Calibrator/Trainer
-        to speed those up; we don't use either (own calibration pipeline)."""
+        """Always True — collection is unconditional. (No Calibrator/Trainer
+        special-casing; this project has its own calibration pipeline.)"""
         return True
 
     # ── user-overridable hook ─────────────────────────────────────────
@@ -375,7 +369,7 @@ class DataCollector:
 
         With ``flush_every=None`` (default) this is the ONLY flush: a
         single ``write_chunk`` per table with all rows, header=True,
-        mode='w' — byte-identical to the Phase 2 single-write path.
+        mode='w' — the byte-stable single-write path.
         """
         if not self.status:
             return

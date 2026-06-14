@@ -1,21 +1,18 @@
-"""ABM Auto Runtime — standalone ``Simulator`` (ADR-009 Phase 4, Stage A).
+"""ABM Auto Runtime — ``Simulator``: the batch / multi-scenario orchestrator.
 
-The batch / multi-scenario orchestrator. Drop-in for ``Melodie.Simulator`` on
-the ``run()`` path:
+Drives the ``run()`` pipeline:
 
     setup() → pre_run() [clear output · DataLoader → scenarios · attach the
     standard tables onto each scenario] → for scenario, for id_run in
     range(scenario.run_num): run_model() [construct Model, _setup(), run()]
 
-The sequential multi-scenario / multi-run batch is preserved in full. What is
-dropped vs Melodie: the sqlite DB (our DataCollector writes CSV), the visualizer
-(``run_visual``), and the multiprocessing ``run_parallel`` (a parallel-execution
+Sequential multi-scenario / multi-run batches are covered in full. The engine
+deliberately omits a results database (the DataCollector writes CSV directly), a
+live visualizer (``run_visual``), and multiprocessing (``run_parallel`` is an
 optimisation, not a capability — sequential ``run()`` already covers
-multi-scenario/batch; parallel can return as a Phase-4 follow-up).
-
-Stage A keeps Melodie's ``Model`` (this Simulator drives it via the same
-``Model(config, scenario, run_id) → _setup() → run()`` lifecycle); Stage B
-un-subclasses Model. Gated by the byte-diff engine oracle.
+multi-scenario/batch; parallel can return later). It drives each Model via the
+``Model(config, scenario, run_id) → _setup() → run()`` lifecycle; construction
+is pinned by the engine oracle.
 """
 from __future__ import annotations
 

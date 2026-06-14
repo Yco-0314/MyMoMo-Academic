@@ -1,13 +1,10 @@
 """
-ABM Auto Runtime — standalone Environment base class.
+ABM Auto Runtime — ``Environment``: shared, global run state.
 
-This is a full replacement for MyMoMo Runtime's Environment — no Melodie import.
-MyMoMo Runtime's Environment is ~40 LoC inheriting from Element; we replicate that
-interface here so generated code stays identical.
-
-The only difference from Melodie's version: this file has zero MyMoMo Runtime
-dependencies, meaning the engine-replacement contract in __init__.py can
-eventually swap the entire stack by updating that one file.
+The environment holds the global state agents read and update. It is created
+once per run by ``Model.create_environment()`` and carries ``model`` /
+``scenario`` refs plus a ``setup()`` hook. A thin base (serialization +
+lifecycle, via ``_Element``) so generated environment classes stay small.
 """
 from __future__ import annotations
 

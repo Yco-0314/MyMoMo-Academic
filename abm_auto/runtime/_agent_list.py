@@ -1,19 +1,13 @@
-"""ABM Auto Runtime — standalone ``AgentList`` (ADR-009 Phase 3).
+"""ABM Auto Runtime — ``AgentList``: the ordered agent container.
 
-A faithful, dependency-free reimplementation of ``Melodie.AgentList`` /
-``MelodieInfra.core.agent_list.AgentList`` — same public API and semantics
-(id assignment, ``init_agents`` scenario/model injection + ``agent.setup()``,
-indexing, add/remove with reindex, ``params_df`` loading), with the three
-MelodieInfra couplings dropped:
+A typed, ordered collection of agents with the API models rely on: contiguous
+id assignment, ``init_agents`` (scenario/model injection + ``agent.setup()``),
+indexing, add/remove with reindex, and ``params_df`` loading from a DataFrame.
+Backed by a plain list plus pandas; agents are duck-typed — any object carrying
+an ``id`` qualifies, no base-class requirement.
 
-  - ``MelodieExceptions`` / ``show_prettified_warning`` → stdlib ``warnings`` +
-    plain exceptions;
-  - ``TableInterface`` → pandas directly (``params_df`` is a ``pd.DataFrame``);
-  - the ``isinstance(agent, Melodie.Agent)`` guard → a duck-typed check (the
-    object must carry an ``id``).
-
-Verified by a byte-diff oracle: the Schelling handcrafted model produces an
-identical output CSV with this AgentList swapped in for Melodie's (same seed).
+A byte-diff oracle (``engine_oracle.py``) pins its behaviour: the Schelling
+handcrafted model produces an identical output CSV for a fixed seed.
 """
 from __future__ import annotations
 
@@ -23,9 +17,8 @@ from typing import Any, Callable, Dict, List, Optional, Type
 
 
 class _SeqIter:
-    """Index-based iterator (mirrors Melodie's ``SeqIter``) — re-reads length
-    each step so the list may be mutated mid-iteration without surprising the
-    loop."""
+    """Index-based iterator — re-reads length each step so the list may be
+    mutated mid-iteration without surprising the loop."""
 
     def __init__(self, seq: list) -> None:
         self._seq = seq
@@ -43,9 +36,8 @@ class _SeqIter:
 
 
 def _apply_params(agent: Any, params: Dict[str, Any]) -> None:
-    """Set agent attributes from a params dict (Melodie ``Agent.set_params``
-    is attribute assignment). Prefers the agent's own ``set_params`` if it
-    has one, else falls back to ``setattr``."""
+    """Set agent attributes from a params dict. Prefers the agent's own
+    ``set_params`` if it has one, else falls back to ``setattr``."""
     setter = getattr(agent, "set_params", None)
     if callable(setter):
         setter(params)
@@ -55,8 +47,7 @@ def _apply_params(agent: Any, params: Dict[str, Any]) -> None:
 
 
 class AgentList:
-    """Typed container of agents, owned by a ``Model``. Drop-in for
-    ``Melodie.AgentList``.
+    """Typed container of agents, owned by a ``Model``.
 
     The model calls ``create_agent_list(AgentClass)`` to get one, then
     ``setup_agents(n[, params_df])`` to populate it; environments iterate it
