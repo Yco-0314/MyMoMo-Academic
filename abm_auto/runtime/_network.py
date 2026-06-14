@@ -1,35 +1,41 @@
-"""ABM Auto Runtime — standalone ``Network`` + ``Edge`` (ADR-009 Phase 4, Stage C).
+"""ABM Auto Runtime — graph-coupled ``Network`` + ``Edge``.
 
-Faithful, dependency-free reimplementation of Melodie's ``Network`` / ``Edge``
-(``Melodie/network.py``) — no Melodie import. Same node/edge data structures
-(``nodes`` set, ``edges`` adjacency dict, ``(category, id)`` node tuples) and
-neighbour semantics. The graph-construction seam is ABM Auto's:
-``setup_agent_connections`` takes a ``Topology`` callable ``(n, rng) -> nx.Graph``
-(replacing Melodie's ``(network_type: str, params)`` API) and determinism flows
-through the injected ``_rng``. ``get_neighbors`` resolves raw ``(category, id)``
-tuples to NetworkAgent objects. The visualizer layout helpers are kept (lazy
-networkx imports) but are unused on the non-visual run path.
+A network couples agents by an explicit adjacency graph. Agents are the nodes
+themselves (live ``NetworkAgent`` objects), so neighbour queries return objects
+with no id-to-object lookup.
+
+Design notes:
+
+* **Nodes are agent objects.** Adjacency is ``dict[agent -> list[agent]]``;
+  neighbour order is the order edges were added. (Identity-hashable agents make
+  this safe as dict keys.)
+* **Edges may carry properties.** An ``Edge`` records its endpoints plus an
+  optional property bag; edges are indexed by the ordered ``(source, target)``
+  pair so ``get_edge`` / ``get_node_edges`` stay O(1) / O(deg).
+* **Graph construction is a seam.** ``setup_agent_connections`` takes a
+  ``Topology`` callable ``(n, rng) -> nx.Graph`` and an injected, seedable
+  ``_rng``, so the wiring (Erdős–Rényi, small-world, scale-free, clustered, …)
+  is chosen by the caller and is reproducible.
+* Visualisation layout helpers are kept (lazy ``networkx``); they project the
+  object graph onto ``(category, id)`` keys for GEXF and are unused on the
+  non-visual run path.
 """
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, List, Optional, Set, Tuple, Type
+import random
+from typing import Any, Dict, List, Optional, Tuple, Type
 
 from abm_auto.runtime._agent import NetworkAgent
 
-NodeType = Tuple[int, int]
-
 
 class Edge:
-    """An edge linking two agents ``(category, id)``; may carry properties."""
+    """A link between two agents, optionally carrying named properties."""
 
-    def __init__(self, category_1: int, agent_1_id: int, category_2: int,
-                 agent_2_id: int, edge_properties: Dict[str, Any]) -> None:
-        self.category_1 = category_1
-        self.agent_1_id = agent_1_id
-        self.category_2 = category_2
-        self.agent_2_id = agent_2_id
-        self.properties: Dict[str, Any] = edge_properties
+    def __init__(self, source, target, **properties) -> None:
+        self.source = source
+        self.target = target
+        self.properties: Dict[str, Any] = dict(properties)
         self.setup()
         self.post_setup()
 
@@ -41,29 +47,29 @@ class Edge:
             setattr(self, prop_name, prop_value)
 
     def __repr__(self) -> str:
-        return (f"<{self.__class__.__name__} {(self.category_1, self.agent_1_id)} "
-                f"--> {(self.category_2, self.agent_2_id)}>")
+        return f"<{self.__class__.__name__} {self.source!r} --> {self.target!r}>"
 
 
 class Network:
-    """Graph linking agents. Nodes are ``(category, id)`` tuples; ``edges`` is an
-    adjacency dict of dicts holding ``Edge`` objects."""
+    """Graph linking agents. Nodes are agent objects; adjacency and edge records
+    are kept in parallel so neighbour and edge queries are both cheap."""
 
     def __init__(self, model=None, edge_cls: Optional[Type[Edge]] = None,
                  directed: bool = False, name: str = "network") -> None:
         self.model = model
-        self.simple = True
         self.directed = directed
-        self.nodes: Set[NodeType] = set()
-        self.edges: Dict[NodeType, Dict[NodeType, Edge]] = {}
         self.edge_cls: Type[Edge] = edge_cls if edge_cls is not None else Edge
-        self.agent_categories: Dict[int, Any] = {}
+        self._neighbors: Dict[Any, List[Any]] = {}        # agent → neighbour agents (ordered)
+        self._edges: Dict[Tuple[Any, Any], Edge] = {}     # (source, target) → Edge
+        self.agent_categories: Dict[int, Any] = {}        # category → agent_list (registry)
+        self._rng: Optional[random.Random] = None
+        # Back-compat hook: Model.create_network may assign this; the redesigned
+        # network stores agent objects directly, so it is never read here.
+        self._agent_list_ref: Optional[Any] = None
+        # Visualisation only (unused on the non-visual path):
         self.layout_file = os.path.join(model.config.visualizer_tmpdir, name + "_layout.gexf")
         self.layout: dict = {}
         self._layout_creator = lambda G: __import__("networkx").spring_layout(G)
-        # ABM Auto: injected by Model.create_network()
-        self._agent_list_ref: Optional[Any] = None
-        self._rng = None
         self.setup()
 
     def _setup(self) -> None:
@@ -72,71 +78,106 @@ class Network:
     def setup(self) -> None:
         pass
 
-    # ── edges ────────────────────────────────────────────────────────────────
-
-    def add_edge(self, source_id: NodeType, target_id: NodeType, edge: Edge) -> None:
-        if source_id not in self.edges:
-            self.edges[source_id] = {}
-        self.edges[source_id][target_id] = edge
-        if not self.directed:
-            if target_id not in self.edges:
-                self.edges[target_id] = {}
-            self.edges[target_id][source_id] = edge
-
-    def get_edge(self, source_id: NodeType, target_id: NodeType) -> Edge:
-        return self.edges[source_id][target_id]
-
-    def remove_edge(self, source_id: NodeType, target_id: NodeType) -> None:
-        self.edges[source_id].pop(target_id)
-        if not self.directed:
-            self.edges[target_id].pop(source_id)
-
-    # ── neighbours ───────────────────────────────────────────────────────────
-
-    def _get_neighbor_positions(self, agent_id: int, category: int) -> List[NodeType]:
-        neighbor_ids = self.edges.get((category, agent_id))
-        if neighbor_ids is None:
-            return []
-        return list(neighbor_ids.keys())
-
-    # ── agents ───────────────────────────────────────────────────────────────
-
-    def _add_agent(self, category: int, agent_id: int) -> None:
-        self.nodes.add((category, agent_id))
-
-    def _remove_agent(self, category: int, agent_id: int) -> None:
-        agent_tuple = (category, agent_id)
-        self.nodes.remove(agent_tuple)
-        target_edges = self.edges.pop(agent_tuple)
-        if not self.directed:
-            for target_node, edge in target_edges.items():
-                self.edges[target_node].pop(agent_tuple)
-
-    def remove_agent(self, agent) -> None:
-        assert hasattr(agent, "category")
-        self._remove_agent(agent.category, agent.id)
+    # ── nodes ─────────────────────────────────────────────────────────────────
 
     def add_agent(self, agent) -> None:
         assert isinstance(agent, NetworkAgent)
         agent.set_category()
         agent._set_network(self)
-        self._add_agent(agent.category, agent.id)
+        self._neighbors.setdefault(agent, [])
 
-    def create_edge(self, agent_1_id: int, category_1: int, agent_2_id: int,
-                    category_2: int, **edge_properties) -> None:
-        edge = self.edge_cls(category_1, agent_1_id, category_2, agent_2_id, edge_properties)
-        src_pos = (category_1, agent_1_id)
-        dst_pos = (category_2, agent_2_id)
-        assert src_pos in self.nodes
-        assert dst_pos in self.nodes
-        self.add_edge(src_pos, dst_pos, edge)
+    def remove_agent(self, agent) -> None:
+        assert hasattr(agent, "category")
+        for neighbor in self._neighbors.pop(agent, []):
+            others = self._neighbors.get(neighbor)
+            if others and agent in others:
+                others.remove(agent)
+            self._edges.pop((agent, neighbor), None)
+            self._edges.pop((neighbor, agent), None)
 
-    def all_agents(self) -> Set[NodeType]:
-        return self.nodes
+    def all_agents(self):
+        return list(self._neighbors.keys())
+
+    # ── edges ─────────────────────────────────────────────────────────────────
+
+    def add_edge(self, source, target, edge: Edge) -> None:
+        self._neighbors.setdefault(source, []).append(target)
+        self._edges[(source, target)] = edge
+        if not self.directed:
+            self._neighbors.setdefault(target, []).append(source)
+            self._edges[(target, source)] = edge
+
+    def create_edge(self, source, target, **edge_properties) -> None:
+        assert source in self._neighbors, "source agent is not a node of this network"
+        assert target in self._neighbors, "target agent is not a node of this network"
+        self.add_edge(source, target, self.edge_cls(source, target, **edge_properties))
+
+    def get_edge(self, source, target) -> Edge:
+        return self._edges[(source, target)]
+
+    def remove_edge(self, source, target) -> None:
+        self._edges.pop((source, target), None)
+        if target in self._neighbors.get(source, []):
+            self._neighbors[source].remove(target)
+        if not self.directed:
+            self._edges.pop((target, source), None)
+            if source in self._neighbors.get(target, []):
+                self._neighbors[target].remove(source)
 
     def get_node_edges(self, agent) -> List[Edge]:
         assert isinstance(agent, NetworkAgent)
-        return list(self.edges[(agent.category, agent.id)].values())
+        return [self._edges[(agent, n)] for n in self._neighbors.get(agent, [])
+                if (agent, n) in self._edges]
+
+    # ── graph construction seam ───────────────────────────────────────────────
+
+    def setup_agent_connections(self, agent_lists: List[Any], topology) -> None:
+        """Build the network from a Topology callable ``(n, rng) -> nx.Graph``.
+
+        Integer graph nodes ``0..n-1`` map to agents in the order they appear
+        across ``agent_lists``; every graph edge becomes an undirected link.
+        """
+        assert isinstance(agent_lists, list)
+        node_id_to_agent: Dict[int, Any] = {}
+        node_id = 0
+        for agent_list in agent_lists:
+            if len(agent_list) > 0:
+                agent_list[0].set_category()
+                self.agent_categories[agent_list[0].category] = agent_list
+            for agent in agent_list:
+                self.add_agent(agent)
+                node_id_to_agent[node_id] = agent
+                node_id += 1
+
+        rng = self._rng if self._rng is not None else random.Random()
+        g = topology(len(self._neighbors), rng)
+        for src_idx, dst_idx in g.edges:
+            source = node_id_to_agent[src_idx]
+            target = node_id_to_agent[dst_idx]
+            self.add_edge(source, target, self.edge_cls(source, target))
+        self._nx_edges = list(g.edges)
+
+    # ── neighbours (returns live agent objects) ───────────────────────────────
+
+    def get_neighbors(self, agent, agent_list: Any = None, return_agents: bool = True):
+        """Agents adjacent to *agent*.
+
+        Returns live ``NetworkAgent`` objects (nodes are objects, so there is no
+        lookup step). ``return_agents=False`` yields raw ``(category, id)`` tuples
+        instead. ``agent_list`` is accepted for backward compatibility and ignored.
+        """
+        assert hasattr(agent, "category")
+        neighbors = self._neighbors.get(agent, [])
+        if return_agents:
+            return list(neighbors)
+        return [(n.category, n.id) for n in neighbors]
+
+    def _get_neighbor_positions(self, agent_id: int, category: int):
+        """Back-compat: raw ``(category, id)`` tuples of a node's neighbours."""
+        for agent, neighbors in self._neighbors.items():
+            if agent.id == agent_id and agent.category == category:
+                return [(n.category, n.id) for n in neighbors]
+        return []
 
     # ── layout (visualization only; unused on the non-visual path) ────────────
 
@@ -158,9 +199,9 @@ class Network:
             except Exception:
                 pass
         g = nx.DiGraph()
-        for start_node in self.edges.keys():
-            for end_node in self.edges[start_node].keys():
-                g.add_edge(start_node, end_node)
+        for agent, neighbors in self._neighbors.items():
+            for neighbor in neighbors:
+                g.add_edge((agent.category, agent.id), (neighbor.category, neighbor.id))
         layout = self._layout_creator(g)
         for node, pos in layout.items():
             g.nodes[node]["viz"] = {"position": {"x": pos[0], "y": pos[1], "z": 0}}
@@ -171,59 +212,6 @@ class Network:
         if (agent_category, agent_id) not in self.layout:
             self.update_layout()
         return self.layout[(agent_category, agent_id)] * 1000
-
-    # ── ABM Auto graph-construction seam + neighbour resolution ───────────────
-
-    def setup_agent_connections(self, agent_lists: List[Any], topology) -> None:
-        """Build the network from a Topology callable ``(n, rng) -> nx.Graph``."""
-        assert isinstance(agent_lists, list)
-        import random as _random
-
-        node_id = 0
-        node_id_to_node_type: Dict[int, NodeType] = {}
-        for agent_list in agent_lists:
-            if len(agent_list) > 0:
-                agent_list[0].set_category()
-                self.agent_categories[agent_list[0].category] = agent_list
-            for agent in agent_list:
-                self.add_agent(agent)
-                agent._set_network(self)
-                node_id_to_node_type[node_id] = (agent.category, agent.id)
-                node_id += 1
-
-        rng = self._rng if self._rng is not None else _random.Random()
-        g = topology(len(self.nodes), rng)
-        for edge in g.edges:
-            src = node_id_to_node_type[edge[0]]
-            dst = node_id_to_node_type[edge[1]]
-            self.add_edge(src, dst, self.edge_cls(src[0], src[1], dst[0], dst[1], {}))
-        self._nx_edges = list(g.edges)
-
-    def get_neighbors(self, agent, agent_list: Any = None, return_agents: bool = True):
-        """Neighbours of *agent*: NetworkAgent objects by default, or raw
-        ``(category, id)`` tuples with ``return_agents=False``."""
-        assert hasattr(agent, "category")
-        raw = self._get_neighbor_positions(agent.id, agent.category)
-        if not return_agents:
-            return raw
-        effective_list = agent_list if agent_list is not None else self._agent_list_ref
-        if effective_list is None:
-            raise ValueError(
-                "ABM Auto Network.get_neighbors(): no agent_list available. Use "
-                "'from abm_auto.runtime import Model' (auto-injects), or pass "
-                "agent_list=self.agents."
-            )
-        result = []
-        for item in raw:
-            if isinstance(item, tuple):
-                category, agent_id = item
-                if category in self.agent_categories:
-                    result.append(self.agent_categories[category].get_agent(agent_id))
-                else:
-                    result.append(effective_list[agent_id])
-            else:
-                result.append(item)
-        return result
 
 
 __all__ = ["Network", "Edge"]
