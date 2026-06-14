@@ -1,7 +1,7 @@
 """
 Trajectory analysis for ABM simulation runs.
 
-Adapted from a prior internal tool's path_analyzer.py for the abm-auto context:
+Clusters and characterizes simulation runs by trajectory shape:
 - Clusters runs by output trajectory shape (KMeans on time-series vectors)
 - Detects critical timesteps where trajectories diverge
 - Correlates parameter values with outcome clusters
