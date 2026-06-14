@@ -172,13 +172,6 @@ class Network:
             return list(neighbors)
         return [(n.category, n.id) for n in neighbors]
 
-    def _get_neighbor_positions(self, agent_id: int, category: int):
-        """Back-compat: raw ``(category, id)`` tuples of a node's neighbours."""
-        for agent, neighbors in self._neighbors.items():
-            if agent.id == agent_id and agent.category == category:
-                return [(n.category, n.id) for n in neighbors]
-        return []
-
     # ── layout (visualization only; unused on the non-visual path) ────────────
 
     def setup_layout_creator(self, layout_creator) -> None:

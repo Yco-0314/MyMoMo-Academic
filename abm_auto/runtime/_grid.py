@@ -162,9 +162,6 @@ class Grid:
     def get_spot_agents(self, spot: Spot):
         return list(spot._occupants)
 
-    def _get_spot_agents(self, spot_id: int):
-        return list(self._spots[spot_id]._occupants)
-
     def get_agent_ids(self, category, x: int, y: int) -> Set[int]:
         x, y = self._bound_check(x, y)
         spot = self._spots[self._to_index(x, y)]

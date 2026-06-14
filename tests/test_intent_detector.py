@@ -162,3 +162,38 @@ def test_all_valid_intents_are_classifiable(tmp_path) -> None:
         spec = agent._make_spec(intent, confidence=0.9)
         assert spec.intent == intent
         assert spec.mode in ("reproduce", "originate")
+
+
+# ── phase wiring: needs_clarification must actually halt the pipeline ─────────
+
+class _Ctx:
+    """Minimal stand-in for PipelineContext (the fields ModeDetectorPhase touches)."""
+    mode_override = None
+    intent_override = None
+    pipeline_halted = False
+    halt_reason = ""
+    spec = None
+
+
+def _phase_with_spec(spec: ResearchSpec):
+    from abm_auto.pipeline.phases.setup import ModeDetectorPhase
+    agent = MagicMock()
+    agent.run.return_value = spec
+    return ModeDetectorPhase(agent)
+
+
+def test_phase_halts_on_needs_clarification() -> None:
+    ctx = _Ctx()
+    spec = ResearchSpec(mode="originate", intent="idea",
+                        confidence=0.9, needs_clarification=True)
+    _phase_with_spec(spec).run(ctx)
+    assert ctx.pipeline_halted is True
+    assert "idea" in ctx.halt_reason and "clarification.md" in ctx.halt_reason
+
+
+def test_phase_does_not_halt_on_clean_spec() -> None:
+    ctx = _Ctx()
+    spec = ResearchSpec(mode="reproduce", intent="reproduce",
+                        confidence=0.95, needs_clarification=False)
+    _phase_with_spec(spec).run(ctx)
+    assert ctx.pipeline_halted is False
