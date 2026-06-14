@@ -56,7 +56,7 @@ VALID_TOPOLOGY_TYPES = {
     "barabasi_albert",
     "erdos_renyi",
     "netlogo_spatially_clustered",
-    "melodie_named",
+    "nx_named",
 }
 
 # Map topology type → required param names. Used by validate() so missing
@@ -66,7 +66,7 @@ TOPOLOGY_REQUIRED_PARAMS: dict[str, set[str]] = {
     "barabasi_albert": {"m"},
     "erdos_renyi": {"p"},
     "netlogo_spatially_clustered": {"avg_degree"},
-    "melodie_named": {"name"},  # plus arbitrary kwargs
+    "nx_named": {"name"},  # plus arbitrary kwargs
 }
 
 VALID_PYTHON_TYPES = {"int", "float", "bool", "str"}

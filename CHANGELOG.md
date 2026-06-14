@@ -128,7 +128,7 @@ where pipeline died in Sanity_fix loop with `count_r constant 0`.
 
 - **Topology seam** (`abm_auto.runtime.topologies`) — 5 callable adapters:
   `watts_strogatz`, `barabasi_albert`, `erdos_renyi`,
-  `netlogo_spatially_clustered` (algorithm-faithful), `melodie_named`.
+  `netlogo_spatially_clustered` (algorithm-faithful), `nx_named`.
   `Network.setup_agent_connections(topology=...)` replaces the old
   `network_type=str` string API. Determinism via `Network._rng` injected
   from `scenario.seed`. (276c1a9)

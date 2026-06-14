@@ -1,11 +1,11 @@
-"""ABM Auto Runtime — standalone ``Config`` (ADR-009 Phase 4, Stage A).
+"""ABM Auto Runtime — ``Config``: the run's project paths.
 
-Drop-in for ``Melodie.Config`` on the Simulator path: project paths only. The
-DB (sqlite), visualizer, studio-port, and parallel-port machinery Melodie's
-Config carried is dropped — our DataCollector writes CSV directly, so none of it
-is reached. Same public surface the handcrafted models + Simulator/DataLoader
-use: ``project_name``, ``project_root``, ``input_folder``, ``output_folder``,
-``output_tables_path()``, ``temp_folder``, ``input_dataframe_cache``.
+Carries only what the Simulator path needs: project name/root, the input and
+output folders, a temp folder, and the dataframe cache flag. No database,
+visualizer, or port machinery — the DataCollector writes CSV directly. Public
+surface used by the handcrafted models + Simulator/DataLoader: ``project_name``,
+``project_root``, ``input_folder``, ``output_folder``, ``output_tables_path()``,
+``temp_folder``, ``input_dataframe_cache``.
 """
 from __future__ import annotations
 
@@ -25,14 +25,13 @@ class Config:
     ) -> None:
         self.project_name = project_name
         self.project_root = project_root
-        # Melodie mkdir's the IO folders (relative to cwd) and returns the path
-        # unchanged — match that so paths resolve identically.
+        # mkdir the IO folders (relative to cwd) and keep the path unchanged so
+        # paths resolve identically wherever the run is launched from.
         self.output_folder = self._ensure(output_folder)
         self.input_folder = self._ensure(input_folder)
-        self.temp_folder = ".melodie"
-        # Stage A still wraps Melodie's Model/Network, which read these off the
-        # Config (e.g. Network writes a <name>_layout.gexf into visualizer_tmpdir).
-        # They go away with the wrappers in Stage B/C.
+        self.temp_folder = ".abm_auto"
+        # visualizer_tmpdir is where the Network optionally writes a
+        # <name>_layout.gexf (visualisation path only; unused on the run path).
         self.visualizer_tmpdir = os.path.join(self.temp_folder, "visualizer")
         self.studio_port = kwargs.get("studio_port", 8089)
         self.visualizer_port = kwargs.get("visualizer_port", 8765)

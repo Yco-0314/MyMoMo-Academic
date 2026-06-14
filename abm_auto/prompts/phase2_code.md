@@ -373,7 +373,7 @@ self.network.setup_agent_connections(
     #     avg_degree=int(self.scenario.average_degree),
     # ),
     # Escape hatch for any other networkx generator:
-    # topology=topologies.melodie_named("random_geometric_graph", radius=0.113),
+    # topology=topologies.nx_named("random_geometric_graph", radius=0.113),
 )
 ```
 

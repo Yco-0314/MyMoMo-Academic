@@ -69,7 +69,7 @@ Config, Simulator, Calibrator, Trainer
         - `topology=topologies.barabasi_albert(m=int)` (scale-free)
         - `topology=topologies.erdos_renyi(p=float)` (random)
         - `topology=topologies.netlogo_spatially_clustered(avg_degree=int)` (NetLogo iterative nearest-non-neighbor)
-        - `topology=topologies.melodie_named("any_networkx_generator_name", **kwargs)` (escape hatch)
+        - `topology=topologies.nx_named("any_networkx_generator_name", **kwargs)` (escape hatch)
    - `network.k`, `network.p` not attributes → these are bound at topology construction: `topologies.watts_strogatz(k=..., p=...)`.
    - `get_neighbors()` returns NetworkAgent objects (NOT (category, id) tuples — that's Grid). Access `.state` etc. directly.
    - `set_category()` MUST be implemented on every NetworkAgent subclass (same rule as GridAgent): `def set_category(self): self.category = 0`

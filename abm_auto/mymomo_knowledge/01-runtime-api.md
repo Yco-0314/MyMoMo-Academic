@@ -356,7 +356,7 @@ self.network.setup_agent_connections(
 | `barabasi_albert(m)` | m = int (edges per new node) | Scale-free |
 | `erdos_renyi(p)` | p = float (edge probability) | Random |
 | `netlogo_spatially_clustered(avg_degree)` | avg_degree = int | Faithful port of NetLogo `setup-spatially-clustered-network`: iterative random-node → nearest-non-neighbor linking, no per-node degree cap, terminates at n*d/2 edges. High-variance degree distribution. |
-| `melodie_named(name, **params)` | name = networkx generator function name | Escape hatch for anything networkx ships. Bridges `random.Random` to networkx's int seed. |
+| `nx_named(name, **params)` | name = networkx generator function name | Escape hatch for anything networkx ships. Bridges `random.Random` to networkx's int seed. |
 
 A `Topology` is `Callable[[int, random.Random], nx.Graph]`. RNG is supplied
 by `Network._rng` (auto-seeded from `scenario.seed` in `Model.create_network()`).

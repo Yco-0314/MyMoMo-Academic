@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 Topology = Callable[[int, random.Random], "nx.Graph"]
 
 
-def melodie_named(name: str, **params) -> Topology:
+def nx_named(name: str, **params) -> Topology:
     """Wrap any networkx generator as a Topology.
 
     Escape hatch: anything networkx ships works through here. The wrapper
@@ -37,7 +37,7 @@ def melodie_named(name: str, **params) -> Topology:
 
     Example::
 
-        topology = melodie_named("random_geometric_graph", radius=0.113)
+        topology = nx_named("random_geometric_graph", radius=0.113)
     """
     def build(n: int, rng: random.Random) -> "nx.Graph":
         import networkx as nx
@@ -94,22 +94,22 @@ def netlogo_spatially_clustered(avg_degree: int) -> Topology:
 
 def watts_strogatz(k: int, p: float) -> Topology:
     """Small-world graph: each node connected to k neighbors, then rewired with prob p."""
-    return melodie_named("watts_strogatz_graph", k=k, p=p)
+    return nx_named("watts_strogatz_graph", k=k, p=p)
 
 
 def erdos_renyi(p: float) -> Topology:
     """Random graph: each possible edge present with independent probability p."""
-    return melodie_named("erdos_renyi_graph", p=p)
+    return nx_named("erdos_renyi_graph", p=p)
 
 
 def barabasi_albert(m: int) -> Topology:
     """Scale-free graph by preferential attachment, m edges added per new node."""
-    return melodie_named("barabasi_albert_graph", m=m)
+    return nx_named("barabasi_albert_graph", m=m)
 
 
 __all__ = [
     "Topology",
-    "melodie_named",
+    "nx_named",
     "netlogo_spatially_clustered",
     "watts_strogatz",
     "erdos_renyi",

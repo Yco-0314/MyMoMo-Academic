@@ -13,7 +13,7 @@ wheels/
 workspace/
 *.db
 *.sqlite
-.melodie/
+.abm_auto/
 
 # Transient benchmark scorecards (regenerated each run)
 benchmark_calibration_summary.md

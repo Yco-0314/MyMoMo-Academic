@@ -80,7 +80,7 @@ between agents that drive interaction)?
 | `"barabasi_albert"` | `m` (int, edges per new node) | scale-free preferential attachment |
 | `"erdos_renyi"` | `p` (float 0-1, edge probability) | random graph |
 | `"netlogo_spatially_clustered"` | `avg_degree` (int) | NetLogo's spatially-clustered network |
-| `"melodie_named"` | `name` (str — networkx generator) plus arbitrary kwargs | escape hatch |
+| `"nx_named"` | `name` (str — networkx generator) plus arbitrary kwargs | escape hatch |
 
 ### When in doubt
 

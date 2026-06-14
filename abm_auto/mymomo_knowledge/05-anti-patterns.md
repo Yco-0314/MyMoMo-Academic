@@ -80,7 +80,7 @@ self.network.setup_agent_connections(
 
 Other built-in adapters: `barabasi_albert(m)`, `erdos_renyi(p)`,
 `netlogo_spatially_clustered(avg_degree)`, and the escape hatch
-`melodie_named("any_networkx_graph_fn", **kwargs)`.
+`nx_named("any_networkx_graph_fn", **kwargs)`.
 
 ---
 
