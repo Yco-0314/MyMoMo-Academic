@@ -3,6 +3,8 @@ name = "abm-auto"
 version = "0.1.0"
 description = "Autonomous Agent-Based Modeling research pipeline powered by ABM Auto Runtime + Claude"
 readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
 requires-python = ">=3.11"
 dependencies = [
     "anthropic>=0.40.0",

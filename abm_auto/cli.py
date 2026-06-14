@@ -54,6 +54,15 @@ def run(
     """
     from abm_auto.pipeline import Pipeline
 
+    # --intent supersedes the legacy --mode; warn if both were given so the
+    # user isn't surprised when the mode value is ignored.
+    if intent is not None and mode is not None:
+        typer.echo(
+            f"⚠ Both --intent ({intent}) and --mode ({mode}) given; "
+            f"--intent wins, --mode ignored.",
+            err=True,
+        )
+
     # Build phase-specific timeouts dict
     phase_timeouts = {}
     if timeout_simulation is not None:

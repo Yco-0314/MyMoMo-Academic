@@ -70,6 +70,20 @@ def _run_one(
         workspace_path = pipeline.run()
         elapsed = time.time() - t0
 
+        # Phase -1 may halt a vague/idea story for clarification instead of
+        # producing a model. Surface that distinctly so it doesn't masquerade
+        # as an OK run that simply did 0 iterations.
+        if getattr(pipeline.ctx, "pipeline_halted", False):
+            return {
+                "story": str(story),
+                "workspace": str(workspace_path),
+                "status": "NEEDS_CLARIFICATION",
+                "iters_completed": 0,
+                "failed_phase": "Phase -1 (intent)",
+                "wall_seconds": round(elapsed),
+                "notes": getattr(pipeline.ctx, "halt_reason", ""),
+            }
+
         # Count how many result CSVs exist to infer completed iterations
         result_dirs = sorted(workspace_path.glob("results/run_*"))
         iters_done = sum(
