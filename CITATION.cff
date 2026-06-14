@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software in your research, please cite it as below."
+title: "MyMoMo-Academic (abm-auto): Autonomous Agent-Based Modeling Research Pipeline"
+abstract: >-
+  An autonomous agent-based-modeling research system that turns a plain-language
+  research scenario into executable simulations, parameter calibration, and
+  research-quality reports — on a self-developed, dependency-free simulation
+  engine. Supports reproducing published studies and originating new models
+  across domains.
+type: software
+authors:
+  - family-names: Yu
+    given-names: Cong
+version: 0.3.0
+date-released: "2026-06-14"
+license: Apache-2.0
+repository-code: "https://github.com/Yco-0314/MyMoMo-Academic"
+url: "https://github.com/Yco-0314/MyMoMo-Academic"
+keywords:
+  - agent-based modeling
+  - agent-based simulation
+  - calibration
+  - large language models
+  - computational social science
+  - reproducibility
+  - Python
