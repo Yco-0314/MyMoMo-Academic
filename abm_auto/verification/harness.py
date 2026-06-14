@@ -42,7 +42,7 @@ class HarnessReport:
 
     Deliberately NOT a single boolean. The two tiers answer different
     questions and stay separate so "structurally wrong" is never confused
-    with "no evidence found" (the ADR-012 laundering guard, at the
+    with "no evidence found" (the ADR-013 laundering guard, at the
     aggregate level).
     """
 

@@ -55,7 +55,7 @@ Architectural changes:
   inherently-spatial model.
 - **Originate-mode example** (`examples/originate_segregation_phenomenon/`)
   — phenomenon-only story that asks the system to PROPOSE the
-  mechanism. Validates ADR-005's dual-mode promise.
+  mechanism. Validates the dual-mode promise.
 
 Full history: [CHANGELOG.md](CHANGELOG.md).
 

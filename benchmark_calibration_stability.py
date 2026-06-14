@@ -19,7 +19,9 @@ from rich.console import Console
 from rich.table import Table
 
 REPO = Path(__file__).parent
-PYTHON = "/home/user/Documents/Social Simulation /abm-auto/.venv/bin/python"
+# Use the interpreter running this script (honours the active venv) instead of a
+# hardcoded path, so the benchmark runs on any machine.
+PYTHON = sys.executable
 from benchmark_calibration_challenge import GROUND_TRUTH  # noqa: E402  inferred truth (see that file's docstring)
 
 console = Console()

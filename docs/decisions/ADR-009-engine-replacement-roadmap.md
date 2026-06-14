@@ -5,7 +5,7 @@
 **Status**: ✅ COMPLETE (2026-06-09) — Melodie fully decommissioned. Phase 1 Scenario, Phase 2 DataCollector, Phase 3 AgentList, Phase 4 Config/DataLoader/Simulator/Model + Agent/Grid/Network/Spot/Edge are all standalone. `import Melodie` removed from the package and the pyproject dependency; with Melodie UNINSTALLED the engine oracle (`engine_oracle.py`) is byte-identical on the 4 reference models and 470 tests pass. Each step was byte-diff-gated (`engine_oracle.py --check`).
 **Date**: 2026-05-31 (roadmap) · 2026-06-09 (completed)
 **Deciders**: yco + Claude (Opus 4.7 roadmap; Opus 4.8 execution)
-**Related**: [ADR-005](ADR-005-unified-platform-dual-mode.md), [ADR-008](ADR-008-multi-fidelity-calibration.md)
+**Related**: [ADR-008](ADR-008-multi-fidelity-calibration.md)
 
 ---
 
@@ -260,7 +260,7 @@ answer.
 | Phase | Status | Branch/commit |
 |---|---|---|
 | 1 — Scenario | **SHIPPED** 2026-05-31 | `d8f2429` |
-| 2 — DataCollector | **SHIPPED** 2026-05-31 (v2 streaming+Parquet added under ADR-011 W6) | `5354a0b` |
+| 2 — DataCollector | **SHIPPED** 2026-05-31 (v2 streaming+Parquet added under wedge W6) | `5354a0b` |
 | 3 — AgentList | not started | — |
 | 4 — Simulator + Config | not started | — |
 | 5 — Calibrator + Trainer removal | not started | — |

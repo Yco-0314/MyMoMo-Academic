@@ -27,7 +27,7 @@ from typing import Optional
 
 import pandas as pd
 
-DEFAULT_NETLOGO_DIR = "/home/user/Documents/Complexity/NetLogo 6.4.0"
+DEFAULT_NETLOGO_DIR = "/Applications/NetLogo 6.4.0"
 DEFAULT_JAVA_HOME = "/opt/homebrew/opt/openjdk@17"
 
 

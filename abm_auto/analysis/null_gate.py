@@ -5,7 +5,7 @@ is the counterpart to AntiPatternGate: where that Gate is
 *verification* tier (proves a complete property), this one is
 *refutation* tier — it can only reject the null hypothesis "this signal
 is indistinguishable from noise", never prove the signal has domain
-meaning. That ceiling is exactly the W3 / ADR-012 honesty boundary, made
+meaning. That ceiling is exactly the W3 / ADR-013 honesty boundary, made
 structural.
 
 What "passed" means here (the subtle part)

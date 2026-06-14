@@ -276,4 +276,4 @@ The process is the result: locking predictions and reading real output
 turned what an earlier (fabricating) version of this project would have
 called a "successful reproduction" into an honest, well-evidenced negative
 — and caught two of my own premature conclusions along the way. That is the
-Gate/Harness discipline (ADR-012/013) doing exactly its job.
+Gate/Harness discipline (ADR-013) doing exactly its job.

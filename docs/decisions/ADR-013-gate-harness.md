@@ -3,7 +3,7 @@
 **Status**: Accepted (design; grilled 2026-06-02 via improve-codebase-architecture). No code yet — this records the interface decisions so implementation and future reviews share one shape.
 **Date**: 2026-06-02
 **Deciders**: yco + Claude (Opus 4.8)
-**Related**: [ADR-012](ADR-012-method-transfer-engine.md) (anti-fabrication: verification must be structural, independent of the generator), [ADR-011](ADR-011-six-wedge-benchmark-thesis.md) (wedges + benchmark gates), [terminology.md](../context/terminology.md#research-harness-gate-vocabulary)
+**Related**: [terminology.md](../context/terminology.md#research-harness-gate-vocabulary). Core principle — anti-fabrication: verification must be structural, independent of the generator.
 
 ---
 
@@ -27,7 +27,7 @@ re-implement their own pass/fail glue. The complexity is already smeared
 across callers — the **deletion test** says concentrating it into one
 seam is a real deepening, not a pass-through.
 
-This matters most because of ADR-012's lesson (the author fabricated
+This matters most because of the anti-fabrication lesson (the author fabricated
 "validated" results twice): **trust must move to a small, auditable core
 of deterministic checks + unforgeable artifacts.** A unified `Gate` seam
 *is* that core, if designed so a generator cannot self-certify.
@@ -103,7 +103,7 @@ array, sim CSV, workspace path). Unification happens on the **output**
 - **Rejected 3A** (tier = static author label): nothing stops a Gate
   author tagging a refutation-only check as `verification` — label
   decoupled from what the check can actually prove. That is precisely the
-  laundering of ADR-012 (the author crowning their own output "validated").
+  laundering (the author crowning their own output "validated").
 - **Rejected 3B** (tier returned by `judge` at runtime): makes tier a
   generation-time self-assessment — the red line again.
 - **Chosen 3C** — tier is a **function of the self-test paradigm** the
@@ -130,7 +130,7 @@ the LLM generates claims; deterministic code judges them.
 Discussed and explicitly bounded. A generated Gate (new representation +
 new judge for an unseen method×domain) is allowed and is the source of
 the harness's flexibility. But its **self-test cannot be generated** —
-that would let the generator write its own always-pass exam (ADR-012 red
+that would let the generator write its own always-pass exam (the red
 line via the back door). A generated Gate must *bind to an existing
 human-audited self-test paradigm* to earn a verification/refutation tier;
 if it cannot, its Verdict is tagged `unverified` and may never claim

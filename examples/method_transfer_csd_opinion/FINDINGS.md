@@ -1,6 +1,6 @@
 # Demo 1 — Critical Slowing Down × Deffuant: NEGATIVE RESULT
 
-**ADR-012 method-transfer validation. Verdict: structural mismatch — CSD
+**Method-transfer validation. Verdict: structural mismatch — CSD
 does not transfer to Deffuant consensus→polarization. G-demo NOT passed.**
 
 This is a real negative with a mechanism, not a tuning failure. Every
@@ -67,7 +67,7 @@ slowing recovery, producing rising AR1/variance over a clear approach
 window. That window does not exist here, so there is nothing for CSD to
 detect ahead of time.
 
-## What this validates for ADR-012
+## What this validates for method transfer
 
 1. **The anti-spurious guard did its job.** The strict phase null
    rejected the signal in every configuration. No spurious positive got

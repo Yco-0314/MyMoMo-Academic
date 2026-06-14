@@ -5,7 +5,7 @@
 **Status**: Accepted
 **Date**: 2026-05-28
 **Deciders**: yco + Claude (Opus 4.7)
-**Related**: [ADR-005](ADR-005-unified-platform-dual-mode.md)
+**Related**: [ADR-008](ADR-008-multi-fidelity-calibration.md) (the calibration layer this recovery work feeds into)
 
 ---
 

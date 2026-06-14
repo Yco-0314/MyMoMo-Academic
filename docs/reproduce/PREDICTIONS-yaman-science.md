@@ -1,7 +1,7 @@
 # Pre-registered predictions — Yaman et al. science reproduction (Path 2)
 
 **Committed BEFORE the experimental run.** This is the anti-fabrication gate
-(ADR-012): the predictions and falsification conditions are locked to git
+(ADR-013): the predictions and falsification conditions are locked to git
 first; results are read from real tool output afterward and scored honestly,
 misses recorded as misses.
 

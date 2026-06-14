@@ -3,7 +3,7 @@
 **Status**: Proposed (design draft — no code). Records the interface decisions so implementation and reviews share one shape, same discipline as [ADR-014](ADR-014-coverage-gate.md)/[ADR-015](ADR-015-synthesis-phase.md). Grounded in a 10-paper literature scan (below).
 **Date**: 2026-06-09
 **Deciders**: yco + Claude (Opus 4.8)
-**Related**: [ADR-007](ADR-007-schema-driven-codegen.md) (`TopologySpec` + operators this extends), [ADR-014](ADR-014-coverage-gate.md) (coverage by contract + verifiability — the ΔΦ check is a new tier-3 oracle), [ADR-016](ADR-016-codegen-fidelity-wall.md) (the flatten is the fidelity wall on a new axis), [ADR-012](ADR-012-method-transfer-engine.md) (anti-fabrication).
+**Related**: [ADR-007](ADR-007-schema-driven-codegen.md) (`TopologySpec` + operators this extends), [ADR-014](ADR-014-coverage-gate.md) (coverage by contract + verifiability — the ΔΦ check is a new tier-3 oracle), [ADR-016](ADR-016-codegen-fidelity-wall.md) (the flatten is the fidelity wall on a new axis), [ADR-013](ADR-013-gate-harness.md) (anti-fabrication: the flatten verdict is an empirical measurement, not the generator's word).
 
 ---
 
@@ -69,7 +69,7 @@ dynamically faithful? → can we *measure* ΔΦ\* and check it's ~0?"**
 Add a **higher-order interaction wedge**: a topology kind, two group operators, and
 — the load-bearing part — **wire the ΔΦ\* criterion into the Coverage Gate as the
 tier-3 verifiability oracle for "flatten-to-pairwise".** No operator trusts the
-LLM's word; the flatten verdict is an empirical ΔΦ\* measurement (ADR-012 lineage).
+LLM's word; the flatten verdict is an empirical ΔΦ\* measurement (ADR-013 lineage).
 
 ### 1. Higher-order topology (extends `TopologySpec`)
 
@@ -125,7 +125,7 @@ Kalman / tabular-Q self-tests:
 Peixoto settles that a graph can always *represent* the group structure; the only
 question is whether the projected *dynamics* survive, and Xie's ΔΦ\* is the measured
 answer. Judge the flatten by a measured order parameter, never by the LLM's "pairwise
-is close enough" — the same anti-fabrication law as ADR-012/014/016, now on order.
+is close enough" — the same anti-fabrication law as ADR-013/014/016, now on order.
 
 ## Test surface (fixtures, ADR-014 style)
 

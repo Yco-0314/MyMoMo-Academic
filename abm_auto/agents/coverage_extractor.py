@@ -27,7 +27,7 @@ _KNOWN_MARKERS = {"adversarial", "multi_network", "generative",
 _FAITHFULNESS = {"full", "partial", "none"}
 
 # A marker is the load-bearing anti-flatten signal, so we do NOT trust the LLM's
-# word on it (ADR-012). Each marker is kept ONLY if the DESIGN PROSE corroborates
+# word on it (ADR-013). Each marker is kept ONLY if the DESIGN PROSE corroborates
 # it — a hallucinated marker (the LLM tagging a plain 1-hidden-layer net
 # "encoder_decoder") is dropped, so it can't false-halt a covered operator; a
 # real one (the prose genuinely shows adversarial/reward structure) is kept, so

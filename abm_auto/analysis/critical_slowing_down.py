@@ -1,6 +1,6 @@
 """Critical Slowing Down (CSD) — early-warning signals for ABM tipping points.
 
-ADR-012 method-transfer Demo 1. Ports the regime-shift early-warning
+Method-transfer Demo 1. Ports the regime-shift early-warning
 literature (Scheffer et al. 2009; Dakos et al. 2012) from ecology/climate
 onto an ABM trajectory.
 
@@ -19,7 +19,7 @@ That makes it the cheapest possible method-transfer demo: it runs on the
 trajectory DataCollector already emits.
 
 This module is the ``compute()`` half. The null-model anti-spurious guard
-(ADR-012's moat) lives in ``method_transfer_guard.py``.
+(the method-transfer guard) lives in ``method_transfer_guard.py``.
 """
 from __future__ import annotations
 

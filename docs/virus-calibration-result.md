@@ -93,9 +93,7 @@ black box), so the inference path uses simulation-based approaches.
 
 The platform-internal stages are not the contribution. The contribution
 is that **each stage is a typed, testable seam** that future researchers
-can swap out without touching the others. See
-[ADR-010](decisions/ADR-010-abm-platform-vision.md) for the architectural
-thesis.
+can swap out without touching the others.
 
 ### Algorithm details
 
@@ -286,9 +284,8 @@ section. What's missing for a true preprint:
 - **Method pseudocode** — could regenerate from `MechanismSpec` JSON
   via a deterministic template
 
-These three gaps are the actionable items for Phase 5 ("LLM-codegen
-public API") of [ADR-010](decisions/ADR-010-abm-platform-vision.md).
-For Phase 1's purposes, the auto-generated report is a **Results
+These three gaps are the actionable items for the LLM-codegen
+public-API work. For Phase 1's purposes, the auto-generated report is a **Results
 section** that beats hand-written-from-scratch on both turnaround
 (~3 LLM calls vs ~hours of human writing) and quantitative coverage
 (every parameter discussed, every iteration compared).
@@ -340,7 +337,7 @@ HALT condition with a clear kill memo.
 Composite reliability: **40% full success**, **100% failure detection
 via diagnostics**, **0% silent broken output** (when diagnostics are
 checked). The thesis "calibration as first-class with first-class
-identifiability diagnostics" (W1 + W4 from ADR-010) is empirically
+identifiability diagnostics" (wedges W1 + W4) is empirically
 validated — diagnostics work as designed even when the upstream
 codegen layer fails.
 
@@ -372,8 +369,7 @@ today.
 
 For the architectural reasoning behind why this is possible — and what
 the four differentiation wedges are (calibration first-class, LLM-codegen
-native, type-safe modern Python, testability via dependency injection) —
-see [ADR-010](decisions/ADR-010-abm-platform-vision.md).
+native, type-safe modern Python, testability via dependency injection).
 
 ---
 
@@ -385,7 +381,6 @@ see [ADR-010](decisions/ADR-010-abm-platform-vision.md).
   + TemplateGenerator
 - [ADR-008](decisions/ADR-008-multi-fidelity-calibration.md) — multi-fidelity
   schedule (off by default)
-- [ADR-010](decisions/ADR-010-abm-platform-vision.md) — platform vision
 
 Source examples:
 

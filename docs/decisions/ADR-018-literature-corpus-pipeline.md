@@ -5,7 +5,7 @@
 **Status**: Proposed (thesis; design only; no code change in this ADR)
 **Date**: 2026-06-01
 **Deciders**: yco + Claude (Opus 4.8)
-**Related**: [ADR-010](ADR-010-abm-platform-vision.md), [ADR-011](ADR-011-six-wedge-benchmark-thesis.md), [ADR-012](ADR-012-method-transfer-engine.md)
+**Related**: [ADR-013](ADR-013-gate-harness.md) (each stage emits a verifiable artifact — the anti-fabrication discipline applied to the corpus)
 
 ---
 
@@ -39,8 +39,8 @@ the thin LitReviewer:
   or fetch full text.
 - **W5 (mechanism search)**: ranking candidate mechanisms against the
   literature needs a real corpus to rank against.
-- **W7 (method transfer, ADR-012)**: the "novel-finding recall" benchmark
-  (ADR-012 OQ#3) requires a corpus of known method×domain results to
+- **W7 (method transfer)**: the "novel-finding recall" benchmark
+  (method-transfer OQ#3) requires a corpus of known method×domain results to
   test rediscovery against.
 
 A corpus pipeline is shared infrastructure under all three. It is the
@@ -50,7 +50,7 @@ the input side — this rebalances.
 
 ## Design — three stages, each with an auditable artifact
 
-The ADR-012 discipline applies directly: **each stage emits a
+The anti-fabrication discipline applies directly: **each stage emits a
 machine-checkable artifact; trust moves to those artifacts, not to the
 agent's say-so.** A corpus pipeline is a perfect target for
 fabrication (an agent could invent plausible-looking citations — the
@@ -80,7 +80,7 @@ classic LLM failure), so provenance is the moat.
 - **Anti-fabrication guard**: every retained paper must have a real DOI
   that resolves; a paper the agent "knows" but that has no resolvable
   identifier is rejected (this is the citation-hallucination guard —
-  the literature analogue of ADR-012's deterministic verification).
+  the literature analogue of deterministic verification (ADR-013)).
 - Artifact: `corpus/stage2_screened.jsonl` + per-paper decision log.
 
 ### Stage 3 — Snowball + expert add (~180)
@@ -144,7 +144,7 @@ now demand the output/result pipeline to be.
   in itself; the latter is narrower and faster. Recommend narrower first.
 - **OQ#2**: Where does this sit against the 9-13mo v1.0 plan — is it a
   7th wedge (input-side), or infrastructure under W2/W5/W7? Leaning
-  infrastructure, surfaced when a wedge needs it (same gating as ADR-012).
+  infrastructure, surfaced when a wedge needs it (same gating as ADR-013).
 - **OQ#3**: How much full-text can we legally + technically fetch? Bounds
   how much Stage 2 is full-text vs abstract-only.
 

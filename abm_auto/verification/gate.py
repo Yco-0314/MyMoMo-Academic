@@ -13,7 +13,7 @@ smeared complexity into one deep seam so the GVR loop, the
 diagnostics-HALT, and the method-transfer harness all consume one shape;
 a new method×domain adds a Gate, not new glue.
 
-The load-bearing rule (ADR-012 + ADR-013)
+The load-bearing rule (ADR-013)
 -----------------------------------------
 `judge` MUST be deterministic — no LLM inside. That is what lets a Gate
 be `self_test`ed on synthetic ground truth, and it is what stops a
@@ -26,7 +26,7 @@ paradigm, never a hand-written label:
   - "refutation"  — the self-test only proves the Gate can REJECT
     obvious failure (e.g. tells signal from white noise) but cannot
     prove the finding has domain meaning. Its Verdict may say only
-    "not refuted." Conflating the two is the laundering ADR-012 forbids.
+    "not refuted." Conflating the two is the laundering ADR-013 forbids.
 
 This module defines only the seam (Protocol + Verdict + Tier). Concrete
 Gates live next to the validator they wrap (e.g. AntiPatternGate in

@@ -3,7 +3,7 @@
 **Status**: Accepted (empirically validated). Five locked-prediction live reproductions of a textbook Hawk-Dove model (deepseek, reproduce mode, seed 42) found six distinct fidelity layers; each got a deterministic fix; run #5 is a clean 11/11 with E6 converging all-Hawk → ESS 0.5 via selection.
 **Date**: 2026-06-09
 **Deciders**: yco + Claude (Opus 4.8)
-**Related**: [ADR-007](ADR-007-schema-driven-codegen.md) (TemplateGenerator owns boilerplate — the wall this ADR extends to operator USE), [ADR-014](ADR-014-coverage-gate.md) (coverage = can we EXPRESS it; this ADR = did we BUILD it faithfully), [ADR-012](ADR-012-method-transfer-engine.md) (anti-fabrication: trust deterministic checks, never the generator), [ADR-013](ADR-013-gate-harness.md) (the `Gate` seam; `StructuralFidelityGate` is a verification Gate). Evidence: `examples/repro_hawk_dove/FINDINGS-e2e-rerun{,2,3,4,5}.md`.
+**Related**: [ADR-007](ADR-007-schema-driven-codegen.md) (TemplateGenerator owns boilerplate — the wall this ADR extends to operator USE), [ADR-014](ADR-014-coverage-gate.md) (coverage = can we EXPRESS it; this ADR = did we BUILD it faithfully), [ADR-013](ADR-013-gate-harness.md) (the `Gate` seam; `StructuralFidelityGate` is a verification Gate; anti-fabrication: trust deterministic checks, never the generator). Evidence: `examples/repro_hawk_dove/FINDINGS-e2e-rerun{,2,3,4,5}.md`.
 
 ---
 
@@ -38,7 +38,7 @@ structural gates is a real deepening.
 
 Treat codegen fidelity as a **catalogue of six layers**, each closed by a
 deterministic check that owns one invariant. No layer trusts the LLM's word; every
-verdict is a spec-normalization or an AST/regex structural check (ADR-012 lineage).
+verdict is a spec-normalization or an AST/regex structural check (ADR-013 lineage).
 
 | # | layer (the silent failure) | fix | seam that owns it |
 |---|---|---|---|

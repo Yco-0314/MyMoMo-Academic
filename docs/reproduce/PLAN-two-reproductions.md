@@ -3,7 +3,7 @@
 **Status: PLAN. Written 2026-06-01. Both reproductions are wanted (user
 decision: "两个都要"). This file separates CONFIRMED facts from
 PENDING-verification gaps so no implementation is written on guessed
-content — the ADR-012 discipline.**
+content — the anti-fabrication discipline.**
 
 ## Two tracks, both committed
 
@@ -33,7 +33,7 @@ collectable.
 4. Implement / depend-on Ollivier-Ricci curvature (needs optimal
    transport / Sinkhorn — heavier than CSD's rolling stats).
 5. Apply the surrogate-null guard (degree-preserving rewire) — the
-   ADR-012 moat — before claiming any curvature signal.
+   method-transfer rigor — before claiming any curvature signal.
 
 This prerequisite (event-stream) is exactly what the probe matrix
 predicted Type-D/E/G methods need. Demo 2 forces it. It is genuine W7

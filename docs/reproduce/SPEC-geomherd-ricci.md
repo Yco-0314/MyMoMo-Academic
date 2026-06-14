@@ -61,7 +61,7 @@ different things — keep them distinct (this is exactly the W3
 6. **Theory bridge**: a **mean-field bridge mapping κ_OR → CSAD** (Cross-
    Sectional Absolute Deviation), the classical macroscopic herding
    statistic — this is the GeomHerd analogue of a "theory bridge"
-   (exactly the rigor ADR-012 demands of method transfer).
+   (exactly the rigor required of method transfer).
 7. **Event definition**: order parameter Va(t) crosses herding threshold
    **φ_event = 0.50**; curvature crosses geometric threshold
    **κ_geom = 0.30** *before* that. Lead time Δ = (event time) − (alarm

@@ -2,7 +2,7 @@
 
 **Status: PREDICTIONS ONLY. Written 2026-06-03 before implementing or
 running anything. Committed to git so they cannot be edited post-hoc to
-match outcomes (ADR-012/013 "artifact before conclusion", applied to
+match outcomes (ADR-013 "artifact before conclusion", applied to
 this experiment). Wrong predictions are the target signal — they expose
 where my model of the architecture is wrong.**
 

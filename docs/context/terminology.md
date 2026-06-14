@@ -592,7 +592,7 @@ author-written label (that would let a generator self-certify).
 - **refutation** — the self-test only proves the Gate can *reject obvious
   failure* (e.g. null guard: distinguishes signal from white noise, but
   cannot prove the signal has domain *meaning*). Verdict may say only "not
-  refuted." Conflating the two is the laundering ADR-012 forbids.
+  refuted." Conflating the two is the laundering ADR-013 forbids.
 
 **Intermediate-state family**  
 The kind of intermediate state a Gate consumes: source code, scalar
@@ -633,7 +633,7 @@ named standard algorithm — Kalman, a simple LP — with a numpy/scipy path)
 · **uncovered** (deep/custom, halt). The fuzzy stdlib-standard tier is
 resolved not by a classifier but by **verifiability**: it passes only if
 codegen can emit a known-answer self-test that passes. "Is it buildable?"
-becomes "can we verify the build?" — ADR-012's anti-fabrication move
+becomes "can we verify the build?" — ADR-013's anti-fabrication move
 applied to coverage.
 
 **Synthesis Phase**  

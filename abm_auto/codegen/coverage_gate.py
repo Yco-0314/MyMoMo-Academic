@@ -3,7 +3,7 @@
 Decides BUILDABILITY (not spec quality): after extraction, can the pipeline
 actually generate every mechanism the design declares? Verdict turns on a
 deterministic contract match + a verifiability tier — never on architectural
-resemblance or the LLM's say-so (ADR-012 anti-fabrication, applied to coverage).
+resemblance or the LLM's say-so (ADR-013 anti-fabrication, applied to coverage).
 
 This module is the self-testable core. The LLM half (extracting `Mechanism`
 records from DESIGN+spec) is evidence only; it is NOT here. The self-test

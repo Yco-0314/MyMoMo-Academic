@@ -1,4 +1,4 @@
-"""ADR-012 Demo 1 — Critical Slowing Down × Deffuant opinion dynamics.
+"""Method-transfer Demo 1 — Critical Slowing Down × Deffuant opinion dynamics.
 
 Scientific claim (mirrors GeomHerd's structure): an early-warning signal
 fires BEFORE the order parameter onset. Here the order parameter is the
@@ -186,7 +186,7 @@ def analyze_run(run: dict) -> dict:
 
 def main() -> int:
     n_seeds = int(sys.argv[1]) if len(sys.argv) > 1 else 8
-    print(f"=== ADR-012 Demo 1: CSD × Deffuant (ramped μ), {n_seeds} seeds ===\n")
+    print(f"=== Method-transfer Demo 1: CSD × Deffuant (ramped μ), {n_seeds} seeds ===\n")
 
     results = []
     for seed in range(n_seeds):

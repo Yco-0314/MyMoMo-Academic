@@ -3,7 +3,7 @@
 **Status**: Accepted (design; reasoned 2026-06-04 as the layer above the Coverage Gate). No code yet.
 **Date**: 2026-06-04
 **Deciders**: yco + Claude (Opus 4.8)
-**Related**: [ADR-014](ADR-014-coverage-gate.md) (the Coverage Gate detects gaps + halts — this closes them), [ADR-013](ADR-013-gate-harness.md) (the human-audited self-test *paradigm library* is the trust frontier here), [ADR-012](ADR-012-method-transfer-engine.md) (a generator cannot certify its own correctness)
+**Related**: [ADR-014](ADR-014-coverage-gate.md) (the Coverage Gate detects gaps + halts — this closes them), [ADR-013](ADR-013-gate-harness.md) (the human-audited self-test *paradigm library* is the trust frontier here; a generator cannot certify its own correctness)
 
 ---
 
@@ -20,7 +20,7 @@ The tempting framing is "the agent lacks adaptive learning." That framing is
 wrong. An LLM CAN read a mechanism and draft an operator — the generative
 ability is there. The real constraint is **trust**: can the synthesized
 operator be internalized WITHOUT a human, or would that be the architecture-
-level version of the fabrication ADR-012 exists to prevent (the system
+level version of the fabrication ADR-013 exists to prevent (the system
 confidently internalizing a mechanism that is silently wrong)?
 
 So the boundary of safe self-extension is not intelligence. It is the same
@@ -67,7 +67,7 @@ covered
 ### The trust law (why the oracle must be independent)
 
 If the agent writes BOTH the operator AND its self-test, the generator is
-certifying itself — exactly the laundering ADR-012/013 forbid (a Gate's
+certifying itself — exactly the laundering ADR-013 forbid (a Gate's
 `judge` may not be produced by the thing it judges). So the self-test's
 ORACLE must come from the **human-audited paradigm library**, not be freely
 generated to match the operator. Within validated paradigms the agent extends
@@ -155,5 +155,5 @@ the search can prune far harder.
 Design only, no code — same discipline as ADR-013/014. This ADR exists so
 "adaptive learning" has a defined, SAFE, buildable place in the architecture:
 self-extension bounded by independent oracles, consistent with the through-
-line — ADR-012 (don't trust the generator) → ADR-014 (judge coverage by
+line — ADR-013 (don't trust the generator) → ADR-014 (judge coverage by
 verifiability) → ADR-015 (judge a new operator's birth by the same ruler).

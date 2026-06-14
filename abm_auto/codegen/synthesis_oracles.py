@@ -4,7 +4,7 @@ Each oracle is an INDEPENDENT known-answer test: it takes a candidate operator
 (the thing the synthesis step drafts) and returns True iff the candidate
 reproduces a KNOWN answer on a fixed problem. The answer is independent of the
 candidate's implementation — that independence is what makes the oracle a real
-judge and not self-certification (ADR-012).
+judge and not self-certification (ADR-013).
 
 Each paradigm documents a CANDIDATE PROTOCOL (the small interface the candidate
 must satisfy); the LLM synthesis step drafts to it, the oracle exercises it.

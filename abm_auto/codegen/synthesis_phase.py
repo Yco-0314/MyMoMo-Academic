@@ -3,7 +3,7 @@
 Bounded self-extension: when the Coverage Gate (ADR-014) finds a gap, can the
 system synthesize a new operator and INTERNALIZE it autonomously? Only if an
 INDEPENDENT, human-audited oracle passes the candidate — never on the
-generator's word (ADR-012).
+generator's word (ADR-013).
 
 This module is the self-testable plumbing (no LLM; the LLM would draft the
 candidate operator — here candidates are supplied directly so the gate logic

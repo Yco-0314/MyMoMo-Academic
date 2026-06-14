@@ -6,7 +6,7 @@ outcomes — wrong predictions are the most valuable signal (they expose
 gaps in our understanding of the architecture).**
 
 This file is committed/timestamped before the probe runs precisely so it
-cannot be edited post-hoc to match results — the ADR-012 "unforgeable
+cannot be edited post-hoc to match results — the anti-fabrication "unforgeable
 trace, artifact before conclusion" principle applied to this experiment
 itself.
 

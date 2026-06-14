@@ -1,6 +1,6 @@
 """ABM Auto Runtime — DataCollector with pluggable streaming backends.
 
-A pandas-backed, CSV-first collector (ADR-011 wedge W6 "scale-portable"):
+A pandas-backed, CSV-first collector (wedge W6 "scale-portable"):
 
   - A ``TableWriter`` Protocol — the pluggable-backend seam.
   - ``CsvTableWriter`` (default) + ``ParquetTableWriter`` — two adapters,

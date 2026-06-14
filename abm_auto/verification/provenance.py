@@ -22,7 +22,7 @@ Why it catches fabrication
 --------------------------
 A fabricated result points to no artifact. In a credential, its
 artifact-hash entry is absent or, on replay, fails to match — the
-fabrication is structurally visible. This is the ADR-012 "artifact
+fabrication is structurally visible. This is the ADR-013 "artifact
 before conclusion" rule made machine-checkable: trust moves from the
 generator's word to a hash a third party can recompute.
 

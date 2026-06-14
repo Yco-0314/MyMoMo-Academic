@@ -73,7 +73,7 @@ honest perfect fit rather than a degenerate loss landscape.
   (`examples/originate_segregation_phenomenon/story.md`) —
   phenomenon-only story that asks the system to PROPOSE the
   mechanism rather than reproduce a published one. Validates
-  ADR-005's dual-mode promise. (`1285099`, `849814b`)
+  the dual-mode promise. (`1285099`, `849814b`)
 
 ### Fixed
 

@@ -1,4 +1,4 @@
-"""Anti-spurious guard for method transfer — the ADR-012 moat.
+"""Anti-spurious guard for method transfer — the method-transfer moat.
 
 Applying a method from another field to an ABM trajectory is cheap. The
 hard, defensible part is proving the resulting signal is REAL and not an

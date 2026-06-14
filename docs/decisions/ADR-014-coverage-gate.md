@@ -3,7 +3,7 @@
 **Status**: Accepted (design; grilled 2026-06-04 via improve-codebase-architecture, mattpocock/skills variant). No code yet — this records the interface decisions so implementation and future reviews share one shape.
 **Date**: 2026-06-04
 **Deciders**: yco + Claude (Opus 4.8)
-**Related**: [ADR-013](ADR-013-gate-harness.md) (the `Gate` seam — the Coverage Gate is a new verification Gate), [ADR-012](ADR-012-method-transfer-engine.md) (anti-fabrication: trust deterministic checks + verification, not the generator's word), [ADR-007](ADR-007-schema-driven-codegen.md) (the typed `MechanismSpec` the gate inspects), [terminology.md](../context/terminology.md#research-harness-gate-vocabulary)
+**Related**: [ADR-013](ADR-013-gate-harness.md) (the `Gate` seam — the Coverage Gate is a new verification Gate; anti-fabrication: trust deterministic checks + verification, not the generator's word), [ADR-007](ADR-007-schema-driven-codegen.md) (the typed `MechanismSpec` the gate inspects), [terminology.md](../context/terminology.md#research-harness-gate-vocabulary)
 
 ---
 
@@ -31,7 +31,7 @@ hallucinated mechanism. By the **deletion test**, the knowledge "what can
 this pipeline actually build" lives nowhere today; concentrating it into
 one seam is a real deepening, not a pass-through.
 
-This is ADR-012's lesson recurring one level up: the W2 wall was the
+This is ADR-013's lesson recurring one level up: the W2 wall was the
 generator silently flattening a trainable net into scalars; here the *gate*
 risks silently flattening an unbuildable mechanism into a "pass". Trust must
 move to deterministic contract checks + empirical verification, never to
@@ -109,7 +109,7 @@ known linear-Gaussian signal; tabular Q-learning solves a known MDP; an LP
 matches a known optimum). **Pass iff that self-test passes; no oracle or a
 failing test → drop to `uncovered` → HALT.** This converts "is it buildable?"
 (a fuzzy prediction) into "can we verify this build?" (an empirical check) —
-the anti-fabrication move of ADR-012/013, now applied to coverage.
+the anti-fabrication move of ADR-013, now applied to coverage.
 
 This is strictly finer than any classifier: it splits same-named mechanisms
 by verifiability — **tabular Q-learning (PASS, build+verify) from deep RL
