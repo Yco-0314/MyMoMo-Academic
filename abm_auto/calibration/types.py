@@ -34,7 +34,7 @@ class Fidelity:
     `periods_scale` multiplies the scenario CSV's `periods` column on each
     sim. A periods_scale of 0.4 cuts a 250-tick run to 100 ticks; the
     overall wall saving depends on how much of the sim is fixed-cost
-    (subprocess startup + Melodie boot ≈ 0.3-0.5 s) vs proportional cost.
+    (subprocess startup + engine import ≈ 0.3-0.5 s) vs proportional cost.
 
     Preset tuning rationale (see ADR-008 OQ#1):
 

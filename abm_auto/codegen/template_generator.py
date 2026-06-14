@@ -447,7 +447,7 @@ if __name__ == "__main__":
 def generate_scenarios_csv(spec: MechanismSpec) -> str:
     """Emit data/input/SimulatorScenarios.csv — header + one default row.
 
-    The header includes Melodie's required `id` and `run_num` columns
+    The header includes the runtime's required `id` and `run_num` columns
     plus every scenario_param.name. The single data row uses each
     param's declared default — calibration will overwrite these values
     when it fires.

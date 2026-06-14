@@ -16,7 +16,7 @@ Thresholds are mode-aware (passed via ResearchSpec from ModeDetector):
   originate mode — relaxed: max 15 assumptions, max 6 missing elements
   (originate research naturally has more unknowns — that's expected)
 
-Design elements checked (the 8 from melodie-design):
+Design elements checked (the 8 core ABM design dimensions):
   Agents / Interaction / Time / Initialization / Decision / Scenario / Validation / Output
 """
 from __future__ import annotations

@@ -142,8 +142,8 @@ def fit(
     fidelity.
 
     **MF is off by default** because empirical wall savings on lean
-    handcrafted_model sims are negligible (subprocess startup + Melodie
-    boot dominate ~3-4s/sim; 0.4× periods saves ~0.25s). MF earns its
+    handcrafted_model sims are negligible (subprocess startup + engine
+    import dominate ~3-4s/sim; 0.4× periods saves ~0.25s). MF earns its
     keep on full-Pipeline runs where each sim is expensive (multi-seed
     observed, larger agent populations) — opt in explicitly there. See
     ADR-008.
