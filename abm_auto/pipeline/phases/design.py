@@ -33,6 +33,10 @@ class DesignViabilityPhase:
     def should_run(self, ctx: PipelineContext) -> bool:
         return True
 
+    def checkpoint_artefacts(self, ctx: PipelineContext) -> list:
+        # ADR-021 D2: DESIGN.md is the cost-anchor artefact this phase produces.
+        return [ctx.workspace.design_path]
+
     def run(self, ctx: PipelineContext) -> None:
         def _design_gen(feedback):
             return self.designer.run(extra_feedback=feedback)

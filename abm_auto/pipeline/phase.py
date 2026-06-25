@@ -54,6 +54,7 @@ class PipelineContext:
     intent_override: Optional[str] = None
     external_model_path: Optional[str] = None
     observed_path: Optional[str] = None
+    benchmark_archetype: Optional[str] = None  # ADR-021 D5: --benchmark <archetype>
     sensitivity_method: Optional[str] = None
     sensitivity_samples: int = 10
 

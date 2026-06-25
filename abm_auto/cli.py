@@ -40,6 +40,9 @@ def run(
     intent: Optional[str] = typer.Option(None, "--intent", help="Declare research intent: 'reproduce', 'originate', 'cross_domain', or 'idea'. Default: auto-detect from story.md; low-confidence or 'idea' halts with clarifying questions."),
     external_model: Optional[str] = typer.Option(None, "--external-model", help="Path to prebuilt Python model dir (main.py + core/). When set, Phase 1d / 2 / 3 are skipped — dir is copied into workspace/model/ and Phase 4+ runs against it. Useful for reproducing established models without LLM codegen drift."),
     observed: Optional[Path] = typer.Option(None, "--observed", help="Path to observed.csv for calibration. Copied into workspace/data/ before Phase 4. Without this (or a data/observed.csv next to STORY.md), Phase 6 silently falls back from BayesianCalibrator to heuristic OptimizerAgent."),
+    critics: bool = typer.Option(False, "--critics", help="Enable inline Critics (ADR-021 D4): a per-phase adversarial gate after Design and Mechanism phases. Off by default."),
+    allow_critic_soft: bool = typer.Option(False, "--allow-critic-soft", help="Downgrade Critic violations from a BLOCKING halt to a HIGH audit issue (continue past findings)."),
+    benchmark: Optional[str] = typer.Option(None, "--benchmark", help="Run cross-tool baselines (ADR-021 D5) for an explicit archetype (e.g. 'sir_network') via Mesa/NetLogo; the comparison table is rendered into the report. Off by default."),
 ):
     """
     Run the full autonomous ABM pipeline from a story description.
@@ -94,9 +97,36 @@ def run(
         intent_override=intent,
         external_model_path=external_model,
         observed_path=str(observed) if observed else None,
+        enable_critics=critics,
+        allow_critic_soft=allow_critic_soft,
+        benchmark_archetype=benchmark,
     )
     workspace_path = pipeline.run()
     console.print(f"\n[bold]Output directory:[/bold] {workspace_path}")
+
+
+@app.command()
+def experiment(
+    spec: Path = typer.Argument(..., help="Path to an Experiment spec (.json, or .yaml with pyyaml). A {param:[values]} sweep × n_iter seeds over a named backend."),
+    out: Optional[Path] = typer.Option(None, "--out", "-o", help="Write the results DataFrame to this CSV (otherwise print to stdout)."),
+    resume: bool = typer.Option(False, "--resume", help="Skip cells already completed in a prior run (per-cell ledger under the experiment's out dir)."),
+):
+    """Run a parameter sweep × multi-seed Experiment (ADR-021 D1) → a tidy DataFrame.
+
+    Replaces hand-written examples/*/run.py lever sweeps. One row per (param-tuple × seed).
+
+    Example:\n
+        abm-auto experiment sweep.json --out results.csv
+    """
+    from abm_auto.experiment import Experiment
+
+    exp = Experiment.from_file(spec)
+    df = exp.run(resume=resume)
+    if out:
+        df.to_csv(out, index=False)
+        console.print(f"[green]Wrote {len(df)} rows × {len(df.columns)} cols to {out}[/green]")
+    else:
+        console.print(df.to_string(index=False))
 
 
 @app.command()
