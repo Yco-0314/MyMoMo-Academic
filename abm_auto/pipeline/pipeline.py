@@ -43,6 +43,7 @@ from abm_auto.memory.store import ExperimentMemory
 from abm_auto.pipeline.phase import LoopedPhase, Phase, PipelineContext
 from abm_auto.runner.executor import Executor
 from abm_auto.runner.workspace import Workspace
+from abm_auto.runner.checkpoint import CheckpointStore, plan_skips, run_phases
 
 console = Console()
 
@@ -77,9 +78,14 @@ class Pipeline:
         intent_override: Optional[str] = None,
         external_model_path: Optional[str] = None,
         observed_path: Optional[str] = None,
+        resume_from: Optional[str] = None,
+        enable_critics: bool = False,
+        allow_critic_soft: bool = False,
+        benchmark_archetype: Optional[str] = None,
     ):
         self.story_path = Path(story_path)
         self.max_retries = max_retries
+        self.resume_from = resume_from
 
         # Phase-specific timeouts (fallback to global timeout or defaults)
         self.phase_timeouts = phase_timeouts or {}
@@ -112,9 +118,14 @@ class Pipeline:
         )
         console.print(f"[dim]LLM provider: {config.LLM_PROVIDER}, model: {model}[/dim]")
 
-        # Workspace
-        self.workspace = Workspace.create(workspace_name)
+        # Workspace — resume reopens an existing one; default creates a fresh one
+        if resume_from is not None:
+            self.workspace = Workspace.load(resume_from)
+        else:
+            self.workspace = Workspace.create(workspace_name)
         console.print(f"[dim]Workspace: {self.workspace.path}[/dim]")
+        # D2 Checkpoint store (ADR-021): per-phase resume ledger under workspace/checkpoints/
+        self.checkpoint_store = CheckpointStore(self.workspace.path)
 
         # Copy story + optional lit_notes
         self.workspace.write_story(self.story_path.read_text(encoding="utf-8"))
@@ -167,12 +178,32 @@ class Pipeline:
             intent_override=intent_override,
             external_model_path=external_model_path,
             observed_path=observed_path,
+            benchmark_archetype=benchmark_archetype,
             sensitivity_method=sensitivity_method,
             sensitivity_samples=sensitivity_samples,
         )
 
         # Phase list — order matters
         self.phases: list[Phase] = self._build_phases()
+
+        # D4 (ADR-021): opt-in inline Critics (two adapters). Default off ⇒ the phase
+        # list is byte-identical to today; enabled ⇒ a soft adversarial gate runs after
+        # the Design and Mechanism phases.
+        if enable_critics:
+            from abm_auto.agents.critic import DesignCritic, MechanismCritic
+            from abm_auto.pipeline.phases.critic_phase import insert_critics
+            critics = [
+                DesignCritic(self.client, self.workspace, model=strong_model, lang=lang),
+                MechanismCritic(self.client, self.workspace, model=strong_model, lang=lang),
+            ]
+            self.phases = insert_critics(self.phases, critics, allow_soft=allow_critic_soft)
+
+        # D3 (ADR-021): opt-in compose-time contract check. Default off ⇒ existing
+        # runs are byte-identical; ABM_VALIDATE_CONTRACTS=1 fails fast on a phase
+        # whose declared inputs no earlier phase produces.
+        if os.environ.get("ABM_VALIDATE_CONTRACTS") == "1":
+            from abm_auto.pipeline.contract import validate_pipeline
+            validate_pipeline(self.phases)
 
     def _build_phases(self) -> list[Phase]:
         """Construct the ordered phase list with explicit agent injection."""
@@ -211,6 +242,7 @@ class Pipeline:
             RecordInitialParamsPhase,
             SeedInjectionPhase,
         )
+        from abm_auto.pipeline.phases.benchmark_phase import BenchmarkPhase
         from abm_auto.pipeline.phases.setup import (
             ExternalModelDeclarationPhase,
             HypothesisPhase,
@@ -262,6 +294,7 @@ class Pipeline:
             WhatIfPhase(self.what_if_oracle),
             CitationsPhase(),
             BaselinePhase(),
+            BenchmarkPhase(),  # ADR-021 D5: runs only when --benchmark <archetype> is set
             ReportPhase(self.reporter),
             VisualizerPhase(),
             PeerReviewPhase(self.reviewer),
@@ -279,15 +312,15 @@ class Pipeline:
             )
         )
 
-        for phase in self.phases:
-            if self.ctx.pipeline_halted:
-                console.print(
-                    f"[yellow]Pipeline halted: {self.ctx.halt_reason}[/yellow]"
-                )
-                break
-            if not phase.should_run(self.ctx):
-                continue
-            phase.run(self.ctx)
+        # D2 Checkpoint (ADR-021): on resume, skip the valid-checkpoint prefix up to
+        # resume_from; in all runs, write a checkpoint after each successful phase
+        # (resume_from=None ⇒ skip set empty ⇒ behaviour identical to before).
+        skip = plan_skips(self.phases, self.checkpoint_store, self.resume_from)
+        run_phases(self.phases, self.ctx, store=self.checkpoint_store, skip=skip)
+        if self.ctx.pipeline_halted:
+            console.print(
+                f"[yellow]Pipeline halted: {self.ctx.halt_reason}[/yellow]"
+            )
 
         console.print(
             Panel.fit(

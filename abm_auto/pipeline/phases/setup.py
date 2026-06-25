@@ -12,6 +12,7 @@ from typing import Optional
 from rich.console import Console
 
 from abm_auto.pipeline.phase import PipelineContext
+from abm_auto.pipeline.contract import PhaseContract
 
 console = Console()
 
@@ -24,6 +25,8 @@ class ModeDetectorPhase:
     """
 
     name = "Phase -1 (ModeDetector)"
+    # ADR-021 D3: produces ctx.spec from the construction-time intent overrides.
+    contract = PhaseContract(inputs=("mode_override", "intent_override"), outputs=("spec",))
 
     def __init__(self, agent):
         self.agent = agent
@@ -57,6 +60,11 @@ class ExternalModelDeclarationPhase:
     """
 
     name = "External model declaration"
+    # ADR-021 D3: reads + mutates ctx.spec, sets ctx.using_external_model (read+write).
+    contract = PhaseContract(
+        inputs=("spec", "external_model_path"),
+        outputs=("spec", "using_external_model"),
+    )
 
     def should_run(self, ctx: PipelineContext) -> bool:
         return bool(ctx.external_model_path)
@@ -101,6 +109,8 @@ class InjectObservedDataPhase:
     """
 
     name = "Inject observed data"
+    # ADR-021 D3: consumer of ctx.spec (the producer→consumer pair with ModeDetector).
+    contract = PhaseContract(inputs=("spec", "observed_path"), outputs=())
 
     def should_run(self, ctx: PipelineContext) -> bool:
         if ctx.spec is None or not ctx.spec.has_calibration_data:

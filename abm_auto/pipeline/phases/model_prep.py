@@ -83,6 +83,10 @@ class MechanismExtractorPhase:
     def should_run(self, ctx: PipelineContext) -> bool:
         return not ctx.using_external_model
 
+    def checkpoint_artefacts(self, ctx: PipelineContext) -> list:
+        # ADR-021 D2: mechanism_spec.md is the cost-anchor artefact this phase produces.
+        return [ctx.workspace.mechanism_spec_path]
+
     def run(self, ctx: PipelineContext) -> None:
         self.agent.run()
 

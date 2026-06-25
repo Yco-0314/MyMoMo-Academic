@@ -22,6 +22,11 @@ dependencies = [
     "scikit-learn>=1.8.0",
 ]
 
+[project.optional-dependencies]
+# ADR-021 D5: cross-tool BenchmarkAdapter (MesaBaseline). NetLogo stays an external
+# install gated by netlogo_oracle.is_available(). `pip install abm-auto[benchmarks]`.
+benchmarks = ["mesa>=2.0"]
+
 [project.scripts]
 abm-auto = "abm_auto.cli:app"
 

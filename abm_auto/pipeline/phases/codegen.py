@@ -52,6 +52,10 @@ class CodegenPhase:
     def should_run(self, ctx: PipelineContext) -> bool:
         return not ctx.using_external_model
 
+    def checkpoint_artefacts(self, ctx: PipelineContext) -> list:
+        # ADR-021 D2: the generated model/ directory is this phase's cost-anchor artefact.
+        return [ctx.workspace.model_dir]
+
     def run(self, ctx: PipelineContext) -> None:
         # Stage A: TemplateGenerator (deterministic). Runs only when a
         # valid mechanism_spec.json was produced in Phase 1d.
