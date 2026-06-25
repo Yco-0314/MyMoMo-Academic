@@ -146,8 +146,8 @@ class VisualizerAgent:
                 generated.append(fig_path)
 
         # 3. Sensitivity tornado (if available)
-        sa_path = self.workspace / "sensitivity_indices.json"
-        if sa_path.exists():
+        sa_path = self._sensitivity_path()
+        if sa_path is not None:
             fig_path = self._plot_sensitivity(sa_path)
             if fig_path:
                 generated.append(fig_path)
@@ -379,6 +379,17 @@ class VisualizerAgent:
         self._save(fig, out)
         return out
 
+    def _sensitivity_path(self) -> Path | None:
+        """Locate the sensitivity-indices file. SensitivityAnalyzer writes
+        sensitivity_<method>.json (morris/sobol), so probe both names. (The old
+        hardcoded 'sensitivity_indices.json' never matched, so the tornado was
+        never produced.)"""
+        for method in ("morris", "sobol"):
+            candidate = self.workspace / f"sensitivity_{method}.json"
+            if candidate.exists():
+                return candidate
+        return None
+
     def _plot_sensitivity(self, sa_path: Path) -> Path | None:
         """Tornado diagram from SALib sensitivity indices."""
         import matplotlib.pyplot as plt  # backend already set to Agg in run()
@@ -388,13 +399,19 @@ class VisualizerAgent:
         except Exception:
             return None
 
-        params = data.get("params", [])
-        s1 = data.get("S1") or data.get("mu_star")
-        if not params or not s1:
+        # SensitivityAnalyzer writes a list of per-parameter dicts:
+        #   morris -> {"parameter", "mu_star", "sigma", "mu_star_conf"}
+        #   sobol  -> {"parameter", "S1", "S1_conf", "ST", "ST_conf"}
+        # Headline index: ST (sobol total-order) or mu_star (morris).
+        if not isinstance(data, list) or not data:
+            return None
+        params = [row.get("parameter") for row in data]
+        indices = [row.get("ST", row.get("mu_star")) for row in data]
+        if any(p is None for p in params) or any(v is None for v in indices):
             return None
 
         # Sort by absolute sensitivity
-        pairs = sorted(zip(params, s1), key=lambda x: abs(x[1]), reverse=True)
+        pairs = sorted(zip(params, indices), key=lambda x: abs(x[1]), reverse=True)
         names, values = zip(*pairs)
 
         fig, ax = plt.subplots(figsize=(8, max(4, len(names) * 0.4)))
