@@ -342,10 +342,13 @@ def _ingest_to_memory(ctx: PipelineContext, run_id: int, insights: str, analyzer
     if csvs:
         try:
             df = pd.read_csv(csvs[0])
-            skip = {"id", "step", "period", "run_num", "scenario_id", "agent_id"}
-            for col in df.columns:
-                if col.lower() not in skip and pd.api.types.is_numeric_dtype(df[col]):
-                    metrics[col] = float(df[col].iloc[-1])
+            # Use the canonical metadata skip-list: the local one missed the real
+            # identifier columns the runtime emits (id_scenario / id_run), so they
+            # leaked into memory as if they were metrics. ("scenario_id" is never
+            # emitted — that entry was dead.)
+            from abm_auto.analysis.results_reader import numeric_metrics
+            for col in numeric_metrics(df):
+                metrics[col] = float(df[col].iloc[-1])
         except Exception:
             pass
 
