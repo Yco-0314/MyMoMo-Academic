@@ -131,6 +131,8 @@ def convergence_cv(
             continue
         s = pd.Series(values)
         mean = s.mean()
+        # 1e-10 guards div-by-zero when a metric's mean is ~0; below it the ratio
+        # is meaningless (would blow up), so report CV 0.0 rather than a huge value.
         cv = (s.std() / abs(mean)) if abs(mean) > 1e-10 else 0.0
         cv_by_metric[col] = round(cv, 4)
 

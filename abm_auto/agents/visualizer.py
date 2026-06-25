@@ -179,9 +179,7 @@ class VisualizerAgent:
 
     def _plot_timeseries(self, run_dirs: list[Path]) -> Path | None:
         """Plot key metrics over simulation steps; shaded CI when multiple runs available."""
-        import matplotlib
-        matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
+        import matplotlib.pyplot as plt  # backend already set to Agg in run()
         import numpy as np
 
         csvs = list(run_dirs[0].glob("*.csv"))
@@ -282,9 +280,7 @@ class VisualizerAgent:
 
     def _plot_trajectories(self, run_dirs: list[Path]) -> Path | None:
         """Mean ± 1σ CI trajectories across all runs (individual traces as faint lines)."""
-        import matplotlib
-        matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
+        import matplotlib.pyplot as plt  # backend already set to Agg in run()
         import numpy as np
 
         # Find a common CSV name across runs
@@ -385,9 +381,7 @@ class VisualizerAgent:
 
     def _plot_sensitivity(self, sa_path: Path) -> Path | None:
         """Tornado diagram from SALib sensitivity indices."""
-        import matplotlib
-        matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
+        import matplotlib.pyplot as plt  # backend already set to Agg in run()
 
         try:
             data = json.loads(sa_path.read_text())
@@ -419,9 +413,7 @@ class VisualizerAgent:
 
     def _plot_final_distribution(self, last_run_dir: Path) -> Path | None:
         """Distribution of agent states at the final timestep."""
-        import matplotlib
-        matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
+        import matplotlib.pyplot as plt  # backend already set to Agg in run()
 
         # Find agent CSV
         agent_csv = None

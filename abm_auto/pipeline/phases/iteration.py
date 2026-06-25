@@ -43,7 +43,7 @@ class SimulatePhase:
             success, output = self._fix_and_rerun(ctx, output, i, "Simulation fix")
         if not success:
             console.print("  [red]Skipping this iteration.[/red]")
-            ctx.iteration_failed = True   # ad-hoc flag; AnalyzePhase reads it
+            ctx.iteration_failed = True   # declared on PipelineContext; later phases skip on it
             return
         ctx.iteration_failed = False
 
@@ -163,7 +163,7 @@ class AnalyzePhase:
         self.cv_threshold = cv_threshold
 
     def should_run(self, ctx: PipelineContext) -> bool:
-        return not getattr(ctx, "iteration_failed", False)
+        return not ctx.iteration_failed
 
     def run(self, ctx: PipelineContext) -> None:
         i = ctx.iteration
@@ -207,7 +207,7 @@ class OptimizeOrCalibratePhase:
         self.coder = coder
 
     def should_run(self, ctx: PipelineContext) -> bool:
-        if getattr(ctx, "iteration_failed", False):
+        if ctx.iteration_failed:
             return False
         # Skip Phase 6 on last iter and after convergence
         if ctx.iteration >= ctx.iterations:
