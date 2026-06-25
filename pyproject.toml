@@ -26,6 +26,9 @@ dependencies = [
 # ADR-021 D5: cross-tool BenchmarkAdapter (MesaBaseline). NetLogo stays an external
 # install gated by netlogo_oracle.is_available(). `pip install abm-auto[benchmarks]`.
 benchmarks = ["mesa>=2.0"]
+# GIS mode (additive). Heavy/GDAL-adjacent; kept out of the base install.
+# `pip install abm-auto[gis]`.
+gis = ["rasterio>=1.3", "pyproj>=3.5", "geopandas>=0.14", "shapely>=2.0"]
 
 [project.scripts]
 abm-auto = "abm_auto.cli:app"
