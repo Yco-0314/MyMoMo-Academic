@@ -66,6 +66,8 @@ class PipelineContext:
     used_bayesian_calibration: bool = False
     citations_text: Optional[str] = None
     comparison_text: Optional[str] = None
+    # Set by SimulatePhase when an iteration's sim fails; later phases skip on it
+    iteration_failed: bool = False
 
     # Halt flag — any phase setting this short-circuits the orchestrator
     pipeline_halted: bool = False

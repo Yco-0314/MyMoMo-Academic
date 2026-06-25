@@ -181,8 +181,8 @@ class CoderAgent(BaseAgent):
                     "file_names": list(files.keys()),
                 },
             )
-        except Exception:
-            pass
+        except Exception as exc:
+            console.print(f"  [yellow]⚠ audit logging failed: {exc}[/yellow]")
 
         return files
 

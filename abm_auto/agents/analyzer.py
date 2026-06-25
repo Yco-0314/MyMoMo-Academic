@@ -70,8 +70,8 @@ class AnalyzerAgent(BaseAgent):
                         "params": current_params,
                     },
                 )
-        except Exception:
-            pass
+        except Exception as exc:
+            console.print(f"  [yellow]⚠ audit logging failed: {exc}[/yellow]")
 
         return insights
 

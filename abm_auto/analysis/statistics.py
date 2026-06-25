@@ -13,6 +13,8 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
+from abm_auto.analysis.results_reader import numeric_metrics, select_environment_csv
+
 
 @dataclass
 class ComparisonResult:
@@ -110,7 +112,11 @@ def cohens_d(a: np.ndarray, b: np.ndarray) -> tuple[float, str]:
         ((n_a - 1) * a.std(ddof=1) ** 2 + (n_b - 1) * b.std(ddof=1) ** 2)
         / (n_a + n_b - 2)
     )
-    if pooled_std == 0:
+    # Treat variance that is negligible relative to the group means as zero. An
+    # exact "== 0" check let a tiny-but-nonzero pooled_std (e.g. ~1e-14 of float
+    # noise) through, and the division below then blew d up into a spurious "large".
+    scale = max(abs(float(a.mean())), abs(float(b.mean())), 1.0)
+    if pooled_std < 1e-9 * scale:
         return 0.0, "zero_variance"
 
     d = abs(float(a.mean() - b.mean())) / pooled_std
@@ -230,12 +236,8 @@ def analyze_runs(workspace_path, metric_columns: list[str] | None = None) -> Sta
         if not csvs:
             continue
 
-        # Prefer environment CSV
-        target = csvs[0]
-        for c in csvs:
-            if "environment" in c.name.lower():
-                target = c
-                break
+        # Prefer environment CSV (canonical seam — sorted + 'env' match)
+        target = select_environment_csv(csvs)
 
         try:
             df = pd.read_csv(target)
@@ -244,11 +246,9 @@ def analyze_runs(workspace_path, metric_columns: list[str] | None = None) -> Sta
         except Exception:
             continue
 
-        skip = {"id", "id_scenario", "id_run", "run_num", "period", "step", "t", "agent_id"}
         row = {}
-        for col in df.columns:
-            if col.lower() not in skip and pd.api.types.is_numeric_dtype(df[col]):
-                row[col] = float(df[col].iloc[-1])
+        for col in numeric_metrics(df):  # canonical seam (results_reader.METADATA_COLS)
+            row[col] = float(df[col].iloc[-1])
         if row:
             run_metrics.append(row)
 

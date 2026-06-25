@@ -15,10 +15,13 @@ convergence_cv()  — coefficient-of-variation convergence check across N runs
 """
 from __future__ import annotations
 
+import logging
 import pandas as pd
 from pathlib import Path
 
 from abm_auto.runner.workspace import Workspace
+
+logger = logging.getLogger(__name__)
 
 # Single canonical skip-list used by every caller.
 # Previously each caller maintained its own slightly different copy.
@@ -39,7 +42,8 @@ def load_run(workspace: Workspace, run_id: int) -> list[pd.DataFrame]:
     for csv_path in workspace.list_result_csvs(run_id):
         try:
             dfs.append(pd.read_csv(csv_path))
-        except Exception:
+        except Exception as exc:
+            logger.warning("skipping unreadable CSV %s: %s", csv_path, exc)
             continue
     return dfs
 
@@ -54,6 +58,21 @@ def numeric_metrics(df: pd.DataFrame) -> list[str]:
         if c.lower() not in METADATA_COLS
         and pd.api.types.is_numeric_dtype(df[c])
     ]
+
+
+def select_environment_csv(csvs: list[Path]) -> Path | None:
+    """Pick a run's environment/aggregated CSV deterministically.
+
+    Prefers a file whose name contains 'env' (which also matches 'environment');
+    falls back to the first CSV by sorted name. Returns None only for an empty
+    list. The single definition used by convergence_cv() and analyze_runs()."""
+    if not csvs:
+        return None
+    ordered = sorted(csvs)
+    for p in ordered:
+        if "env" in p.name.lower():
+            return p
+    return ordered[0]
 
 
 def describe(workspace: Workspace, run_id: int) -> str:
@@ -105,17 +124,12 @@ def convergence_cv(
             continue
 
         # Prefer environment / aggregated CSV; fall back to first one
-        target: Path | None = None
-        for p in sorted(csvs):
-            if "env" in p.name.lower() or "environment" in p.name.lower():
-                target = p
-                break
-        if target is None:
-            target = sorted(csvs)[0]
+        target = select_environment_csv(csvs)
 
         try:
             df = pd.read_csv(target)
-        except Exception:
+        except Exception as exc:
+            logger.warning("skipping unreadable CSV %s: %s", target, exc)
             continue
 
         metrics = [c for c in numeric_metrics(df) if df[c].nunique() > 1]
@@ -131,6 +145,8 @@ def convergence_cv(
             continue
         s = pd.Series(values)
         mean = s.mean()
+        # 1e-10 guards div-by-zero when a metric's mean is ~0; below it the ratio
+        # is meaningless (would blow up), so report CV 0.0 rather than a huge value.
         cv = (s.std() / abs(mean)) if abs(mean) > 1e-10 else 0.0
         cv_by_metric[col] = round(cv, 4)
 
