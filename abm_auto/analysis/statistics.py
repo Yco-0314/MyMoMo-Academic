@@ -110,7 +110,11 @@ def cohens_d(a: np.ndarray, b: np.ndarray) -> tuple[float, str]:
         ((n_a - 1) * a.std(ddof=1) ** 2 + (n_b - 1) * b.std(ddof=1) ** 2)
         / (n_a + n_b - 2)
     )
-    if pooled_std == 0:
+    # Treat variance that is negligible relative to the group means as zero. An
+    # exact "== 0" check let a tiny-but-nonzero pooled_std (e.g. ~1e-14 of float
+    # noise) through, and the division below then blew d up into a spurious "large".
+    scale = max(abs(float(a.mean())), abs(float(b.mean())), 1.0)
+    if pooled_std < 1e-9 * scale:
         return 0.0, "zero_variance"
 
     d = abs(float(a.mean() - b.mean())) / pooled_std
