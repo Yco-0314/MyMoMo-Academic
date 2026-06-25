@@ -84,8 +84,8 @@ class ReporterAgent(BaseAgent):
                     "had_baseline": bool(baseline_comparison),
                 },
             )
-        except Exception:
-            pass
+        except Exception as exc:
+            console.print(f"  [yellow]⚠ audit logging failed: {exc}[/yellow]")
 
         return report
 

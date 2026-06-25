@@ -124,8 +124,8 @@ class ReviewerAgent(BaseAgent):
                         "review_length": len(review),
                     },
                 )
-            except Exception:
-                pass
+            except Exception as exc:
+                console.print(f"  [yellow]⚠ audit logging failed: {exc}[/yellow]")
 
         # Run Editor-in-Chief on the panel outputs
         console.print(f"\n[bold red]EiC: 主编终审[/bold red]")
@@ -226,8 +226,8 @@ class ReviewerAgent(BaseAgent):
                 actor="Reviewer:EiC",
                 structured={"verdict": verdict, "review_length": len(review)},
             )
-        except Exception:
-            pass
+        except Exception as exc:
+            console.print(f"  [yellow]⚠ audit logging failed: {exc}[/yellow]")
         return review
 
     @staticmethod

@@ -59,7 +59,11 @@ class CoverageGatePhase:
         spec_path = ctx.workspace.path / "mechanism_spec.json"
         try:
             spec = MechanismSpec.from_json(spec_path.read_text(encoding="utf-8"))
-        except Exception:
+        except Exception as exc:
+            console.print(
+                f"  [yellow]⚠ mechanism_spec.json failed to load ({exc}); "
+                f"using heuristic coverage extraction[/yellow]"
+            )
             spec = None
         prose = f"{ctx.workspace.read_design()}\n{ctx.workspace.read_mechanism_spec()}"
 

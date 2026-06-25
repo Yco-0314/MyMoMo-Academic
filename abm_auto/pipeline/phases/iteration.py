@@ -390,8 +390,8 @@ def _ingest_to_memory(ctx: PipelineContext, run_id: int, insights: str, analyzer
                     category=e.get("category", "pattern"),
                 )
                 console.print(f"  [dim]📝 Knowledge: {e['key']}[/dim]")
-        except (json.JSONDecodeError, KeyError, TypeError):
-            pass
+        except (json.JSONDecodeError, KeyError, TypeError) as exc:
+            console.print(f"  [dim]knowledge extraction skipped (malformed LLM output: {exc})[/dim]")
 
 
 def _print_memory_summary(ctx: PipelineContext, after_iteration: int) -> None:

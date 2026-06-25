@@ -15,10 +15,13 @@ convergence_cv()  — coefficient-of-variation convergence check across N runs
 """
 from __future__ import annotations
 
+import logging
 import pandas as pd
 from pathlib import Path
 
 from abm_auto.runner.workspace import Workspace
+
+logger = logging.getLogger(__name__)
 
 # Single canonical skip-list used by every caller.
 # Previously each caller maintained its own slightly different copy.
@@ -39,7 +42,8 @@ def load_run(workspace: Workspace, run_id: int) -> list[pd.DataFrame]:
     for csv_path in workspace.list_result_csvs(run_id):
         try:
             dfs.append(pd.read_csv(csv_path))
-        except Exception:
+        except Exception as exc:
+            logger.warning("skipping unreadable CSV %s: %s", csv_path, exc)
             continue
     return dfs
 
@@ -115,7 +119,8 @@ def convergence_cv(
 
         try:
             df = pd.read_csv(target)
-        except Exception:
+        except Exception as exc:
+            logger.warning("skipping unreadable CSV %s: %s", target, exc)
             continue
 
         metrics = [c for c in numeric_metrics(df) if df[c].nunique() > 1]
