@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import json
-import re
 from rich.console import Console
 
+from abm_auto.agents import _hypothesis
 from abm_auto.agents.base import BaseAgent
-from abm_auto.agents.hypothesis_agent import HypothesisAgent
 
 console = Console()
 
@@ -71,7 +70,7 @@ class DesignAgent(BaseAgent):
         # the model around it, not to re-derive the theoretical framing from scratch.
         hypothesis_block = ""
         if hypothesis:
-            recommended = self._extract_recommended_hypothesis(hypothesis)
+            recommended = _hypothesis.recommended_hypothesis(hypothesis).text
             hypothesis_block = (
                 "\n\n---\n\n"
                 "## Theoretical Framework (from hypothesis.md)\n\n"
@@ -120,13 +119,11 @@ class DesignAgent(BaseAgent):
         # HypothesisAgent's audit log this exposes hypothesis-design drift
         # (the H1/H3 silent-bug class).
         try:
-            used_h = self._detect_hypothesis_used_in_design(design)
+            used_h = _hypothesis.used_hypothesis(design)
             recommended_h = (
-                HypothesisAgent._extract_recommended_number(hypothesis) if hypothesis else None
+                _hypothesis.recommended_hypothesis(hypothesis).number if hypothesis else None
             )
-            drift = (
-                used_h and recommended_h and used_h != recommended_h
-            )
+            drift = _hypothesis.drift_reason(recommended_h, used_h)
             text = (
                 f"DESIGN.md generated (prompt={prompt_name}, mode={mode_label}, "
                 f"length={len(design)} chars"
@@ -140,11 +137,7 @@ class DesignAgent(BaseAgent):
                 self.workspace.audit.raise_issue(
                     phase="Phase 1",
                     severity="HIGH",
-                    text=(
-                        f"Hypothesis-design drift detected: hypothesis.md recommended "
-                        f"H{recommended_h}, but DESIGN.md built around H{used_h}. "
-                        f"The implementation tests a different theory than the one selected."
-                    ),
+                    text=f"Hypothesis-design drift detected: {drift}",
                     actor="DesignAgent",
                     structured={
                         "recommended_h": recommended_h,
@@ -192,138 +185,3 @@ class DesignAgent(BaseAgent):
         if mode == "originate":
             return "phase1_design_originate", "originate"
         return "phase1_design", f"unknown:{mode} (legacy)"
-
-    @staticmethod
-    def _detect_hypothesis_used_in_design(design_md: str) -> str | None:
-        """Inspect DESIGN.md to find which H<N> it claims to implement.
-
-        Looks for the standard "Selected hypothesis" / "选定假设" marker in the
-        Theoretical Anchor section. Returns the H number as a string, or None
-        if the design has no such marker (e.g., reproduce mode).
-        """
-        # Patterns: "Selected hypothesis ... H3", "选定假设 ... H3", "**H3**", etc.
-        patterns = [
-            r"Selected\s+hypothesis[^\n]*?H\s*(\d+)",
-            r"选[定择]\s*假设[^\n]*?H\s*(\d+)",
-            r"\*\*\s*H\s*(\d+)\s*[:：]",  # bold heading like **H3：**
-            r"build(?:ing)?\s+(?:around\s+)?H\s*(\d+)",
-            r"构建\s*H\s*(\d+)",
-        ]
-        for p in patterns:
-            m = re.search(p, design_md[:3000], re.IGNORECASE)
-            if m:
-                return m.group(1)
-        return None
-
-    def _extract_recommended_hypothesis(self, hypothesis_md: str) -> str:
-        """Extract the Recommendation section + the recommended H block.
-
-        Bilingual: recognises both English ("## Recommendation", "Build H<N>")
-        and Chinese ("## 推荐", "构建 H<N>") headings and verbs. Critical for
-        the dual-mode workflow — if extraction fails silently, DesignAgent will
-        pick H1 by default and silently implement the wrong hypothesis.
-        """
-        import re
-
-        lines = hypothesis_md.splitlines()
-        rec_lines: list[str] = []
-        h_number: str | None = None
-
-        # 1. Scan for the Recommendation section (English OR Chinese heading)
-        # Note: \b doesn't work on CJK chars, so use lookahead with optional
-        # non-word boundary instead. The patterns match at start of heading.
-        rec_heading_pattern = re.compile(
-            r"^##\s*(Recommendation|推荐|推荐方案|建议)(?![A-Za-z])",
-            re.IGNORECASE,
-        )
-        reject_heading_pattern = re.compile(
-            r"^##\s*(Rejected|Reject|被否决|被驳回|已驳回)(?![A-Za-z])",
-            re.IGNORECASE,
-        )
-
-        in_rec = False
-        for line in lines:
-            if rec_heading_pattern.match(line):
-                in_rec = True
-                continue
-            if in_rec:
-                # Stop at the next ## heading (any other section)
-                if line.startswith("## "):
-                    break
-                rec_lines.append(line)
-
-        recommendation = "\n".join(rec_lines).strip()
-
-        # 2. Find the recommended H number — multiple patterns, in priority order
-        # (a) explicit "Build H<N>" / "构建 H<N>" / "推荐 H<N>" in recommendation
-        if recommendation:
-            patterns = [
-                r"(?:Build|构建|推荐|选择|采用)\s*H\s*[:：]?\s*(\d+)",
-                r"\*\*\s*(?:Build|构建)\s*H\s*[:：]?\s*(\d+)",
-                r"H\s*(\d+)\b",  # last resort: first H<N> in recommendation block
-            ]
-            for p in patterns:
-                m = re.search(p, recommendation, re.IGNORECASE)
-                if m:
-                    h_number = m.group(1)
-                    break
-
-        # (b) if recommendation section didn't yield a number, scan the
-        #     rejected-alternatives block in reverse: whichever H is NOT in it
-        #     is likely the recommended one (3 hypotheses minus 2 rejected).
-        if h_number is None:
-            rejected_nums: set[str] = set()
-            in_reject = False
-            for line in lines:
-                if reject_heading_pattern.match(line):
-                    in_reject = True
-                    continue
-                if in_reject and line.startswith("## "):
-                    break
-                if in_reject:
-                    for m in re.finditer(r"H\s*(\d+)", line):
-                        rejected_nums.add(m.group(1))
-            if len(rejected_nums) == 2:
-                # Exactly 2 rejected → the missing one is the recommendation
-                all_nums = {"1", "2", "3"}
-                candidate = all_nums - rejected_nums
-                if len(candidate) == 1:
-                    h_number = candidate.pop()
-
-        # 3. Extract the chosen H block
-        recommended_h = ""
-        if h_number:
-            in_block = False
-            block_lines = []
-            block_heading_re = re.compile(rf"^##\s*H\s*{h_number}\s*[:：]")
-            other_h_re = re.compile(rf"^##\s*H\s*\d+\s*[:：]")
-            for line in lines:
-                if block_heading_re.match(line):
-                    in_block = True
-                    block_lines.append(line)
-                    continue
-                if in_block:
-                    # Stop at next H block or at Recommendation / Rejected
-                    if other_h_re.match(line):
-                        break
-                    if rec_heading_pattern.match(line) or reject_heading_pattern.match(line):
-                        break
-                    block_lines.append(line)
-            recommended_h = "\n".join(block_lines).strip()
-
-        # 4. Compose final extract — with a clear marker for the LLM
-        if recommended_h and recommendation:
-            return (
-                f"**RECOMMENDED HYPOTHESIS: H{h_number}** "
-                f"(extracted from hypothesis.md — build the design around this one)\n\n"
-                f"{recommended_h}\n\n"
-                f"### Why this hypothesis was recommended\n\n{recommendation}"
-            )
-        if recommendation:
-            return (
-                f"**Recommendation block from hypothesis.md "
-                f"(could not isolate single H block — read carefully):**\n\n"
-                f"{recommendation}\n\n"
-                f"---\n\n## Full hypothesis.md\n\n{hypothesis_md[:1500]}"
-            )
-        return hypothesis_md[:1500]
