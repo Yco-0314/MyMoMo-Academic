@@ -13,6 +13,8 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
+from abm_auto.analysis.results_reader import numeric_metrics
+
 
 @dataclass
 class ComparisonResult:
@@ -248,11 +250,9 @@ def analyze_runs(workspace_path, metric_columns: list[str] | None = None) -> Sta
         except Exception:
             continue
 
-        skip = {"id", "id_scenario", "id_run", "run_num", "period", "step", "t", "agent_id"}
         row = {}
-        for col in df.columns:
-            if col.lower() not in skip and pd.api.types.is_numeric_dtype(df[col]):
-                row[col] = float(df[col].iloc[-1])
+        for col in numeric_metrics(df):  # canonical seam (results_reader.METADATA_COLS)
+            row[col] = float(df[col].iloc[-1])
         if row:
             run_metrics.append(row)
 

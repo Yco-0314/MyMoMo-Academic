@@ -18,6 +18,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from abm_auto.analysis.results_reader import numeric_metrics
+
 
 @dataclass
 class TrajectoryCluster:
@@ -184,16 +186,10 @@ class TrajectoryAnalyzer:
             if resolved_col and resolved_col in df.columns:
                 col = resolved_col
             else:
-                skip = {"id", "step", "period", "run_num", "scenario_id", "agent_id"}
-                col = None
-                for c in df.columns:
-                    if c.lower() in skip:
-                        continue
-                    if pd.api.types.is_numeric_dtype(df[c]):
-                        col = c
-                        break
-                if col is None:
+                metrics = numeric_metrics(df)  # canonical seam (results_reader.METADATA_COLS)
+                if not metrics:
                     continue
+                col = metrics[0]
                 resolved_col = col
 
             # Aggregate by step if agent-level data
