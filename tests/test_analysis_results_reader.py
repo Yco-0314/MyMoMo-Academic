@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from abm_auto.analysis.results_reader import numeric_metrics
+from abm_auto.analysis.results_reader import numeric_metrics, select_environment_csv
 
 
 def test_numeric_metrics_excludes_identifiers_time_and_coordinates():
@@ -38,3 +38,26 @@ def test_numeric_metrics_skips_non_numeric_columns():
 def test_numeric_metrics_is_case_insensitive_on_metadata():
     df = pd.DataFrame({"ID_Scenario": [0, 1], "Period": [0, 1], "payoff": [1.0, 2.0]})
     assert numeric_metrics(df) == ["payoff"]
+
+
+# ── select_environment_csv (analysis-2) ─────────────────────────────────────
+
+
+def test_select_environment_csv_prefers_env_file(tmp_path):
+    files = [tmp_path / "agent.csv", tmp_path / "environment.csv", tmp_path / "z.csv"]
+    assert select_environment_csv(files).name == "environment.csv"
+
+
+def test_select_environment_csv_falls_back_to_sorted_first(tmp_path):
+    # No env file: deterministic — first by sorted name, regardless of input order.
+    files = [tmp_path / "b.csv", tmp_path / "a.csv"]
+    assert select_environment_csv(files).name == "a.csv"
+
+
+def test_select_environment_csv_deterministic_when_multiple_env(tmp_path):
+    files = [tmp_path / "env_b.csv", tmp_path / "env_a.csv"]
+    assert select_environment_csv(files).name == "env_a.csv"
+
+
+def test_select_environment_csv_empty_is_none():
+    assert select_environment_csv([]) is None

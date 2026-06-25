@@ -60,6 +60,21 @@ def numeric_metrics(df: pd.DataFrame) -> list[str]:
     ]
 
 
+def select_environment_csv(csvs: list[Path]) -> Path | None:
+    """Pick a run's environment/aggregated CSV deterministically.
+
+    Prefers a file whose name contains 'env' (which also matches 'environment');
+    falls back to the first CSV by sorted name. Returns None only for an empty
+    list. The single definition used by convergence_cv() and analyze_runs()."""
+    if not csvs:
+        return None
+    ordered = sorted(csvs)
+    for p in ordered:
+        if "env" in p.name.lower():
+            return p
+    return ordered[0]
+
+
 def describe(workspace: Workspace, run_id: int) -> str:
     """Return a text description of all CSVs for *run_id*, suitable for LLM prompts.
 
@@ -109,13 +124,7 @@ def convergence_cv(
             continue
 
         # Prefer environment / aggregated CSV; fall back to first one
-        target: Path | None = None
-        for p in sorted(csvs):
-            if "env" in p.name.lower() or "environment" in p.name.lower():
-                target = p
-                break
-        if target is None:
-            target = sorted(csvs)[0]
+        target = select_environment_csv(csvs)
 
         try:
             df = pd.read_csv(target)

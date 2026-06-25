@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-from abm_auto.analysis.results_reader import numeric_metrics
+from abm_auto.analysis.results_reader import numeric_metrics, select_environment_csv
 
 
 @dataclass
@@ -236,12 +236,8 @@ def analyze_runs(workspace_path, metric_columns: list[str] | None = None) -> Sta
         if not csvs:
             continue
 
-        # Prefer environment CSV
-        target = csvs[0]
-        for c in csvs:
-            if "environment" in c.name.lower():
-                target = c
-                break
+        # Prefer environment CSV (canonical seam — sorted + 'env' match)
+        target = select_environment_csv(csvs)
 
         try:
             df = pd.read_csv(target)
