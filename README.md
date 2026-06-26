@@ -9,6 +9,25 @@
 
 `abm-auto` is a fully autonomous ABM research system that takes a plain-text research scenario and produces executable simulations, parameter explorations, and academic-quality research reports — with zero human intervention.
 
+## GIS mode
+
+An optional **spatial ABM layer** (`abm_auto.gis`) for geo-referenced models —
+road networks, rasters, polygons, point clouds, and the operators that couple
+them. It is additive and import-isolated: the GIS libraries live behind an
+optional extra, so the base install stays light.
+
+```bash
+pip install abm-auto[gis]
+```
+
+It ships georeferenced spaces (`GeoNetwork`, `RasterSpace`, `PolygonSpace`,
+`PointSpace`, `RasterTimeline`), coupling operators (flood-depth-per-edge,
+point-risk, vector overlays, DE-9IM predicates), a Mesa-shaped platform layer
+(`GISAgent`/`GISModel`, no Mesa dependency), dynamic models (congestion routing,
+flood evacuation), spatial statistics, spec→code generation guarded by a
+codegen-fidelity gate, and raster/network validation. See
+[`abm_auto/gis/README.md`](abm_auto/gis/README.md) for the full tour.
+
 ## What's New (v0.3 — 2026-05-31)
 
 10 commits across three thrusts: **dogfood coverage** (originate-mode +

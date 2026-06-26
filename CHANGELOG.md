@@ -3,6 +3,36 @@
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) loosely.
 Versions track architectural milestones, not pip releases.
 
+## v0.4 — GIS mode
+
+A spatial agent-based-modelling layer (`abm_auto.gis`), additive and
+import-isolated behind the `[gis]` extra (`pip install abm-auto[gis]`). The base
+(non-GIS) install and engine behaviour are unchanged.
+
+### Added
+
+- **GIS spaces** — `GeoNetwork`, `RasterSpace`/`RasterField`, `PolygonSpace`,
+  `PointSpace`, `RasterTimeline`: CRS-aware georeferenced spatial containers.
+- **Coupling operators** — flood-depth-per-edge, point-risk-per-edge, vector ×
+  vector overlays, and STRtree-indexed DE-9IM predicates.
+- **Platform layer** — `GISAgent`/`GISModel`/`AgentSet`/`DataCollector`,
+  Mesa-shaped with no Mesa dependency and a single seeded RNG chain.
+- **Dynamic models** — congestion routing and flood evacuation built on the
+  platform, sharing a deterministic Dijkstra with stable tie-breaking.
+- **Codegen** — emit a full GIS ABM from a spec, with each capability declaring
+  its render parameters as a schema: the extractor prompt lists the valid params
+  and `GISModelSpec.validate()` rejects unknown / mistyped / out-of-range values
+  at parse time instead of silently defaulting. Guarded by a deterministic
+  codegen-fidelity gate.
+- **Validation** — compare simulated rasters/networks to observed and gate on
+  overlap / centroid / loss metrics.
+
+### Changed
+
+- `GeoNetwork` gains `node_coord` / `edge_geom` accessors that concentrate the
+  node-coordinate schema, so callers no longer read raw graph node attributes or
+  rebuild edge geometries by hand.
+
 ## v0.3 — 2026-05-31
 
 Three concurrent thrusts: **dogfood coverage** (originate-mode +

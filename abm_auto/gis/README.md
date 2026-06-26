@@ -50,7 +50,10 @@ one seeded RNG chain on the model.
 **Codegen** (`_capabilities`, `_templates`, `_codegen_gate`, `_extractor`) — emit a
 full `GISAgent`/`GISModel` ABM from a spec, guarded by a deterministic
 codegen-fidelity gate (structural checks on generated code, never the generator's
-word).
+word). Each capability declares its render parameters as a schema, so the
+extractor prompt lists the valid params and `GISModelSpec.validate()` rejects
+unknown / mistyped / out-of-range values at parse time instead of silently
+defaulting.
 
 **Validation** (`_spatial_validation`, `_network_validation`,
 `_observed_raster_bridge`) — compare simulated rasters to observed ones and gate
