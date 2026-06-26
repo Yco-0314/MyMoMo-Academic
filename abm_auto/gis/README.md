@@ -1,5 +1,7 @@
 # abm_auto.gis — GIS mode
 
+> 📖 中文文档:[README.zh.md](README.zh.md)
+
 A spatial agent-based-modelling layer for `abm_auto`. It is **additive and
 import-isolated**: the GIS libraries are an optional extra, imported lazily, so
 the base (non-GIS) install stays light.
