@@ -336,21 +336,11 @@ def _ingest_to_memory(ctx: PipelineContext, run_id: int, insights: str, analyzer
         (h.get("hypothesis", "") for h in params_history if h["run"] == run_id), ""
     )
 
-    # Extract metrics from CSV
-    metrics: dict = {}
-    csvs = ctx.workspace.list_result_csvs(run_id)
-    if csvs:
-        try:
-            df = pd.read_csv(csvs[0])
-            # Use the canonical metadata skip-list: the local one missed the real
-            # identifier columns the runtime emits (id_scenario / id_run), so they
-            # leaked into memory as if they were metrics. ("scenario_id" is never
-            # emitted — that entry was dead.)
-            from abm_auto.analysis.results_reader import numeric_metrics
-            for col in numeric_metrics(df):
-                metrics[col] = float(df[col].iloc[-1])
-        except Exception:
-            pass
+    # Final-step metrics via the canonical results_reader seam (which also picks
+    # the environment CSV — memory ingest previously read csvs[0], diverging from
+    # analyze_runs and letting a non-environment CSV define a run's metrics).
+    from abm_auto.analysis.results_reader import final_metrics
+    metrics: dict = final_metrics(ctx.workspace.list_result_csvs(run_id))
 
     ctx.memory.ingest_run(
         run_id=run_id,
