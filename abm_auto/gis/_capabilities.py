@@ -6,7 +6,25 @@ template layer yet.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+
+
+@dataclass(frozen=True)
+class ParamSpec:
+    """Declarative contract for one render parameter: name, coercion type
+    (int/float/str), default, optional inclusive numeric range, unit, and a
+    one-line doc. The single source of truth shared by the extractor prompt (so
+    the LLM stops guessing names) and GISModelSpec.validate() (which rejects
+    unknown / mistyped / out-of-range params instead of silently substituting a
+    default, as the render branches used to)."""
+
+    name: str
+    type: type
+    default: object
+    min: float | None = None
+    max: float | None = None
+    unit: str = ""
+    doc: str = ""
 
 
 @dataclass(frozen=True)
@@ -22,6 +40,7 @@ class GISCapability:
     required_tokens: tuple[str, ...] = ()
     gate: str = ""
     wrong_space_tokens: tuple[str, ...] = ()
+    params: tuple["ParamSpec", ...] = ()
 
 
 CAPABILITIES: dict[str, GISCapability] = {
@@ -260,6 +279,73 @@ CAPABILITIES: dict[str, GISCapability] = {
         gate="spatial_method_transfer_gate",
     ),
 }
+
+# ── Declarative parameter contracts ──────────────────────────────────────────
+# The single source of truth for each renderable capability's render params,
+# shared by the extractor prompt and GISModelSpec.validate(). Attached to each
+# capability's `params` below so the contract lives on the capability. Ranges are
+# set only where semantically meaningful (probabilities 0..1, counts >= 1); other
+# numerics stay unbounded. `seed` is a spec-level field, not listed here.
+def _p(name, type_, default, lo=None, hi=None, unit="", doc=""):
+    return ParamSpec(name, type_, default, lo, hi, unit, doc)
+
+
+_PARAM_SCHEMAS: dict[str, tuple[ParamSpec, ...]] = {
+    "raster_sir": (_p("steps", int, 60, 1, None, "ticks", "number of simulation steps"),),
+    "flood_evacuation": (
+        _p("threshold", float, 1.0, 0.0, None, "depth", "flood depth above which an edge is impassable"),
+    ),
+    "social_spatial_contagion": (
+        _p("n_agents", int, 100, 1, None, "agents", "number of agents"),
+        _p("side", int, 10, 1, None, "cells", "grid side length"),
+        _p("beta", float, 0.2, 0.0, 1.0, "prob", "per-contact contagion probability"),
+        _p("steps", int, 6, 1, None, "ticks", "number of simulation steps"),
+    ),
+    "point_network_risk": (
+        _p("radius", float, 10.0, 0.0, None, "m", "distance within which a point counts toward an edge"),
+    ),
+    "mechanism_threshold_adoption": (
+        _p("n_agents", int, 8, 1, None, "agents", "number of agents"),
+        _p("threshold", int, 1, 0, None, "neighbors", "adopting-neighbor count that triggers adoption"),
+        _p("steps", int, 7, 1, None, "ticks", "number of simulation steps"),
+    ),
+    "mechanism_contagion": (
+        _p("n_agents", int, 8, 1, None, "agents", "number of agents"),
+        _p("beta", float, 1.0, 0.0, 1.0, "prob", "per-contact contagion probability"),
+        _p("steps", int, 7, 1, None, "ticks", "number of simulation steps"),
+    ),
+    "temporal_flood_evacuation": (
+        _p("threshold", float, 1.0, 0.0, None, "depth", "flood depth above which an edge is impassable"),
+    ),
+    "dynamic_flood_evacuation": (
+        _p("threshold", float, 1.0, 0.0, None, "depth", "flood depth above which an edge is impassable"),
+    ),
+    "dynamic_congestion_routing": (
+        _p("n_steps", int, 8, 1, None, "ticks", "number of routing steps"),
+        _p("speed_m_per_tick", float, 100.0, 0.0, None, "m/tick", "agent travel speed per tick"),
+        _p("congestion_alpha", float, 3.0, 0.0, None, "", "congestion cost sensitivity"),
+    ),
+    "raster_focal": (
+        _p("rows", int, 15, 1, None, "cells", "raster row count"),
+        _p("cols", int, 15, 1, None, "cells", "raster column count"),
+    ),
+    "raster_coverage": (
+        _p("rows", int, 4, 1, None, "cells", "raster row count"),
+        _p("cols", int, 4, 1, None, "cells", "raster column count"),
+    ),
+    "gis_abm_platform": (_p("n", int, 12, 1, None, "agents", "number of agents"),),
+    "network_routing_load": (
+        _p("crs", str, "EPSG:27700", None, None, "", "coordinate reference system code"),
+        _p("n_trips", int, 300, 1, None, "trips", "number of trips to simulate"),
+    ),
+}
+
+# Attach the param contracts onto the (frozen) capabilities.
+CAPABILITIES = {
+    key: (replace(cap, params=_PARAM_SCHEMAS[key]) if key in _PARAM_SCHEMAS else cap)
+    for key, cap in CAPABILITIES.items()
+}
+
 
 # Implicit legacy specs are codegen-renderable only; runtime-only cells require
 # explicit capability keys.

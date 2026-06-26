@@ -15,14 +15,29 @@ _SYSTEM = ("You configure a GIS agent-based model from a description. "
            "Output ONLY valid JSON, no prose, no code fences.")
 
 
+def _format_param(p) -> str:
+    """Render one ParamSpec for the prompt: name(type=default unit, lo..hi)."""
+    out = f"{p.name}({p.type.__name__}={p.default!r}"
+    if p.unit:
+        out += f" {p.unit}"
+    if p.min is not None or p.max is not None:
+        lo = "" if p.min is None else p.min
+        hi = "" if p.max is None else p.max
+        out += f", {lo}..{hi}"
+    return out + ")"
+
+
 def _renderable_capability_table() -> str:
     lines = []
     for cap in renderable_capabilities():
         layers = ", ".join(cap.layers)
-        lines.append(
+        line = (
             f'- capability="{cap.key}": spatial_type="{cap.spatial_type}", '
             f'mechanism="{cap.mechanism}", layers="{layers}"'
         )
+        if cap.params:
+            line += "; params: " + ", ".join(_format_param(p) for p in cap.params)
+        lines.append(line)
     return "\n".join(lines)
 
 _PROMPT = """Story:
@@ -35,7 +50,8 @@ Produce a GIS model spec as JSON.
 - "spatial_type" and "mechanism" must match the selected capability. For legacy
   output without "capability", use one of the legacy renderable pairs above.
 - "data_path": the input data file path if the story names one, else "".
-- "params": optional dict (e.g. {{"steps": 60}} or {{"crs": "EPSG:27700"}}).
+- "params": optional dict. Use ONLY the params listed for the chosen capability
+  above (match the types); unknown or misspelled params are rejected. Omit to take defaults.
 
 Return exactly: {{"capability": "...", "spatial_type": "...", "mechanism": "...", "data_path": "...", "params": {{}}}}"""
 

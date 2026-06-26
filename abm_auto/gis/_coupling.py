@@ -20,8 +20,8 @@ def flood_depth_per_edge(geonet, flood, n_samples: int = 8) -> dict:
     ts = np.linspace(0.0, 1.0, n_samples)
     depths = {}
     for u, v in g.edges:
-        x1, y1 = g.nodes[u]["x"], g.nodes[u]["y"]
-        x2, y2 = g.nodes[v]["x"], g.nodes[v]["y"]
+        x1, y1 = geonet.node_coord(u)
+        x2, y2 = geonet.node_coord(v)
         maxd = 0.0
         for t in ts:
             x = x1 + t * (x2 - x1)
@@ -61,16 +61,12 @@ def point_risk_per_edge(geonet, points, radius: float) -> dict:
     if radius < 0:
         raise ValueError("radius must be non-negative")
 
-    from shapely.geometry import LineString, Point
+    from shapely.geometry import Point
     from shapely.strtree import STRtree
 
     g = geonet.graph
     edges = list(g.edges)
-    geoms = [
-        LineString([(g.nodes[u]["x"], g.nodes[u]["y"]),
-                    (g.nodes[v]["x"], g.nodes[v]["y"])])
-        for u, v in edges
-    ]
+    geoms = [geonet.edge_geom(u, v) for u, v in edges]
     risk = {tuple(sorted(e)): 0 for e in edges}
     if not geoms:
         return risk

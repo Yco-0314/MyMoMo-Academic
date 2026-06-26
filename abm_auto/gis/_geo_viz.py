@@ -13,8 +13,9 @@ def render_network(geonet, edge_load, path) -> None:
     maxload = max(edge_load.values()) or 1
     fig, ax = plt.subplots(figsize=(5, 5))
     for u, v in g.edges:
-        x = [g.nodes[u]["x"], g.nodes[v]["x"]]
-        y = [g.nodes[u]["y"], g.nodes[v]["y"]]
+        ux, uy = geonet.node_coord(u)
+        vx, vy = geonet.node_coord(v)
+        x, y = [ux, vx], [uy, vy]
         load = edge_load.get(tuple(sorted((u, v))), 0)
         ax.plot(x, y, color="crimson", linewidth=0.5 + 4.0 * load / maxload,
                 solid_capstyle="round", alpha=0.8)

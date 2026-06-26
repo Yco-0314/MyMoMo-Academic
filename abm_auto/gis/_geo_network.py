@@ -35,12 +35,26 @@ class GeoNetwork:
                 g.add_edge(a, b, length=float(line.length))
         return cls(g, crs)
 
+    def node_coord(self, node) -> tuple[float, float]:
+        """The (x, y) world coordinate of a node. Concentrates the node-attribute
+        schema so callers don't reach into graph.nodes[node]['x']/['y'] — node
+        storage (e.g. adding elevation) then changes in one place."""
+        attrs = self.graph.nodes[node]
+        return float(attrs["x"]), float(attrs["y"])
+
+    def edge_geom(self, u, v) -> "LineString":
+        """The straight-line geometry of edge (u, v) as a shapely LineString,
+        built from the two node coordinates — the single home for the
+        edge->LineString derivation otherwise duplicated across callers."""
+        from shapely.geometry import LineString
+        return LineString([self.node_coord(u), self.node_coord(v)])
+
     def nearest_node(self, x: float, y: float):
-        return min(
-            self.graph.nodes,
-            key=lambda n: (self.graph.nodes[n]["x"] - x) ** 2
-            + (self.graph.nodes[n]["y"] - y) ** 2,
-        )
+        def _dist2(n):
+            nx_, ny_ = self.node_coord(n)
+            return (nx_ - x) ** 2 + (ny_ - y) ** 2
+
+        return min(self.graph.nodes, key=_dist2)
 
     def network_distance(self, a, b) -> float:
         return nx.shortest_path_length(self.graph, a, b, weight="length")
