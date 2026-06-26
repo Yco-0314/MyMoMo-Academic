@@ -3,6 +3,8 @@
 [![Tests](https://github.com/Yco-0314/MyMoMo-Academic/actions/workflows/ci.yml/badge.svg)](https://github.com/Yco-0314/MyMoMo-Academic/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
+> 📖 中文文档:[README.zh.md](README.zh.md)
+
 > Also known as **MyMoMo-Academic** — the repository / project name. `abm-auto` is the Python package and CLI; both refer to the same system.
 
 **Autonomous Agent-Based Modeling Research Pipeline** — from natural language to simulation results in one command.
