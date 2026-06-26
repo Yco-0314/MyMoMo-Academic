@@ -14,6 +14,16 @@ app = typer.Typer(
 )
 console = Console()
 
+# GIS sub-app — mounted only when the GIS layer is present (it ships as an
+# additive package behind the optional [gis] extra). Guarded so the base CLI
+# works unchanged when GIS is absent.
+try:
+    from abm_auto.gis._cli import gis_app
+
+    app.add_typer(gis_app, name="gis")
+except ImportError:
+    pass
+
 
 @app.command()
 def run(
