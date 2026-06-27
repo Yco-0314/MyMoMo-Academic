@@ -44,3 +44,16 @@ def test_failed_when_no_report(tmp_path):
     r = build_trust_report(tmp_path)
     assert r.cleanliness == "FAILED"
     assert r.completed is False
+
+
+def test_per_phase_breakdown_and_silent(tmp_path):
+    _workspace(tmp_path, [
+        _event("a", "raise", "Phase 4", severity="HIGH"),
+        _event("b", "raise", "Phase 5"), _event("b", "resolve", "Phase 5"),
+    ])
+    r = build_trust_report(tmp_path)
+    by_phase = {p.phase: p for p in r.phases}
+    assert by_phase["Phase 4"].open_issues == 1 and by_phase["Phase 4"].resolved_issues == 0
+    assert by_phase["Phase 5"].open_issues == 0 and by_phase["Phase 5"].resolved_issues == 1
+    # A canonical phase that produced no events is reported as silent.
+    assert "Phase 2" in r.silent_phases

@@ -68,8 +68,29 @@ def build_trust_report(workspace_path, repro_score: tuple[float, float] | None =
     else:
         cleanliness = "CLEAN"
 
+    open_ids = {e.issue_id for e in open_evs}
+    phases_seen: dict[str, dict[str, int]] = {}
+    for e in events:
+        if e.event_type == EventType.INFO:
+            phases_seen.setdefault(e.phase, {"open": 0, "resolved": 0})
+            continue
+        bucket = phases_seen.setdefault(e.phase, {"open": 0, "resolved": 0})
+    # count open/resolved per phase from the issue's latest state
+    latest: dict[str, object] = {}
+    for e in events:
+        if e.event_type != EventType.INFO:
+            latest[e.issue_id] = e
+    for e in latest.values():
+        b = phases_seen.setdefault(e.phase, {"open": 0, "resolved": 0})
+        if e.issue_id in open_ids:
+            b["open"] += 1
+        elif e.event_type == EventType.RESOLVE:
+            b["resolved"] += 1
+    phases = [PhaseTrust(p, c["open"], c["resolved"]) for p, c in sorted(phases_seen.items())]
+    silent_phases = [p for p in _PIPELINE_PHASES if p not in phases_seen]
+
     return TrustReport(
         cleanliness=cleanliness, completed=completed,
         open_high=open_high, open_total=open_total, resolved_total=resolved_total,
-        note=note,
+        phases=phases, silent_phases=silent_phases, note=note,
     )
