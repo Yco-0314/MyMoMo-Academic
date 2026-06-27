@@ -35,4 +35,22 @@ assert (config.QUICKSTART_DIR / "story.md").exists(), "quickstart story missing"
 print("OK: bundled data present in installed wheel")
 PY
 
+# Every shipped submodule imports under ONLY the declared dependencies — catches a
+# runtime dep that's used but missing from pyproject (e.g. a lazy third-party import).
+"$VENV/bin/python" - <<'PY'
+import importlib, pkgutil, abm_auto
+failed = []
+for mod in pkgutil.walk_packages(abm_auto.__path__, abm_auto.__name__ + "."):
+    try:
+        importlib.import_module(mod.name)
+    except Exception as e:
+        failed.append(f"{mod.name}: {e!r}")
+if failed:
+    print("FAIL: submodule import errors under declared deps:")
+    for f in failed:
+        print("  " + f)
+    raise SystemExit(1)
+print("OK: all shipped submodules import under declared deps")
+PY
+
 echo "build_and_verify: PASS"

@@ -18,8 +18,9 @@ console = Console()
 def _require_api_key() -> None:
     """Friendly preflight: exit early with guidance if no LLM API key is set."""
     if not config.get_api_key():
+        key_var = "DEEPSEEK_API_KEY" if config.LLM_PROVIDER == "deepseek" else "ANTHROPIC_API_KEY"
         console.print(
-            "[red]No API key found.[/red] Set ANTHROPIC_API_KEY in your environment "
+            f"[red]No API key found.[/red] Set {key_var} in your environment "
             "or a local .env file (run [bold]abm-auto quickstart[/bold] for a starter)."
         )
         raise typer.Exit(1)

@@ -129,3 +129,27 @@ def test_readme_documents_pip_install_quickstart():
     body = (root / "README.md").read_text(encoding="utf-8")
     assert "pip install abm-auto" in body
     assert "abm-auto quickstart" in body
+
+
+def test_requests_is_a_declared_dependency():
+    # citation_fetcher.py imports requests at module top level (used by --fetch-citations);
+    # it is not pulled transitively, so it must be declared or installed wheels break.
+    deps = _pyproject()["project"]["dependencies"]
+    assert any(d.split(">")[0].split("=")[0].strip() == "requests" for d in deps)
+
+
+def test_preflight_message_names_provider_variable(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "LLM_PROVIDER", "deepseek")
+    monkeypatch.setattr(config, "get_api_key", lambda: "")
+    story = tmp_path / "story.md"
+    story.write_text("# x", encoding="utf-8")
+    result = _runner.invoke(app, ["run", str(story)])
+    assert result.exit_code != 0
+    assert "DEEPSEEK_API_KEY" in result.stdout  # provider-correct guidance
+
+
+def test_preflight_passes_with_provider_key(monkeypatch):
+    from abm_auto import cli
+    monkeypatch.setattr(config, "LLM_PROVIDER", "deepseek")
+    monkeypatch.setattr(config, "get_api_key", lambda: "dk-xxx")
+    cli._require_api_key()  # must not raise when the active provider's key is set
