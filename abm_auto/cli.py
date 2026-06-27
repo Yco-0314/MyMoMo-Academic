@@ -489,5 +489,24 @@ def batch(
     )
 
 
+@app.command()
+def chat(
+    model: Optional[str] = typer.Option(None, "--model", help="LLM model (default: provider default)."),
+):
+    """Interactive session: describe a study in natural language and abm-auto
+    proposes a command, runs it on your confirm, and loops with the result in context."""
+    from abm_auto import config
+    from abm_auto.chat import repl
+    from abm_auto.llm import make_client
+
+    key = config.get_api_key()
+    if not key:
+        raise typer.BadParameter(
+            f"{config.LLM_PROVIDER.upper()}_API_KEY is empty — set it in .env to use chat."
+        )
+    client = make_client(provider=config.LLM_PROVIDER, api_key=key, base_url=config.get_base_url())
+    repl(client, model or config.DEFAULT_MODEL)
+
+
 if __name__ == "__main__":
     app()
