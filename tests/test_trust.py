@@ -86,3 +86,23 @@ def test_render_is_honest_no_verified(tmp_path):
     assert "CAVEATED" in md
     assert "verified" not in md.lower()   # ledger-centric: never claims "verified"
     assert r.render_console()             # non-empty
+
+
+from typer.testing import CliRunner
+
+from abm_auto.cli import app
+
+_runner = CliRunner()
+
+
+def test_trust_cli_renders(tmp_path):
+    _workspace(tmp_path, [_event("a", "raise", "Phase 4", severity="HIGH")])
+    result = _runner.invoke(app, ["trust", str(tmp_path)])
+    assert result.exit_code == 0
+    assert "CAVEATED" in result.stdout
+    assert (tmp_path / "trust_report.md").exists()  # refreshes the file
+
+
+def test_trust_cli_missing_path():
+    result = _runner.invoke(app, ["trust", "/no/such/workspace"])
+    assert result.exit_code != 0

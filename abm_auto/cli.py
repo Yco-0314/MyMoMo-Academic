@@ -309,6 +309,19 @@ def memory(
 
 
 @app.command()
+def trust(
+    workspace: Path = typer.Argument(..., help="Path to an existing workspace directory", exists=True),
+):
+    """Show the per-run trust report: cleanliness (CLEAN/CAVEATED/FAILED), optional
+    reproduction fidelity, open/resolved issues per phase, and ungated phases."""
+    from abm_auto.trust import build_trust_report
+
+    report = build_trust_report(workspace)
+    (workspace / "trust_report.md").write_text(report.render_markdown(), encoding="utf-8")
+    console.print(report.render_console())
+
+
+@app.command()
 def review(
     workspace: Path = typer.Argument(..., help="Path to an existing workspace to review"),
     mode: str = typer.Option("panel", "--mode", "-m", help="Review mode: panel (5 reviewers + editor) or quick (single pass)"),
