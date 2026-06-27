@@ -65,3 +65,37 @@ def test_pyproject_has_classifiers_and_urls():
     pp = _pyproject()
     assert pp["project"]["urls"]["Repository"]
     assert any("Apache" in c for c in pp["project"]["classifiers"])
+
+
+from typer.testing import CliRunner
+
+from abm_auto.cli import app
+
+_runner = CliRunner()
+
+
+def test_quickstart_scaffolds_starter_files(tmp_path):
+    result = _runner.invoke(app, ["quickstart", str(tmp_path)])
+    assert result.exit_code == 0
+    assert (tmp_path / ".env").exists()
+    assert (tmp_path / "story.md").exists()
+    assert (tmp_path / "story.md").read_text(encoding="utf-8").strip()
+    assert "ANTHROPIC_API_KEY" in (tmp_path / ".env").read_text(encoding="utf-8")
+
+
+def test_quickstart_does_not_clobber_existing(tmp_path):
+    (tmp_path / ".env").write_text("KEEP=me", encoding="utf-8")
+    result = _runner.invoke(app, ["quickstart", str(tmp_path)])
+    assert result.exit_code == 0
+    assert (tmp_path / ".env").read_text(encoding="utf-8") == "KEEP=me"  # untouched
+    assert (tmp_path / "story.md").exists()  # the missing one is still created
+
+
+def test_run_preflights_missing_api_key(tmp_path, monkeypatch):
+    from abm_auto import config
+    monkeypatch.setattr(config, "get_api_key", lambda: "")
+    story = tmp_path / "story.md"
+    story.write_text("# x", encoding="utf-8")
+    result = _runner.invoke(app, ["run", str(story)])
+    assert result.exit_code != 0
+    assert "API key" in result.stdout
