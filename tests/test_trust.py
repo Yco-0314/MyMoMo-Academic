@@ -3,7 +3,13 @@ from __future__ import annotations
 
 import json
 
+import pytest
+from typer.testing import CliRunner
+
+from abm_auto.cli import app
 from abm_auto.trust import build_trust_report
+
+_runner = CliRunner()
 
 
 def _event(issue_id, event_type, phase, severity="MEDIUM", text="x"):
@@ -14,11 +20,14 @@ def _event(issue_id, event_type, phase, severity="MEDIUM", text="x"):
     }
 
 
-def _workspace(tmp_path, events, report=True):
+def _workspace(tmp_path, events, report=True, ledger=True):
+    # The pipeline writes a LOWERCASE report.md (runner/workspace.py); mirror that
+    # real artefact name so the fixture exercises what production actually produces.
     if report:
-        (tmp_path / "REPORT.md").write_text("# report", encoding="utf-8")
-    lines = "\n".join(json.dumps(e) for e in events)
-    (tmp_path / "audit_ledger.jsonl").write_text(lines + ("\n" if lines else ""), encoding="utf-8")
+        (tmp_path / "report.md").write_text("# report", encoding="utf-8")
+    if ledger:
+        lines = "\n".join(json.dumps(e) for e in events)
+        (tmp_path / "audit_ledger.jsonl").write_text(lines + ("\n" if lines else ""), encoding="utf-8")
     return tmp_path
 
 
@@ -39,11 +48,56 @@ def test_caveated_when_open_issue_remains(tmp_path):
     assert r.open_high == 1
 
 
+def test_caveated_when_open_medium_only(tmp_path):
+    # Negative case for the severity filter: a MEDIUM open issue counts toward
+    # open_total but NOT open_high (which is HIGH-or-BLOCKING).
+    _workspace(tmp_path, [_event("i1", "raise", "Phase 4", severity="MEDIUM")])
+    r = build_trust_report(tmp_path)
+    assert r.cleanliness == "CAVEATED"
+    assert r.open_total == 1
+    assert r.open_high == 0
+
+
+def test_open_blocking_counts_in_high_bucket(tmp_path):
+    # BLOCKING outranks HIGH in the ledger's severity order; it must NOT read as
+    # clean. It is counted in the (renamed) HIGH+ bucket.
+    _workspace(tmp_path, [_event("i1", "raise", "Phase 4", severity="BLOCKING")])
+    r = build_trust_report(tmp_path)
+    assert r.cleanliness == "CAVEATED"
+    assert r.open_high == 1
+    assert r.open_total == 1
+
+
 def test_failed_when_no_report(tmp_path):
     _workspace(tmp_path, [], report=False)
     r = build_trust_report(tmp_path)
     assert r.cleanliness == "FAILED"
     assert r.completed is False
+
+
+def test_not_clean_when_ledger_absent(tmp_path):
+    # report.md present but NO audit_ledger.jsonl — silence must not launder into
+    # the strongest positive verdict.
+    _workspace(tmp_path, [], report=True, ledger=False)
+    r = build_trust_report(tmp_path)
+    assert r.cleanliness != "CLEAN"
+    assert r.cleanliness == "CAVEATED"
+    assert r.note == "no audit ledger (run may be incomplete)"
+    assert r.note in r.render_markdown()
+
+
+def test_acknowledged_unfixed_is_caveated(tmp_path):
+    # An acknowledged-but-not-fixed issue is neither open nor resolved; it must
+    # still prevent a CLEAN verdict and be surfaced as a count.
+    _workspace(tmp_path, [
+        _event("i1", "raise", "Phase 4"),
+        _event("i1", "acknowledge", "Phase 4"),
+    ])
+    r = build_trust_report(tmp_path)
+    assert r.cleanliness == "CAVEATED"
+    assert r.acknowledged_total == 1
+    assert r.open_total == 0
+    assert r.resolved_total == 0
 
 
 def test_per_phase_breakdown(tmp_path):
@@ -61,7 +115,31 @@ def test_per_phase_breakdown(tmp_path):
     assert "Phase 2" not in r.render_markdown()
 
 
-import pytest
+def test_per_phase_cross_phase_attribution(tmp_path):
+    # An issue raised in Phase 4 and resolved in Phase 5 is attributed to the
+    # phase of its LATEST event (Phase 5); Phase 4 must not appear.
+    _workspace(tmp_path, [
+        _event("x", "raise", "Phase 4"),
+        _event("x", "resolve", "Phase 5"),
+    ])
+    r = build_trust_report(tmp_path)
+    by_phase = {p.phase: p for p in r.phases}
+    assert by_phase["Phase 5"].resolved_issues == 1
+    assert "Phase 4" not in by_phase
+
+
+def test_malformed_ledger_line_is_tolerated(tmp_path):
+    # A garbage line between valid events must not crash; counts reflect the
+    # valid events only (ledger.all_events tolerates corrupt lines).
+    (tmp_path / "report.md").write_text("# report", encoding="utf-8")
+    valid1 = json.dumps(_event("a", "raise", "Phase 4", severity="HIGH"))
+    valid2 = json.dumps(_event("b", "raise", "Phase 5"))
+    (tmp_path / "audit_ledger.jsonl").write_text(
+        valid1 + "\nnot json\n" + valid2 + "\n", encoding="utf-8"
+    )
+    r = build_trust_report(tmp_path)
+    assert r.open_total == 2
+    assert r.open_high == 1
 
 
 @pytest.mark.parametrize("score,thresh,expected", [
@@ -88,13 +166,6 @@ def test_render_is_honest_no_verified(tmp_path):
     assert "CAVEATED" in md
     assert "verified" not in md.lower()   # ledger-centric: never claims "verified"
     assert r.render_console()             # non-empty
-
-
-from typer.testing import CliRunner
-
-from abm_auto.cli import app
-
-_runner = CliRunner()
 
 
 def test_trust_cli_renders(tmp_path):

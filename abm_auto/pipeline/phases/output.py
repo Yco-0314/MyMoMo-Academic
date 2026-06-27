@@ -95,7 +95,13 @@ class PackageArsPhase:
 
 
 class TrustReportPhase:
-    """Final: write the per-run trust report and print its summary."""
+    """Final finalizer: write the per-run trust report and print its summary.
+
+    Registered as a ``run_phases`` finalizer (not in the main phase list) so it
+    runs once on clean completion AND on a halted run — the FAILED/CAVEATED verdict
+    matters most exactly when the pipeline halted. As a finalizer it must never
+    crash the pipeline, so its body is fully guarded.
+    """
 
     name = "Final (Trust report)"
 
@@ -103,13 +109,16 @@ class TrustReportPhase:
         return True
 
     def run(self, ctx) -> None:
-        from abm_auto.trust import build_trust_report
+        try:
+            from abm_auto.trust import build_trust_report
 
-        ws = ctx.workspace.path
-        report = build_trust_report(ws)
-        (ws / "trust_report.md").write_text(report.render_markdown(), encoding="utf-8")
-        console.print("\n[bold]Trust report[/bold]")
-        console.print(report.render_console())
+            ws = ctx.workspace.path
+            report = build_trust_report(ws)
+            (ws / "trust_report.md").write_text(report.render_markdown(), encoding="utf-8")
+            console.print("\n[bold]Trust report[/bold]")
+            console.print(report.render_console())
+        except Exception as exc:  # a finalizer must never crash the pipeline
+            console.print(f"[yellow]Trust report unavailable: {exc}[/yellow]")
 
 
 def _process_resolution_ledger(ctx: PipelineContext, reviewer) -> None:

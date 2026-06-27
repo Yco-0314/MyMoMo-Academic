@@ -232,12 +232,19 @@ def run_phases(
     store: Optional[CheckpointStore] = None,
     skip: Optional[set] = None,
     on_phase=None,
+    finalizers: Optional[List[Any]] = None,
 ) -> None:
     """The orchestrator's phase walk + checkpoint success hook (testable standalone).
 
     For each phase: honour the halt flag, the skip set (resume), and ``should_run``.
     After a phase completes WITHOUT halting, append a checkpoint capturing the ctx
     hash seen on entry and the artefacts the phase declared.
+
+    ``finalizers`` are always-run trailing phases that execute AFTER the main loop
+    regardless of whether it completed or broke on ``pipeline_halted`` — so an
+    end-of-run reporter (e.g. the trust report) is present exactly when a run
+    halted/FAILED. Finalizers are NOT checkpointed and are not subject to the skip
+    set, but they still honour their own ``should_run``.
     """
     skip = skip or set()
     for phase in phases:
@@ -253,3 +260,9 @@ def run_phases(
         phase.run(ctx)
         if store is not None and not getattr(ctx, "pipeline_halted", False):
             store.append(make_record(phase, ctx, entry_hash, store.workspace_path))
+
+    for fin in (finalizers or []):
+        if fin.should_run(ctx):
+            if on_phase is not None:
+                on_phase(fin)
+            fin.run(ctx)

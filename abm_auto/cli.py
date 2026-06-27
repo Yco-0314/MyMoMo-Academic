@@ -313,7 +313,8 @@ def trust(
     workspace: Path = typer.Argument(..., help="Path to an existing workspace directory", exists=True),
 ):
     """Show the per-run trust report: cleanliness (CLEAN/CAVEATED/FAILED), optional
-    reproduction fidelity, open/resolved issues per phase, and ungated phases."""
+    reproduction fidelity, and open/resolved issues for phases that recorded audit
+    signals. Ledger-centric: absence of a phase is not proof it was checked."""
     from abm_auto.trust import build_trust_report
 
     report = build_trust_report(workspace)
