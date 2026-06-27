@@ -247,6 +247,25 @@ def _tool_abm_auto(args: dict, confirm: Callable[[str], bool]) -> str:
     return f"exit {rc}\n{tail}"
 
 
+def _tool_propose_plan(args: dict, confirm: Callable[[str], bool]) -> str:
+    """Validate a multi-step plan, get one approval, then execute it."""
+    steps = args.get("steps")
+    if not isinstance(steps, list) or not steps or not all(isinstance(s, str) and s.strip() for s in steps):
+        return "propose_plan needs a non-empty list of abm-auto command strings in 'steps'."
+    steps = [s.strip() for s in steps]
+    for s in steps:
+        sub = s.split(maxsplit=1)[0]
+        if sub not in _KNOWN_SUBCOMMANDS:
+            return (
+                f"plan rejected: '{sub}' is not an abm-auto command "
+                f"(valid: {', '.join(sorted(_KNOWN_SUBCOMMANDS))}). Nothing run."
+            )
+    rendered = "proposed plan:\n" + "\n".join(f"  {i}. abm-auto {s}" for i, s in enumerate(steps, 1))
+    if not confirm(rendered):
+        return "plan declined; nothing run."
+    return execute_plan(steps, confirm)
+
+
 _READONLY_TOOLS: dict[str, Callable[[dict], str]] = {
     "list_examples": _tool_list_examples,
     "describe_workspace": _tool_describe_workspace,
@@ -267,6 +286,8 @@ def dispatch(call: str, confirm: Callable[[str], bool]) -> str:
         return _READONLY_TOOLS[name](args)
     if name == "abm_auto":
         return _tool_abm_auto(args, confirm)
+    if name == "propose_plan":
+        return _tool_propose_plan(args, confirm)
     if name == "draft_story":
         return _tool_draft_story(args)
     return f"unknown tool: {name!r}"

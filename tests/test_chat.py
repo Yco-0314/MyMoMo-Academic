@@ -268,3 +268,22 @@ def test_execute_plan_skips_trust_when_workspace_not_found():
     summary = execute_plan(["run s.md"], confirm=lambda s: True, run_command=run)
     assert calls == ["run s.md"]  # no auto-trust call (workspace unknown; story arg is NOT a workspace)
     assert "skipped" in summary.lower()
+
+
+def test_propose_plan_rejects_unknown_subcommand():
+    from abm_auto.chat import dispatch
+    result = dispatch('propose_plan {"steps": ["run s.md", "frobnicate x"]}', confirm=lambda s: True)
+    assert "rejected" in result.lower()
+    assert "frobnicate" in result
+
+
+def test_propose_plan_declined_runs_nothing():
+    from abm_auto.chat import dispatch
+    result = dispatch('propose_plan {"steps": ["memory ws"]}', confirm=lambda s: False)
+    assert "declined" in result.lower()
+
+
+def test_propose_plan_requires_nonempty_step_list():
+    from abm_auto.chat import dispatch
+    result = dispatch('propose_plan {"steps": []}', confirm=lambda s: True)
+    assert "steps" in result.lower()
