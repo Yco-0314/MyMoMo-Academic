@@ -46,7 +46,7 @@ def test_failed_when_no_report(tmp_path):
     assert r.completed is False
 
 
-def test_per_phase_breakdown_and_silent(tmp_path):
+def test_per_phase_breakdown(tmp_path):
     _workspace(tmp_path, [
         _event("a", "raise", "Phase 4", severity="HIGH"),
         _event("b", "raise", "Phase 5"), _event("b", "resolve", "Phase 5"),
@@ -55,8 +55,10 @@ def test_per_phase_breakdown_and_silent(tmp_path):
     by_phase = {p.phase: p for p in r.phases}
     assert by_phase["Phase 4"].open_issues == 1 and by_phase["Phase 4"].resolved_issues == 0
     assert by_phase["Phase 5"].open_issues == 0 and by_phase["Phase 5"].resolved_issues == 1
-    # A canonical phase that produced no events is reported as silent.
-    assert "Phase 2" in r.silent_phases
+    # A phase that produced no events is simply absent — never falsely named as
+    # "silent/ungated" (decorated real-run labels make any such claim unreliable).
+    assert "Phase 2" not in {p.phase for p in r.phases}
+    assert "Phase 2" not in r.render_markdown()
 
 
 import pytest

@@ -4,8 +4,16 @@ run's result and what was / wasn't checked.
 Ledger-centric by design: it reads what the run already recorded (the audit
 ledger, whether REPORT.md exists, research_spec.json) and never re-runs or
 re-architects gates. It states only what the ledger supports — flagged / open /
-resolved / silent — and never claims "verified" (absence of an issue is not proof
-of verification). This replaces the "100% success" framing with an honest picture.
+resolved — and never claims "verified" (absence of an issue is not proof of
+verification). This replaces the "100% success" framing with an honest picture.
+
+Why no "silent/ungated phases" list: real call sites emit heavily decorated,
+inconsistent ``phase=`` strings ("Phase 5 (run 3)", "Phase 6 (calibration)",
+"Phase 4 post-fix", "Inject observed data", ...). There is no reliable way to
+normalize those back to a canonical phase set, so naming "silent" phases would
+risk falsely claiming a phase was ungated when it actually recorded signals under
+a variant label. We report only the reliable half — the phases that DID record
+audit signals — and caveat that everything else is simply absent from the ledger.
 """
 from __future__ import annotations
 
@@ -13,14 +21,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from abm_auto.audit.ledger import AuditLedger, EventType, Severity
-
-# Canonical pipeline phase labels (used to flag phases that produced NO audit
-# events as "silent"). Align with the `phase=` strings used in raise_issue/info
-# across abm_auto/pipeline/phases/ if they drift.
-_PIPELINE_PHASES = [
-    "Phase -1", "Phase 0", "Phase 0.5", "Phase 1", "Phase 1c", "Phase 1d",
-    "Phase 2", "Phase 3", "Phase 4", "Phase 5", "Phase 6", "Phase 7", "Phase 8",
-]
 
 
 @dataclass
@@ -38,7 +38,6 @@ class TrustReport:
     open_total: int
     resolved_total: int
     phases: list[PhaseTrust] = field(default_factory=list)
-    silent_phases: list[str] = field(default_factory=list)
     fidelity: str | None = None            # REPRO | PARTIAL | MISS | None
     fidelity_detail: tuple[float, float] | None = None
     note: str = ""
@@ -51,11 +50,12 @@ class TrustReport:
         )
         if self.fidelity_detail:
             lines.append(f"  reproduction score={self.fidelity_detail[0]} (threshold {self.fidelity_detail[1]})")
-        if self.silent_phases:
-            lines.append(f"  ungated/silent phases: {', '.join(self.silent_phases)}")
         if self.note:
             lines.append(f"  note: {self.note}")
-        lines.append("  (ledger-centric: 'no issues' is not proof of verification)")
+        lines.append(
+            "  (ledger-centric: only phases that recorded signals are shown; "
+            "absence is not a check, and 'no issues' is not proof of verification)"
+        )
         return "\n".join(lines)
 
     def render_markdown(self) -> str:
@@ -71,13 +71,14 @@ class TrustReport:
             for p in self.phases:
                 out.append(f"| {p.phase} | {p.open_issues} | {p.resolved_issues} |")
             out.append("")
-        if self.silent_phases:
-            out.append(f"Ungated / silent phases (no audit signal): {', '.join(self.silent_phases)}")
-            out.append("")
         if self.note:
             out.append(f"> {self.note}")
             out.append("")
-        out.append("_Ledger-centric: this reflects recorded audit signals only; absence of an issue is not proof of verification._")
+        out.append(
+            "_Ledger-centric: this lists only phases that recorded audit signals. "
+            "Phases not shown recorded none — that is not proof they were checked. "
+            "Absence of an issue is not verification._"
+        )
         return "\n".join(out)
 
 
@@ -110,14 +111,10 @@ def build_trust_report(workspace_path, repro_score: tuple[float, float] | None =
         score, t = repro_score
         fidelity = "REPRO" if score <= t else ("PARTIAL" if score <= 2 * t else "MISS")
 
+    # Per-phase open/resolved breakdown, keyed on each issue's latest event so a
+    # raise→resolve issue is counted once, under the phase of its latest event.
     open_ids = {e.issue_id for e in open_evs}
     phases_seen: dict[str, dict[str, int]] = {}
-    for e in events:
-        if e.event_type == EventType.INFO:
-            phases_seen.setdefault(e.phase, {"open": 0, "resolved": 0})
-            continue
-        bucket = phases_seen.setdefault(e.phase, {"open": 0, "resolved": 0})
-    # count open/resolved per phase from the issue's latest state
     latest: dict[str, object] = {}
     for e in events:
         if e.event_type != EventType.INFO:
@@ -129,11 +126,10 @@ def build_trust_report(workspace_path, repro_score: tuple[float, float] | None =
         elif e.event_type == EventType.RESOLVE:
             b["resolved"] += 1
     phases = [PhaseTrust(p, c["open"], c["resolved"]) for p, c in sorted(phases_seen.items())]
-    silent_phases = [p for p in _PIPELINE_PHASES if p not in phases_seen]
 
     return TrustReport(
         cleanliness=cleanliness, completed=completed,
         open_high=open_high, open_total=open_total, resolved_total=resolved_total,
-        phases=phases, silent_phases=silent_phases,
+        phases=phases,
         fidelity=fidelity, fidelity_detail=repro_score, note=note,
     )
