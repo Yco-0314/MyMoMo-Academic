@@ -35,3 +35,33 @@ def test_workspace_dir_is_cwd_relative_and_env_overridable(tmp_path, monkeypatch
     finally:
         monkeypatch.delenv("ABM_WORKSPACE_DIR", raising=False)
         importlib.reload(config)
+
+
+import tomllib
+
+
+def _pyproject() -> dict:
+    root = Path(config.__file__).resolve().parent.parent
+    with open(root / "pyproject.toml", "rb") as f:
+        return tomllib.load(f)
+
+
+def test_pyproject_has_mymomo_alias_and_version():
+    pp = _pyproject()
+    scripts = pp["project"]["scripts"]
+    assert scripts["abm-auto"] == "abm_auto.cli:app"
+    assert scripts["mymomo"] == "abm_auto.cli:app"
+    assert pp["project"]["version"] == "0.4.0"
+
+
+def test_pyproject_excludes_gis_from_wheel():
+    pp = _pyproject()
+    wheel = pp["tool"]["hatch"]["build"]["targets"]["wheel"]
+    assert "abm_auto/gis" in wheel["exclude"]
+    assert wheel["packages"] == ["abm_auto"]
+
+
+def test_pyproject_has_classifiers_and_urls():
+    pp = _pyproject()
+    assert pp["project"]["urls"]["Repository"]
+    assert any("Apache" in c for c in pp["project"]["classifiers"])
