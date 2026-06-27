@@ -4,6 +4,11 @@
 
 **Goal:** Add an interactive, planning-mode story-authoring sub-flow to the `abm-auto chat` agent: it helps a user turn a fuzzy ABM idea into a runnable `story.md`, then hands it off for review before anything runs.
 
+> **Amendment (2026-06-27, port to public v3):** the `gis` `draft_story` target and the
+> `gis_capabilities` tool described below were stripped when this agent was landed on the
+> public `v3-substantial` (which has no `gis` CLI command). `draft_story` is `run`-target
+> only. GIS references below are historical; the shipped code is GIS-free.
+
 **Architecture:** Reuse the existing tool-using agent loop in `abm_auto/chat.py`. Add two thin tools — `read_story` (read-only) and `draft_story` (write-only; never executes) — plus an authoring/planning-mode section in the system prompt. The agent gathers via its existing `DONE:` questions and composes the story itself; `draft_story` only writes the file and reports the suggested command. Running stays behind the existing confirm-gated `abm_auto` tool, so auto-push is structurally impossible.
 
 **Tech Stack:** Python, typer/rich CLI, pytest. Tests drive the loop with a `FakeClient` (scripted LLM replies) + a fake confirm callback — no live LLM, no real study runs.

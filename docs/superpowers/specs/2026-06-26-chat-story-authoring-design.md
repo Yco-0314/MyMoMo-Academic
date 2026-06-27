@@ -4,6 +4,12 @@
 - **Status:** Approved (brainstorming) — ready for implementation plan
 - **Area:** `abm_auto/chat.py` (extends the `abm-auto chat` agent loop)
 
+> **Amendment (2026-06-27, port to public v3):** this design originally included a
+> `gis` `draft_story` target and a `gis_capabilities` tool. The public `v3-substantial`
+> has no `gis` CLI command, so when the chat agent was landed on current main those GIS
+> paths were stripped — `draft_story` is `run`-target only, and there is no GIS tool.
+> GIS references below are historical; the shipped code is GIS-free.
+
 ## Problem
 
 The `abm-auto chat` agent can drive existing studies (list examples, run a known
