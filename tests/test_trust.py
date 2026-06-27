@@ -57,3 +57,32 @@ def test_per_phase_breakdown_and_silent(tmp_path):
     assert by_phase["Phase 5"].open_issues == 0 and by_phase["Phase 5"].resolved_issues == 1
     # A canonical phase that produced no events is reported as silent.
     assert "Phase 2" in r.silent_phases
+
+
+import pytest
+
+
+@pytest.mark.parametrize("score,thresh,expected", [
+    (5.0, 10.0, "REPRO"), (10.0, 10.0, "REPRO"),
+    (15.0, 10.0, "PARTIAL"), (20.0, 10.0, "PARTIAL"),
+    (25.0, 10.0, "MISS"),
+])
+def test_fidelity_verdict(tmp_path, score, thresh, expected):
+    _workspace(tmp_path, [])
+    r = build_trust_report(tmp_path, repro_score=(score, thresh))
+    assert r.fidelity == expected
+    assert r.fidelity_detail == (score, thresh)
+
+
+def test_fidelity_none_without_score(tmp_path):
+    _workspace(tmp_path, [])
+    assert build_trust_report(tmp_path).fidelity is None
+
+
+def test_render_is_honest_no_verified(tmp_path):
+    _workspace(tmp_path, [_event("a", "raise", "Phase 4", severity="HIGH")])
+    r = build_trust_report(tmp_path)
+    md = r.render_markdown()
+    assert "CAVEATED" in md
+    assert "verified" not in md.lower()   # ledger-centric: never claims "verified"
+    assert r.render_console()             # non-empty

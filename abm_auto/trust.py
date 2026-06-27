@@ -43,6 +43,43 @@ class TrustReport:
     fidelity_detail: tuple[float, float] | None = None
     note: str = ""
 
+    def render_console(self) -> str:
+        lines = [f"Trust: {self.cleanliness}" + (f" | fidelity {self.fidelity}" if self.fidelity else "")]
+        lines.append(
+            f"  completed={self.completed}  open={self.open_total} (HIGH {self.open_high})"
+            f"  resolved={self.resolved_total}"
+        )
+        if self.fidelity_detail:
+            lines.append(f"  reproduction score={self.fidelity_detail[0]} (threshold {self.fidelity_detail[1]})")
+        if self.silent_phases:
+            lines.append(f"  ungated/silent phases: {', '.join(self.silent_phases)}")
+        if self.note:
+            lines.append(f"  note: {self.note}")
+        lines.append("  (ledger-centric: 'no issues' is not proof of verification)")
+        return "\n".join(lines)
+
+    def render_markdown(self) -> str:
+        out = ["# Trust report", "", f"**Cleanliness:** {self.cleanliness}  ", f"**Completed:** {self.completed}  "]
+        if self.fidelity:
+            out.append(f"**Reproduction fidelity:** {self.fidelity}  ")
+            if self.fidelity_detail:
+                out.append(f"(score {self.fidelity_detail[0]} vs threshold {self.fidelity_detail[1]})  ")
+        out += ["", f"Open issues: {self.open_total} (HIGH {self.open_high}); resolved: {self.resolved_total}", ""]
+        if self.phases:
+            out.append("| phase | open | resolved |")
+            out.append("|---|---|---|")
+            for p in self.phases:
+                out.append(f"| {p.phase} | {p.open_issues} | {p.resolved_issues} |")
+            out.append("")
+        if self.silent_phases:
+            out.append(f"Ungated / silent phases (no audit signal): {', '.join(self.silent_phases)}")
+            out.append("")
+        if self.note:
+            out.append(f"> {self.note}")
+            out.append("")
+        out.append("_Ledger-centric: this reflects recorded audit signals only; absence of an issue is not proof of verification._")
+        return "\n".join(out)
+
 
 def build_trust_report(workspace_path, repro_score: tuple[float, float] | None = None) -> TrustReport:
     """Aggregate a finished workspace into a TrustReport. ``repro_score`` is an
@@ -68,6 +105,11 @@ def build_trust_report(workspace_path, repro_score: tuple[float, float] | None =
     else:
         cleanliness = "CLEAN"
 
+    fidelity = None
+    if repro_score is not None:
+        score, t = repro_score
+        fidelity = "REPRO" if score <= t else ("PARTIAL" if score <= 2 * t else "MISS")
+
     open_ids = {e.issue_id for e in open_evs}
     phases_seen: dict[str, dict[str, int]] = {}
     for e in events:
@@ -92,5 +134,6 @@ def build_trust_report(workspace_path, repro_score: tuple[float, float] | None =
     return TrustReport(
         cleanliness=cleanliness, completed=completed,
         open_high=open_high, open_total=open_total, resolved_total=resolved_total,
-        phases=phases, silent_phases=silent_phases, note=note,
+        phases=phases, silent_phases=silent_phases,
+        fidelity=fidelity, fidelity_detail=repro_score, note=note,
     )
