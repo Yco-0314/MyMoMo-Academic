@@ -177,3 +177,17 @@ def test_authoring_turn_does_not_auto_run(tmp_path, monkeypatch):
     assert "save" in answer.lower()  # it presented the plan for review, did not auto-run
     assert confirmed == []  # nothing was sent to the confirm gate → nothing ran
     assert list((tmp_path / "stories").glob("*.md"))  # but the story was drafted
+
+
+def test_run_command_shape(monkeypatch):
+    import abm_auto.chat as chat
+
+    class _Proc:
+        returncode = 0
+        stdout = "hello world"
+        stderr = ""
+
+    monkeypatch.setattr(chat.subprocess, "run", lambda *a, **k: _Proc())
+    rc, out = chat._run_command("memory ws")
+    assert rc == 0
+    assert "hello world" in out

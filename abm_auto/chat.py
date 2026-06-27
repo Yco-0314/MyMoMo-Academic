@@ -161,6 +161,20 @@ _KNOWN_SUBCOMMANDS = {
     "trust", "review", "ingest-netlogo", "ingest-comses", "batch", "quickstart",
 }
 
+# Subcommands that cost real LLM tokens / compute — they reconfirm per step even
+# inside an approved plan.
+_EXPENSIVE = {"run", "optimize", "sensitivity", "batch"}
+
+
+def _run_command(cmd: str) -> tuple[int, str]:
+    """Run ``abm-auto <cmd>`` in a subprocess; return (returncode, output_tail)."""
+    proc = subprocess.run(
+        [sys.executable, "-m", "abm_auto.cli", *shlex.split(cmd)],
+        capture_output=True, text=True,
+    )
+    tail = (proc.stdout or proc.stderr or "")[-1500:]
+    return proc.returncode, tail
+
 
 def _tool_abm_auto(args: dict, confirm: Callable[[str], bool]) -> str:
     cmd = str(args.get("args", "")).strip()
@@ -175,12 +189,8 @@ def _tool_abm_auto(args: dict, confirm: Callable[[str], bool]) -> str:
     if not confirm(cmd):
         return "user declined to run this command"
     console.print(f"[dim]$ abm-auto {cmd}[/dim]")
-    proc = subprocess.run(
-        [sys.executable, "-m", "abm_auto.cli", *shlex.split(cmd)],
-        capture_output=True, text=True,
-    )
-    tail = (proc.stdout or proc.stderr or "")[-1500:]
-    return f"exit {proc.returncode}\n{tail}"
+    rc, tail = _run_command(cmd)
+    return f"exit {rc}\n{tail}"
 
 
 _READONLY_TOOLS: dict[str, Callable[[dict], str]] = {
