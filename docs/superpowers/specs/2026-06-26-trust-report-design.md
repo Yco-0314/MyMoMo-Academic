@@ -51,18 +51,29 @@ It computes two verdicts:
   comparison's own threshold `t`: `REPRO` (score ≤ t) / `PARTIAL` (t < score ≤ 2t)
   / `MISS` (score > 2t); else `None`.
 
-And a **per-phase breakdown** from the ledger: for each phase, the count of open
-vs resolved issues by severity; and phases that produced **no audit events at
-all** are labelled **"ungated / silent"**.
+And a **per-phase breakdown** from the ledger: for each phase that recorded audit
+events, the count of open vs resolved issues.
+
+> **Amendment (implementation):** the original design also wanted phases with **no**
+> audit events labelled "ungated / silent". During implementation we found the
+> ledger's `phase=` strings are decorated and inconsistent at the call sites
+> (`"Phase 5 (run 3)"`, `"Phase 6 (calibration)"`, `"Phase 3 pre-run"`,
+> `"Phase 1+1c"`, `"Inject observed data"`, …), with no reliable normalization to
+> a fixed canonical list. Enumerating "silent" phases against a hardcoded list
+> would therefore emit **false "this phase was ungated" claims** in real runs —
+> the exact kind of fabricated trust signal this report exists to prevent. So we
+> report only the reliable, factual half (the phases that **did** record signals)
+> plus a blanket honesty caveat that phases not shown recorded none and that this
+> is *not* proof they were checked. No named "silent" list is produced.
 
 ### Anti-fabrication honesty (the 命门)
 
 Because it is ledger-centric, the report states only what the ledger can honestly
-support — `flagged` / `open` / `resolved` / `no issues recorded` / `ungated
-(silent)`. It **must not** claim `verified`, because absence of an issue is not
-proof of verification (a phase may simply be ungated). This is the point: it
-replaces "100% success" with "completed; 0 open HIGH issues; these phases were
-gated; these were silent."
+support — `flagged` / `open` / `resolved` / `no issues recorded`. It **must not**
+claim `verified`, because absence of an issue is not proof of verification (a phase
+may simply be ungated). This is the point: it replaces "100% success" with
+"completed; 0 open HIGH issues; these phases recorded audit signals; phases not
+shown recorded none — which is not proof they were checked."
 
 ### `TrustReport` dataclass
 
@@ -97,10 +108,10 @@ Fields: `cleanliness: str`, `fidelity: str | None`, `completed: bool`,
 
 - `build_trust_report` on a synthetic workspace (hand-written `audit_ledger.jsonl`
   with mixed open/resolved issues + a `REPORT.md`) → asserts the cleanliness
-  verdict, open/resolved counts, and per-phase breakdown incl. an "ungated/silent"
-  phase.
+  verdict, open/resolved counts, and the per-phase breakdown.
 - Completion: workspace with no `REPORT.md` → `FAILED`/incomplete.
-- Honesty: a phase with no events is reported "ungated", never "verified".
+- Honesty: a phase with no events simply does not appear in the breakdown, and the
+  render never claims "verified".
 - Fidelity: with a reproduction signal present → REPRO/PARTIAL/MISS by threshold;
   absent → `None`.
 - `abm-auto trust <ws>` via `CliRunner` renders the summary; missing path errors.

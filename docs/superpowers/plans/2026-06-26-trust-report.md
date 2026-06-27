@@ -189,6 +189,17 @@ git commit -m "feat(trust): build_trust_report cleanliness verdict (ledger-centr
 
 ## Task 2: Per-phase breakdown + silent-phase detection
 
+> **Amendment (post-review):** the `_PIPELINE_PHASES` / `silent_phases` exact-match
+> approach below was IMPLEMENTED then REVERTED during review. Real ledger `phase=`
+> strings are decorated/variant (`"Phase 5 (run 3)"`, `"Phase 6 (calibration)"`,
+> `"Phase 3 pre-run"`, …) with no reliable normalization to a canonical list, so
+> enumerating "silent" phases would emit false "ungated" claims — the opposite of
+> this report's honesty goal. Final design: keep the per-phase open/resolved
+> breakdown (phases that recorded events), DROP `_PIPELINE_PHASES` and the
+> `silent_phases` field, and let the renderers' blanket caveat cover the
+> complement ("phases not shown recorded no audit signal — not proof they were
+> checked"). See the `fix(trust): drop brittle silent-phase claims…` commit.
+
 **Files:**
 - Modify: `abm_auto/trust.py`
 - Test: `tests/test_trust.py`
