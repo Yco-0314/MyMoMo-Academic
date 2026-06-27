@@ -11,6 +11,15 @@
 
 `abm-auto` 是一个全自主的 ABM(基于智能体的建模)研究系统:输入一段纯文本研究场景,自动产出可执行仿真、参数探索,以及学术质量的研究报告 —— 全程零人工干预。
 
+## 快速开始
+
+```bash
+pip install abm-auto            # 安装 abm-auto(以及 mymomo)命令行
+abm-auto quickstart             # 生成起步用的 .env 和示例 story.md
+# 编辑 .env:填入 ANTHROPIC_API_KEY=...
+abm-auto run story.md           # 运行完整的自主 ABM 流水线
+```
+
 ## 更新内容(v0.3 — 2026-05-31)
 
 横跨三条主线的 10 个提交:**dogfood 覆盖**(originate 模式 + Grid 模型 + 跨域 CI)、**标定诊断**(α 轨迹特征 + β 可辨识性 + ε 执行验证器),以及**多保真标定**基础设施。外加一份替换底层 Melodie 引擎的 5 阶段路线图([ADR-009](docs/decisions/ADR-009-engine-replacement-roadmap.md))。

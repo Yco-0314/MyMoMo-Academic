@@ -15,6 +15,43 @@ app = typer.Typer(
 console = Console()
 
 
+def _require_api_key() -> None:
+    """Friendly preflight: exit early with guidance if no LLM API key is set."""
+    if not config.get_api_key():
+        key_var = "DEEPSEEK_API_KEY" if config.LLM_PROVIDER == "deepseek" else "ANTHROPIC_API_KEY"
+        console.print(
+            f"[red]No API key found.[/red] Set {key_var} in your environment "
+            "or a local .env file (run [bold]abm-auto quickstart[/bold] for a starter)."
+        )
+        raise typer.Exit(1)
+
+
+@app.command()
+def quickstart(
+    directory: Path = typer.Argument(Path("."), help="Target directory for starter files (default: current dir)"),
+):
+    """Scaffold a starter .env and example story.md so you can run abm-auto right away."""
+    assets = config.QUICKSTART_DIR
+    directory.mkdir(parents=True, exist_ok=True)
+    written: list[str] = []
+    skipped: list[str] = []
+    for src_name, dst_name in (("env.template", ".env"), ("story.md", "story.md")):
+        dst = directory / dst_name
+        if dst.exists():
+            skipped.append(dst_name)
+            continue
+        dst.write_text((assets / src_name).read_text(encoding="utf-8"), encoding="utf-8")
+        written.append(dst_name)
+    for name in written:
+        console.print(f"[green]created[/green] {directory / name}")
+    for name in skipped:
+        console.print(f"[yellow]skipped (exists)[/yellow] {directory / name}")
+    console.print(
+        "\nNext: put your key in [bold].env[/bold] (ANTHROPIC_API_KEY=...), "
+        "then run [bold]abm-auto run story.md[/bold]."
+    )
+
+
 @app.command()
 def run(
     story: Path = typer.Argument(..., help="Path to STORY.md", exists=True),
@@ -55,6 +92,7 @@ def run(
         abm-auto run story.md --seed 42  # Reproducible run\n
         abm-auto run story.md --iterations 10 --sa-samples 100 --fetch-citations --baseline data/original_results.csv  # Publication mode
     """
+    _require_api_key()
     from abm_auto.pipeline import Pipeline
 
     # --intent supersedes the legacy --mode; warn if both were given so the

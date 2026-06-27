@@ -11,6 +11,15 @@
 
 `abm-auto` is a fully autonomous ABM research system that takes a plain-text research scenario and produces executable simulations, parameter explorations, and academic-quality research reports — with zero human intervention.
 
+## Quickstart
+
+```bash
+pip install abm-auto            # installs the `abm-auto` (and `mymomo`) CLI
+abm-auto quickstart             # scaffold a starter .env + example story.md
+# edit .env: set ANTHROPIC_API_KEY=...
+abm-auto run story.md           # run the full autonomous ABM pipeline
+```
+
 ## What's New (v0.3 — 2026-05-31)
 
 10 commits across three thrusts: **dogfood coverage** (originate-mode +

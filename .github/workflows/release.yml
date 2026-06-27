@@ -1,0 +1,38 @@
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Build and verify
+        run: bash scripts/build_and_verify.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+    steps:
+      - name: Skip when no token configured
+        if: env.PYPI_API_TOKEN == ''
+        run: echo "No PYPI_API_TOKEN — publish-ready, not publishing. Add the secret to enable."
+      - uses: actions/checkout@v4
+        if: env.PYPI_API_TOKEN != ''
+      - uses: astral-sh/setup-uv@v5
+        if: env.PYPI_API_TOKEN != ''
+      - name: Build
+        if: env.PYPI_API_TOKEN != ''
+        run: uv build
+      - name: Publish to PyPI
+        if: env.PYPI_API_TOKEN != ''
+        run: uv publish --token "$PYPI_API_TOKEN"
