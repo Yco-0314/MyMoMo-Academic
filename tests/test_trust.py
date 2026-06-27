@@ -196,3 +196,13 @@ def test_trust_report_phase_writes_file(tmp_path):
     phase.run(_Ctx())
     assert (tmp_path / "trust_report.md").exists()
     assert "Trust report" in (tmp_path / "trust_report.md").read_text(encoding="utf-8")
+
+
+def test_trust_report_phase_never_crashes_the_pipeline():
+    """As a finalizer it must swallow its own failures — a broken ctx must not raise."""
+    from abm_auto.pipeline.phases.output import TrustReportPhase
+
+    class _BrokenCtx:
+        workspace = None  # ctx.workspace.path -> AttributeError inside run()
+
+    TrustReportPhase().run(_BrokenCtx())  # must not raise (guard -> warning print)
