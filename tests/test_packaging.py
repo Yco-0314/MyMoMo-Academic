@@ -112,3 +112,13 @@ def test_build_and_verify_script_exists_and_checks_gis():
     body = script.read_text(encoding="utf-8")
     assert "uv build" in body
     assert "abm_auto/gis" in body  # the leak assertion
+
+
+def test_release_workflow_is_gated():
+    root = Path(config.__file__).resolve().parent.parent
+    wf = root / ".github" / "workflows" / "release.yml"
+    assert wf.exists()
+    body = wf.read_text(encoding="utf-8")
+    assert "build_and_verify.sh" in body
+    assert "uv publish" in body
+    assert "PYPI_API_TOKEN" in body  # publish gated on the token being configured
