@@ -287,3 +287,9 @@ def test_propose_plan_requires_nonempty_step_list():
     from abm_auto.chat import dispatch
     result = dispatch('propose_plan {"steps": []}', confirm=lambda s: True)
     assert "steps" in result.lower()
+
+
+def test_system_prompt_documents_orchestration():
+    from abm_auto.chat import _SYSTEM
+    assert "propose_plan" in _SYSTEM
+    assert "trust" in _SYSTEM.lower()
