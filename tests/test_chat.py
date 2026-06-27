@@ -224,16 +224,88 @@ def test_execute_plan_confirms_only_expensive_steps():
     assert confirmed == ["optimize ws -n 2"]  # cheap 'trust' auto-ran; only expensive asked
 
 
-def test_execute_plan_auto_trusts_after_run():
+def test_execute_plan_auto_trusts_after_run(tmp_path):
     from abm_auto.chat import execute_plan
+    ws = tmp_path / "run_ws"
+    ws.mkdir()
     script = {
-        "run s.md -n 2": (0, "Output directory: /tmp/ws\n"),
-        "trust /tmp/ws": (0, "Trust: CAVEATED\n"),
+        "run s.md -n 2": (0, f"Output directory: {ws}\n"),
+        f"trust {ws}": (0, "Trust: CAVEATED\n"),
     }
     run, calls = _fake_runner(script)
     summary = execute_plan(["run s.md -n 2"], confirm=lambda s: True, run_command=run)
-    assert "trust /tmp/ws" in calls
+    assert f"trust {ws}" in calls
     assert "CAVEATED" in summary
+
+
+def test_execute_plan_auto_trusts_optimize_workspace(tmp_path):
+    # optimize prints no 'Output directory:' marker; the workspace is the positional
+    # arg, which must be resolved PAST the `-n 2` flag value (not returned as '2').
+    from abm_auto.chat import execute_plan
+    ws = tmp_path / "opt_ws"
+    ws.mkdir()
+    script = {
+        f"optimize -n 2 {ws}": (0, "iteration complete\n"),
+        f"trust {ws}": (0, "Trust: CLEAN\n"),
+    }
+    run, calls = _fake_runner(script)
+    summary = execute_plan([f"optimize -n 2 {ws}"], confirm=lambda s: True, run_command=run)
+    assert f"trust {ws}" in calls  # resolved to the real workspace, not the flag value
+    assert "CLEAN" in summary
+
+
+def test_execute_plan_quotes_workspace_with_spaces(tmp_path):
+    # A workspace path with a space must survive as ONE argument to `trust`.
+    import shlex as _shlex
+    from abm_auto.chat import execute_plan
+    ws = tmp_path / "my run ws"
+    ws.mkdir()
+    calls = []
+
+    def run(cmd):
+        calls.append(cmd)
+        return (0, f"Output directory: {ws}\n") if cmd.startswith("run") else (0, "Trust: CLEAN\n")
+
+    summary = execute_plan(["run s.md -n 2"], confirm=lambda s: True, run_command=run)
+    trust_call = next(c for c in calls if c.startswith("trust"))
+    assert _shlex.split(trust_call) == ["trust", str(ws)]
+    assert "CLEAN" in summary
+
+
+def test_execute_plan_skips_trust_when_path_is_not_a_directory():
+    # A mis-parsed / nonexistent path must NOT yield a verdict for the wrong workspace.
+    from abm_auto.chat import execute_plan
+    run, calls = _fake_runner({"run s.md -n 2": (0, "Output directory: /no/such/dir/xyz\n")})
+    summary = execute_plan(["run s.md -n 2"], confirm=lambda s: True, run_command=run)
+    assert not any(c.startswith("trust") for c in calls)  # no trust on a non-directory
+    assert "skipped" in summary.lower()
+
+
+def test_workspace_for_optimize_skips_flag_values():
+    from abm_auto.chat import _workspace_for
+    assert _workspace_for("optimize", "optimize -n 2 myws", "") == "myws"
+    assert _workspace_for("optimize", "optimize --iterations 3 myws", "") == "myws"
+    assert _workspace_for("optimize", "optimize myws -n 2", "") == "myws"
+    assert _workspace_for("optimize", "optimize --iterations=3 myws", "") == "myws"
+
+
+def test_run_command_forces_wide_columns(monkeypatch):
+    import abm_auto.chat as chat
+
+    class _Proc:
+        returncode = 0
+        stdout = "ok"
+        stderr = ""
+
+    captured = {}
+
+    def fake_run(*a, **k):
+        captured["env"] = k.get("env")
+        return _Proc()
+
+    monkeypatch.setattr(chat.subprocess, "run", fake_run)
+    chat._run_command("memory ws")
+    assert captured["env"] is not None and int(captured["env"]["COLUMNS"]) >= 200
 
 
 def test_execute_plan_stops_when_expensive_step_declined():

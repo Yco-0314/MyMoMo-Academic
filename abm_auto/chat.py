@@ -13,6 +13,7 @@ REPL wrapper is thin I/O around it.
 from __future__ import annotations
 
 import json
+import os
 import re
 import shlex
 import subprocess
@@ -181,10 +182,16 @@ _EXPENSIVE = {"run", "optimize", "sensitivity", "batch"}
 
 
 def _run_command(cmd: str) -> tuple[int, str]:
-    """Run ``abm-auto <cmd>`` in a subprocess; return (returncode, output_tail)."""
+    """Run ``abm-auto <cmd>`` in a subprocess; return (returncode, output_tail).
+
+    Forces a wide ``COLUMNS`` so the child's Rich console (which falls back to an
+    80-col width when its stdout is a captured pipe) does not hard-wrap long lines —
+    otherwise the ``Output directory: <path>`` line we parse for auto-trust gets
+    split mid-path."""
+    env = {**os.environ, "COLUMNS": "1000"}
     proc = subprocess.run(
         [sys.executable, "-m", "abm_auto.cli", *shlex.split(cmd)],
-        capture_output=True, text=True,
+        capture_output=True, text=True, env=env,
     )
     tail = (proc.stdout or proc.stderr or "")[-1500:]
     return proc.returncode, tail
@@ -204,9 +211,18 @@ def _workspace_for(sub: str, cmd: str, output: str) -> str | None:
                 if path:
                     return path
     if sub in ("optimize", "sensitivity", "batch"):
+        # First positional argument — but skip option VALUES: a bare token right
+        # after a value-taking flag (e.g. `-n 2`, `--method sobol`) is that flag's
+        # value, not the workspace. `--flag=value` is self-contained.
+        prev_consumes_value = False
         for tok in shlex.split(cmd)[1:]:
-            if not tok.startswith("-"):
-                return tok
+            if tok.startswith("-"):
+                prev_consumes_value = "=" not in tok
+                continue
+            if prev_consumes_value:
+                prev_consumes_value = False
+                continue
+            return tok
     return None
 
 
@@ -229,15 +245,18 @@ def execute_plan(steps, confirm: Callable[[str], bool], run_command=_run_command
             line = f"step {i}/{n} `{step}`: ok. {last}"
             if sub in ("run", "optimize"):
                 ws = _workspace_for(sub, step, output)
-                if ws:
-                    _, tout = run_command(f"trust {ws}")
+                # Only auto-trust a path that actually resolves to a directory — a
+                # mis-parsed/truncated path must NOT yield a verdict for the wrong
+                # workspace. shlex.quote keeps a path with spaces a single argument.
+                if ws and Path(ws).is_dir():
+                    _, tout = run_command(f"trust {shlex.quote(ws)}")
                     verdict = next(
                         (ln.strip() for ln in tout.splitlines() if "Trust" in ln or "Cleanliness" in ln),
                         (tout.strip().splitlines()[0] if tout.strip() else "(no trust output)"),
                     )
                     line += f"\n   trust({ws}): {verdict}"
                 else:
-                    line += "\n   trust skipped (workspace not found in output)"
+                    line += "\n   trust skipped (workspace not resolved to a directory)"
             results.append(line)
     except KeyboardInterrupt:
         results.append("STOPPED by user (Ctrl-C). Remaining steps not run.")
