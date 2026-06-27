@@ -13,6 +13,7 @@ REPL wrapper is thin I/O around it.
 from __future__ import annotations
 
 import json
+import os
 import re
 import shlex
 import subprocess
@@ -55,6 +56,16 @@ TOOLS:
                               be long-running and may cost LLM tokens.
                               You can run `trust <workspace>` to report how trustworthy a finished
                               run is (CLEAN / CAVEATED / FAILED).
+- propose_plan(steps)      → propose a multi-step study as an ordered list of
+                              abm-auto commands, e.g.
+                              {"steps": ["run examples/x/story.md --intent reproduce -n 2", "optimize <workspace> -n 2"]}.
+                              The user approves the whole plan ONCE; cheap/read steps
+                              (trust, memory, trajectories, review) run automatically,
+                              while each expensive step (run/optimize/sensitivity/batch)
+                              reconfirms before it runs. The user can stop anytime.
+                              After a run/optimize, the orchestrator auto-reports the
+                              trust verdict (CLEAN/CAVEATED/FAILED) — discuss open
+                              issues honestly rather than declaring success.
 
 AUTHORING (turning a fuzzy idea into a runnable study):
 When the user describes a modelling idea with no existing story.md, help them author one:
@@ -66,6 +77,10 @@ When the user describes a modelling idea with no existing story.md, help them au
    it as a plan — to (a) edit it, (b) approve & run, or (c) just save it. Do NOT skip straight
    to running. On edit → revise and draft_story again. On approve → only then propose the
    abm_auto run command (which will itself ask to confirm). On save-only → stop.
+
+For a multi-step study, prefer propose_plan over firing one command at a time:
+lay out the whole sequence so the user approves it once, then let cheap steps run
+and reconfirm the expensive ones. Use the single abm_auto tool for genuine one-offs.
 
 HOW TO REPLY: write your natural-language message to the user. If you need a tool, put the call on
 its OWN FINAL LINE, exactly:
@@ -161,6 +176,92 @@ _KNOWN_SUBCOMMANDS = {
     "trust", "review", "ingest-netlogo", "ingest-comses", "batch", "quickstart",
 }
 
+# Subcommands that cost real LLM tokens / compute — they reconfirm per step even
+# inside an approved plan.
+_EXPENSIVE = {"run", "optimize", "sensitivity", "batch"}
+
+
+def _run_command(cmd: str) -> tuple[int, str]:
+    """Run ``abm-auto <cmd>`` in a subprocess; return (returncode, output_tail).
+
+    Forces a wide ``COLUMNS`` so the child's Rich console (which falls back to an
+    80-col width when its stdout is a captured pipe) does not hard-wrap long lines —
+    otherwise the ``Output directory: <path>`` line we parse for auto-trust gets
+    split mid-path."""
+    env = {**os.environ, "COLUMNS": "1000"}
+    proc = subprocess.run(
+        [sys.executable, "-m", "abm_auto.cli", *shlex.split(cmd)],
+        capture_output=True, text=True, env=env,
+    )
+    tail = (proc.stdout or proc.stderr or "")[-1500:]
+    return proc.returncode, tail
+
+
+def _workspace_for(sub: str, cmd: str, output: str) -> str | None:
+    """Resolve the workspace a run/optimize step produced or targeted.
+
+    ``run`` prints ``Output directory: <path>`` (or ``Results: <path>``); for
+    ``optimize``/``sensitivity``/``batch`` the workspace is the first positional
+    argument. A ``run`` step's positional arg is the STORY, not a workspace, so we
+    never fall back to it for ``run``."""
+    for marker in ("Output directory:", "Results:"):
+        for line in output.splitlines():
+            if marker in line:
+                path = line.split(marker, 1)[1].strip()
+                if path:
+                    return path
+    if sub in ("optimize", "sensitivity", "batch"):
+        # First positional argument — but skip option VALUES: a bare token right
+        # after a value-taking flag (e.g. `-n 2`, `--method sobol`) is that flag's
+        # value, not the workspace. `--flag=value` is self-contained.
+        prev_consumes_value = False
+        for tok in shlex.split(cmd)[1:]:
+            if tok.startswith("-"):
+                prev_consumes_value = "=" not in tok
+                continue
+            if prev_consumes_value:
+                prev_consumes_value = False
+                continue
+            return tok
+    return None
+
+
+def execute_plan(steps, confirm: Callable[[str], bool], run_command=_run_command) -> str:
+    """Run an approved multi-step plan: hybrid confirm (expensive steps reconfirm),
+    auto-trust after run/optimize, and a clean stop on decline/failure/Ctrl-C."""
+    results: list[str] = []
+    n = len(steps)
+    try:
+        for i, step in enumerate(steps, 1):
+            sub = step.split(maxsplit=1)[0]
+            if sub in _EXPENSIVE and not confirm(step):
+                results.append(f"step {i}/{n} `{step}`: STOPPED (you declined). Remaining steps not run.")
+                break
+            rc, output = run_command(step)
+            last = output.strip().splitlines()[-1] if output.strip() else ""
+            if rc != 0:
+                results.append(f"step {i}/{n} `{step}`: FAILED (exit {rc}). {last}\nRemaining steps not run.")
+                break
+            line = f"step {i}/{n} `{step}`: ok. {last}"
+            if sub in ("run", "optimize"):
+                ws = _workspace_for(sub, step, output)
+                # Only auto-trust a path that actually resolves to a directory — a
+                # mis-parsed/truncated path must NOT yield a verdict for the wrong
+                # workspace. shlex.quote keeps a path with spaces a single argument.
+                if ws and Path(ws).is_dir():
+                    _, tout = run_command(f"trust {shlex.quote(ws)}")
+                    verdict = next(
+                        (ln.strip() for ln in tout.splitlines() if "Trust" in ln or "Cleanliness" in ln),
+                        (tout.strip().splitlines()[0] if tout.strip() else "(no trust output)"),
+                    )
+                    line += f"\n   trust({ws}): {verdict}"
+                else:
+                    line += "\n   trust skipped (workspace not resolved to a directory)"
+            results.append(line)
+    except KeyboardInterrupt:
+        results.append("STOPPED by user (Ctrl-C). Remaining steps not run.")
+    return "\n".join(results)
+
 
 def _tool_abm_auto(args: dict, confirm: Callable[[str], bool]) -> str:
     cmd = str(args.get("args", "")).strip()
@@ -175,12 +276,27 @@ def _tool_abm_auto(args: dict, confirm: Callable[[str], bool]) -> str:
     if not confirm(cmd):
         return "user declined to run this command"
     console.print(f"[dim]$ abm-auto {cmd}[/dim]")
-    proc = subprocess.run(
-        [sys.executable, "-m", "abm_auto.cli", *shlex.split(cmd)],
-        capture_output=True, text=True,
-    )
-    tail = (proc.stdout or proc.stderr or "")[-1500:]
-    return f"exit {proc.returncode}\n{tail}"
+    rc, tail = _run_command(cmd)
+    return f"exit {rc}\n{tail}"
+
+
+def _tool_propose_plan(args: dict, confirm: Callable[[str], bool]) -> str:
+    """Validate a multi-step plan, get one approval, then execute it."""
+    steps = args.get("steps")
+    if not isinstance(steps, list) or not steps or not all(isinstance(s, str) and s.strip() for s in steps):
+        return "propose_plan needs a non-empty list of abm-auto command strings in 'steps'."
+    steps = [s.strip() for s in steps]
+    for s in steps:
+        sub = s.split(maxsplit=1)[0]
+        if sub not in _KNOWN_SUBCOMMANDS:
+            return (
+                f"plan rejected: '{sub}' is not an abm-auto command "
+                f"(valid: {', '.join(sorted(_KNOWN_SUBCOMMANDS))}). Nothing run."
+            )
+    rendered = "proposed plan:\n" + "\n".join(f"  {i}. abm-auto {s}" for i, s in enumerate(steps, 1))
+    if not confirm(rendered):
+        return "plan declined; nothing run."
+    return execute_plan(steps, confirm)
 
 
 _READONLY_TOOLS: dict[str, Callable[[dict], str]] = {
@@ -203,6 +319,8 @@ def dispatch(call: str, confirm: Callable[[str], bool]) -> str:
         return _READONLY_TOOLS[name](args)
     if name == "abm_auto":
         return _tool_abm_auto(args, confirm)
+    if name == "propose_plan":
+        return _tool_propose_plan(args, confirm)
     if name == "draft_story":
         return _tool_draft_story(args)
     return f"unknown tool: {name!r}"

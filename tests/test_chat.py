@@ -177,3 +177,191 @@ def test_authoring_turn_does_not_auto_run(tmp_path, monkeypatch):
     assert "save" in answer.lower()  # it presented the plan for review, did not auto-run
     assert confirmed == []  # nothing was sent to the confirm gate → nothing ran
     assert list((tmp_path / "stories").glob("*.md"))  # but the story was drafted
+
+
+def test_run_command_shape(monkeypatch):
+    import abm_auto.chat as chat
+
+    class _Proc:
+        returncode = 0
+        stdout = "hello world"
+        stderr = ""
+
+    monkeypatch.setattr(chat.subprocess, "run", lambda *a, **k: _Proc())
+    rc, out = chat._run_command("memory ws")
+    assert rc == 0
+    assert "hello world" in out
+
+
+def _fake_runner(script=None):
+    """A fake run_command: records calls; returns script[cmd] or (0, 'ok')."""
+    calls = []
+
+    def run(cmd):
+        calls.append(cmd)
+        return (script or {}).get(cmd, (0, "ok"))
+
+    return run, calls
+
+
+def test_execute_plan_runs_all_steps_in_order():
+    from abm_auto.chat import execute_plan
+    run, calls = _fake_runner()
+    summary = execute_plan(["memory ws", "trust ws"], confirm=lambda s: True, run_command=run)
+    assert calls == ["memory ws", "trust ws"]
+    assert "step 1/2" in summary and "step 2/2" in summary
+
+
+def test_execute_plan_confirms_only_expensive_steps():
+    from abm_auto.chat import execute_plan
+    confirmed = []
+    run, calls = _fake_runner()
+    execute_plan(
+        ["trust ws", "optimize ws -n 2"],
+        confirm=lambda s: confirmed.append(s) or True,
+        run_command=run,
+    )
+    assert confirmed == ["optimize ws -n 2"]  # cheap 'trust' auto-ran; only expensive asked
+
+
+def test_execute_plan_auto_trusts_after_run(tmp_path):
+    from abm_auto.chat import execute_plan
+    ws = tmp_path / "run_ws"
+    ws.mkdir()
+    script = {
+        "run s.md -n 2": (0, f"Output directory: {ws}\n"),
+        f"trust {ws}": (0, "Trust: CAVEATED\n"),
+    }
+    run, calls = _fake_runner(script)
+    summary = execute_plan(["run s.md -n 2"], confirm=lambda s: True, run_command=run)
+    assert f"trust {ws}" in calls
+    assert "CAVEATED" in summary
+
+
+def test_execute_plan_auto_trusts_optimize_workspace(tmp_path):
+    # optimize prints no 'Output directory:' marker; the workspace is the positional
+    # arg, which must be resolved PAST the `-n 2` flag value (not returned as '2').
+    from abm_auto.chat import execute_plan
+    ws = tmp_path / "opt_ws"
+    ws.mkdir()
+    script = {
+        f"optimize -n 2 {ws}": (0, "iteration complete\n"),
+        f"trust {ws}": (0, "Trust: CLEAN\n"),
+    }
+    run, calls = _fake_runner(script)
+    summary = execute_plan([f"optimize -n 2 {ws}"], confirm=lambda s: True, run_command=run)
+    assert f"trust {ws}" in calls  # resolved to the real workspace, not the flag value
+    assert "CLEAN" in summary
+
+
+def test_execute_plan_quotes_workspace_with_spaces(tmp_path):
+    # A workspace path with a space must survive as ONE argument to `trust`.
+    import shlex as _shlex
+    from abm_auto.chat import execute_plan
+    ws = tmp_path / "my run ws"
+    ws.mkdir()
+    calls = []
+
+    def run(cmd):
+        calls.append(cmd)
+        return (0, f"Output directory: {ws}\n") if cmd.startswith("run") else (0, "Trust: CLEAN\n")
+
+    summary = execute_plan(["run s.md -n 2"], confirm=lambda s: True, run_command=run)
+    trust_call = next(c for c in calls if c.startswith("trust"))
+    assert _shlex.split(trust_call) == ["trust", str(ws)]
+    assert "CLEAN" in summary
+
+
+def test_execute_plan_skips_trust_when_path_is_not_a_directory():
+    # A mis-parsed / nonexistent path must NOT yield a verdict for the wrong workspace.
+    from abm_auto.chat import execute_plan
+    run, calls = _fake_runner({"run s.md -n 2": (0, "Output directory: /no/such/dir/xyz\n")})
+    summary = execute_plan(["run s.md -n 2"], confirm=lambda s: True, run_command=run)
+    assert not any(c.startswith("trust") for c in calls)  # no trust on a non-directory
+    assert "skipped" in summary.lower()
+
+
+def test_workspace_for_optimize_skips_flag_values():
+    from abm_auto.chat import _workspace_for
+    assert _workspace_for("optimize", "optimize -n 2 myws", "") == "myws"
+    assert _workspace_for("optimize", "optimize --iterations 3 myws", "") == "myws"
+    assert _workspace_for("optimize", "optimize myws -n 2", "") == "myws"
+    assert _workspace_for("optimize", "optimize --iterations=3 myws", "") == "myws"
+
+
+def test_run_command_forces_wide_columns(monkeypatch):
+    import abm_auto.chat as chat
+
+    class _Proc:
+        returncode = 0
+        stdout = "ok"
+        stderr = ""
+
+    captured = {}
+
+    def fake_run(*a, **k):
+        captured["env"] = k.get("env")
+        return _Proc()
+
+    monkeypatch.setattr(chat.subprocess, "run", fake_run)
+    chat._run_command("memory ws")
+    assert captured["env"] is not None and int(captured["env"]["COLUMNS"]) >= 200
+
+
+def test_execute_plan_stops_when_expensive_step_declined():
+    from abm_auto.chat import execute_plan
+    run, calls = _fake_runner()
+    summary = execute_plan(["run s.md -n 2", "trust ws"], confirm=lambda s: False, run_command=run)
+    assert calls == []  # declined before running anything
+    assert "STOPPED" in summary
+
+
+def test_execute_plan_stops_on_step_failure():
+    from abm_auto.chat import execute_plan
+    run, calls = _fake_runner({"memory ws": (1, "boom")})
+    summary = execute_plan(["memory ws", "trust ws"], confirm=lambda s: True, run_command=run)
+    assert calls == ["memory ws"]  # second step not reached
+    assert "FAILED" in summary
+
+
+def test_execute_plan_stops_on_keyboard_interrupt():
+    from abm_auto.chat import execute_plan
+
+    def run(cmd):
+        raise KeyboardInterrupt
+
+    summary = execute_plan(["memory ws"], confirm=lambda s: True, run_command=run)
+    assert "STOPPED" in summary  # caught; no exception escapes
+
+
+def test_execute_plan_skips_trust_when_workspace_not_found():
+    from abm_auto.chat import execute_plan
+    run, calls = _fake_runner({"run s.md": (0, "finished, no path printed")})
+    summary = execute_plan(["run s.md"], confirm=lambda s: True, run_command=run)
+    assert calls == ["run s.md"]  # no auto-trust call (workspace unknown; story arg is NOT a workspace)
+    assert "skipped" in summary.lower()
+
+
+def test_propose_plan_rejects_unknown_subcommand():
+    from abm_auto.chat import dispatch
+    result = dispatch('propose_plan {"steps": ["run s.md", "frobnicate x"]}', confirm=lambda s: True)
+    assert "rejected" in result.lower()
+    assert "frobnicate" in result
+
+
+def test_propose_plan_declined_runs_nothing():
+    from abm_auto.chat import dispatch
+    result = dispatch('propose_plan {"steps": ["memory ws"]}', confirm=lambda s: False)
+    assert "declined" in result.lower()
+
+
+def test_propose_plan_requires_nonempty_step_list():
+    from abm_auto.chat import dispatch
+    result = dispatch('propose_plan {"steps": []}', confirm=lambda s: True)
+    assert "steps" in result.lower()
+
+
+def test_system_prompt_documents_orchestration():
+    from abm_auto.chat import _SYSTEM
+    assert "propose_plan" in _SYSTEM
+    assert "trust" in _SYSTEM.lower()
