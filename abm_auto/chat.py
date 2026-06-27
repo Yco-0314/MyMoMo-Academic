@@ -176,6 +176,60 @@ def _run_command(cmd: str) -> tuple[int, str]:
     return proc.returncode, tail
 
 
+def _workspace_for(sub: str, cmd: str, output: str) -> str | None:
+    """Resolve the workspace a run/optimize step produced or targeted.
+
+    ``run`` prints ``Output directory: <path>`` (or ``Results: <path>``); for
+    ``optimize``/``sensitivity``/``batch`` the workspace is the first positional
+    argument. A ``run`` step's positional arg is the STORY, not a workspace, so we
+    never fall back to it for ``run``."""
+    for marker in ("Output directory:", "Results:"):
+        for line in output.splitlines():
+            if marker in line:
+                path = line.split(marker, 1)[1].strip()
+                if path:
+                    return path
+    if sub in ("optimize", "sensitivity", "batch"):
+        for tok in shlex.split(cmd)[1:]:
+            if not tok.startswith("-"):
+                return tok
+    return None
+
+
+def execute_plan(steps, confirm: Callable[[str], bool], run_command=_run_command) -> str:
+    """Run an approved multi-step plan: hybrid confirm (expensive steps reconfirm),
+    auto-trust after run/optimize, and a clean stop on decline/failure/Ctrl-C."""
+    results: list[str] = []
+    n = len(steps)
+    try:
+        for i, step in enumerate(steps, 1):
+            sub = step.split(maxsplit=1)[0]
+            if sub in _EXPENSIVE and not confirm(step):
+                results.append(f"step {i}/{n} `{step}`: STOPPED (you declined). Remaining steps not run.")
+                break
+            rc, output = run_command(step)
+            last = output.strip().splitlines()[-1] if output.strip() else ""
+            if rc != 0:
+                results.append(f"step {i}/{n} `{step}`: FAILED (exit {rc}). {last}\nRemaining steps not run.")
+                break
+            line = f"step {i}/{n} `{step}`: ok. {last}"
+            if sub in ("run", "optimize"):
+                ws = _workspace_for(sub, step, output)
+                if ws:
+                    _, tout = run_command(f"trust {ws}")
+                    verdict = next(
+                        (ln.strip() for ln in tout.splitlines() if "Trust" in ln or "Cleanliness" in ln),
+                        (tout.strip().splitlines()[0] if tout.strip() else "(no trust output)"),
+                    )
+                    line += f"\n   trust({ws}): {verdict}"
+                else:
+                    line += "\n   trust skipped (workspace not found in output)"
+            results.append(line)
+    except KeyboardInterrupt:
+        results.append("STOPPED by user (Ctrl-C). Remaining steps not run.")
+    return "\n".join(results)
+
+
 def _tool_abm_auto(args: dict, confirm: Callable[[str], bool]) -> str:
     cmd = str(args.get("args", "")).strip()
     if not cmd:
