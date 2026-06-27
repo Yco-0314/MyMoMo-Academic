@@ -94,6 +94,24 @@ class PackageArsPhase:
         )
 
 
+class TrustReportPhase:
+    """Final: write the per-run trust report and print its summary."""
+
+    name = "Final (Trust report)"
+
+    def should_run(self, ctx) -> bool:
+        return True
+
+    def run(self, ctx) -> None:
+        from abm_auto.trust import build_trust_report
+
+        ws = ctx.workspace.path
+        report = build_trust_report(ws)
+        (ws / "trust_report.md").write_text(report.render_markdown(), encoding="utf-8")
+        console.print("\n[bold]Trust report[/bold]")
+        console.print(report.render_console())
+
+
 def _process_resolution_ledger(ctx: PipelineContext, reviewer) -> None:
     """Surface the Resolution Ledger action buckets from peer_review.md."""
     peer_review_path = ctx.workspace.path / "peer_review.md"

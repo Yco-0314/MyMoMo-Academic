@@ -106,3 +106,20 @@ def test_trust_cli_renders(tmp_path):
 def test_trust_cli_missing_path():
     result = _runner.invoke(app, ["trust", "/no/such/workspace"])
     assert result.exit_code != 0
+
+
+def test_trust_report_phase_writes_file(tmp_path):
+    _workspace(tmp_path, [_event("a", "raise", "Phase 4")])
+
+    class _WS:
+        path = tmp_path
+
+    class _Ctx:
+        workspace = _WS()
+
+    from abm_auto.pipeline.phases.output import TrustReportPhase
+    phase = TrustReportPhase()
+    assert phase.should_run(_Ctx()) is True
+    phase.run(_Ctx())
+    assert (tmp_path / "trust_report.md").exists()
+    assert "Trust report" in (tmp_path / "trust_report.md").read_text(encoding="utf-8")

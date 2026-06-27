@@ -235,6 +235,7 @@ class Pipeline:
             PackageArsPhase,
             PeerReviewPhase,
             ReportPhase,
+            TrustReportPhase,
             VisualizerPhase,
         )
         from abm_auto.pipeline.phases.pre_run import (
@@ -299,6 +300,7 @@ class Pipeline:
             VisualizerPhase(),
             PeerReviewPhase(self.reviewer),
             PackageArsPhase(),
+            TrustReportPhase(),
         ]
 
     def run(self) -> Path:
