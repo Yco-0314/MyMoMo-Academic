@@ -122,3 +122,10 @@ def test_release_workflow_is_gated():
     assert "build_and_verify.sh" in body
     assert "uv publish" in body
     assert "PYPI_API_TOKEN" in body  # publish gated on the token being configured
+
+
+def test_readme_documents_pip_install_quickstart():
+    root = Path(config.__file__).resolve().parent.parent
+    body = (root / "README.md").read_text(encoding="utf-8")
+    assert "pip install abm-auto" in body
+    assert "abm-auto quickstart" in body
