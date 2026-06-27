@@ -99,3 +99,16 @@ def test_run_preflights_missing_api_key(tmp_path, monkeypatch):
     result = _runner.invoke(app, ["run", str(story)])
     assert result.exit_code != 0
     assert "API key" in result.stdout
+
+
+import stat
+
+
+def test_build_and_verify_script_exists_and_checks_gis():
+    root = Path(config.__file__).resolve().parent.parent
+    script = root / "scripts" / "build_and_verify.sh"
+    assert script.exists()
+    assert script.stat().st_mode & stat.S_IXUSR  # executable
+    body = script.read_text(encoding="utf-8")
+    assert "uv build" in body
+    assert "abm_auto/gis" in body  # the leak assertion
