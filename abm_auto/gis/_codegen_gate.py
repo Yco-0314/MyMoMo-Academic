@@ -1,7 +1,7 @@
 """GIS codegen-fidelity gate — deterministic structural checks on generated code.
 
-The fidelity principle: trust deterministic checks, never the generator's word.
-Confirms the generated model uses the right space + gate
+The GIS analogue of the codegen-fidelity wall (ADR-016): trust deterministic checks,
+never the generator's word. Confirms the generated model uses the right space + gate
 for its spatial_type, imports only from the runtime, and contains no unsafe patterns.
 """
 from __future__ import annotations
@@ -32,7 +32,15 @@ def gis_codegen_gate(files: dict, spec) -> Tuple[bool, List[str]]:
     if not cap.renderable:
         reasons.append(f"capability '{cap.key}' is registered but not codegen-renderable")
 
-    for token in cap.required_tokens:
+    required_tokens = cap.required_tokens
+    if cap.key == "raster_spatial_calibration" and getattr(spec, "data_path", ""):
+        required_tokens = (
+            "calibrate_observed_raster_from_manifest",
+            "observed_raster_repro_gate",
+            "raster_spatial_loss",
+        )
+
+    for token in required_tokens:
         if token not in code:
             reasons.append(f"{cap.key} model missing required call: {token}")
 

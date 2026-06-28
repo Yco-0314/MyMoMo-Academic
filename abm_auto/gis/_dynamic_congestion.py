@@ -1,18 +1,18 @@
 """Dynamic congestion-aware routing over a GeoNetwork road graph.
 
-Built on the GIS platform layer: `CongestionAgent` subclasses
-`GISAgent`, `CongestionModel` subclasses `GISModel` with an overridden per-tick
-`step` (the 6-phase order: costs -> plan/reroute -> enter -> load -> move ->
-summary). `run_dynamic_congestion_routing` keeps its signature and return shape;
-behaviour is unchanged (the existing tests gate faithfulness). This is the second
-real adapter on the platform, alongside the contagion reference model.
+Migrated onto the GIS platform layer: `CongestionAgent` subclasses
+`GISAgent`, `CongestionModel` subclasses `StagedGISModel`, and the platform owns
+the staged lifecycle (costs -> plan/reroute -> enter -> load -> move -> summary).
+`run_dynamic_congestion_routing` keeps its signature and return shape; behaviour
+is unchanged (the existing tests gate faithfulness). This is the second real
+adapter on the platform, alongside the contagion reference model.
 """
 from __future__ import annotations
 
 from math import isfinite
 from numbers import Integral
 
-from abm_auto.gis._platform import GISAgent, GISModel
+from abm_auto.gis._platform import DataCollector, GISAgent, RunReporter, StagedGISModel
 from abm_auto.gis._routing_common import dijkstra_route
 
 
@@ -35,6 +35,53 @@ class CongestionAgent(GISAgent):
 
     def step(self) -> None:
         pass
+
+    def plan_or_arrive(self) -> None:
+        model = self.model
+        if self.arrived or self.stranded or self.edge is not None:
+            return
+        if self.node in model.safe_nodes:
+            self.arrived = True
+            self.arrival_t = model.t
+            return
+
+        should_plan = False
+        count_as_reroute = False
+        if model.reroute:
+            should_plan = True
+            count_as_reroute = self.planned_once
+        elif not self.planned_once:
+            should_plan = True
+
+        if should_plan:
+            old_route = list(self.route)
+            self.route = _shortest_route_by_cost(
+                model.graph, self.node, model.safe_nodes, model.edge_costs,
+            )
+            if count_as_reroute and self.route and self.route != old_route:
+                self.reroutes += 1
+                model.reroutes_this_step += 1
+                model.total_reroutes += 1
+            self.planned_once = True
+
+    def enter_next_edge(self) -> None:
+        if self.arrived or self.stranded or self.edge is not None:
+            return
+        _try_enter_next_edge(self, self.model.graph)
+
+    def move_along_edge(self) -> None:
+        if self.arrived or self.stranded or self.edge is None:
+            return
+        model = self.model
+        _move_agent(
+            self,
+            model.graph,
+            model.safe_nodes,
+            model.speed,
+            model.current_loads,
+            model.alpha,
+            model.t,
+        )
 
 
 def _edge_key(u, v) -> tuple:
@@ -146,10 +193,10 @@ def _agent_state(agent: CongestionAgent) -> dict:
     }
 
 
-class CongestionModel(GISModel):
-    """The dynamic congestion routing model on the platform. Overrides `step`
-    with the 6-phase tick; the platform supplies the GISModel/GISAgent base and
-    the AgentSet that holds the agents."""
+class CongestionModel(StagedGISModel):
+    """The dynamic congestion routing model on the staged platform lifecycle."""
+
+    stages = ("plan_or_arrive", "enter_next_edge", "move_along_edge")
 
     def __init__(self, geonet, safe_nodes, agent_nodes,
                  speed_m_per_tick, congestion_alpha, reroute):
@@ -160,9 +207,31 @@ class CongestionModel(GISModel):
         self.alpha = congestion_alpha
         self.reroute = reroute
         self.previous_loads = {}
+        self.edge_costs = {}
+        self.current_loads = {}
+        self.reroutes_this_step = 0
+        self.mean_congested_cost = 0.0
         self.total_reroutes = 0
-        self.max_edge_load = 0
-        self.summaries = []
+        self.reporter = DataCollector({
+            "t": lambda m: m.t,
+            "arrived": lambda m: sum(1 for agent in m.agent_list if agent.arrived),
+            "moving": lambda m: sum(
+                1 for agent in m.agent_list
+                if agent.edge is not None and not agent.arrived and not agent.stranded
+            ),
+            "waiting": lambda m: sum(
+                1 for agent in m.agent_list
+                if agent.edge is None and not agent.arrived and not agent.stranded
+            ),
+            "stranded": lambda m: sum(1 for agent in m.agent_list if agent.stranded),
+            "edge_loads": lambda m: dict(
+                sorted(m.current_loads.items(), key=lambda item: repr(item[0]))
+            ),
+            "max_edge_load": lambda m: max(m.current_loads.values(), default=0),
+            "reroutes_this_step": lambda m: m.reroutes_this_step,
+            "total_reroutes": lambda m: m.total_reroutes,
+            "mean_congested_cost": lambda m: m.mean_congested_cost,
+        })
         for i, node in enumerate(agent_nodes):
             self.add_agent(CongestionAgent(i, self, node))
 
@@ -170,84 +239,27 @@ class CongestionModel(GISModel):
     def agent_list(self) -> list:
         return list(self.agents)
 
-    def step(self) -> None:
-        t = self.t
-        agents = self.agent_list
-        graph = self.graph
-        safe_nodes = self.safe_nodes
-        edge_costs = _congested_edge_costs(graph, self.previous_loads, self.alpha)
-        mean_congested_cost = (
-            sum(edge_costs.values()) / len(edge_costs) if edge_costs else 0.0
+    @property
+    def summaries(self) -> list:
+        return self.reporter.records
+
+    def begin_step(self) -> None:
+        self.edge_costs = _congested_edge_costs(
+            self.graph, self.previous_loads, self.alpha,
         )
-        reroutes_this_step = 0
+        self.mean_congested_cost = (
+            sum(self.edge_costs.values()) / len(self.edge_costs)
+            if self.edge_costs else 0.0
+        )
+        self.reroutes_this_step = 0
 
-        for agent in agents:
-            if agent.arrived or agent.stranded or agent.edge is not None:
-                continue
-            if agent.node in safe_nodes:
-                agent.arrived = True
-                agent.arrival_t = t
-                continue
+    def after_stage(self, stage: str) -> None:
+        if stage != "enter_next_edge":
+            return
+        self.current_loads = _edge_loads(self.agent_list)
 
-            # Reroute policy is congestion-specific BY DESIGN (do not converge with
-            # the flood model's selective replan): edge costs change every tick as
-            # loads shift, so a node-waiting agent must replan every tick to react to
-            # congestion. Replanning only "when blocked" (the flood policy) would make
-            # agents ignore congestion after their first plan — defeating the model.
-            should_plan = False
-            count_as_reroute = False
-            if self.reroute:
-                should_plan = True
-                count_as_reroute = agent.planned_once
-            elif not agent.planned_once:
-                should_plan = True
-
-            if should_plan:
-                old_route = list(agent.route)
-                agent.route = _shortest_route_by_cost(
-                    graph, agent.node, safe_nodes, edge_costs,
-                )
-                if count_as_reroute and agent.route and agent.route != old_route:
-                    agent.reroutes += 1
-                    reroutes_this_step += 1
-                    self.total_reroutes += 1
-                agent.planned_once = True
-
-        for agent in agents:
-            if agent.arrived or agent.stranded or agent.edge is not None:
-                continue
-            _try_enter_next_edge(agent, graph)
-
-        current_loads = _edge_loads(agents)
-        if current_loads:
-            self.max_edge_load = max(self.max_edge_load, max(current_loads.values()))
-
-        for agent in agents:
-            if agent.arrived or agent.stranded or agent.edge is None:
-                continue
-            _move_agent(agent, graph, safe_nodes, self.speed,
-                        current_loads, self.alpha, t)
-
-        self.summaries.append({
-            "t": t,
-            "arrived": sum(1 for agent in agents if agent.arrived),
-            "moving": sum(
-                1 for agent in agents
-                if agent.edge is not None and not agent.arrived and not agent.stranded
-            ),
-            "waiting": sum(
-                1 for agent in agents
-                if agent.edge is None and not agent.arrived and not agent.stranded
-            ),
-            "stranded": sum(1 for agent in agents if agent.stranded),
-            "edge_loads": dict(sorted(current_loads.items(), key=lambda item: repr(item[0]))),
-            "max_edge_load": max(current_loads.values(), default=0),
-            "reroutes_this_step": reroutes_this_step,
-            "total_reroutes": self.total_reroutes,
-            "mean_congested_cost": mean_congested_cost,
-        })
-        self.previous_loads = current_loads
-        self.t += 1
+    def end_step(self) -> None:
+        self.previous_loads = self.current_loads
 
     def result(self, n_steps: int) -> dict:
         agents = self.agent_list
@@ -261,20 +273,24 @@ class CongestionModel(GISModel):
             1 for agent in agents
             if agent.edge is not None and not agent.arrived and not agent.stranded
         )
-        return {
-            "steps": self.summaries,
-            "agents": [_agent_state(agent) for agent in agents],
-            "n_steps": n_steps,
-            "n_agents": len(agents),
-            "arrived": sum(1 for agent in agents if agent.arrived),
-            "stranded": sum(1 for agent in agents if agent.stranded),
-            "moving": moving,
-            "total_reroutes": self.total_reroutes,
-            "mean_arrival_t": (
-                sum(arrival_times) / len(arrival_times) if arrival_times else None
-            ),
-            "max_edge_load": self.max_edge_load,
-        }
+        # The run summary flows through the platform RunReporter: the per-tick
+        # `steps` block and the peak `max_edge_load` come from the collected
+        # series; run-level rosters/counters pass through as `extra`.
+        return RunReporter(self.reporter).report(
+            peaks={"max_edge_load": "max_edge_load"},
+            extra={
+                "agents": [_agent_state(agent) for agent in agents],
+                "n_steps": n_steps,
+                "n_agents": len(agents),
+                "arrived": sum(1 for agent in agents if agent.arrived),
+                "stranded": sum(1 for agent in agents if agent.stranded),
+                "moving": moving,
+                "total_reroutes": self.total_reroutes,
+                "mean_arrival_t": (
+                    sum(arrival_times) / len(arrival_times) if arrival_times else None
+                ),
+            },
+        )
 
 
 def run_dynamic_congestion_routing(

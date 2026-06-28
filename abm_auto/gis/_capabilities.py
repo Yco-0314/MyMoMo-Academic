@@ -264,11 +264,12 @@ CAPABILITIES: dict[str, GISCapability] = {
         required_tokens=("GISAgent", "GISModel", "DataCollector", "step"),
         gate="(inline)",
     ),
-    # ── Method-transfer on the model's intermediate spatial state (TDA / Ricci
-    #    curvature / hot-spot). A GENUINE standing gap — the runtime cell does NOT
-    #    exist yet, so it is REGISTERED but NOT renderable. The platform DETECTS
-    #    this deterministically and HALTS to a human rather than emitting
-    #    unverified code (generate-then-verify, never generate-then-trust).
+    # ── method-transfer on the model's intermediate spatial
+    #    state (TDA / Ricci curvature / hot-spot). A GENUINE standing gap — the
+    #    runtime cell does NOT exist yet, so it is REGISTERED but NOT renderable.
+    #    This is what makes the self-extension loop's gap/scaffold path real
+    #    rather than vacuous: the platform DETECTS it deterministically and HALTS
+    #    to a human (auto-fill is generate-then-verify, never generate-then-trust).
     "spatial_method_transfer": GISCapability(
         key="spatial_method_transfer",
         spatial_type="method_transfer",

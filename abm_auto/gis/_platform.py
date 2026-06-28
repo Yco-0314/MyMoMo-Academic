@@ -68,6 +68,11 @@ class AgentSet:
         for agent in self.ordered():
             agent.step()
 
+    def do(self, method_name: str, *args, **kwargs) -> None:
+        """Run a named per-agent stage in the configured schedule order."""
+        for agent in self.ordered():
+            getattr(agent, method_name)(*args, **kwargs)
+
 
 # ── DataCollector ────────────────────────────────────────────────────────────
 
@@ -87,6 +92,33 @@ class DataCollector:
     @property
     def final(self) -> Dict[str, Any]:
         return dict(self.records[-1]) if self.records else {}
+
+
+# ── RunReporter ──────────────────────────────────────────────────────────────
+
+class RunReporter:
+    """Turns a `DataCollector`'s collected series into a structured run report.
+
+    The seam between per-tick collection and the run-level summary a production
+    adapter returns. The report's ``steps`` block *is* the collected records, and
+    any run-level peak (e.g. the busiest tick of a per-tick series) is derived
+    from that collected data rather than tracked separately on the model.
+    Run-level fields the collector cannot see (agent rosters, scalar counters)
+    are passed through as ``extra``.
+    """
+
+    def __init__(self, collector: DataCollector) -> None:
+        self.collector = collector
+
+    def report(self, *, peaks: Optional[Dict[str, str]] = None,
+               extra: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        records = self.collector.records
+        out: Dict[str, Any] = {"steps": records}
+        for out_name, series_name in (peaks or {}).items():
+            out[out_name] = max(self.collector.series(series_name), default=0)
+        if extra:
+            out.update(extra)
+        return out
 
 
 # ── GISModel ─────────────────────────────────────────────────────────────────
@@ -125,6 +157,42 @@ class GISModel:
                 break
             self.step()
         return self.reporter.records if self.reporter is not None else None
+
+
+# ── StagedGISModel ───────────────────────────────────────────────────────────
+
+class StagedGISModel(GISModel):
+    """A model-specific multi-stage tick over a scheduled AgentSet.
+
+    Subclasses name the per-agent `stages` and use hooks to prepare or update
+    tick-level context. The platform owns the lifecycle shape and summary
+    collection; subclasses own domain logic.
+    """
+
+    stages: tuple[str, ...] = ()
+
+    def begin_step(self) -> None:
+        pass
+
+    def before_stage(self, stage: str) -> None:
+        pass
+
+    def after_stage(self, stage: str) -> None:
+        pass
+
+    def end_step(self) -> None:
+        pass
+
+    def step(self) -> None:
+        self.begin_step()
+        for stage in self.stages:
+            self.before_stage(stage)
+            self.agents.do(stage)
+            self.after_stage(stage)
+        self.end_step()
+        if self.reporter is not None:
+            self.reporter.collect(self)
+        self.t += 1
 
 
 # ── Reference model (adapter #1): line contagion on the platform ─────────────

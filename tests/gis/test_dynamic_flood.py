@@ -4,9 +4,10 @@ from affine import Affine
 from shapely.geometry import LineString
 
 from abm_auto.gis._geo_network import GeoNetwork
+from abm_auto.gis._platform import DataCollector, StagedGISModel
 from abm_auto.gis._raster_space import RasterField, RasterSpace
 from abm_auto.gis._temporal import RasterTimeline
-from abm_auto.gis._dynamic_flood import run_dynamic_flood_evacuation
+from abm_auto.gis._dynamic_flood import FloodModel, run_dynamic_flood_evacuation
 
 
 def _raster(data):
@@ -129,6 +130,49 @@ def test_equal_length_routes_are_stable_across_line_insertion_order():
 
     assert first_result["agents"][0]["edge"] == second_result["agents"][0]["edge"]
     assert first_result["agents"][0]["route"] == second_result["agents"][0]["route"]
+
+
+def test_production_adapter_uses_platform_stages_and_reporter(monkeypatch):
+    geonet = GeoNetwork.from_lines(
+        [LineString([(0, 0), (0, 100)])],
+        crs="EPSG:3857",
+        snap_tol=1.0,
+    )
+    start = _node(geonet, 0, 0)
+    safe = _node(geonet, 0, 100)
+    dry = np.zeros((5, 5))
+    calls = []
+
+    def spy_do(self, method_name, *args, **kwargs):
+        calls.append(method_name)
+        for agent in self.ordered():
+            getattr(agent, method_name)(*args, **kwargs)
+
+    monkeypatch.setattr("abm_auto.gis._platform.AgentSet.do", spy_do, raising=False)
+
+    model = FloodModel(
+        geonet,
+        _timeline(dry, dry),
+        threshold=1,
+        safe_nodes=[safe],
+        agent_nodes=[start],
+        speed_m_per_tick=50,
+        n_samples=8,
+        reroute=True,
+    )
+    assert isinstance(model.reporter, DataCollector)
+    assert isinstance(model, StagedGISModel)
+    assert model.stages == (
+        "strand_if_flooded_on_edge",
+        "plan_or_enter",
+        "move_along_edge",
+    )
+
+    model.step()
+
+    assert calls == ["strand_if_flooded_on_edge", "plan_or_enter", "move_along_edge"]
+    assert model.reporter.records == model.summaries
+    assert model.summaries[0]["t"] == 0
 
 
 def test_node_reroute_takes_dry_detour_while_static_route_waits():

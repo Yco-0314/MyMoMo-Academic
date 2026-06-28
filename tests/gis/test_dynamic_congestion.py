@@ -2,7 +2,9 @@ import pytest
 from shapely.geometry import LineString
 
 from abm_auto.gis._geo_network import GeoNetwork
+from abm_auto.gis._platform import DataCollector, StagedGISModel
 from abm_auto.gis._dynamic_congestion import (
+    CongestionModel,
     _congested_edge_costs,
     _edge_key,
     run_dynamic_congestion_routing,
@@ -202,6 +204,75 @@ def test_public_agent_state_excludes_internal_planning_flag():
     )
 
     assert "planned_once" not in result["agents"][0]
+
+
+def test_production_adapter_uses_platform_stages_and_reporter(monkeypatch):
+    geonet = GeoNetwork.from_lines(
+        [LineString([(0, 0), (0, 100)])],
+        crs="EPSG:3857",
+        snap_tol=1.0,
+    )
+    start = _node(geonet, 0, 0)
+    safe = _node(geonet, 0, 100)
+    calls = []
+
+    def spy_do(self, method_name, *args, **kwargs):
+        calls.append(method_name)
+        for agent in self.ordered():
+            getattr(agent, method_name)(*args, **kwargs)
+
+    monkeypatch.setattr("abm_auto.gis._platform.AgentSet.do", spy_do, raising=False)
+
+    model = CongestionModel(
+        geonet,
+        safe_nodes=[safe],
+        agent_nodes=[start],
+        speed_m_per_tick=50,
+        congestion_alpha=1.0,
+        reroute=True,
+    )
+    assert isinstance(model.reporter, DataCollector)
+    assert isinstance(model, StagedGISModel)
+    assert model.stages == ("plan_or_arrive", "enter_next_edge", "move_along_edge")
+
+    model.step()
+
+    assert calls == ["plan_or_arrive", "enter_next_edge", "move_along_edge"]
+    assert model.reporter.records == model.summaries
+    assert model.summaries[0]["t"] == 0
+
+
+def test_result_max_edge_load_is_derived_from_collected_series():
+    # Two agents share the single edge for a tick, so the collected per-tick
+    # `max_edge_load` series peaks at 2; the run summary's `max_edge_load` is the
+    # peak of that collected series (it flows through the RunReporter seam, it is
+    # not tracked as separate model state).
+    geonet = GeoNetwork.from_lines(
+        [LineString([(0, 0), (0, 300)])],
+        crs="EPSG:3857",
+        snap_tol=1.0,
+    )
+    start = _node(geonet, 0, 0)
+    safe = _node(geonet, 0, 300)
+
+    model = CongestionModel(
+        geonet,
+        safe_nodes=[safe],
+        agent_nodes=[start, start],
+        speed_m_per_tick=100,
+        congestion_alpha=0.0,
+        reroute=True,
+    )
+    for _ in range(4):
+        model.step()
+    result = model.result(4)
+
+    assert not hasattr(model, "max_edge_load")          # no separate tracked state
+    assert result["steps"] is model.reporter.records    # steps block IS the series
+    assert result["max_edge_load"] == max(
+        model.reporter.series("max_edge_load")
+    )
+    assert result["max_edge_load"] == 2
 
 
 def _diamond_network():
