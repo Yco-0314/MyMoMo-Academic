@@ -2,6 +2,8 @@ from abm_auto.gis._model_spec import GISModelSpec
 from abm_auto.gis._templates import render
 from abm_auto.gis._codegen_gate import gis_codegen_gate
 
+OBSERVED_RASTER_MANIFEST = "data/fixtures/observed-raster/test_manifest.json"
+
 
 def test_gate_passes_clean_raster_code():
     spec = GISModelSpec(spatial_type="raster", mechanism="sir")
@@ -61,6 +63,23 @@ def test_gate_passes_clean_raster_spatial_calibration_code():
                         capability="raster_spatial_calibration")
     ok, reasons = gis_codegen_gate(render(spec), spec)
     assert ok, reasons
+
+
+def test_gate_requires_manifest_tokens_for_data_path_calibration_code():
+    spec = GISModelSpec(spatial_type="calibration",
+                        mechanism="raster_spatial_calibration",
+                        capability="raster_spatial_calibration",
+                        data_path=OBSERVED_RASTER_MANIFEST)
+    files = render(spec)
+    files["main.py"] = files["main.py"].replace(
+        "observed_raster_repro_gate",
+        "other_gate",
+    )
+
+    ok, reasons = gis_codegen_gate(files, spec)
+
+    assert not ok
+    assert any("observed_raster_repro_gate" in r for r in reasons)
 
 
 def test_gate_passes_clean_mechanism_threshold_adoption_code():

@@ -297,6 +297,38 @@ if __name__ == "__main__":
     main()
 '''
 
+_RASTER_SPATIAL_CALIBRATION_MANIFEST = '''"""Generated GIS model - manifest-backed raster spatial calibration."""
+import numpy as np
+
+from abm_auto.gis._observed_raster_repro import (
+    calibrate_observed_raster_from_manifest,
+    observed_raster_repro_gate,
+)
+from abm_auto.gis._spatial_validation import raster_spatial_loss
+
+MANIFEST_PATH = {manifest_path!r}
+
+def _cluster(top, left, size=2, shape=(6, 6)):
+    raster = np.zeros(shape, dtype=float)
+    raster[top:top + size, left:left + size] = 1.0
+    return raster
+
+def _location_simulator(params):
+    return _cluster(int(params["row"]), int(params["col"]))
+
+def main():
+    result = calibrate_observed_raster_from_manifest(
+        _location_simulator,
+        MANIFEST_PATH,
+    )
+    raster_spatial_loss(result["best_metrics"])
+    ok, desc = observed_raster_repro_gate(MANIFEST_PATH)
+    print(("PASS" if ok else "FAIL") + ": " + desc)
+
+if __name__ == "__main__":
+    main()
+'''
+
 _MECHANISM_THRESHOLD_ADOPTION = '''"""Generated GIS model - threshold adoption mechanism."""
 from abm_auto.gis._mechanisms import (
     mechanism_space_gate,
@@ -736,6 +768,10 @@ def render(spec: GISModelSpec) -> dict:
         return {"main.py": _RASTER_SPATIAL_VALIDATION}
 
     if cap.key == "raster_spatial_calibration":
+        if spec.data_path:
+            return {"main.py": _RASTER_SPATIAL_CALIBRATION_MANIFEST.format(
+                manifest_path=spec.data_path
+            )}
         return {"main.py": _RASTER_SPATIAL_CALIBRATION}
 
     if cap.key == "mechanism_threshold_adoption":

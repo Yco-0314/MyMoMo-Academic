@@ -1,11 +1,11 @@
 """Dynamic flood evacuation over a time-varying raster and road network.
 
-Built on the GIS platform layer: `FloodAgent` subclasses
-`GISAgent`, `FloodModel` subclasses `GISModel` with an overridden per-tick `step`
-(read the flood frame -> flooded edges -> strand on flooded edge -> plan/enter ->
-move -> summary). `run_dynamic_flood_evacuation` keeps its signature and return
-shape; behaviour is unchanged (the existing tests gate faithfulness). Third real
-adapter on the platform.
+Migrated onto the GIS platform layer: `FloodAgent` subclasses
+`GISAgent`, `FloodModel` subclasses `StagedGISModel`, and the platform owns the
+staged lifecycle (read flood frame -> flooded edges -> strand on flooded edge ->
+plan/enter -> move -> summary). `run_dynamic_flood_evacuation` keeps its
+signature and return shape; behaviour is unchanged (the existing tests gate
+faithfulness). Third real adapter on the platform.
 """
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ import networkx as nx
 
 from abm_auto.gis._coupling import flood_depth_per_edge
 from abm_auto.gis._flood_model import _require_raster_timeline
-from abm_auto.gis._platform import GISAgent, GISModel
+from abm_auto.gis._platform import DataCollector, GISAgent, StagedGISModel
 from abm_auto.gis._routing_common import dijkstra_route
 
 
@@ -54,6 +54,58 @@ class FloodAgent(GISAgent):
 
     def step(self) -> None:
         pass
+
+    def strand_if_flooded_on_edge(self) -> None:
+        if self.arrived or self.stranded or self.edge is None:
+            return
+        model = self.model
+        depth = model.depths.get(_edge_key(*self.edge), 0.0)
+        if depth > model.threshold:
+            self.stranded = True
+            self.stranded_reason = "flooded_on_edge"
+            self.exposure_depth += depth
+
+    def plan_or_enter(self) -> None:
+        model = self.model
+        if self.arrived or self.stranded or self.edge is not None:
+            return
+        if self.node in model.safe_nodes:
+            self.arrived = True
+            self.arrival_t = model.t
+            return
+
+        next_node = self.route[0] if self.route else None
+        next_unavailable = (
+            next_node is not None
+            and (not model.graph.has_edge(self.node, next_node)
+                 or _edge_key(self.node, next_node) in model.flooded_edges)
+        )
+        should_plan = False
+        count_as_reroute = False
+
+        if model.reroute:
+            should_plan = not self.route or next_unavailable
+            count_as_reroute = bool(self.route)
+        elif not self.planned_once:
+            should_plan = True
+
+        if should_plan:
+            old_route = list(self.route)
+            new_route = _shortest_route(model.routable, self.node, model.safe_nodes)
+            self.route = new_route
+            self.planned_once = True
+            if count_as_reroute and new_route and new_route != old_route:
+                self.reroutes += 1
+                model.reroutes_this_step += 1
+                model.total_reroutes += 1
+
+        _try_enter_next_edge(self, model.graph, model.flooded_edges)
+
+    def move_along_edge(self) -> None:
+        if self.arrived or self.stranded or self.edge is None:
+            return
+        model = self.model
+        _move_agent(self, model.graph, model.safe_nodes, model.speed, model.t)
 
 
 def _edge_key(u, v) -> tuple:
@@ -121,9 +173,14 @@ def _agent_state(agent: FloodAgent) -> dict:
     }
 
 
-class FloodModel(GISModel):
-    """Dynamic flood evacuation on the platform. Overrides `step` with the
-    per-tick lifecycle; the platform supplies GISModel/GISAgent + the AgentSet."""
+class FloodModel(StagedGISModel):
+    """Dynamic flood evacuation on the staged platform lifecycle."""
+
+    stages = (
+        "strand_if_flooded_on_edge",
+        "plan_or_enter",
+        "move_along_edge",
+    )
 
     def __init__(self, geonet, flood_timeline, threshold, safe_nodes, agent_nodes,
                  speed_m_per_tick, n_samples, reroute):
@@ -137,7 +194,26 @@ class FloodModel(GISModel):
         self.n_samples = n_samples
         self.reroute = reroute
         self.total_reroutes = 0
-        self.summaries = []
+        self.reroutes_this_step = 0
+        self.depths = {}
+        self.flooded_edges = set()
+        self.routable = self.graph
+        self.reporter = DataCollector({
+            "t": lambda m: m.t,
+            "arrived": lambda m: sum(1 for agent in m.agent_list if agent.arrived),
+            "moving": lambda m: sum(
+                1 for agent in m.agent_list
+                if agent.edge is not None and not agent.arrived and not agent.stranded
+            ),
+            "waiting": lambda m: sum(
+                1 for agent in m.agent_list
+                if agent.edge is None and not agent.arrived and not agent.stranded
+            ),
+            "stranded": lambda m: sum(1 for agent in m.agent_list if agent.stranded),
+            "n_flooded_edges": lambda m: len(m.flooded_edges),
+            "reroutes_this_step": lambda m: m.reroutes_this_step,
+            "total_reroutes": lambda m: m.total_reroutes,
+        })
         for i, node in enumerate(agent_nodes):
             self.add_agent(FloodAgent(i, self, node))
 
@@ -145,88 +221,19 @@ class FloodModel(GISModel):
     def agent_list(self) -> list:
         return list(self.agents)
 
-    def step(self) -> None:
+    @property
+    def summaries(self) -> list:
+        return self.reporter.records
+
+    def begin_step(self) -> None:
         t = self.t
-        agents = self.agent_list
-        graph = self.graph
-        safe_nodes = self.safe_nodes
         flood = self.flood_timeline.at(t)
-        depths = flood_depth_per_edge(self.geonet, flood, n_samples=self.n_samples)
-        flooded_edges = {edge for edge, depth in depths.items() if depth > self.threshold}
-        routable = _routable_graph(graph, flooded_edges)
-        reroutes_this_step = 0
-
-        for agent in agents:
-            if agent.arrived or agent.stranded or agent.edge is None:
-                continue
-            depth = depths.get(_edge_key(*agent.edge), 0.0)
-            if depth > self.threshold:
-                agent.stranded = True
-                agent.stranded_reason = "flooded_on_edge"
-                agent.exposure_depth += depth
-
-        for agent in agents:
-            if agent.arrived or agent.stranded or agent.edge is not None:
-                continue
-            if agent.node in safe_nodes:
-                agent.arrived = True
-                agent.arrival_t = t
-                continue
-
-            # Reroute policy is flood-specific BY DESIGN (do not converge with the
-            # congestion model's replan-every-tick): edge lengths are static here, so
-            # a planned route stays optimal unless its next edge floods or vanishes.
-            # Replan only "when blocked" — replanning every tick (the congestion
-            # policy) would be wasted work with identical results.
-            next_node = agent.route[0] if agent.route else None
-            next_unavailable = (
-                next_node is not None
-                and (not graph.has_edge(agent.node, next_node)
-                     or _edge_key(agent.node, next_node) in flooded_edges)
-            )
-            should_plan = False
-            count_as_reroute = False
-
-            if self.reroute:
-                should_plan = not agent.route or next_unavailable
-                count_as_reroute = bool(agent.route)
-            elif not agent.planned_once:
-                should_plan = True
-
-            if should_plan:
-                old_route = list(agent.route)
-                new_route = _shortest_route(routable, agent.node, safe_nodes)
-                agent.route = new_route
-                agent.planned_once = True
-                if count_as_reroute and new_route and new_route != old_route:
-                    agent.reroutes += 1
-                    reroutes_this_step += 1
-                    self.total_reroutes += 1
-
-            _try_enter_next_edge(agent, graph, flooded_edges)
-
-        for agent in agents:
-            if agent.arrived or agent.stranded or agent.edge is None:
-                continue
-            _move_agent(agent, graph, safe_nodes, self.speed, t)
-
-        self.summaries.append({
-            "t": t,
-            "arrived": sum(1 for agent in agents if agent.arrived),
-            "moving": sum(
-                1 for agent in agents
-                if agent.edge is not None and not agent.arrived and not agent.stranded
-            ),
-            "waiting": sum(
-                1 for agent in agents
-                if agent.edge is None and not agent.arrived and not agent.stranded
-            ),
-            "stranded": sum(1 for agent in agents if agent.stranded),
-            "n_flooded_edges": len(flooded_edges),
-            "reroutes_this_step": reroutes_this_step,
-            "total_reroutes": self.total_reroutes,
-        })
-        self.t += 1
+        self.depths = flood_depth_per_edge(self.geonet, flood, n_samples=self.n_samples)
+        self.flooded_edges = {
+            edge for edge, depth in self.depths.items() if depth > self.threshold
+        }
+        self.routable = _routable_graph(self.graph, self.flooded_edges)
+        self.reroutes_this_step = 0
 
     def result(self) -> dict:
         agents = self.agent_list
