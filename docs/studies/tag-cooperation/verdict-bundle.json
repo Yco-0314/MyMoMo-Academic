@@ -1,0 +1,112 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Evolution of cooperation without reciprocity",
+    "authors": [
+      "Rick L. Riolo",
+      "Michael D. Cohen",
+      "Robert Axelrod"
+    ],
+    "year": 2001,
+    "journal": "Nature 414:441-443",
+    "doi": "10.1038/35106555"
+  },
+  "headline": "Riolo-Cohen-Axelrod 2001 tag-cooperation (agent-based): 3/3 locked clauses REPRO; donation rate=0.613 (band [0.55,0.85]), cluster share=0.910, CV=0.323, crash-recover 10/10 seeds",
+  "code_commit": "cf9eba84a3a240d5c15cc35ff134a9b51ee26b03",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 tag-similarity sustains cooperation (no reciprocity): mean donation rate in [0.55, 0.85] at P=3",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.6133,
+        0.55
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 dominant tag cluster forms: time-averaged modal-tag-cluster share >= 0.6 (|tau-modal|<=0.01)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9104,
+        0.6
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 cooperation is intermittent (waves of tolerance): CV(donation rate) >= 0.1 AND crash-and-recover in a majority of seeds",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.3232,
+        0.1
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/tag-cooperation/results.json",
+      "sha256": "9397e7bdd683ae3bcae8618641c6c92d3f6ca20e41a4b0992ee5bf507b595fe8",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/tag-cooperation/PREDICTIONS-locked.md",
+      "sha256": "2f2d4e686c1b362f2ea23896b4d3f6ebcd5f4d268a609d4d0df088f5ee6c953f",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/tag-cooperation/FINDINGS.md",
+      "sha256": "32e604a1febd27a62317243eff960f1b6945211f5ae69078d302e025e621f8ee",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "riolo-cohen-axelrod-2001-tag-cooperation",
+    "n": 100,
+    "pairings": 3,
+    "cost": 0.1,
+    "benefit": 1.0,
+    "mutation_rate": 0.1,
+    "mutation_sigma": 0.01,
+    "generations": 30000,
+    "n_seeds": 10,
+    "burn_in": 100,
+    "cv_window": 200,
+    "mean_donation_rate": 0.613270590858417,
+    "mean_cluster_share": 0.9104197993311036,
+    "mean_cv_donation_rate": 0.3232246170836328,
+    "frac_seeds_crash_recover": 1.0,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce tag-based cooperation without reciprocity, its dominant-cluster formation, and its intermittent tolerance waves \u2014 and would catch an artifact"
+  },
+  "citations": [
+    "Riolo, R.L., Cohen, M.D. & Axelrod, R. (2001). Evolution of cooperation without reciprocity. Nature 414:441-443. doi:10.1038/35106555."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the donation rate, dominant-tag cluster share, and intermittent-wave (CV + crash-and-recover) signatures"
+  }
+}

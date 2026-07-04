@@ -1,0 +1,111 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "The Dissemination of Culture: A Model with Local Convergence and Global Polarization",
+    "authors": [
+      "Robert Axelrod"
+    ],
+    "year": 1997,
+    "journal": "Journal of Conflict Resolution 41(2):203-226",
+    "doi": "10.1177/0022002797041002001"
+  },
+  "headline": "Axelrod 1997 (agent-based): 3/3 locked clauses REPRO; #regions rises from 1.0 (q=5) to 17.5 (q=15) at F=5 \u2014 more traits -> more global polarization",
+  "code_commit": "b53ac6696bb55235fb15cdab22943420d67a4a2d",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 #regions increases with traits q (#regions(q=15) > #regions(q=5) at F=5)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        17.5,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 #regions decreases with features F (#regions(F=10) < #regions(F=5) at q=10)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.1,
+        2.6
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 monoculture limit: small q (2..5, F=5) -> <= 3 regions",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        3.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/axelrod-culture/results.json",
+      "sha256": "1cf32ed4510736ac81ef2b30fdd49f66275b21eb0ad4abfe76098ca7a2e7b6eb",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/axelrod-culture/PREDICTIONS-locked.md",
+      "sha256": "c345ed7baba48d91f5f513e07f7080b733cc2ffbbccf9240d65252f4657d6fe5",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/axelrod-culture/FINDINGS.md",
+      "sha256": "827c7fb39d1a4c84191d95c8f3bd1e626f5a934a5ee5443a55e857bd483747f1",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch2-design.md",
+      "sha256": "8b389d27a3cbd667288cac113043396a73cccbf006703c4d07ccd3627ace7e0c",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "axelrod-1997-dissemination-of-culture",
+    "L": 10,
+    "n_seeds_per_cell": 10,
+    "q_grid_at_F5": [
+      2,
+      5,
+      10,
+      15
+    ],
+    "F_grid_at_q": [
+      5,
+      10
+    ],
+    "q_fixed_for_F": 10,
+    "neighborhood": "von-Neumann-4 (bounded, no wrap)",
+    "stop_rule": "absorbing state (no 0<similarity<1 adjacent pair)",
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the traits->polarization result and would catch an artifact"
+  },
+  "citations": [
+    "Axelrod, R. (1997). The Dissemination of Culture: A Model with Local Convergence and Global Polarization. Journal of Conflict Resolution 41(2):203-226. doi:10.1177/0022002797041002001."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

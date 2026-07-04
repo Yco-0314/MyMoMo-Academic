@@ -1,0 +1,116 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Emergence of scaling in random networks",
+    "authors": [
+      "Albert-Laszlo Barabasi",
+      "Reka Albert"
+    ],
+    "year": 1999,
+    "journal": "Science 286(5439):509-512",
+    "doi": "10.1126/science.286.5439.509"
+  },
+  "headline": "Barabasi-Albert 1999 (mildly agent-based): 1/3 locked clauses REPRO; gamma_mle(m=3)=2.681 (kmin=m+1, discrete MLE); BA/ER max-degree ratio=17.7x",
+  "code_commit": "4a9083dadbdaa896e63615ef31da6bdef55ca2e6",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 fitted gamma(m=3) in [2.7, 3.3] (power-law tail, gamma~3)",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        2.6808,
+        2.7
+      ],
+      "reasons": [
+        "gamma_mle(m=3) mean=2.6808 (range [2.6723, 2.6938], kmin=4) outside [2.7, 3.3]"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P2 gamma(m=1,3,5) all in [2.5, 3.5] (exponent ~ m-independent)",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        2.3881,
+        2.5
+      ],
+      "reasons": [
+        "gamma_mle means by m: m=1:2.3881, m=3:2.6808, m=5:2.7851; out of [2.5, 3.5]: {1: 2.3881}"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P3 BA max degree >= 3x ER max degree at equal mean degree (hubs)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        17.723,
+        3.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/barabasi-albert/results.json",
+      "sha256": "6a5d05444a87cc470a31088079e8045342378bff36002d34457bb1a4b0536e1f",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/barabasi-albert/PREDICTIONS-locked.md",
+      "sha256": "3d7e2d80a82b4aab52d4cc8d4e63a84001a9d034cc43036f5f9e59535272a6ea",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/barabasi-albert/FINDINGS.md",
+      "sha256": "c363ed3d538b1b1b4fa160136c482e564513798aa6dcb6f71630ef0b95a17148",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-design.md",
+      "sha256": "574409d9b8c005bd730cc4f98b84de57e61cfaac5591f3e590128dc2b8341df0",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "barabasi-albert-1999-preferential-attachment",
+    "N": 10000,
+    "m_grid": [
+      1,
+      3,
+      5
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "fit_method": "discrete CSN-2009 MLE, kmin=m+1 (graded); CCDF slope (secondary)",
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; mildly agent-based (arriving NodeAgents make a preferential-attachment decision); the contribution is whether the harness + lock-first discipline reproduce the scale-free exponent and would catch a tuned fit"
+  },
+  "citations": [
+    "Barabasi, A.-L. & Albert, R. (1999). Emergence of scaling in random networks. Science 286(5439):509-512. doi:10.1126/science.286.5439.509.",
+    "Clauset, A., Shalizi, C.R. & Newman, M.E.J. (2009). Power-law distributions in empirical data. SIAM Review 51(4):661-703. doi:10.1137/070710111 (discrete MLE estimator, eq. 3.5)."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction. Sanity cross-check (not graded): networkx.barabasi_albert_graph under the same fit yields gamma within ~0.02 of this generator, confirming the exponent is a property of the model+fit, not a generator bug"
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "A cellular-automata model of flow in ant trails: non-monotonic variation of speed with density",
+    "authors": [
+      "Debashish Chowdhury",
+      "Vishwesha Guttal",
+      "Katsuhiro Nishinari",
+      "Andreas Schadschneider"
+    ],
+    "year": 2002,
+    "journal": "Journal of Physics A: Mathematical and General 35(41):L573-L577",
+    "doi": "10.1088/0305-4470/35/41/103"
+  },
+  "headline": "Ant-trail flow CA 2002 (CA, disclosed): 2/3 locked clauses REPRO; small f=0.005 rho*=0.55 (band var 0.34) vs large f=0.95 rho*=0.50 (band var 0.35) \u2014 pheromone coupling right-shifts the flow peak and evaporation recovers NaSch",
+  "code_commit": "7a0d7566d48fd3f6fa883e7c91ab91de8fc0fd7e",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 velocity plateau at small f=0.005: <v> variation across [0.2,0.5] < 0.2",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.3376,
+        0.2
+      ],
+      "reasons": [
+        "small-f (f=0.005) velocity variation across [0.2,0.5] = 0.3376 (need < 0.2); band <v> ranges [0.250, 0.378] \u2014 the anomaly is a velocity RISE into the near-0.5 peak, which breaks a flat-plateau bar over the locked band; reported honestly, not tuned"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P2 right-shifted flow peak at small f=0.005: rho* > 0.5",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.55,
+        0.5
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 evaporation recovers NaSch at large f=0.95: rho* back toward 0.5 (<= 0.55) AND <v> variation > 0.2",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.5,
+        0.55
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/ant-trail-bidirectional/results.json",
+      "sha256": "2fef91ff171dddf4c34bd8584f99934a29c0b733c362045e76ea2df05b5ef7c5",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/ant-trail-bidirectional/PREDICTIONS-locked.md",
+      "sha256": "ad56470c74ad91702aa2d71829cae37374e7110e97b39dd9c51d9a0969556c6a",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/ant-trail-bidirectional/FINDINGS.md",
+      "sha256": "aeeb4f76a3f556b20cb4efa9ed8c95b87c0d0d507ecc524435e96db8280126e4",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "ant-trail-bidirectional-2002",
+    "L": 500,
+    "Q": 0.75,
+    "q": 0.25,
+    "densities": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "transient": 5000,
+    "measure": 6000,
+    "f_small": 0.005,
+    "f_large": 0.95,
+    "framing": "CA (disclosed)",
+    "mechanism": "pheromone-coupled single-lane exclusion process on a periodic ring (vmax=1, NaSch-like): parallel exclusion hop with a pheromone-dependent hop probability (Q with a mark ahead, q without, q<Q), followed by deposit (mark under each ant) and evaporation (unused marks decay with prob f) \u2014 a genuine exclusion process coupled to an evaporating stigmergic field, NOT an agent-stepping ABM",
+    "small_f_rho_star": 0.55,
+    "small_f_band_variation": 0.3375684870693355,
+    "large_f_rho_star": 0.5,
+    "large_f_band_variation": 0.3532366653517563,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + lock-first discipline reproduce the anomalous ant-trail fundamental diagram (pheromone coupling right-shifts the flow peak and, as f->1, recovers plain NaSch) and would catch an artifact"
+  },
+  "citations": [
+    "Chowdhury, D., Guttal, V., Nishinari, K. & Schadschneider, A. (2002). A cellular-automata model of flow in ant trails: non-monotonic variation of speed with density. Journal of Physics A: Mathematical and General 35(41):L573-L577. doi:10.1088/0305-4470/35/41/103."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the anomalous ant-trail fundamental diagram (velocity plateau, right-shifted flow peak, and f->1 recovery of plain NaSch)"
+  }
+}

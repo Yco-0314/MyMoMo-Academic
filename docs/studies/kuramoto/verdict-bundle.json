@@ -1,0 +1,114 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Self-entrainment of a population of coupled non-linear oscillators",
+    "authors": [
+      "Yoshiki Kuramoto"
+    ],
+    "year": 1975,
+    "journal": "International Symposium on Mathematical Problems in Theoretical Physics, Lecture Notes in Physics 39, Springer, pp. 420-422",
+    "doi": "10.1007/BFb0013365"
+  },
+  "headline": "Kuramoto 1975 (agent-based): 3/3 locked clauses REPRO; synchronization onset at K=2.0 (canonical mean-field K_c~1.60); r(0.5)=0.053 -> r(3.0)=0.928",
+  "code_commit": "90bf317f2691e3ee2da819fb36e70f1fd45a4927",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 incoherent at K=0.5 (r<0.3) AND synchronized at K=3.0 (r>0.6)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9283,
+        0.6
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 synchronization onset in [1.0, 2.2] (first K with r>0.3; canonical K_c~1.6)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        2.0,
+        2.2
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 order parameter r monotone non-decreasing in K",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        -0.0111,
+        0.02
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/kuramoto/results.json",
+      "sha256": "6de8415f9fbf173e8fb2d3727cee6217d3c0307008579c86a5fe2a750358389c",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/kuramoto/PREDICTIONS-locked.md",
+      "sha256": "36addd484b2567ee6b92314ffbebafdc3e2f3774905a2748774cd4f58f5a4bea",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/kuramoto/FINDINGS.md",
+      "sha256": "3be592b5edbc1385b7092fbbf2698039b46ef6a1e84fb30e187ed00236351de6",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveA-design.md",
+      "sha256": "da9c97bd2ac96e458d6604555d77c414c8747ea27faf75a49559054755b06f8b",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "kuramoto-1975-synchronization",
+    "n": 500,
+    "omega_dist": "N(0,1)",
+    "dt": 0.05,
+    "n_steps": 2000,
+    "measure_last": 1000,
+    "n_seeds_per_K": 5,
+    "k_grid": [
+      0.0,
+      0.5,
+      1.0,
+      1.6,
+      2.0,
+      3.0,
+      4.0
+    ],
+    "measured_onset_K": 2.0,
+    "critical_coupling_meanfield": 1.5957691216057308,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the synchronization transition and would catch an artifact"
+  },
+  "citations": [
+    "Kuramoto, Y. (1975). Self-entrainment of a population of coupled non-linear oscillators. In: International Symposium on Mathematical Problems in Theoretical Physics. Lecture Notes in Physics 39, Springer, pp. 420-422. doi:10.1007/BFb0013365.",
+    "Strogatz, S.H. (2000). From Kuramoto to Crawford: exploring the onset of synchronization in populations of coupled oscillators. Physica D 143:1-20. doi:10.1016/S0167-2789(00)00094-4."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

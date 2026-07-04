@@ -1,0 +1,328 @@
+{
+  "model": "watson-lovelock-daisyworld (genuine agent-based, spatial L x L grid)",
+  "temperature_rule": "planetary mean from S*L_sol*(1-A_bar)=sigma*T_K^4 (Stefan-Boltzmann energy balance; S chosen so an all-bare planet sits at T_opt=22.5 C at L_sol=1.0); local T_cell = T_planet + local_gain*(A_bar - albedo_cell) (Watson-Lovelock local-heating term: darker cell warmer, brighter cell cooler); then a one-pass diffusion blending each cell DIFFUSE toward its Moore-8 neighbour mean",
+  "config": {
+    "L": 50,
+    "albedo_bare": 0.5,
+    "albedo_black": 0.25,
+    "albedo_white": 0.75,
+    "t_opt": 22.5,
+    "k": 0.003265,
+    "growth_curve": "beta(T)=max(0, 1 - 0.003265*(T_opt - T)^2), peak 1 at T_opt, zero at +/- 17.5 C",
+    "gamma_death_rate": 0.1,
+    "local_gain": 30.0,
+    "diffuse": 0.5,
+    "solar_constant_S": 866.4694712955671,
+    "L_sol_grid": [
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95,
+      1.0,
+      1.05,
+      1.1,
+      1.15,
+      1.2,
+      1.25,
+      1.3
+    ],
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "steps": 250,
+    "avg_last": 50,
+    "init_black_frac": 0.1,
+    "init_white_frac": 0.1,
+    "neighbourhood_colonise": "von Neumann (4), toroidal",
+    "neighbourhood_diffuse": "Moore-8, toroidal",
+    "arm_difference": "ONLY the presence of daisies (FAIR control)",
+    "p1_max_range": 10.0,
+    "p2_min_range": 30.0,
+    "populated_cover_threshold": 0.05
+  },
+  "with_daisies": [
+    {
+      "L_sol": 0.7,
+      "mean_temp": -2.7215410350364664,
+      "temp_std": 0.0,
+      "black_frac": 0.0,
+      "white_frac": 0.0,
+      "bare_frac": 1.0,
+      "per_seed_temp": [
+        -2.7215410350364664,
+        -2.7215410350364664,
+        -2.7215410350364664
+      ]
+    },
+    {
+      "L_sol": 0.75,
+      "mean_temp": 1.9833265935357645,
+      "temp_std": 0.0,
+      "black_frac": 0.0,
+      "white_frac": 0.0,
+      "bare_frac": 1.0,
+      "per_seed_temp": [
+        1.9833265935357645,
+        1.9833265935357645,
+        1.9833265935357645
+      ]
+    },
+    {
+      "L_sol": 0.8,
+      "mean_temp": 25.19410050975705,
+      "temp_std": 1.0577646697842373,
+      "black_frac": 0.7936719999999999,
+      "white_frac": 0.20108800000000002,
+      "bare_frac": 0.005240000000000001,
+      "per_seed_temp": [
+        26.30220532943461,
+        25.510322152398953,
+        23.769774047437583
+      ]
+    },
+    {
+      "L_sol": 0.85,
+      "mean_temp": 25.839254218105676,
+      "temp_std": 0.3429832273569637,
+      "black_frac": 0.7276213333333335,
+      "white_frac": 0.26554666666666665,
+      "bare_frac": 0.006832,
+      "per_seed_temp": [
+        25.3548806276756,
+        26.10364259080309,
+        26.059239435838332
+      ]
+    },
+    {
+      "L_sol": 0.9,
+      "mean_temp": 23.749919749216904,
+      "temp_std": 1.544393046678669,
+      "black_frac": 0.6270426666666666,
+      "white_frac": 0.36647466666666667,
+      "bare_frac": 0.006482666666666667,
+      "per_seed_temp": [
+        25.815271403255267,
+        23.332440421549663,
+        22.102047422845782
+      ]
+    },
+    {
+      "L_sol": 0.95,
+      "mean_temp": 22.872030288067094,
+      "temp_std": 1.0693164703734663,
+      "black_frac": 0.5551093333333333,
+      "white_frac": 0.43839199999999995,
+      "bare_frac": 0.0064986666666666665,
+      "per_seed_temp": [
+        24.354861681290732,
+        22.387645455692997,
+        21.873583727217557
+      ]
+    },
+    {
+      "L_sol": 1.0,
+      "mean_temp": 22.233311180754637,
+      "temp_std": 1.4611616556604181,
+      "black_frac": 0.4930133333333333,
+      "white_frac": 0.5004186666666666,
+      "bare_frac": 0.006568,
+      "per_seed_temp": [
+        23.689810951560133,
+        22.77448887863149,
+        20.235633712072286
+      ]
+    },
+    {
+      "L_sol": 1.05,
+      "mean_temp": 23.086728947330602,
+      "temp_std": 0.26701498064602,
+      "black_frac": 0.45635999999999993,
+      "white_frac": 0.5374933333333334,
+      "bare_frac": 0.0061466666666666675,
+      "per_seed_temp": [
+        22.916850989863352,
+        23.463732318808635,
+        22.879603533319827
+      ]
+    },
+    {
+      "L_sol": 1.1,
+      "mean_temp": 21.40715936486282,
+      "temp_std": 0.6765774127299168,
+      "black_frac": 0.392616,
+      "white_frac": 0.601264,
+      "bare_frac": 0.0061200000000000004,
+      "per_seed_temp": [
+        20.836228323141942,
+        22.3575788708411,
+        21.02767090060542
+      ]
+    },
+    {
+      "L_sol": 1.15,
+      "mean_temp": 21.19328071271275,
+      "temp_std": 1.0343495212925957,
+      "black_frac": 0.3511066666666667,
+      "white_frac": 0.6426533333333333,
+      "bare_frac": 0.00624,
+      "per_seed_temp": [
+        22.555573240402914,
+        20.050682717863232,
+        20.973586179872104
+      ]
+    },
+    {
+      "L_sol": 1.2,
+      "mean_temp": 19.865154481712135,
+      "temp_std": 1.1603827931087003,
+      "black_frac": 0.30086133333333337,
+      "white_frac": 0.6926133333333334,
+      "bare_frac": 0.006525333333333332,
+      "per_seed_temp": [
+        18.382630096048086,
+        21.21577980458051,
+        19.997053544507807
+      ]
+    },
+    {
+      "L_sol": 1.25,
+      "mean_temp": 18.94608572471384,
+      "temp_std": 2.0884912260365494,
+      "black_frac": 0.2586906666666667,
+      "white_frac": 0.7336053333333333,
+      "bare_frac": 0.007704,
+      "per_seed_temp": [
+        21.81910728636722,
+        16.916275920161716,
+        18.102873967612584
+      ]
+    },
+    {
+      "L_sol": 1.3,
+      "mean_temp": 42.54210533191213,
+      "temp_std": 0.0,
+      "black_frac": 0.0,
+      "white_frac": 0.0,
+      "bare_frac": 1.0,
+      "per_seed_temp": [
+        42.54210533191213,
+        42.54210533191213,
+        42.54210533191213
+      ]
+    }
+  ],
+  "bare_control": [
+    {
+      "L_sol": 0.7,
+      "mean_temp": -2.7215410350364664,
+      "temp_std": 0.0
+    },
+    {
+      "L_sol": 0.75,
+      "mean_temp": 1.9833265935357645,
+      "temp_std": 0.0
+    },
+    {
+      "L_sol": 0.8,
+      "mean_temp": 6.458506701788963,
+      "temp_std": 0.0
+    },
+    {
+      "L_sol": 0.85,
+      "mean_temp": 10.728573857348124,
+      "temp_std": 0.0
+    },
+    {
+      "L_sol": 0.9,
+      "mean_temp": 14.814207630638975,
+      "temp_std": 0.0
+    },
+    {
+      "L_sol": 0.95,
+      "mean_temp": 18.732988800108895,
+      "temp_std": 0.0
+    },
+    {
+      "L_sol": 1.0,
+      "mean_temp": 22.5,
+      "temp_std": 0.0
+    },
+    {
+      "L_sol": 1.05,
+      "mean_temp": 26.128286108945478,
+      "temp_std": 0.0
+    },
+    {
+      "L_sol": 1.1,
+      "mean_temp": 29.62921217781621,
+      "temp_std": 0.0
+    },
+    {
+      "L_sol": 1.15,
+      "mean_temp": 33.01274527040056,
+      "temp_std": 0.0
+    },
+    {
+      "L_sol": 1.2,
+      "mean_temp": 36.28767896127602,
+      "temp_std": 0.0
+    },
+    {
+      "L_sol": 1.25,
+      "mean_temp": 39.46181403620279,
+      "temp_std": 0.0
+    },
+    {
+      "L_sol": 1.3,
+      "mean_temp": 42.54210533191213,
+      "temp_std": 0.0
+    }
+  ],
+  "ranges": {
+    "with_daisies_full_grid": 45.2636463669486,
+    "bare_control_full_grid": 45.2636463669486,
+    "with_daisies_populated_window": 6.893168493391837,
+    "populated_window_L_sol": [
+      0.8,
+      1.25
+    ]
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": false,
+      "gate": "P1 WITH-daisy mean-temp range over L_sol[0.7,1.3] < 10.0 C (temperature homeostasis)",
+      "salient_number": [
+        45.2636,
+        10.0
+      ],
+      "reasons": [
+        "WITH-daisy temp range over the full locked grid = 45.26 C (need < 10.0); daisies go extinct at the grid extremes (cold/hot death), where temperature reverts to the bare control — see the within-window range in results.json"
+      ]
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 BARE-control mean-temp range over the same L_sol grid >= 30.0 C (tracks luminosity, no regulation)",
+      "salient_number": [
+        45.2636,
+        30.0
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 daisy mix shifts black-dominated (low L_sol) -> white-dominated (high L_sol)",
+      "salient_number": [
+        0.5325,
+        0.0
+      ],
+      "reasons": []
+    }
+  ]
+}

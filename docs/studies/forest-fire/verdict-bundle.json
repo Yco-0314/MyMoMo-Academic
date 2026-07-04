@@ -1,0 +1,116 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Self-organized critical forest-fire model",
+    "authors": [
+      "Barbara Drossel",
+      "Franz Schwabl"
+    ],
+    "year": 1992,
+    "journal": "Phys. Rev. Lett. 69:1629-1632",
+    "doi": "10.1103/PhysRevLett.69.1629"
+  },
+  "headline": "Drossel-Schwabl forest fire (cellular automaton / SOC): 3/3 locked clauses REPRO; fitted tau=1.199 (kmin=1), nonzero fire sizes span 4.2 decades (max/median=363x), stationary tree density 0.349/0.337 (empty/trees inits)",
+  "code_commit": "617761b31067292d387f0620d2c0b302af3a1029",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 fitted tail exponent tau in [1.0, 2.5] (power-law fire sizes, SOC)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.199,
+        2.5
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 heavy-tailed: nonzero fire sizes span >= 2.0 decades AND max >= 100.0x median nonzero",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        4.1732,
+        2.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 stationary tree density init-independent (|empty - trees| <= 0.05)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0112,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "forest_fire_results": {
+      "kind": "file",
+      "path": "docs/studies/forest-fire/results.json",
+      "sha256": "4d641ab6cc279d82f7c504d8ea8fa36c6388ec1eb249e184e003b9711ccb310a",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/forest-fire/PREDICTIONS-locked.md",
+      "sha256": "ef57503b1abf5f2b6754e22bfb41413bc6796a034ef3f2f837ad6e698c8834fa",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/forest-fire/FINDINGS.md",
+      "sha256": "e7420a56c2a29cf7592541c1738ab52e0eee4f24bc3c0334986df247f288402e",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveA-design.md",
+      "sha256": "da9c97bd2ac96e458d6604555d77c414c8747ea27faf75a49559054755b06f8b",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "drossel-schwabl-forest-fire",
+    "L": 128,
+    "p": 0.05,
+    "f": 5e-05,
+    "theta_trees_per_strike": 1000,
+    "transient": 5000,
+    "n_fires": 20000,
+    "seed": 0,
+    "fit_method": "exact discrete power-law MLE (zeta-likelihood; Clauset et al. 2009), kmin=1",
+    "kmin": 1,
+    "tau": 1.1990435971602642,
+    "stationary_tree_density_by_init": {
+      "empty": 0.34861776733398436,
+      "trees": 0.33741799926757815
+    },
+    "implementation": "standard double-separation (instantaneous burning); fire size = toroidal connected von-Neumann cluster size of the struck tree",
+    "model_class": "cellular automaton / self-organized criticality (NOT agent-stepping ABM): synchronous local update rules on a grid of cells; there are no agents, no scheduler, no per-agent decisions",
+    "scope": "faithful reproduction of a published synthetic CA/SOC result; no real-world data; the contribution is whether the harness + discipline reproduce the SOC fire-size power-law and would catch an artifact (a non-power-law distribution or an init-dependent density)",
+    "caveat": "the forest-fire model is only APPROXIMATELY scale-free: the fire-size distribution has known deviations from a pure power law at the largest sizes (a bump / finite-size cutoff), and the precise exponent is debated in the literature; the fitted tau is reported with its kmin and across a range of kmin (results.json tau_by_kmin)"
+  },
+  "citations": [
+    "Drossel, B. & Schwabl, F. (1992). Self-organized critical forest-fire model. Phys. Rev. Lett. 69:1629-1632. doi:10.1103/PhysRevLett.69.1629.",
+    "Grassberger, P. (2002). Critical behaviour of the Drossel-Schwabl forest fire model. New J. Phys. 4:17 (the forest-fire model is only approximately scale-free; large-size deviations and the debated exponent).",
+    "Clauset, A., Shalizi, C.R. & Newman, M.E.J. (2009). Power-law distributions in empirical data. SIAM Review 51(4):661-703 (discrete-MLE estimator)."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction. The literature anchor for P1 is a power-law fire-size distribution; the exact exponent is debated, so the locked window [1.0, 2.5] is deliberately broad."
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Flocks, herds and schools: A distributed behavioral model",
+    "authors": [
+      "Craig W. Reynolds"
+    ],
+    "year": 1987,
+    "journal": "Computer Graphics (SIGGRAPH '87 Proceedings) 21(4):25-34",
+    "doi": "10.1145/37402.37406"
+  },
+  "headline": "Reynolds 1987 Boids (agent-based): 2/3 locked clauses REPRO; full phi=0.671 vs alignment-OFF phi=0.051; mean-NN 0.73 (uniform-spacing 3.54)",
+  "code_commit": "faab4405601bdbae9ae61f8f17d1ea6e3dd46e16",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 full 3-rule model flocks: mean steady phi > 0.7 (coherent common heading)",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.671,
+        0.7
+      ],
+      "reasons": [
+        "full-model mean steady phi = 0.6710 over 5 seeds (range [0.661, 0.678]); need > 0.7"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P2 alignment-OFF control does not flock: mean steady phi < 0.3 (no common heading)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0505,
+        0.3
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 cohesion holds: full-model mean nearest-neighbour distance bounded (no dispersal)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.7285,
+        3.5355
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/boids/results.json",
+      "sha256": "dd9252536f73f02ae0784a981c769ba1b9c1b349b14e317385685e43671c3b04",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/boids/PREDICTIONS-locked.md",
+      "sha256": "329a5306539ec00bb1fef4ee38613989f4103916bec78db038a7db406ebd70f4",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/boids/FINDINGS.md",
+      "sha256": "10ade283f194b14b5c3558b9e4e30104f3b5936568d7a5c880d50822cbb825f3",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveA-design.md",
+      "sha256": "e43b07a40ac65baa1c4ac23cd98ea8f1c33dfc09492958c894f155047f3d6ecd",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "reynolds-1987-boids",
+    "n": 200,
+    "L": 50.0,
+    "r": 7.0,
+    "r_sep": 2.0,
+    "w_sep": 1.5,
+    "w_align": 1.0,
+    "w_coh": 1.0,
+    "vmin": 0.5,
+    "vmax": 1.0,
+    "n_seeds": 5,
+    "n_ticks": 400,
+    "measure_last": 100,
+    "full_mean_phi": 0.6710025099939981,
+    "alignment_off_mean_phi": 0.050522885961542384,
+    "full_mean_nn": 0.7285317195105431,
+    "uniform_spacing_scale": 3.5355339059327373,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce emergent flocking and isolate alignment as its cause, and would catch an artifact"
+  },
+  "citations": [
+    "Reynolds, C.W. (1987). Flocks, herds and schools: A distributed behavioral model. Computer Graphics (SIGGRAPH '87 Proceedings) 21(4):25-34. doi:10.1145/37402.37406."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the order parameter phi + mean nearest-neighbour distance"
+  }
+}

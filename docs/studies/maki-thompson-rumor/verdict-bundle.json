@@ -1,0 +1,115 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Mathematical Models and Applications, With Emphasis on the Social, Life, and Management Sciences",
+    "authors": [
+      "D. P. Maki",
+      "M. Thompson"
+    ],
+    "year": 1973,
+    "journal": "Prentice-Hall (rumor-spread chapter; cf. Daley & Kendall, Nature 1964)",
+    "doi": null
+  },
+  "headline": "Maki-Thompson rumor (well-mixed CTMC): 3/3 locked clauses REPRO; mean i_inf=0.2020 (analytic 0.2032), peak spreader=0.3106 (analytic 0.3069), rate-independence max|delta|=0.0000",
+  "code_commit": "88ff9ddbb05ae5172f8cfb601d46c85b0d6b9c62",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 never-hear constant: mean i_inf in [0.195,0.211] AND |mean i_inf - 0.2032| < 0.008",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.00122,
+        0.008
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 rate-independence: max pairwise |i_inf(rate_i)-i_inf(rate_j)| < 0.01 over rates [0.5, 1.0, 2.0, 4.0]",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0,
+        0.01
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 peak spreader in [0.29,0.32] (target 0.3069) AND |dev i_inf(N)| monotone-decreasing, N=1e5 within 0.004 of 0.2032",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.31062,
+        0.3068528194400547
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/maki-thompson-rumor/results.json",
+      "sha256": "0c65fced3dcabf377bf830214fb81d86c133e742b7ce302255ec12cac4f3a9c9",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/maki-thompson-rumor/PREDICTIONS-locked.md",
+      "sha256": "e5aab04be92300b2b749bc45ea28a4a3d7b2aeb8b0f231f67471b07f0cf17915",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/maki-thompson-rumor/FINDINGS.md",
+      "sha256": "0c4f003e51d182ee6af5857bc7578ca7387890ec061af00c001c93789e0f94c2",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "maki-thompson-rumor",
+    "n": 10000,
+    "n_seeds": 50,
+    "rho": 1.0,
+    "rate_grid": [
+      0.5,
+      1.0,
+      2.0,
+      4.0
+    ],
+    "n_grid": [
+      1000,
+      10000,
+      100000
+    ],
+    "metric": "final ignorant fraction i_inf; peak spreader fraction",
+    "framing": "well-mixed stochastic compartment CTMC (directed pairwise contacts); disclosed hybrid, not autonomous per-agent scheduling",
+    "scope": "faithful reproduction of a published synthetic model (Maki-Thompson directed-contact rumor process); no real-world data; the contribution is whether the harness + discipline reproduce the rate-invariant never-hear constant (0.2032) and the peak spreader (1-ln2) and would catch an artifact"
+  },
+  "citations": [
+    "Maki, D.P. & Thompson, M. (1973). Mathematical Models and Applications, With Emphasis on the Social, Life, and Management Sciences. Prentice-Hall. (directed-contact rumor model).",
+    "Daley, D.J. & Kendall, D.G. (1964). Epidemics and rumours. Nature 204:1118.",
+    "Daley, D.J. & Kendall, D.G. (1965). Stochastic rumours. J. Inst. Math. Appl. 1:42-55. (fixed point theta=exp(-(1+rho)(1-theta)); rho=1 => 0.2032)."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction validated against the analytic MT fixed point theta=exp(-2(1-theta))=0.2032 and peak 1-ln2=0.3069"
+  }
+}

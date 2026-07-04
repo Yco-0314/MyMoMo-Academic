@@ -1,0 +1,230 @@
+{
+  "model": "erdos-renyi-giant-component (network generation, NOT agent-stepping)",
+  "config": {
+    "n": 10000,
+    "n_seeds_per_z": 10,
+    "z_grid": [
+      0.5,
+      0.8,
+      1.0,
+      1.2,
+      1.5,
+      2.0,
+      3.0
+    ],
+    "p1_low_z": 0.5,
+    "p1_high_z": 2.0,
+    "p1_low_max": 0.05,
+    "p1_high_min": 0.4,
+    "p3_z_points": [
+      1.5,
+      2.0,
+      3.0
+    ],
+    "p3_tol": 0.05,
+    "graph": "ER gnm_random_graph (z=2m/n exact); fresh graph per seed",
+    "metric": "fraction of nodes in largest connected component, mean over seeds"
+  },
+  "per_z": [
+    {
+      "z": 0.5,
+      "m_edges": 2500,
+      "mean_fraction": 0.0018099999999999998,
+      "variance": 1.729e-07,
+      "stdev": 0.0004158124577258358,
+      "min_fraction": 0.0013,
+      "max_fraction": 0.0026,
+      "theoretical_S": 0.0,
+      "abs_dev_from_S": 0.0018099999999999998,
+      "fractions": [
+        0.0025,
+        0.0016,
+        0.0013,
+        0.0015,
+        0.0017,
+        0.002,
+        0.0017,
+        0.0014,
+        0.0018,
+        0.0026
+      ]
+    },
+    {
+      "z": 0.8,
+      "m_edges": 4000,
+      "mean_fraction": 0.00673,
+      "variance": 6.3881e-06,
+      "stdev": 0.0025274690898208826,
+      "min_fraction": 0.0042,
+      "max_fraction": 0.0124,
+      "theoretical_S": 0.0,
+      "abs_dev_from_S": 0.00673,
+      "fractions": [
+        0.0043,
+        0.0061,
+        0.0052,
+        0.0058,
+        0.0077,
+        0.0102,
+        0.0063,
+        0.0042,
+        0.0051,
+        0.0124
+      ]
+    },
+    {
+      "z": 1.0,
+      "m_edges": 5000,
+      "mean_fraction": 0.04272,
+      "variance": 0.0005140696,
+      "stdev": 0.022673103007749072,
+      "min_fraction": 0.0128,
+      "max_fraction": 0.0922,
+      "theoretical_S": 0.0,
+      "abs_dev_from_S": 0.04272,
+      "fractions": [
+        0.0254,
+        0.0167,
+        0.0128,
+        0.05,
+        0.0391,
+        0.06,
+        0.0471,
+        0.0567,
+        0.0272,
+        0.0922
+      ]
+    },
+    {
+      "z": 1.2,
+      "m_edges": 6000,
+      "mean_fraction": 0.30935999999999997,
+      "variance": 0.00017001640000000008,
+      "stdev": 0.013039033706529026,
+      "min_fraction": 0.2802,
+      "max_fraction": 0.3311,
+      "theoretical_S": 0.3136983310451247,
+      "abs_dev_from_S": 0.00433833104512471,
+      "fractions": [
+        0.3311,
+        0.312,
+        0.3219,
+        0.3105,
+        0.3034,
+        0.3082,
+        0.3095,
+        0.3177,
+        0.2802,
+        0.2991
+      ]
+    },
+    {
+      "z": 1.5,
+      "m_edges": 7500,
+      "mean_fraction": 0.58317,
+      "variance": 4.266209999999993e-05,
+      "stdev": 0.006531623075469062,
+      "min_fraction": 0.5713,
+      "max_fraction": 0.5959,
+      "theoretical_S": 0.5828116438672198,
+      "abs_dev_from_S": 0.00035835613278012435,
+      "fractions": [
+        0.5861,
+        0.5835,
+        0.5889,
+        0.576,
+        0.5862,
+        0.5959,
+        0.5786,
+        0.5713,
+        0.5827,
+        0.5825
+      ]
+    },
+    {
+      "z": 2.0,
+      "m_edges": 10000,
+      "mean_fraction": 0.79912,
+      "variance": 1.3053600000000054e-05,
+      "stdev": 0.0036129766121579107,
+      "min_fraction": 0.7924,
+      "max_fraction": 0.804,
+      "theoretical_S": 0.7968121300207021,
+      "abs_dev_from_S": 0.002307869979297994,
+      "fractions": [
+        0.7981,
+        0.8035,
+        0.8001,
+        0.804,
+        0.7975,
+        0.7936,
+        0.8008,
+        0.7924,
+        0.8008,
+        0.8004
+      ]
+    },
+    {
+      "z": 3.0,
+      "m_edges": 15000,
+      "mean_fraction": 0.94001,
+      "variance": 3.3648999999999638e-06,
+      "stdev": 0.0018343663756185578,
+      "min_fraction": 0.937,
+      "max_fraction": 0.9427,
+      "theoretical_S": 0.9404797907074168,
+      "abs_dev_from_S": 0.0004697907074168173,
+      "fractions": [
+        0.9415,
+        0.9403,
+        0.9414,
+        0.9427,
+        0.9407,
+        0.937,
+        0.9374,
+        0.9409,
+        0.9378,
+        0.9404
+      ]
+    }
+  ],
+  "monotone_non_decreasing": true,
+  "rise_low_to_high": 0.7973100000000001,
+  "p3_deviations": {
+    "1.5": 0.00035835613278012435,
+    "2.0": 0.002307869979297994,
+    "3.0": 0.0004697907074168173
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 giant component absent below z=1, present above (frac(z=0.5)<0.05 AND frac(z=2.0)>0.4)",
+      "salient_number": [
+        0.7991,
+        0.4
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 sharp transition: fraction rises from <0.05 (z=0.5) to >0.40 (z=2.0) crossing z=1 (monotone non-decreasing)",
+      "salient_number": [
+        0.7973,
+        0.35000000000000003
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 measured fraction at z in {1.5,2.0,3.0} within +/-0.05 of self-consistent S=1-e^{-zS}",
+      "salient_number": [
+        0.0023,
+        0.05
+      ],
+      "reasons": []
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Collective Memory and Spatial Sorting in Animal Groups",
+    "authors": [
+      "Iain D. Couzin",
+      "Jens Krause",
+      "Richard James",
+      "Graeme D. Ruxton",
+      "Nigel R. Franks"
+    ],
+    "year": 2002,
+    "journal": "Journal of Theoretical Biology 218(1):1-11",
+    "doi": "10.1006/jtbi.2002.3065"
+  },
+  "headline": "Couzin et al. 2002 zonal collective motion (3-zone SPP): 2/3 locked clauses REPRO; wide Dzoo=12.0 parallel flock p=1.00 m=0.02; narrow Dzoo=4.0 low-p rotating state p=0.20 m=0.49 (mill m ceilings below locked 0.65); hysteresis gap=1.8 length-units",
+  "code_commit": "78e9afde8e80a408cee8a4ee33cc34a5a59fc926",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 mill at narrow Dzoo=4.0: mean p < 0.35 AND mean m > 0.65",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.493,
+        0.65
+      ],
+      "reasons": [
+        "narrow-zone (Dzoo=4.0) mean polarization p = 0.201 (need < 0.35; OK); mean angular momentum m = 0.493 (range [0.411, 0.546]; need > 0.65; FAIL)"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P2 parallel at wide Dzoo=12.0: mean p > 0.9 AND mean m < 0.2",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.998,
+        0.9
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 hysteresis: mean |up_switch - down_switch| Dzoo >= 1.0 length-unit",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.75,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/couzin-zonal/results.json",
+      "sha256": "885487bf14ede76302d8eb627a6497765e75f6e31bef9363c26d2f5d4fecd770",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/couzin-zonal/PREDICTIONS-locked.md",
+      "sha256": "45eadd91d37a43c1f714770dce0ae2ea53fd63aff8060c976473f8ea26265a0e",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/couzin-zonal/FINDINGS.md",
+      "sha256": "3bbf163699594c8fa88f9f2381622a46720f645339dbcd9b0cf32ce71453f416",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "couzin-zonal-2002",
+    "n": 60,
+    "s": 1.0,
+    "zor": 1.0,
+    "zoa_width": 8.0,
+    "theta_max": 0.35,
+    "sigma": 0.02,
+    "n_steps": 1000,
+    "n_seeds": 6,
+    "dzoo_narrow": 4.0,
+    "dzoo_wide": 12.0,
+    "framing": "genuine-agent (3-zone self-propelled particles, 2D, disclosed)",
+    "control_parameter": "orientation-zone width Delta_zoo (narrow -> mill, wide -> parallel flock); only Delta_zoo is dialled",
+    "narrow_mean_polarization": 0.20117899583936147,
+    "narrow_mean_angular_momentum": 0.4925635543544229,
+    "wide_mean_polarization": 0.9975950026643706,
+    "wide_mean_angular_momentum": 0.01726038533748386,
+    "hysteresis_mean_gap": 1.75,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the Couzin zonal transitions (a milling/rotating state at narrow orientation, a parallel flock at wide orientation, and bistable hysteresis as the single zone-width parameter is ramped up vs down) and would catch an artifact \u2014 a phase portrait that vicsek_flocking (one alignment rule, no mill, no hysteresis) or boids (no zone-width control) cannot produce"
+  },
+  "citations": [
+    "Couzin, I.D., Krause, J., James, R., Ruxton, G.D. & Franks, N.R. (2002). Collective Memory and Spatial Sorting in Animal Groups. Journal of Theoretical Biology 218(1):1-11. doi:10.1006/jtbi.2002.3065."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the Couzin zonal transitions (polarization / angular-momentum order parameters vs orientation-zone width, and the hysteresis switch gap)"
+  }
+}

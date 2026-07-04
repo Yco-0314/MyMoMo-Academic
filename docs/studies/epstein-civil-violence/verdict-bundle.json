@@ -1,0 +1,116 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Modeling civil violence: An agent-based computational approach",
+    "authors": [
+      "Joshua M. Epstein"
+    ],
+    "year": 2002,
+    "journal": "PNAS 99(suppl 3):7243-7250",
+    "doi": "10.1073/pnas.092080199"
+  },
+  "headline": "Epstein 2002 civil violence (agent-based, Model I): 3/3 locked clauses REPRO; L=0.9 mean active 0.000, L=0.5 mean active 0.108 / burstiness 6.40, cop-sweep 0.375->0.108->0.059",
+  "code_commit": "7a10ecc7437ab5558be2e113fa9df201d6a89215",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 high legitimacy (L=0.9) -> calm (mean active fraction < 0.05)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 low legitimacy (L=0.5) -> punctuated (burstiness>=5 OR mean active>=0.10)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        6.4017,
+        5.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 deterrence: mean active fraction monotonically non-increasing in cop density",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0,
+        0.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/epstein-civil-violence/results.json",
+      "sha256": "35431953788af94d0cc50322c675646818568d1b21ce579183d93555ce5fb099",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/epstein-civil-violence/PREDICTIONS-locked.md",
+      "sha256": "e43e579bcf328bcf3edc2234a982fd62448b089263599c6bc6ad500e9ccf407c",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/epstein-civil-violence/FINDINGS.md",
+      "sha256": "f2548a532140b9b3b2af5f61eb8594248222550e6d4188e8184df1d8018e1063",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch3-design.md",
+      "sha256": "8c4ee1eccc914e5f17e9edaee1db1b5ec58a58d7493562a3dec8cd63764c3a25",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "epstein-2002-civil-violence",
+    "grid": "40x40",
+    "vision_moore_radius": 7,
+    "k": 2.3,
+    "threshold": 0.1,
+    "max_jail_term": 30,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "max_steps": 200,
+    "cop_sweep": [
+      0.02,
+      0.04,
+      0.06
+    ],
+    "L_high": 0.9,
+    "L_low": 0.5,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + lock-first discipline reproduce the punctuated-rebellion / legitimacy / deterrence results and would catch an artifact"
+  },
+  "citations": [
+    "Epstein, J.M. (2002). Modeling civil violence: An agent-based computational approach. PNAS 99(suppl 3):7243-7250. doi:10.1073/pnas.092080199. Open: https://www.pnas.org/doi/10.1073/pnas.092080199"
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Evolutionary games and spatial chaos",
+    "authors": [
+      "Martin A. Nowak",
+      "Robert M. May"
+    ],
+    "year": 1992,
+    "journal": "Nature 359:826-829",
+    "doi": "10.1038/359826a0"
+  },
+  "headline": "Nowak & May 1992 (agent-based): 1/3 locked clauses REPRO; spatial steady-state cooperator fraction = 0.317 (canonical ~0.31) vs well-mixed = 0.08342 (collapse) at b=1.85",
+  "code_commit": "cd8ff52a15a12f01b00953fef8b812426da5582f",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 spatial cooperation persists (steady-state cooperator fraction > 0.10)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.3167,
+        0.1
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 FAIR well-mixed control (self-interaction-matched) collapses (cooperator fraction < 0.02)",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.083425,
+        0.02
+      ],
+      "reasons": [
+        "FAIR well-mixed steady-state cooperator fraction = 0.083425 (need < 0.02)"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P3 spatial >> FAIR well-mixed (ratio >= 5x, or spatial>0.10 & well-mixed<0.02)",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        3.8,
+        5.0
+      ],
+      "reasons": [
+        "spatial=0.3167, well-mixed=0.083425, ratio=3.80 (need ratio>= 5.0 OR spatial>0.1 & well-mixed<0.02)"
+      ],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/nowak-may-spatial-pd/results.json",
+      "sha256": "2c8f424f58ebc19b236b923efa1ded3120aee40e90da7ededda875a6ef917ea9",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/nowak-may-spatial-pd/PREDICTIONS-locked.md",
+      "sha256": "12eb0346b3095ed6ab5a5ca2f515ed7b00827debcc8128338f2898c9a435ba65",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/nowak-may-spatial-pd/FINDINGS.md",
+      "sha256": "ee39070ea01dca23765ff1a65f60b656ad63196e9af915a171eca57496055606",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch2-design.md",
+      "sha256": "8b389d27a3cbd667288cac113043396a73cccbf006703c4d07ccd3627ace7e0c",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "nowak-may-1992-spatial-pd",
+    "b": 1.85,
+    "lattice": "99x99 periodic",
+    "self_interaction": true,
+    "init_coop_fraction": 0.5,
+    "n_steps": 200,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "steady_state_window_last": 50,
+    "spatial_mean_steady_state": 0.3166852362003877,
+    "wellmixed_mean_steady_state": 0.08342495663707784,
+    "canonical_spatial_fraction": 0.31,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the spatial-cooperation result and would catch an artifact"
+  },
+  "citations": [
+    "Nowak, M.A. & May, R.M. (1992). Evolutionary games and spatial chaos. Nature 359:826-829. doi:10.1038/359826a0."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

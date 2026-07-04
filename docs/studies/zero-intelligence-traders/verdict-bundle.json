@@ -1,0 +1,106 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Allocative Efficiency of Markets with Zero-Intelligence Traders: Market as a Partial Substitute for Individual Rationality",
+    "authors": [
+      "Dhananjay K. Gode",
+      "Shyam Sunder"
+    ],
+    "year": 1993,
+    "journal": "Journal of Political Economy 101(1):119-137",
+    "doi": "10.1086/261868"
+  },
+  "headline": "Gode-Sunder 1993 (agent-based CDA): 3/3 locked clauses REPRO; ZI-C efficiency 0.971 vs ZI-U -0.115 (gap 1.087) \u2014 the institution, not rationality, drives efficiency",
+  "code_commit": "4a9083dadbdaa896e63615ef31da6bdef55ca2e6",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 ZI-C allocative efficiency near 100% (mean > 0.95)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9715,
+        0.95
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 ZI-U efficiency much lower (mean < 0.90)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        -0.1155,
+        0.9
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 budget constraint drives efficiency (ZI-C - ZI-U >= 0.10)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.087,
+        0.1
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/zero-intelligence-traders/results.json",
+      "sha256": "ed4ddc5f70caa5150e1d70310777cd3b1cc65f7f6e7c01138d5ec36fb5a4cdf0",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/zero-intelligence-traders/PREDICTIONS-locked.md",
+      "sha256": "3d54df6fed716f5cb841219a44ac3721ed92060ed73d4c110f8d7aa98cd17d2a",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/zero-intelligence-traders/FINDINGS.md",
+      "sha256": "11f84d787dc927bfd583792957e71e3a629e27fa6ea403992ca72e0d83a5a018",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave3-design.md",
+      "sha256": "f19764e539b43f5dd824fa3ba874cf52380ae1f8bda4e2a520381a8fe25fef6a",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "gode-sunder-1993-zero-intelligence-traders",
+    "m_buyers": 8,
+    "m_sellers": 8,
+    "pmin": 1.0,
+    "pmax": 200.0,
+    "periods": 5,
+    "n_seeds": 30,
+    "zi_c_mean_efficiency": 0.971485628008547,
+    "zi_u_mean_efficiency": -0.11549306941835247,
+    "efficiency_gap": 1.0869786974268996,
+    "scope": "faithful reproduction of a published synthetic market model; no real-world data; the contribution is whether the harness + lock-first discipline reproduce the ZI-C-near-100% / ZI-C-much-greater-than-ZI-U result and would catch an artifact"
+  },
+  "citations": [
+    "Gode, D.K., Sunder, S. (1993). Allocative Efficiency of Markets with Zero-Intelligence Traders: Market as a Partial Substitute for Individual Rationality. Journal of Political Economy 101(1):119-137. doi:10.1086/261868."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

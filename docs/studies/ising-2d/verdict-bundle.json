@@ -1,0 +1,114 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Crystal Statistics. I. A Two-Dimensional Model with an Order-Disorder Transition",
+    "authors": [
+      "Lars Onsager"
+    ],
+    "year": 1944,
+    "journal": "Physical Review 65:117-149",
+    "doi": "10.1103/PhysRev.65.117"
+  },
+  "headline": "Ising 2D Glauber (agent-based): 3/3 locked clauses REPRO; measured |m|=0.5 crossing at T=2.335 (Onsager T_c\u22482.269)",
+  "code_commit": "97edd251ce992863ebadb226d1ce7aafa05b506d",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 ordered below T_c, disordered above (|m|>0.7 at T=1.5 AND |m|<0.2 at T=3.5)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9865,
+        0.7
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 |m| half-crossing in [2.0, 2.6] (transition near T_c\u22482.269)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        2.3347486292189594,
+        2.6
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 |m|(T) monotone non-increasing across the T-grid",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0,
+        0.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/ising-2d/results.json",
+      "sha256": "3d3243701c30eafbeeddae1ac003366645e7407ff2fcdaf0629283ff090e16d7",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/ising-2d/PREDICTIONS-locked.md",
+      "sha256": "1f51386584aa7c974b670dd1d77d5be03e69131128dcebbd113c06b632c6f9fe",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/ising-2d/FINDINGS.md",
+      "sha256": "9f2ed44f949a7fbb1340d1fc87c25402aa0ecb2e1874ce907d1b59de6223de0b",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveA-design.md",
+      "sha256": "da9c97bd2ac96e458d6604555d77c414c8747ea27faf75a49559054755b06f8b",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "ising-2d-glauber",
+    "L": 32,
+    "T_grid": [
+      1.5,
+      2.0,
+      2.27,
+      2.5,
+      3.0,
+      3.5
+    ],
+    "n_seeds_per_T": 5,
+    "n_sweeps": 2000,
+    "T_c_onsager": 2.269185314213022,
+    "measured_half_crossing": 2.3347486292189594,
+    "half_magnetization_window": [
+      2.0,
+      2.6
+    ],
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the Onsager order-disorder transition and would catch an artifact. Finite L=32 rounds the transition (no sharp singularity at finite size)."
+  },
+  "citations": [
+    "Onsager, L. (1944). Crystal Statistics. I. A Two-Dimensional Model with an Order-Disorder Transition. Phys. Rev. 65:117-149. doi:10.1103/PhysRev.65.117. Exact T_c = 2/ln(1+sqrt(2)) \u2248 2.269.",
+    "Glauber, R.J. (1963). Time-Dependent Statistics of the Ising Model. J. Math. Phys. 4:294-307. doi:10.1063/1.1703954."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded on the locked metric |magnetization|"
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Spread of epidemic disease on networks",
+    "authors": [
+      "M. E. J. Newman"
+    ],
+    "year": 2002,
+    "journal": "Physical Review E 66:016128",
+    "doi": "10.1103/PhysRevE.66.016128"
+  },
+  "headline": "Newman 2002 SIR-on-networks (bond percolation): 3/3 locked clauses REPRO; T_c(hom)=0.251 (formula) vs emp-onset 0.223; heterogeneity collapses T_c to 0.038 (SF); GF final-size tracks simulation within 0.001 at T in {0.3,0.4,0.6}",
+  "code_commit": "f2fd61c5adb0139fa37f6032ac625c533ed4d2bc",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 homogeneous epidemic threshold matches T_c = <k>/(<k^2>-<k>) from the realized degree sequence",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.26,
+        0.2514
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 degree heterogeneity lowers the threshold: T_c(power-law) < 0.5*T_c(homogeneous) and < 0.10",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0375,
+        0.1257
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 generating-function final size S=1-g0(1-T+Tu), u=g1(...) matches simulation at T in {0.3,0.4,0.6}; no outbreak below T_c",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0014,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/newman-network-sir/results.json",
+      "sha256": "b5da820d86682f6fccc10cbf37069a779c1954ceba33ccb85f5964a56bd1159b",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/newman-network-sir/PREDICTIONS-locked.md",
+      "sha256": "29756b36705d64e9579af90e3c47f6cf2729371a89215b24fc4d3965414889b2",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/newman-network-sir/FINDINGS.md",
+      "sha256": "d1fbd2bccd92a76e3d111f7a5f25d49a32f07119552f2d4309dd3ca70cf94872",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "newman-2002-sir-on-networks",
+    "framing": "network-generation + bond-percolation (SIR isomorphism), NOT autonomous agent-stepping",
+    "n": 15000,
+    "mean_k": 4.0,
+    "sf_gamma": 2.5,
+    "sf_kmin": 2,
+    "sf_kmax": 500,
+    "n_graphs": 5,
+    "n_perc": 20,
+    "T_c_formula_hom": 0.25139518586999654,
+    "T_c_formula_sf": 0.03751760492082848,
+    "T_c_giant_onset_hom": 0.22278794601589944,
+    "T_c_susceptibility_hom": 0.26,
+    "scope": "faithful reproduction of a published network-epidemiology result; no real-world data; the contribution is whether the harness + discipline reproduce Newman's percolation threshold, its heterogeneity-driven collapse, and the generating-function final size, and would catch an artifact"
+  },
+  "citations": [
+    "Newman, M.E.J. (2002). Spread of epidemic disease on networks. Physical Review E 66:016128. doi:10.1103/PhysRevE.66.016128."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the closed-form threshold + generating-function final-size curve"
+  }
+}

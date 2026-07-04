@@ -1,0 +1,142 @@
+{
+  "model": "conway-game-of-life (deterministic cellular automaton, NOT agent-stepping)",
+  "config": {
+    "L": 64,
+    "grid": "toroidal (periodic, wrap-around)",
+    "neighbourhood": "Moore-8",
+    "rule": "B3/S23",
+    "update": "synchronous",
+    "offset": [
+      3,
+      3
+    ],
+    "max_period_search": 16,
+    "deterministic": true,
+    "seeds": null,
+    "averaging": null,
+    "metric": "exact pattern shape-period + net per-period translation + live-cell-count series",
+    "expected": {
+      "glider": {
+        "period": 4,
+        "translation": [
+          1,
+          1
+        ]
+      },
+      "blinker": {
+        "period": 2,
+        "translation": [
+          0,
+          0
+        ]
+      },
+      "block": {
+        "period": 1,
+        "translation": [
+          0,
+          0
+        ]
+      },
+      "beacon": {
+        "period": 2,
+        "translation": [
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "patterns": {
+    "glider": {
+      "period": 4,
+      "translation": [
+        1,
+        1
+      ],
+      "live_count_initial": 5,
+      "live_count_series_one_period": [
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "count_conserved": true
+    },
+    "blinker": {
+      "period": 2,
+      "translation": [
+        0,
+        0
+      ],
+      "live_count_initial": 3,
+      "live_count_series_one_period": [
+        3,
+        3,
+        3
+      ],
+      "count_conserved": true
+    },
+    "block": {
+      "period": 1,
+      "translation": [
+        0,
+        0
+      ],
+      "live_count_initial": 4,
+      "live_count_series_one_period": [
+        4,
+        4
+      ],
+      "count_conserved": true
+    },
+    "beacon": {
+      "period": 2,
+      "translation": [
+        0,
+        0
+      ],
+      "live_count_initial": 8,
+      "live_count_series_one_period": [
+        8,
+        6,
+        8
+      ],
+      "count_conserved": false
+    }
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 glider is a period-4 diagonal spaceship (returns to its shape translated by exactly (+1,+1) after 4 generations)",
+      "salient_number": [
+        4.0,
+        4.0
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 blinker period 2 AND block is a still life (period 1, unchanged)",
+      "salient_number": [
+        2.0,
+        2.0
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": false,
+      "gate": "P3 beacon period 2; live-cell count conserved for the block and oscillates with period 2 for blinker/beacon",
+      "salient_number": [
+        3.0,
+        4.0
+      ],
+      "reasons": [
+        "measured blinker period=2, blinker count series=[3, 3, 3]; beacon period=2, beacon count series=[8, 6, 8]; block count conserved=True (need beacon period=2, block count conserved, and live-count period-2 oscillation for both blinker and beacon)"
+      ]
+    }
+  ]
+}

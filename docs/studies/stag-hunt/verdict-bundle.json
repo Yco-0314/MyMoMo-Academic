@@ -1,0 +1,130 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "The Stag Hunt and the Evolution of Social Structure",
+    "authors": [
+      "Brian Skyrms"
+    ],
+    "year": 2004,
+    "journal": "Cambridge University Press",
+    "doi": "10.1017/CBO9781139165228"
+  },
+  "headline": "Stag Hunt (agent-based): 3/3 locked clauses REPRO; canonical x*_emp=0.675 (analytic 0.667); risk-dominant Hare basin P=0.692 > Stag P=0.308; threshold tracks payoff formula (worst |err|=0.025)",
+  "code_commit": "1275cbd2af4b31e5eade16e5d074ce4e1c2f9d9a",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 bistable basin threshold at predicted interior fixed point (x*_emp in [0.62,0.72]; all-Stag rare below x*, near-certain above)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.675,
+        0.6666666666666666
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 risk-dominant Hare owns the strictly larger basin (P(fixate Hare) = 0.667 +- 0.05 AND > P(fixate Stag))",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.692,
+        0.667
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 threshold TRACKS the payoff formula (x*_emp within +-0.05 of analytic x* for {0.667, 0.500, 0.200}, not a fixed 50/50)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.025,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/stag-hunt/results.json",
+      "sha256": "e109c76653c5382fbe493c0a6a50dd0fec14f33e5aa8fd102cc2943f66d027cb",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/stag-hunt/PREDICTIONS-locked.md",
+      "sha256": "1e27c71be8a04fc9ec70cf49ef374dd052ed80c0c1431a4a5da50c2f7e2af6c5",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/stag-hunt/FINDINGS.md",
+      "sha256": "7d13c38b5ab6d61c7edcf3a6fa654dabbdd85d3a78976450dd0e8cb03becc4ae",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "stag-hunt-coordination-game",
+    "n": 1000,
+    "canonical_payoffs": [
+      4.0,
+      3.0,
+      2.0,
+      0.0
+    ],
+    "n_replicates_basin": 500,
+    "canonical_interior_fixed_point": 0.6666666666666666,
+    "canonical_x_star_emp": 0.675,
+    "p_fixate_hare": 0.692,
+    "p_fixate_stag": 0.308,
+    "p3_sets": [
+      [
+        4.0,
+        3.0,
+        2.0,
+        0.0
+      ],
+      [
+        5.0,
+        3.0,
+        2.0,
+        0.0
+      ],
+      [
+        5.0,
+        3.0,
+        2.0,
+        1.5
+      ]
+    ],
+    "scope": "faithful reproduction of a published coordination-game model; no real-world data; the contribution is whether the harness + discipline reproduce the BISTABLE two-basin equilibrium selection (payoff-dominant vs risk-dominant), show the risk-dominant basin is larger, and confirm the separatrix tracks the analytic payoff formula, and would catch an artifact"
+  },
+  "citations": [
+    "Skyrms, B. (2004). The Stag Hunt and the Evolution of Social Structure. Cambridge University Press. doi:10.1017/CBO9781139165228.",
+    "Maynard Smith, J. & Price, G.R. (1973). The logic of animal conflict. Nature 246:15-18.",
+    "Schlag, K.H. (1998). Why imitate, and if so, how? A boundedly rational approach to multi-armed bandits. J. Economic Theory 78(1):130-156."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the empirical basin separatrix x*_emp, the risk-dominant fixation probability, and the analytic interior fixed point x*=(P-S_)/((R-T)+(P-S_))"
+  }
+}

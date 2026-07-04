@@ -1,0 +1,115 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Complex Contagions and the Weakness of Long Ties",
+    "authors": [
+      "Damon Centola",
+      "Michael Macy"
+    ],
+    "year": 2007,
+    "journal": "American Journal of Sociology 113(3):702-734",
+    "doi": "10.1086/521848"
+  },
+  "headline": "agent-based reproduction: 3/3 locked clauses REPRO; R=1 adoption(p=1)=1.000 vs (p=0)=1.000; R=2 adoption(p=0)=1.000 vs (p=1)=0.006; crossover present",
+  "code_commit": "713b7a5cafdaa762390054ba84905e99cb1f948f",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 simple (R=1): adoption(p=1) >= adoption(p=0) (randomization does not hurt)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0,
+        0.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 complex (R=2): adoption(p=0) > adoption(p=1) (clustering helps; long ties weak)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.99355,
+        0.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 crossover: sign[adoption(p=1)-adoption(p=0)] flips between R=1 and R=2",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "adoption_results": {
+      "kind": "file",
+      "path": "docs/studies/complex-contagion/results.json",
+      "sha256": "c8f5b1d6d257aa36ab13d469059316c48ecb2c8b12925ad85cb5c9e941ada99c",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/complex-contagion/PREDICTIONS-locked.md",
+      "sha256": "2851dc40c78779d7bb54b115b90afdc313cbc49de91240af85a1eff7f213315b",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/complex-contagion/FINDINGS.md",
+      "sha256": "d5a3c8776ffc673cddb0c060d641817585e82c412effacfab51112c577024dfd",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-network-abm-reproductions-design.md",
+      "sha256": "8c8cb2fc6aec89d85b1e47b12481523f681e213f7ceec34300a71b4dd9f39faa",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "study": "centola-macy-2007-complex-contagion",
+    "n": 1000,
+    "n_seeds": 20,
+    "z": 8,
+    "seed_radius": 2,
+    "p_grid": [
+      0.0,
+      0.1,
+      0.2,
+      0.4,
+      0.6,
+      0.8,
+      1.0
+    ],
+    "R_values": [
+      1,
+      2
+    ],
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; outcome = final adoption fraction at a fixed point; the contribution is whether the harness + lock-before-run discipline reproduce the landmark complex-contagion result."
+  },
+  "citations": [
+    "Centola, D. & Macy, M. (2007). Complex Contagions and the Weakness of Long Ties. American Journal of Sociology 113(3):702-734. doi:10.1086/521848.",
+    "Centola, D., Eguiluz, V.M. & Macy, M. (2007). Cascade dynamics of complex propagation. Physica A 374:449-456. https://ndg.asc.upenn.edu/wp-content/uploads/2016/04/Centola-et-al-2007-PA.pdf"
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful reproduction of a published model"
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Spatial structure often inhibits the evolution of cooperation in the snowdrift game",
+    "authors": [
+      "Christoph Hauert",
+      "Michael Doebeli"
+    ],
+    "year": 2004,
+    "journal": "Nature 428:643-646",
+    "doi": "10.1038/nature02360"
+  },
+  "headline": "Hauert-Doebeli 2004 spatial snowdrift (agent-based): 3/3 locked clauses REPRO; worst inhibition gap 0.173 at r*=0.7 (replicator) vs best-takes-over gap 0.001; replicator f_lat(0.8)=0.000 (extinct) vs best-takes-over 0.334",
+  "code_commit": "0a4851529ed7e7b8e84fd074d8f89d5cd875daea",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 well-mixed reproduces interior ESS f=1-r (|f_wm-(1-r)|<=0.03; slope in [-1.1,-0.9])",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0,
+        0.03
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 spatial structure INHIBITS cooperation (exists r* in [0.3,0.7] with (1-r*)-f_lat>=0.10; f_lat<1-r for a majority)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.1733,
+        0.1
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 high-r extinction on the lattice (f_lat(0.8)<=0.05 while f_wm(0.8)>=0.15; gap>=0.10)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/snowdrift-game/results.json",
+      "sha256": "b958053935b426f65389ca49fec1c5d2acea060788979e79c69d27b514df51ca",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/snowdrift-game/PREDICTIONS-locked.md",
+      "sha256": "20188241ae86767fdf5499a77f79d476300fc34c4bafdf4576dcd16cf3fb1c59",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/snowdrift-game/FINDINGS.md",
+      "sha256": "a8bc2afc6b9f7fbd6f2d019019c6cccce439fa5751ad438752c628e51309670c",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "hauert-doebeli-2004-spatial-snowdrift",
+    "L": 100,
+    "n_seeds": 20,
+    "n_steps": 1000,
+    "measure_last": 200,
+    "r_values": [
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9
+    ],
+    "replicator_best_inhibition_gap": 0.17333132500000006,
+    "replicator_best_inhibition_r": 0.7,
+    "best_takes_over_gap_at_same_r": 0.0008857500000000185,
+    "replicator_f_lat_0.8": 0.0,
+    "best_takes_over_f_lat_0.8": 0.33360882500000005,
+    "gate_effect_is_mechanism_specific": true,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the counter-intuitive spatial INHIBITION of cooperation in the snowdrift game, prove it is specific to the stochastic replicator rule (the best-takes-over gate), and would catch a mislabeled Nowak-May"
+  },
+  "citations": [
+    "Hauert, C. & Doebeli, M. (2004). Spatial structure often inhibits the evolution of cooperation in the snowdrift game. Nature 428:643-646. doi:10.1038/nature02360.",
+    "Nowak, M.A. & May, R.M. (1992). Evolutionary games and spatial chaos. Nature 359:826-829."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the steady-state cooperator fraction f_lat vs the well-mixed ESS 1-r, with a best-takes-over control as the mechanism-specificity gate"
+  }
+}

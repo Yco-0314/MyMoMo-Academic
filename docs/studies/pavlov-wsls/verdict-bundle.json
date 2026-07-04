@@ -1,0 +1,113 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "A strategy of win-stay, lose-shift that outperforms tit-for-tat in the Prisoner's Dilemma game",
+    "authors": [
+      "Martin Nowak",
+      "Karl Sigmund"
+    ],
+    "year": 1993,
+    "journal": "Nature 364:56-58",
+    "doi": "10.1038/364056a0"
+  },
+  "headline": "Nowak-Sigmund 1993 WSLS/Pavlov (noisy IPD, agent-based): 2/3 locked clauses REPRO; WSLS self-play=2.95 vs TFT self-play=2.25 under noise; WSLS-vs-ALLC=3.96; co-evolving cooperative-regime late WSLS freq=0.98 (> TFT 0.02); ALLC dies under WSLS (0.00) but takes over under TFT (1.00)",
+  "code_commit": "3bafbefef9589c1092f6c2d24179b9db678a4b86",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 two WSLS restore cooperation under noise: WSLS self-play \u2265 2.7 AND WSLS_self \u2212 TFT_self \u2265 0.5",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        2.9511,
+        2.7
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 WSLS exploits ALLC: WSLS-vs-ALLC \u2265 4.5 AND \u2265 TFT-vs-ALLC + 1.0",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        3.965,
+        4.5
+      ],
+      "reasons": [
+        "WSLS-vs-ALLC = 3.9650 (need \u2265 4.5); TFT-vs-ALLC = 3.0094; margin = 0.9556 (need \u2265 1.0). Faithful memory-one WSLS=(1,0,0,1) vs ALLC locks into EITHER CC(R=3) or DC(T=5) \u2014 noise moves it symmetrically between them, so its mean sits at ~(R+T)/2 = 4.0, honestly short of the \u22654.5 bar."
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P3 WSLS dominates the co-evolving noisy population: late WSLS freq \u2265 0.5 and > TFT AND WSLS resists ALLC invasion while TFT admits it",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9767,
+        0.5
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/pavlov-wsls/results.json",
+      "sha256": "d52ac95ec3ee17f039feb3902b9d50bc65447902d4ce65858c185c3369838380",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/pavlov-wsls/PREDICTIONS-locked.md",
+      "sha256": "2c59bbacc1a2bd8b6df16c25060b847b8902bac9efc92e792b38582292ed4467",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/pavlov-wsls/FINDINGS.md",
+      "sha256": "5345aa0a8a86d5b819c47ac29793ab4a6b6c614f528fceec26999805f4d25d36",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "nowak-sigmund-1993-wsls-pavlov",
+    "eps": 0.01,
+    "pop_n": 100,
+    "mu": 0.01,
+    "generations": 500,
+    "n_seeds": 10,
+    "wsls_self": 2.951092,
+    "tft_self": 2.25,
+    "wsls_allc": 3.965,
+    "tft_allc": 3.009402,
+    "coop_late_wsls_freq": 0.9767299999999999,
+    "coop_late_tft_freq": 0.01588000000000001,
+    "allc_under_wsls": 0.0,
+    "allc_under_tft": 1.0,
+    "distinctness": "NOT the noise-free deterministic Axelrod round-robin (where TFT wins). WSLS beats TFT specifically because of NOISE (error-correction of accidental defections) + EVOLUTION (exploitation of drifting ALLC). The gate is a noisy evolving population, not the static tournament.",
+    "scope": "faithful reproduction of a published game-theoretic model; no real-world data; the contribution is whether the harness + locked-prediction discipline reproduce WSLS's noise+evolution advantage over TFT and would catch an artifact"
+  },
+  "citations": [
+    "Nowak, M. & Sigmund, K. (1993). A strategy of win-stay, lose-shift that outperforms tit-for-tat in the Prisoner's Dilemma game. Nature 364:56-58. doi:10.1038/364056a0."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against exact Markov pairwise payoffs + a finite-population evolutionary + invasion experiment. The sibling axelrod_ipd (deterministic noise-free tournament, TFT wins) is the DISTINCTNESS contrast, not a numeric baseline"
+  }
+}

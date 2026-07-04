@@ -1,0 +1,139 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Minority opinion spreading in random geometry (Galam majority-rule model)",
+    "authors": [
+      "Serge Galam"
+    ],
+    "year": 2002,
+    "journal": "European Physical Journal B 25:403-406",
+    "doi": "10.1140/epjb/e20020045"
+  },
+  "headline": "Galam majority rule (agent-based): 3/3 locked clauses REPRO; g=3 tipping at p_c=0.5 (Galam 0.5); g=4 ties->up tipping at p_c=0.24 < 0.5 (minority spreading; Galam ~0.23)",
+  "code_commit": "af9b07d8c426a3935f60201a54a8b9e8a3148f2c",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 g=3 majority rule: consensus + initial majority wins (tipping at 0.5)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 g=4 (ties->up): up-tipping point p_c < 0.5 (minority spreading)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.24,
+        0.5
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 no interior stable fixed point (every trajectory flows to 0 or 1)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": {
+        "monotone_fraction_away_from_pc": 1.0,
+        "monotone_away_count": "360/360",
+        "monotone_fraction_overall": 0.976,
+        "note": "non-monotone runs are knife-edge wobble ON the unstable fixed point p_c; they still flow away to 0/1"
+      }
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/galam-majority/results.json",
+      "sha256": "eb092748e983aac76c5f00efd245f95925de7bc1c591006120d3f3d981fcc7fa",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/galam-majority/PREDICTIONS-locked.md",
+      "sha256": "728d2f253828fc38a30e485b22024109d66692dddcf38638954a8ce01d0b60af",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/galam-majority/FINDINGS.md",
+      "sha256": "33ca70169e7c413224251ec15cacea413e953dc288d578ae4c0d92323a695141",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave2-design.md",
+      "sha256": "a0fee69f835bb4a97addff28f12cc4b0f21192456b67a21a77255b9314086435",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "galam-majority-rule",
+    "N": 10001,
+    "n_seeds": 20,
+    "max_steps": 1000,
+    "tie_rule": "g=4 ties -> UP",
+    "g3_p0_grid": [
+      0.4,
+      0.42,
+      0.44,
+      0.45,
+      0.46,
+      0.48,
+      0.5,
+      0.52,
+      0.54,
+      0.55,
+      0.56,
+      0.6
+    ],
+    "g4_p0_grid": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.22,
+      0.24,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55
+    ],
+    "measured_tipping_points": {
+      "g3": 0.5,
+      "g4_ties_up": 0.24
+    },
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the Galam tipping point + minority-spreading result and would catch an artifact"
+  },
+  "citations": [
+    "Galam, S. (2002). Minority opinion spreading in random geometry. Eur. Phys. J. B 25:403-406. doi:10.1140/epjb/e20020045.",
+    "Galam, S. (2008). Sociophysics: A review of Galam models. Int. J. Mod. Phys. C 19(3):409-440. doi:10.1142/S0129183108012297."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

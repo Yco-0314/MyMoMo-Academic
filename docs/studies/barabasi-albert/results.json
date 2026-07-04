@@ -1,0 +1,1246 @@
+{
+  "model": "barabasi-albert-1999-preferential-attachment (mildly agent-based)",
+  "config": {
+    "N": 10000,
+    "m_grid": [
+      1,
+      3,
+      5
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "seed_network": "clique on m+1 nodes",
+    "attachment": "degree-weighted sampling WITHOUT replacement, m targets/arrival",
+    "fit_method_graded": "discrete CSN-2009 power-law MLE, kmin = m+1 (fixed, not tuned)",
+    "fit_method_secondary": "log-log CCDF OLS slope at the same kmin (cross-check only)",
+    "er_comparison": "G(n,p) at p = ba_mean_degree/(n-1), fresh seed per trial",
+    "P1_band": [
+      2.7,
+      3.3
+    ],
+    "P2_band": [
+      2.5,
+      3.5
+    ],
+    "P3_ratio": 3.0
+  },
+  "per_m": [
+    {
+      "m": 1,
+      "kmin": 2,
+      "gamma_mle_mean": 2.3880824951842587,
+      "gamma_mle_min": 2.3836069265268893,
+      "gamma_mle_max": 2.392005781808965,
+      "gamma_mle_stdev": 0.003262470476481347,
+      "gamma_ccdf_mean": 2.814999812765122,
+      "ba_max_degree_mean": 192.6,
+      "er_max_degree_mean": 9,
+      "ba_er_ratio_mean": 21.4,
+      "per_seed": [
+        {
+          "seed": 0,
+          "gamma_mle": 2.3836069265268893,
+          "gamma_ccdf": 2.833724453754007,
+          "kmin": 2,
+          "n_tail": 3300,
+          "ba_max_degree": 178,
+          "ba_mean_degree": 1.9998,
+          "min_degree": 1,
+          "er_max_degree": 9,
+          "er_mean_degree_achieved": 2.0116
+        },
+        {
+          "seed": 1,
+          "gamma_mle": 2.392005781808965,
+          "gamma_ccdf": 2.7556733671880043,
+          "kmin": 2,
+          "n_tail": 3312,
+          "ba_max_degree": 176,
+          "ba_mean_degree": 1.9998,
+          "min_degree": 1,
+          "er_max_degree": 9,
+          "er_mean_degree_achieved": 2.0012
+        },
+        {
+          "seed": 2,
+          "gamma_mle": 2.384992982491686,
+          "gamma_ccdf": 2.8006632798540565,
+          "kmin": 2,
+          "n_tail": 3284,
+          "ba_max_degree": 236,
+          "ba_mean_degree": 1.9998,
+          "min_degree": 1,
+          "er_max_degree": 9,
+          "er_mean_degree_achieved": 2.0126
+        },
+        {
+          "seed": 3,
+          "gamma_mle": 2.390803184804898,
+          "gamma_ccdf": 2.8817740559788416,
+          "kmin": 2,
+          "n_tail": 3329,
+          "ba_max_degree": 122,
+          "ba_mean_degree": 1.9998,
+          "min_degree": 1,
+          "er_max_degree": 9,
+          "er_mean_degree_achieved": 1.988
+        },
+        {
+          "seed": 4,
+          "gamma_mle": 2.389003600288855,
+          "gamma_ccdf": 2.803163907050702,
+          "kmin": 2,
+          "n_tail": 3322,
+          "ba_max_degree": 251,
+          "ba_mean_degree": 1.9998,
+          "min_degree": 1,
+          "er_max_degree": 9,
+          "er_mean_degree_achieved": 1.999
+        }
+      ],
+      "degree_histogram": [
+        {
+          "degree": 1,
+          "count": 6700
+        },
+        {
+          "degree": 2,
+          "count": 1633
+        },
+        {
+          "degree": 3,
+          "count": 668
+        },
+        {
+          "degree": 4,
+          "count": 312
+        },
+        {
+          "degree": 5,
+          "count": 193
+        },
+        {
+          "degree": 6,
+          "count": 133
+        },
+        {
+          "degree": 7,
+          "count": 86
+        },
+        {
+          "degree": 8,
+          "count": 54
+        },
+        {
+          "degree": 9,
+          "count": 34
+        },
+        {
+          "degree": 10,
+          "count": 34
+        },
+        {
+          "degree": 11,
+          "count": 27
+        },
+        {
+          "degree": 12,
+          "count": 17
+        },
+        {
+          "degree": 13,
+          "count": 14
+        },
+        {
+          "degree": 14,
+          "count": 8
+        },
+        {
+          "degree": 15,
+          "count": 7
+        },
+        {
+          "degree": 16,
+          "count": 8
+        },
+        {
+          "degree": 17,
+          "count": 7
+        },
+        {
+          "degree": 18,
+          "count": 6
+        },
+        {
+          "degree": 19,
+          "count": 6
+        },
+        {
+          "degree": 20,
+          "count": 3
+        },
+        {
+          "degree": 21,
+          "count": 2
+        },
+        {
+          "degree": 22,
+          "count": 4
+        },
+        {
+          "degree": 23,
+          "count": 7
+        },
+        {
+          "degree": 24,
+          "count": 4
+        },
+        {
+          "degree": 25,
+          "count": 3
+        },
+        {
+          "degree": 26,
+          "count": 2
+        },
+        {
+          "degree": 27,
+          "count": 2
+        },
+        {
+          "degree": 28,
+          "count": 4
+        },
+        {
+          "degree": 29,
+          "count": 2
+        },
+        {
+          "degree": 30,
+          "count": 1
+        },
+        {
+          "degree": 31,
+          "count": 3
+        },
+        {
+          "degree": 32,
+          "count": 2
+        },
+        {
+          "degree": 33,
+          "count": 1
+        },
+        {
+          "degree": 34,
+          "count": 1
+        },
+        {
+          "degree": 35,
+          "count": 1
+        },
+        {
+          "degree": 43,
+          "count": 1
+        },
+        {
+          "degree": 48,
+          "count": 1
+        },
+        {
+          "degree": 52,
+          "count": 2
+        },
+        {
+          "degree": 61,
+          "count": 1
+        },
+        {
+          "degree": 62,
+          "count": 2
+        },
+        {
+          "degree": 102,
+          "count": 1
+        },
+        {
+          "degree": 104,
+          "count": 1
+        },
+        {
+          "degree": 117,
+          "count": 1
+        },
+        {
+          "degree": 178,
+          "count": 1
+        }
+      ]
+    },
+    {
+      "m": 3,
+      "kmin": 4,
+      "gamma_mle_mean": 2.680800196497507,
+      "gamma_mle_min": 2.6723292321980665,
+      "gamma_mle_max": 2.6937570687817702,
+      "gamma_mle_stdev": 0.007491768181694104,
+      "gamma_ccdf_mean": 2.902730231278062,
+      "ba_max_degree_mean": 294.2,
+      "er_max_degree_mean": 16.6,
+      "ba_er_ratio_mean": 17.72289156626506,
+      "per_seed": [
+        {
+          "seed": 0,
+          "gamma_mle": 2.6749585766570747,
+          "gamma_ccdf": 2.9259662237894486,
+          "kmin": 4,
+          "n_tail": 5997,
+          "ba_max_degree": 336,
+          "ba_mean_degree": 5.9988,
+          "min_degree": 3,
+          "er_max_degree": 16,
+          "er_mean_degree_achieved": 6.0002
+        },
+        {
+          "seed": 1,
+          "gamma_mle": 2.6797529905118904,
+          "gamma_ccdf": 2.8574228355818256,
+          "kmin": 4,
+          "n_tail": 6012,
+          "ba_max_degree": 309,
+          "ba_mean_degree": 5.9988,
+          "min_degree": 3,
+          "er_max_degree": 17,
+          "er_mean_degree_achieved": 5.9792
+        },
+        {
+          "seed": 2,
+          "gamma_mle": 2.6937570687817702,
+          "gamma_ccdf": 2.9006037293450873,
+          "kmin": 4,
+          "n_tail": 6052,
+          "ba_max_degree": 327,
+          "ba_mean_degree": 5.9988,
+          "min_degree": 3,
+          "er_max_degree": 16,
+          "er_mean_degree_achieved": 5.9986
+        },
+        {
+          "seed": 3,
+          "gamma_mle": 2.6723292321980665,
+          "gamma_ccdf": 2.906503369736158,
+          "kmin": 4,
+          "n_tail": 5984,
+          "ba_max_degree": 237,
+          "ba_mean_degree": 5.9988,
+          "min_degree": 3,
+          "er_max_degree": 17,
+          "er_mean_degree_achieved": 5.9998
+        },
+        {
+          "seed": 4,
+          "gamma_mle": 2.683203114338731,
+          "gamma_ccdf": 2.9231549979377904,
+          "kmin": 4,
+          "n_tail": 6013,
+          "ba_max_degree": 262,
+          "ba_mean_degree": 5.9988,
+          "min_degree": 3,
+          "er_max_degree": 17,
+          "er_mean_degree_achieved": 5.9744
+        }
+      ],
+      "degree_histogram": [
+        {
+          "degree": 3,
+          "count": 4003
+        },
+        {
+          "degree": 4,
+          "count": 2002
+        },
+        {
+          "degree": 5,
+          "count": 1138
+        },
+        {
+          "degree": 6,
+          "count": 736
+        },
+        {
+          "degree": 7,
+          "count": 453
+        },
+        {
+          "degree": 8,
+          "count": 321
+        },
+        {
+          "degree": 9,
+          "count": 249
+        },
+        {
+          "degree": 10,
+          "count": 177
+        },
+        {
+          "degree": 11,
+          "count": 142
+        },
+        {
+          "degree": 12,
+          "count": 99
+        },
+        {
+          "degree": 13,
+          "count": 80
+        },
+        {
+          "degree": 14,
+          "count": 85
+        },
+        {
+          "degree": 15,
+          "count": 51
+        },
+        {
+          "degree": 16,
+          "count": 59
+        },
+        {
+          "degree": 17,
+          "count": 41
+        },
+        {
+          "degree": 18,
+          "count": 32
+        },
+        {
+          "degree": 19,
+          "count": 31
+        },
+        {
+          "degree": 20,
+          "count": 36
+        },
+        {
+          "degree": 21,
+          "count": 22
+        },
+        {
+          "degree": 22,
+          "count": 27
+        },
+        {
+          "degree": 23,
+          "count": 13
+        },
+        {
+          "degree": 24,
+          "count": 18
+        },
+        {
+          "degree": 25,
+          "count": 13
+        },
+        {
+          "degree": 26,
+          "count": 12
+        },
+        {
+          "degree": 27,
+          "count": 10
+        },
+        {
+          "degree": 28,
+          "count": 9
+        },
+        {
+          "degree": 29,
+          "count": 10
+        },
+        {
+          "degree": 30,
+          "count": 7
+        },
+        {
+          "degree": 31,
+          "count": 7
+        },
+        {
+          "degree": 32,
+          "count": 4
+        },
+        {
+          "degree": 33,
+          "count": 5
+        },
+        {
+          "degree": 34,
+          "count": 3
+        },
+        {
+          "degree": 35,
+          "count": 4
+        },
+        {
+          "degree": 36,
+          "count": 8
+        },
+        {
+          "degree": 37,
+          "count": 7
+        },
+        {
+          "degree": 38,
+          "count": 7
+        },
+        {
+          "degree": 39,
+          "count": 5
+        },
+        {
+          "degree": 40,
+          "count": 2
+        },
+        {
+          "degree": 41,
+          "count": 4
+        },
+        {
+          "degree": 42,
+          "count": 2
+        },
+        {
+          "degree": 43,
+          "count": 3
+        },
+        {
+          "degree": 45,
+          "count": 2
+        },
+        {
+          "degree": 46,
+          "count": 3
+        },
+        {
+          "degree": 47,
+          "count": 2
+        },
+        {
+          "degree": 48,
+          "count": 1
+        },
+        {
+          "degree": 49,
+          "count": 1
+        },
+        {
+          "degree": 50,
+          "count": 6
+        },
+        {
+          "degree": 51,
+          "count": 4
+        },
+        {
+          "degree": 52,
+          "count": 1
+        },
+        {
+          "degree": 53,
+          "count": 3
+        },
+        {
+          "degree": 54,
+          "count": 2
+        },
+        {
+          "degree": 56,
+          "count": 1
+        },
+        {
+          "degree": 57,
+          "count": 1
+        },
+        {
+          "degree": 60,
+          "count": 1
+        },
+        {
+          "degree": 61,
+          "count": 2
+        },
+        {
+          "degree": 62,
+          "count": 1
+        },
+        {
+          "degree": 64,
+          "count": 5
+        },
+        {
+          "degree": 65,
+          "count": 1
+        },
+        {
+          "degree": 68,
+          "count": 1
+        },
+        {
+          "degree": 69,
+          "count": 1
+        },
+        {
+          "degree": 72,
+          "count": 1
+        },
+        {
+          "degree": 73,
+          "count": 1
+        },
+        {
+          "degree": 74,
+          "count": 1
+        },
+        {
+          "degree": 79,
+          "count": 1
+        },
+        {
+          "degree": 80,
+          "count": 1
+        },
+        {
+          "degree": 82,
+          "count": 1
+        },
+        {
+          "degree": 84,
+          "count": 1
+        },
+        {
+          "degree": 85,
+          "count": 1
+        },
+        {
+          "degree": 89,
+          "count": 1
+        },
+        {
+          "degree": 93,
+          "count": 1
+        },
+        {
+          "degree": 103,
+          "count": 1
+        },
+        {
+          "degree": 108,
+          "count": 1
+        },
+        {
+          "degree": 111,
+          "count": 1
+        },
+        {
+          "degree": 115,
+          "count": 1
+        },
+        {
+          "degree": 119,
+          "count": 1
+        },
+        {
+          "degree": 123,
+          "count": 1
+        },
+        {
+          "degree": 132,
+          "count": 1
+        },
+        {
+          "degree": 145,
+          "count": 1
+        },
+        {
+          "degree": 174,
+          "count": 1
+        },
+        {
+          "degree": 176,
+          "count": 1
+        },
+        {
+          "degree": 183,
+          "count": 1
+        },
+        {
+          "degree": 185,
+          "count": 1
+        },
+        {
+          "degree": 239,
+          "count": 1
+        },
+        {
+          "degree": 336,
+          "count": 1
+        }
+      ]
+    },
+    {
+      "m": 5,
+      "kmin": 6,
+      "gamma_mle_mean": 2.7850645604462634,
+      "gamma_mle_min": 2.774864111599221,
+      "gamma_mle_max": 2.798111731469831,
+      "gamma_mle_stdev": 0.008056075589189466,
+      "gamma_ccdf_mean": 2.9197326233946894,
+      "ba_max_degree_mean": 409.6,
+      "er_max_degree_mean": 24.8,
+      "ba_er_ratio_mean": 16.516129032258064,
+      "per_seed": [
+        {
+          "seed": 0,
+          "gamma_mle": 2.7817147722610462,
+          "gamma_ccdf": 2.9299017659899214,
+          "kmin": 6,
+          "n_tail": 7137,
+          "ba_max_degree": 383,
+          "ba_mean_degree": 9.997,
+          "min_degree": 5,
+          "er_max_degree": 26,
+          "er_mean_degree_achieved": 10.0376
+        },
+        {
+          "seed": 1,
+          "gamma_mle": 2.798111731469831,
+          "gamma_ccdf": 2.9167716001791595,
+          "kmin": 6,
+          "n_tail": 7216,
+          "ba_max_degree": 439,
+          "ba_mean_degree": 9.997,
+          "min_degree": 5,
+          "er_max_degree": 23,
+          "er_mean_degree_achieved": 9.9398
+        },
+        {
+          "seed": 2,
+          "gamma_mle": 2.774864111599221,
+          "gamma_ccdf": 2.9103092052926476,
+          "kmin": 6,
+          "n_tail": 7141,
+          "ba_max_degree": 336,
+          "ba_mean_degree": 9.997,
+          "min_degree": 5,
+          "er_max_degree": 27,
+          "er_mean_degree_achieved": 10.0004
+        },
+        {
+          "seed": 3,
+          "gamma_mle": 2.789724966464428,
+          "gamma_ccdf": 2.888512876175965,
+          "kmin": 6,
+          "n_tail": 7190,
+          "ba_max_degree": 437,
+          "ba_mean_degree": 9.997,
+          "min_degree": 5,
+          "er_max_degree": 25,
+          "er_mean_degree_achieved": 9.963
+        },
+        {
+          "seed": 4,
+          "gamma_mle": 2.7809072204367915,
+          "gamma_ccdf": 2.953167669335753,
+          "kmin": 6,
+          "n_tail": 7154,
+          "ba_max_degree": 453,
+          "ba_mean_degree": 9.997,
+          "min_degree": 5,
+          "er_max_degree": 23,
+          "er_mean_degree_achieved": 9.9696
+        }
+      ],
+      "degree_histogram": [
+        {
+          "degree": 5,
+          "count": 2863
+        },
+        {
+          "degree": 6,
+          "count": 1810
+        },
+        {
+          "degree": 7,
+          "count": 1173
+        },
+        {
+          "degree": 8,
+          "count": 848
+        },
+        {
+          "degree": 9,
+          "count": 633
+        },
+        {
+          "degree": 10,
+          "count": 432
+        },
+        {
+          "degree": 11,
+          "count": 336
+        },
+        {
+          "degree": 12,
+          "count": 252
+        },
+        {
+          "degree": 13,
+          "count": 221
+        },
+        {
+          "degree": 14,
+          "count": 188
+        },
+        {
+          "degree": 15,
+          "count": 121
+        },
+        {
+          "degree": 16,
+          "count": 131
+        },
+        {
+          "degree": 17,
+          "count": 93
+        },
+        {
+          "degree": 18,
+          "count": 85
+        },
+        {
+          "degree": 19,
+          "count": 63
+        },
+        {
+          "degree": 20,
+          "count": 74
+        },
+        {
+          "degree": 21,
+          "count": 51
+        },
+        {
+          "degree": 22,
+          "count": 55
+        },
+        {
+          "degree": 23,
+          "count": 49
+        },
+        {
+          "degree": 24,
+          "count": 35
+        },
+        {
+          "degree": 25,
+          "count": 40
+        },
+        {
+          "degree": 26,
+          "count": 37
+        },
+        {
+          "degree": 27,
+          "count": 23
+        },
+        {
+          "degree": 28,
+          "count": 21
+        },
+        {
+          "degree": 29,
+          "count": 25
+        },
+        {
+          "degree": 30,
+          "count": 29
+        },
+        {
+          "degree": 31,
+          "count": 23
+        },
+        {
+          "degree": 32,
+          "count": 19
+        },
+        {
+          "degree": 33,
+          "count": 10
+        },
+        {
+          "degree": 34,
+          "count": 8
+        },
+        {
+          "degree": 35,
+          "count": 12
+        },
+        {
+          "degree": 36,
+          "count": 9
+        },
+        {
+          "degree": 37,
+          "count": 12
+        },
+        {
+          "degree": 38,
+          "count": 9
+        },
+        {
+          "degree": 39,
+          "count": 13
+        },
+        {
+          "degree": 40,
+          "count": 9
+        },
+        {
+          "degree": 41,
+          "count": 10
+        },
+        {
+          "degree": 42,
+          "count": 8
+        },
+        {
+          "degree": 43,
+          "count": 11
+        },
+        {
+          "degree": 44,
+          "count": 3
+        },
+        {
+          "degree": 45,
+          "count": 8
+        },
+        {
+          "degree": 46,
+          "count": 6
+        },
+        {
+          "degree": 47,
+          "count": 8
+        },
+        {
+          "degree": 48,
+          "count": 10
+        },
+        {
+          "degree": 49,
+          "count": 7
+        },
+        {
+          "degree": 50,
+          "count": 5
+        },
+        {
+          "degree": 51,
+          "count": 6
+        },
+        {
+          "degree": 52,
+          "count": 4
+        },
+        {
+          "degree": 53,
+          "count": 2
+        },
+        {
+          "degree": 54,
+          "count": 5
+        },
+        {
+          "degree": 55,
+          "count": 3
+        },
+        {
+          "degree": 56,
+          "count": 3
+        },
+        {
+          "degree": 57,
+          "count": 2
+        },
+        {
+          "degree": 58,
+          "count": 2
+        },
+        {
+          "degree": 59,
+          "count": 4
+        },
+        {
+          "degree": 60,
+          "count": 4
+        },
+        {
+          "degree": 61,
+          "count": 3
+        },
+        {
+          "degree": 62,
+          "count": 1
+        },
+        {
+          "degree": 63,
+          "count": 2
+        },
+        {
+          "degree": 64,
+          "count": 3
+        },
+        {
+          "degree": 65,
+          "count": 2
+        },
+        {
+          "degree": 68,
+          "count": 2
+        },
+        {
+          "degree": 69,
+          "count": 1
+        },
+        {
+          "degree": 71,
+          "count": 3
+        },
+        {
+          "degree": 72,
+          "count": 1
+        },
+        {
+          "degree": 73,
+          "count": 4
+        },
+        {
+          "degree": 74,
+          "count": 1
+        },
+        {
+          "degree": 75,
+          "count": 1
+        },
+        {
+          "degree": 76,
+          "count": 1
+        },
+        {
+          "degree": 77,
+          "count": 2
+        },
+        {
+          "degree": 78,
+          "count": 3
+        },
+        {
+          "degree": 79,
+          "count": 3
+        },
+        {
+          "degree": 81,
+          "count": 1
+        },
+        {
+          "degree": 82,
+          "count": 3
+        },
+        {
+          "degree": 83,
+          "count": 1
+        },
+        {
+          "degree": 89,
+          "count": 1
+        },
+        {
+          "degree": 91,
+          "count": 1
+        },
+        {
+          "degree": 92,
+          "count": 1
+        },
+        {
+          "degree": 93,
+          "count": 1
+        },
+        {
+          "degree": 102,
+          "count": 2
+        },
+        {
+          "degree": 104,
+          "count": 1
+        },
+        {
+          "degree": 107,
+          "count": 1
+        },
+        {
+          "degree": 109,
+          "count": 1
+        },
+        {
+          "degree": 110,
+          "count": 1
+        },
+        {
+          "degree": 111,
+          "count": 1
+        },
+        {
+          "degree": 113,
+          "count": 1
+        },
+        {
+          "degree": 121,
+          "count": 1
+        },
+        {
+          "degree": 127,
+          "count": 2
+        },
+        {
+          "degree": 135,
+          "count": 1
+        },
+        {
+          "degree": 137,
+          "count": 2
+        },
+        {
+          "degree": 138,
+          "count": 2
+        },
+        {
+          "degree": 140,
+          "count": 1
+        },
+        {
+          "degree": 141,
+          "count": 1
+        },
+        {
+          "degree": 146,
+          "count": 2
+        },
+        {
+          "degree": 155,
+          "count": 1
+        },
+        {
+          "degree": 165,
+          "count": 1
+        },
+        {
+          "degree": 167,
+          "count": 1
+        },
+        {
+          "degree": 172,
+          "count": 1
+        },
+        {
+          "degree": 173,
+          "count": 1
+        },
+        {
+          "degree": 191,
+          "count": 1
+        },
+        {
+          "degree": 203,
+          "count": 1
+        },
+        {
+          "degree": 213,
+          "count": 1
+        },
+        {
+          "degree": 225,
+          "count": 1
+        },
+        {
+          "degree": 273,
+          "count": 1
+        },
+        {
+          "degree": 276,
+          "count": 1
+        },
+        {
+          "degree": 303,
+          "count": 1
+        },
+        {
+          "degree": 326,
+          "count": 1
+        },
+        {
+          "degree": 344,
+          "count": 1
+        },
+        {
+          "degree": 383,
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": false,
+      "gate": "P1 fitted gamma(m=3) in [2.7, 3.3] (power-law tail, gamma~3)",
+      "salient_number": [
+        2.6808,
+        2.7
+      ],
+      "reasons": [
+        "gamma_mle(m=3) mean=2.6808 (range [2.6723, 2.6938], kmin=4) outside [2.7, 3.3]"
+      ]
+    },
+    {
+      "label": "P2",
+      "passed": false,
+      "gate": "P2 gamma(m=1,3,5) all in [2.5, 3.5] (exponent ~ m-independent)",
+      "salient_number": [
+        2.3881,
+        2.5
+      ],
+      "reasons": [
+        "gamma_mle means by m: m=1:2.3881, m=3:2.6808, m=5:2.7851; out of [2.5, 3.5]: {1: 2.3881}"
+      ]
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 BA max degree >= 3x ER max degree at equal mean degree (hubs)",
+      "salient_number": [
+        17.723,
+        3.0
+      ],
+      "reasons": []
+    }
+  ]
+}

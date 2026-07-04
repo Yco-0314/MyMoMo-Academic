@@ -1,0 +1,105 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Punctuated equilibrium and criticality in a simple model of evolution",
+    "authors": [
+      "Per Bak",
+      "Kim Sneppen"
+    ],
+    "year": 1993,
+    "journal": "Physical Review Letters 71(24):4083-4086",
+    "doi": "10.1103/PhysRevLett.71.4083"
+  },
+  "headline": "Bak-Sneppen 1993 (extremal dynamics / SOC, disclosed not agent-stepping): 3/3 locked clauses REPRO; stationary cutoff f_c=0.648 (canonical ~0.667), avalanches span 5.0 decades, 193 punctuating dips below f_c",
+  "code_commit": "faab4405601bdbae9ae61f8f17d1ea6e3dd46e16",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 stationary lower cutoff f_c in [0.60, 0.72] (SOC threshold ~0.667)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.6482,
+        0.72
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 avalanche-size distribution heavy-tailed (>= 2 decades)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        4.967,
+        2.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 punctuated equilibrium (running min repeatedly dips below + recovers above f_c)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        193.0,
+        10.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/bak-sneppen/results.json",
+      "sha256": "b42485934a3009170a61ab9526828bd444f2a6f281cfae88228e371b8148038b",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/bak-sneppen/PREDICTIONS-locked.md",
+      "sha256": "ae5b188c2481170f71659463c2f0c03d535f4c6ae84232e1d14ef97e506c34d2",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/bak-sneppen/FINDINGS.md",
+      "sha256": "09338c749fc20a7e9649450ef29600aadd0e43409f32ab890330a1b49b49daa6",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveA-design.md",
+      "sha256": "e43b07a40ac65baa1c4ac23cd98ea8f1c33dfc09492958c894f155047f3d6ecd",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "bak-sneppen-1993",
+    "N": 200,
+    "transient": 100000,
+    "n_steps": 1000000,
+    "seed": 0,
+    "f_c": 0.648204,
+    "canonical_f_c": 0.667,
+    "framing": "extremal dynamics / SOC; model-orchestrated global-min selection, NOT autonomous-agent-stepping (disclosed)",
+    "scope": "faithful reproduction of a published synthetic SOC model; no real-world data; the contribution is whether the harness + discipline reproduce the SOC threshold + power-law avalanches and would catch an artifact"
+  },
+  "citations": [
+    "Bak, P. & Sneppen, K. (1993). Punctuated equilibrium and criticality in a simple model of evolution. Phys. Rev. Lett. 71(24):4083-4086. doi:10.1103/PhysRevLett.71.4083.",
+    "Paczuski, M., Maslov, S. & Bak, P. (1996). Avalanche dynamics in evolution, growth, and depinning models. Phys. Rev. E 53:414-443. doi:10.1103/PhysRevE.53.414 (the f0-avalanche definition used here; f_c ~ 0.6670 for the 1D nearest-neighbour model)."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction. Literature anchors: stationary fitnesses ~uniform on (f_c, 1) with f_c ~ 0.667, power-law f0-avalanches, punctuated intermittent activity (Bak & Sneppen 1993; Paczuski-Maslov-Bak 1996)."
+  }
+}

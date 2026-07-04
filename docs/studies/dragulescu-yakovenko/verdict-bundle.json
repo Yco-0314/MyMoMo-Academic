@@ -1,0 +1,110 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Statistical mechanics of money",
+    "authors": [
+      "Adrian Dragulescu",
+      "Victor M. Yakovenko"
+    ],
+    "year": 2000,
+    "journal": "European Physical Journal B 17:723-729",
+    "doi": "10.1007/s100510070114"
+  },
+  "headline": "Dragulescu-Yakovenko 2000 (agent-based): 3/3 locked clauses REPRO; stationary P(m) exponential (loglin R^2=1.000, fitted T=100.1 vs <m>=100); Gini=0.500, CV=1.000 (exponential fixed point); money conserved to |dM|/M=4.7e-16",
+  "code_commit": "bc6806d1a2b1fef51a3333e61e96fc2ad6d00d13",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 stationary P(m) is exponential (Boltzmann-Gibbs): loglin R^2>=0.95, slope~1/<m>, mode in lowest bin, exp AIC < power-law AIC (not interior-peaked)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.95
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 inequality at the exponential fixed point: Gini = 0.50+-0.03 AND CV = 1.0+-0.1",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.4999,
+        0.5
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 money conserved (|dM|/M<1e-9, min money>=0) and fitted T within 10% of <m>",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        4.657e-16,
+        1e-09
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/dragulescu-yakovenko/results.json",
+      "sha256": "22da7da619cd98bd8112e2a1b525c7e28df67531324f3c1a494ca2b09f436657",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/dragulescu-yakovenko/PREDICTIONS-locked.md",
+      "sha256": "4cf344677c42e887b15ad256c4cda762d2446982397040022e72e2b1d60568c4",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/dragulescu-yakovenko/FINDINGS.md",
+      "sha256": "1c64341f3c009fb9644ee0098b8be4bca998c488302a4d74125bde16bd26da74",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "dragulescu-yakovenko-2000",
+    "n": 5000,
+    "mean_money": 100.0,
+    "n_seeds": 20,
+    "n_sweeps": 5000,
+    "burn_in_frac": 0.5,
+    "saving_propensity_lambda": 0.0,
+    "mean_stationary_gini": 0.4999415738388652,
+    "mean_stationary_cv": 0.9998272831676533,
+    "fit_r2": 0.999976734851174,
+    "fit_temperature": 100.05965155637477,
+    "aic_exp_preferred": true,
+    "mode_frac_of_mean": 0.075,
+    "max_rel_dM": 4.656612873077392e-16,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the universal exponential (Boltzmann-Gibbs) money distribution with Gini=0.5, and would catch a saving-propensity (peaked-Gamma) artifact"
+  },
+  "citations": [
+    "Dragulescu, A. & Yakovenko, V.M. (2000). Statistical mechanics of money. European Physical Journal B 17:723-729. doi:10.1007/s100510070114."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the exponential-shape fit, Gini/CV at the fixed point, and money conservation"
+  }
+}

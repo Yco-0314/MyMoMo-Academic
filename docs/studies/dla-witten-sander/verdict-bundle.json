@@ -1,0 +1,103 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Diffusion-limited aggregation, a kinetic critical phenomenon",
+    "authors": [
+      "T. A. Witten",
+      "L. M. Sander"
+    ],
+    "year": 1981,
+    "journal": "Phys. Rev. Lett. 47(19):1400-1403",
+    "doi": "10.1103/PhysRevLett.47.1400"
+  },
+  "headline": "Witten-Sander 1981 DLA (on-lattice): 2/3 locked clauses REPRO; mean fractal dimension D=1.660 (band [1.55,1.90]), outer-shell attachment 0.10",
+  "code_commit": "bbccb6bf1bec826769792d25b0aa2621bb5da67c",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 fractal mass dimension D in [1.55, 1.90] (target ~1.66-1.71)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.6597,
+        1.55
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 fractal not compact: D <= 1.85 AND interior density decreasing",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.6597,
+        1.85
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 tip-screening: outer-shell (r>0.75 R) attachment fraction >= 0.60",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.0978,
+        0.6
+      ],
+      "reasons": [
+        "mean outer-shell attachment fraction = 0.0978 (need >= 0.6)"
+      ],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/dla-witten-sander/results.json",
+      "sha256": "59763f917e934894901ce9bbbccd5acea5afba88693ca01503f55f846470ed25",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/dla-witten-sander/PREDICTIONS-locked.md",
+      "sha256": "5dd7e564e705c5c925ef8d175f58966d63a9fbee12f77ddb14444cc076ec4b66",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/dla-witten-sander/FINDINGS.md",
+      "sha256": "2645630383343f74547fbb98fe3ffba2b4c73afa1bd6c0123ec80e5a12f09055",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "witten-sander-1981-dla",
+    "n_particles": 6000,
+    "n_seeds": 4,
+    "mean_D": 1.6597455796044795,
+    "framing": "on-lattice random-walk particles (agent-based); square-lattice geometry disclosed (mild anisotropy, D~1.67-1.71 at accessible size)",
+    "scope": "faithful reproduction of the DLA fractal-dimension + tip-screening claims"
+  },
+  "citations": [
+    "Witten, T.A. & Sander, L.M. (1981). Diffusion-limited aggregation, a kinetic critical phenomenon. Phys. Rev. Lett. 47(19):1400-1403. doi:10.1103/PhysRevLett.47.1400."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the mass-dimension + tip-screening signatures"
+  }
+}

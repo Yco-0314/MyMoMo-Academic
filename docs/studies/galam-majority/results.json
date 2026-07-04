@@ -1,0 +1,5026 @@
+{
+  "model": "galam-majority-rule (agent-based)",
+  "config": {
+    "N": 10001,
+    "n_seeds": 20,
+    "max_steps": 1000,
+    "tie_rule": "g=4: 2-2 tie -> UP (fixed prejudice)",
+    "g3_p0_grid": [
+      0.4,
+      0.42,
+      0.44,
+      0.45,
+      0.46,
+      0.48,
+      0.5,
+      0.52,
+      0.54,
+      0.55,
+      0.56,
+      0.6
+    ],
+    "g4_p0_grid": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.22,
+      0.24,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55
+    ],
+    "tip_threshold": 0.5,
+    "leftover_convention": "N mod g agents unchanged that step",
+    "rule": "shuffle -> chunk into groups of g -> each group adopts local majority -> reshuffle"
+  },
+  "measured_tipping_points": {
+    "g3": 0.5,
+    "g4_ties_up": 0.24,
+    "galam_g3": 0.5,
+    "galam_g4_canonical": 0.23
+  },
+  "g3_sweep": [
+    {
+      "p0": 0.4,
+      "g": 3,
+      "p_all_up": 0.0,
+      "p_all_down": 1.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 7.05,
+      "max_steps_used": 8,
+      "mean_final_up_fraction": 0.0,
+      "n_all_up": 0,
+      "n_all_down": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 1,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 2,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 3,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 4,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 5,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 6,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 7,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 8,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 9,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 10,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 11,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 12,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 13,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 14,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 15,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 16,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 17,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 18,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 19,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        }
+      ]
+    },
+    {
+      "p0": 0.42,
+      "g": 3,
+      "p_all_up": 0.0,
+      "p_all_down": 1.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 7.8,
+      "max_steps_used": 8,
+      "mean_final_up_fraction": 0.0,
+      "n_all_up": 0,
+      "n_all_down": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 1,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 2,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 3,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 4,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 5,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 6,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 7,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 8,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 9,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 10,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 11,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 12,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 13,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 14,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 15,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 16,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 17,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 18,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 19,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        }
+      ]
+    },
+    {
+      "p0": 0.44,
+      "g": 3,
+      "p_all_up": 0.0,
+      "p_all_down": 1.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 8.6,
+      "max_steps_used": 9,
+      "mean_final_up_fraction": 0.0,
+      "n_all_up": 0,
+      "n_all_down": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 1,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 2,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 3,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 4,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 5,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 6,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 7,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 8,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 9,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 10,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 11,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 12,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 13,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 14,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 15,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 16,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 17,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 18,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 19,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        }
+      ]
+    },
+    {
+      "p0": 0.45,
+      "g": 3,
+      "p_all_up": 0.0,
+      "p_all_down": 1.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 8.9,
+      "max_steps_used": 9,
+      "mean_final_up_fraction": 0.0,
+      "n_all_up": 0,
+      "n_all_down": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 1,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 2,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 3,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 4,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 5,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 6,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 7,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 8,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 9,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 10,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 11,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 12,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 13,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 14,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 15,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 16,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 17,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 18,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 19,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        }
+      ]
+    },
+    {
+      "p0": 0.46,
+      "g": 3,
+      "p_all_up": 0.0,
+      "p_all_down": 1.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 9.4,
+      "max_steps_used": 10,
+      "mean_final_up_fraction": 0.0,
+      "n_all_up": 0,
+      "n_all_down": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 1,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 10
+        },
+        {
+          "seed": 2,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 10
+        },
+        {
+          "seed": 3,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 10
+        },
+        {
+          "seed": 4,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 5,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 6,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 7,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 10
+        },
+        {
+          "seed": 8,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 9,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 10
+        },
+        {
+          "seed": 10,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 11,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 12,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 13,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 14,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 15,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 10
+        },
+        {
+          "seed": 16,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 17,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 18,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 10
+        },
+        {
+          "seed": 19,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 10
+        }
+      ]
+    },
+    {
+      "p0": 0.48,
+      "g": 3,
+      "p_all_up": 0.0,
+      "p_all_down": 1.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 11.45,
+      "max_steps_used": 13,
+      "mean_final_up_fraction": 0.0,
+      "n_all_up": 0,
+      "n_all_down": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 11
+        },
+        {
+          "seed": 1,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 13
+        },
+        {
+          "seed": 2,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 13
+        },
+        {
+          "seed": 3,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 12
+        },
+        {
+          "seed": 4,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 12
+        },
+        {
+          "seed": 5,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 12
+        },
+        {
+          "seed": 6,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 11
+        },
+        {
+          "seed": 7,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 12
+        },
+        {
+          "seed": 8,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 12
+        },
+        {
+          "seed": 9,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 11
+        },
+        {
+          "seed": 10,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 10
+        },
+        {
+          "seed": 11,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 12
+        },
+        {
+          "seed": 12,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 11
+        },
+        {
+          "seed": 13,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 11
+        },
+        {
+          "seed": 14,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 11
+        },
+        {
+          "seed": 15,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 11
+        },
+        {
+          "seed": 16,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 10
+        },
+        {
+          "seed": 17,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 11
+        },
+        {
+          "seed": 18,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 11
+        },
+        {
+          "seed": 19,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 12
+        }
+      ]
+    },
+    {
+      "p0": 0.5,
+      "g": 3,
+      "p_all_up": 0.7,
+      "p_all_down": 0.3,
+      "p_consensus": 1.0,
+      "p_monotone": 0.6,
+      "p_flows_away": 1.0,
+      "mean_steps": 15.45,
+      "max_steps_used": 19,
+      "mean_final_up_fraction": 0.7,
+      "n_all_up": 14,
+      "n_all_down": 6,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 17
+        },
+        {
+          "seed": 1,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 15
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 13
+        },
+        {
+          "seed": 3,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 14
+        },
+        {
+          "seed": 4,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 14
+        },
+        {
+          "seed": 5,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 19
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 14
+        },
+        {
+          "seed": 7,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 16
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 17
+        },
+        {
+          "seed": 9,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 17
+        },
+        {
+          "seed": 10,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 15
+        },
+        {
+          "seed": 11,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 16
+        },
+        {
+          "seed": 12,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 15
+        },
+        {
+          "seed": 13,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 15
+        },
+        {
+          "seed": 14,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 15
+        },
+        {
+          "seed": 15,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 15
+        },
+        {
+          "seed": 16,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 14
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 18
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 17
+        },
+        {
+          "seed": 19,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 13
+        }
+      ]
+    },
+    {
+      "p0": 0.52,
+      "g": 3,
+      "p_all_up": 1.0,
+      "p_all_down": 0.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 10.95,
+      "max_steps_used": 12,
+      "mean_final_up_fraction": 1.0,
+      "n_all_up": 20,
+      "n_all_down": 0,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 1,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 3,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 4,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 5,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 7,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 9,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 10,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 11,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 12,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 12
+        },
+        {
+          "seed": 13,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 12
+        },
+        {
+          "seed": 14,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 15,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 16,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 12
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 12
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 19,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        }
+      ]
+    },
+    {
+      "p0": 0.54,
+      "g": 3,
+      "p_all_up": 1.0,
+      "p_all_down": 0.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 9.25,
+      "max_steps_used": 10,
+      "mean_final_up_fraction": 1.0,
+      "n_all_up": 20,
+      "n_all_down": 0,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 1,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 3,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 4,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 5,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 7,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 9,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 10,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 11,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 12,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 13,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 14,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 15,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 16,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 19,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        }
+      ]
+    },
+    {
+      "p0": 0.55,
+      "g": 3,
+      "p_all_up": 1.0,
+      "p_all_down": 0.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 8.75,
+      "max_steps_used": 10,
+      "mean_final_up_fraction": 1.0,
+      "n_all_up": 20,
+      "n_all_down": 0,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 1,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 3,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 4,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 5,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 7,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 9,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 10,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 11,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 12,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 13,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 14,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 15,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 16,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 19,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        }
+      ]
+    },
+    {
+      "p0": 0.56,
+      "g": 3,
+      "p_all_up": 1.0,
+      "p_all_down": 0.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 8.3,
+      "max_steps_used": 9,
+      "mean_final_up_fraction": 1.0,
+      "n_all_up": 20,
+      "n_all_down": 0,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 1,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 3,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 4,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 5,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 7,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 9,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 10,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 11,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 12,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 13,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 14,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 15,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 16,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 19,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        }
+      ]
+    },
+    {
+      "p0": 0.6,
+      "g": 3,
+      "p_all_up": 1.0,
+      "p_all_down": 0.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 7.2,
+      "max_steps_used": 8,
+      "mean_final_up_fraction": 1.0,
+      "n_all_up": 20,
+      "n_all_down": 0,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 1,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 3,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 4,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 5,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 7,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 9,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 10,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 11,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 12,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 13,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 14,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 15,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 16,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 19,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        }
+      ]
+    }
+  ],
+  "g4_sweep": [
+    {
+      "p0": 0.05,
+      "g": 4,
+      "p_all_up": 0.0,
+      "p_all_down": 1.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 2.85,
+      "max_steps_used": 3,
+      "mean_final_up_fraction": 0.0,
+      "n_all_up": 0,
+      "n_all_down": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 1,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 2,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 3,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 4,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 5,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 6,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 7,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 8,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 2
+        },
+        {
+          "seed": 9,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 10,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 11,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 12,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 13,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 14,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 2
+        },
+        {
+          "seed": 15,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 16,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 17,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 18,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 2
+        },
+        {
+          "seed": 19,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        }
+      ]
+    },
+    {
+      "p0": 0.1,
+      "g": 4,
+      "p_all_up": 0.0,
+      "p_all_down": 1.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 3.95,
+      "max_steps_used": 4,
+      "mean_final_up_fraction": 0.0,
+      "n_all_up": 0,
+      "n_all_down": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 1,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 2,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 3,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 4,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 5,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 6,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 7,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 3
+        },
+        {
+          "seed": 8,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 9,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 10,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 11,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 12,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 13,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 14,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 15,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 16,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 17,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 18,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        },
+        {
+          "seed": 19,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 4
+        }
+      ]
+    },
+    {
+      "p0": 0.15,
+      "g": 4,
+      "p_all_up": 0.0,
+      "p_all_down": 1.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 5.05,
+      "max_steps_used": 6,
+      "mean_final_up_fraction": 0.0,
+      "n_all_up": 0,
+      "n_all_down": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 1,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 2,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 3,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 4,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 6
+        },
+        {
+          "seed": 5,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 6,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 7,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 8,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 9,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 10,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 11,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 12,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 13,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 14,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 15,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 16,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 17,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 18,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        },
+        {
+          "seed": 19,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 5
+        }
+      ]
+    },
+    {
+      "p0": 0.2,
+      "g": 4,
+      "p_all_up": 0.0,
+      "p_all_down": 1.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 7.15,
+      "max_steps_used": 8,
+      "mean_final_up_fraction": 0.0,
+      "n_all_up": 0,
+      "n_all_down": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 1,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 2,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 3,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 4,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 5,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 6,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 7,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 8,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 9,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 10,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 11,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 12,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 13,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 14,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 15,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 16,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 17,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 18,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        },
+        {
+          "seed": 19,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 7
+        }
+      ]
+    },
+    {
+      "p0": 0.22,
+      "g": 4,
+      "p_all_up": 0.0,
+      "p_all_down": 1.0,
+      "p_consensus": 1.0,
+      "p_monotone": 0.95,
+      "p_flows_away": 1.0,
+      "mean_steps": 9.45,
+      "max_steps_used": 15,
+      "mean_final_up_fraction": 0.0,
+      "n_all_up": 0,
+      "n_all_down": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 1,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 15
+        },
+        {
+          "seed": 2,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 3,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 4,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 5,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 6,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 10
+        },
+        {
+          "seed": 7,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 8,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 11
+        },
+        {
+          "seed": 9,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 10
+        },
+        {
+          "seed": 10,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 11,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 10
+        },
+        {
+          "seed": 12,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 13,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 14,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 15,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 8
+        },
+        {
+          "seed": 16,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 10
+        },
+        {
+          "seed": 17,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 18,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        },
+        {
+          "seed": 19,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 9
+        }
+      ]
+    },
+    {
+      "p0": 0.24,
+      "g": 4,
+      "p_all_up": 0.9,
+      "p_all_down": 0.1,
+      "p_consensus": 1.0,
+      "p_monotone": 0.85,
+      "p_flows_away": 1.0,
+      "mean_steps": 11.55,
+      "max_steps_used": 22,
+      "mean_final_up_fraction": 0.9,
+      "n_all_up": 18,
+      "n_all_down": 2,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 12
+        },
+        {
+          "seed": 1,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 12
+        },
+        {
+          "seed": 3,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 4,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 5,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 12
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 7,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 9,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 10,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 11,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 12
+        },
+        {
+          "seed": 12,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 15
+        },
+        {
+          "seed": 13,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 14,
+          "consensus": 0,
+          "consensus_reached": true,
+          "all_up": false,
+          "all_down": true,
+          "final_up_fraction": 0.0,
+          "steps": 22
+        },
+        {
+          "seed": 15,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 12
+        },
+        {
+          "seed": 16,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 11
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 19,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 12
+        }
+      ]
+    },
+    {
+      "p0": 0.25,
+      "g": 4,
+      "p_all_up": 1.0,
+      "p_all_down": 0.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 9.1,
+      "max_steps_used": 10,
+      "mean_final_up_fraction": 1.0,
+      "n_all_up": 20,
+      "n_all_down": 0,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 1,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 3,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 4,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 5,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 7,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 9,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 10,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 11,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 12,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 13,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 8
+        },
+        {
+          "seed": 14,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 15,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 10
+        },
+        {
+          "seed": 16,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        },
+        {
+          "seed": 19,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 9
+        }
+      ]
+    },
+    {
+      "p0": 0.3,
+      "g": 4,
+      "p_all_up": 1.0,
+      "p_all_down": 0.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 6.2,
+      "max_steps_used": 7,
+      "mean_final_up_fraction": 1.0,
+      "n_all_up": 20,
+      "n_all_down": 0,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 1,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 3,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 4,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 5,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 7,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 9,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 10,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 11,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 12,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 13,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 14,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 15,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 16,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 7
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 19,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        }
+      ]
+    },
+    {
+      "p0": 0.35,
+      "g": 4,
+      "p_all_up": 1.0,
+      "p_all_down": 0.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 5.2,
+      "max_steps_used": 6,
+      "mean_final_up_fraction": 1.0,
+      "n_all_up": 20,
+      "n_all_down": 0,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 1,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 3,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 4,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 5,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 7,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 9,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 10,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 11,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 12,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 13,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 14,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 15,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 16,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 6
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 19,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        }
+      ]
+    },
+    {
+      "p0": 0.4,
+      "g": 4,
+      "p_all_up": 1.0,
+      "p_all_down": 0.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 4.9,
+      "max_steps_used": 5,
+      "mean_final_up_fraction": 1.0,
+      "n_all_up": 20,
+      "n_all_down": 0,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 1,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 3,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 4,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 5,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 7,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 9,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 10,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 11,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 12,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 13,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 14,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 15,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 16,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 19,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        }
+      ]
+    },
+    {
+      "p0": 0.45,
+      "g": 4,
+      "p_all_up": 1.0,
+      "p_all_down": 0.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 4.25,
+      "max_steps_used": 5,
+      "mean_final_up_fraction": 1.0,
+      "n_all_up": 20,
+      "n_all_down": 0,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 1,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 3,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 4,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 5,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 7,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 9,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 10,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 11,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 12,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 13,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 14,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 15,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 16,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 19,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        }
+      ]
+    },
+    {
+      "p0": 0.5,
+      "g": 4,
+      "p_all_up": 1.0,
+      "p_all_down": 0.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 4.05,
+      "max_steps_used": 5,
+      "mean_final_up_fraction": 1.0,
+      "n_all_up": 20,
+      "n_all_down": 0,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 1,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 3,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 4,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 5,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 7,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 9,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 10,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 11,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 12,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 13,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 14,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 15,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 16,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 5
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 19,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        }
+      ]
+    },
+    {
+      "p0": 0.55,
+      "g": 4,
+      "p_all_up": 1.0,
+      "p_all_down": 0.0,
+      "p_consensus": 1.0,
+      "p_monotone": 1.0,
+      "p_flows_away": 1.0,
+      "mean_steps": 3.85,
+      "max_steps_used": 4,
+      "mean_final_up_fraction": 1.0,
+      "n_all_up": 20,
+      "n_all_down": 0,
+      "per_seed": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 1,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 3,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 4,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 5,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 7,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 9,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 10,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 3
+        },
+        {
+          "seed": 11,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 12,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 13,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 14,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 3
+        },
+        {
+          "seed": 15,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 16,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 3
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        },
+        {
+          "seed": 19,
+          "consensus": 1,
+          "consensus_reached": true,
+          "all_up": true,
+          "all_down": false,
+          "final_up_fraction": 1.0,
+          "steps": 4
+        }
+      ]
+    }
+  ],
+  "trajectories": {
+    "g3_p0_0.45_seed0": [
+      0.448455,
+      0.426057,
+      0.392061,
+      0.332667,
+      0.260174,
+      0.164684,
+      0.070593,
+      0.017098,
+      0.0012,
+      0.0
+    ],
+    "g3_p0_0.55_seed0": [
+      0.548345,
+      0.576942,
+      0.616138,
+      0.674333,
+      0.753625,
+      0.847815,
+      0.940206,
+      0.990401,
+      0.9997,
+      1.0
+    ],
+    "g4_p0_0.45_seed0": [
+      0.448455,
+      0.606039,
+      0.821518,
+      0.982402,
+      1.0
+    ]
+  },
+  "p3_no_interior_fixed_point": {
+    "flows_away_fraction": 1.0,
+    "n_flows_away": 500,
+    "n_total": 500,
+    "monotone_fraction_away_from_pc": 1.0,
+    "n_mono_away": 360,
+    "n_total_away": 360,
+    "monotone_fraction_overall": 0.976,
+    "note": "P3 graded on flows_away (every trajectory ends at 0/1 -> no interior stable fixed point); monotone fraction reported as supporting evidence"
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 g=3 majority rule: consensus + initial majority wins (tipping at 0.5)",
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 g=4 (ties->up): up-tipping point p_c < 0.5 (minority spreading)",
+      "salient_number": [
+        0.24,
+        0.5
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 no interior stable fixed point (every trajectory flows to 0 or 1)",
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": []
+    }
+  ]
+}

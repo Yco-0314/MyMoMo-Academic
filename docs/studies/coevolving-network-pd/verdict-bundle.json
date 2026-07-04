@@ -1,0 +1,122 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Cooperation prevails when individuals adjust their social ties",
+    "authors": [
+      "Francisco C. Santos",
+      "Jorge M. Pacheco",
+      "Tom Lenaerts"
+    ],
+    "year": 2006,
+    "journal": "PLoS Computational Biology 2(10):e140",
+    "doi": "10.1371/journal.pcbi.0020140"
+  },
+  "headline": "Santos-Pacheco-Lenaerts 2006 coevolving-network PD (agent-based): 1/3 locked clauses REPRO; b/c=2 static graph collapses (coop=0.000 at W=0) while adaptive rewiring rescues cooperation (coop=0.630 at W=16)",
+  "code_commit": "d0e950b0287688a85114ab2736e05d6838a9e4de",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 static graph (W=0) collapses: mean steady cooperation < 0.05 at b/c=2 on the homogeneous random graph",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 coevolution prevails (W=16): mean steady cooperation > 0.80 AND enhancement over the static graph > 0.6",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.6302,
+        0.8
+      ],
+      "reasons": [
+        "W=16 mean steady cooperation = 0.6302 (need > 0.8); enhancement over W=0 = 0.6302 (need > 0.6)"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P3 monotone W-dependence with a threshold: coop(16)-coop(0.5) > 0.5, coop(0.5) < 0.2, coop(16) > 0.7",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.6302,
+        0.5
+      ],
+      "reasons": [
+        "coop(W=16)-coop(W=0.5) = 0.6302 (need > 0.5); coop(W=0.5) = 0.0000 (need < 0.2); coop(W=16) = 0.6302 (need > 0.7)"
+      ],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/coevolving-network-pd/results.json",
+      "sha256": "9b63ed92fe10226e288cef756152be807c3a48444588939b2a9addbfbf8c6a16",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/coevolving-network-pd/PREDICTIONS-locked.md",
+      "sha256": "878195a821313ad89b8bb061530d022b472c69015ce4659dc98ded2a18698e79",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/coevolving-network-pd/FINDINGS.md",
+      "sha256": "9bf168468a0034b215eb364ed76522713645d3f67bbd316fac80806ac3d9d1b3",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "santos-pacheco-lenaerts-2006-coevolving-network-pd",
+    "n": 1000,
+    "z": 30,
+    "n_edges": 15000,
+    "T": 2.0,
+    "R": 1.0,
+    "P": 0.0,
+    "S": -1.0,
+    "b_over_c": 2.0,
+    "beta": 0.005,
+    "W_grid": [
+      0.0,
+      0.5,
+      16.0
+    ],
+    "n_seeds": 20,
+    "n_generations": 3000,
+    "measure_last": 300,
+    "coop_W0": 0.0,
+    "coop_W0p5": 0.0,
+    "coop_W16": 0.6301500000000007,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the coevolution-rescues-cooperation effect (and isolate rewiring as its cause via the W=0 control), and would catch an artifact. Framing: network-generation + adaptive rewiring (disclosed)."
+  },
+  "citations": [
+    "Santos, F.C., Pacheco, J.M. & Lenaerts, T. (2006). Cooperation prevails when individuals adjust their social ties. PLoS Computational Biology 2(10):e140. doi:10.1371/journal.pcbi.0020140."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the steady-state cooperator fraction versus the timescale ratio W"
+  }
+}

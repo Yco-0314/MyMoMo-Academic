@@ -1,0 +1,117 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Mixing beliefs among interacting agents",
+    "authors": [
+      "Guillaume Deffuant",
+      "David Neau",
+      "Frederic Amblard",
+      "Gerard Weisbuch"
+    ],
+    "year": 2000,
+    "journal": "Advances in Complex Systems 3:87-98"
+  },
+  "headline": "Deffuant 2000 (agent-based): 2/3 locked clauses REPRO; major #clusters track floor(1/(2eps)); mu sets convergence time not #clusters",
+  "code_commit": "0af71a9a1600524fe3c9b37dc545a13450c052ff",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 (locked TOTAL #clusters) ~ floor(1/(2eps)) within +-1 for eps in {0.1,0.15,0.2,0.3}",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        2.8,
+        1.0
+      ],
+      "reasons": [
+        "eps=0.1: mean TOTAL #clusters=6.60 (pred \u230a1/(2eps)\u230b=5, |diff|=1.60 > 1); eps=0.15: mean TOTAL #clusters=4.30 (pred \u230a1/(2eps)\u230b=3, |diff|=1.30 > 1); eps=0.2: mean TOTAL #clusters=3.40 (pred \u230a1/(2eps)\u230b=2, |diff|=1.40 > 1); eps=0.3: mean TOTAL #clusters=3.80 (pred \u230a1/(2eps)\u230b=1, |diff|=2.80 > 1)"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P2 consensus (exactly 1 cluster) at eps=0.5",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 TOTAL #clusters(mu=0.1)==#clusters(mu=0.5) at eps=0.2; mu sets speed only",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        3.0,
+        3.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/deffuant-bounded-confidence/results.json",
+      "sha256": "06055d97ea8565b2e39879bb396816ef5e249f0d1b618d65755cd47b0940c2dc",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/deffuant-bounded-confidence/PREDICTIONS-locked.md",
+      "sha256": "445cdc5e6f307399b1de0808978577350e6d58d0c26cd992cb2a89b04d55ec47",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/deffuant-bounded-confidence/FINDINGS.md",
+      "sha256": "55440d3c9ad591f552e192b2b9a3e9ceaefae1cff501fd1c30cfe1abe37121ed",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch2-design.md",
+      "sha256": "8b389d27a3cbd667288cac113043396a73cccbf006703c4d07ccd3627ace7e0c",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "deffuant-2000-bounded-confidence",
+    "n": 1000,
+    "eps_grid": [
+      0.1,
+      0.15,
+      0.2,
+      0.3,
+      0.5
+    ],
+    "mu": 0.5,
+    "n_seeds_per_cell": 10,
+    "cluster_tol": 0.01,
+    "major_min_size": 10,
+    "mu_comparison_eps": 0.2,
+    "mu_compared": [
+      0.1,
+      0.5
+    ],
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the 1/(2eps) cluster law and the mu-is-speed result and would catch an artifact"
+  },
+  "citations": [
+    "Deffuant, G., Neau, D., Amblard, F., Weisbuch, G. (2000). Mixing beliefs among interacting agents. Advances in Complex Systems 3:87-98."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

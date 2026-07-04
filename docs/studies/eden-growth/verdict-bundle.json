@@ -1,0 +1,100 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "A two-dimensional growth process",
+    "authors": [
+      "Murray Eden"
+    ],
+    "year": 1961,
+    "journal": "Proc. 4th Berkeley Symp. Math. Statist. Prob. 4:223-239",
+    "doi": ""
+  },
+  "headline": "Eden 1961 growth (KPZ interface): 3/3 locked clauses REPRO; compact bulk D=1.97, KPZ beta=0.346 (1/3), alpha=0.549 (1/2)",
+  "code_commit": "2d16e8a3b6b118c135c7106e3b5ed87086b6b52e",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 compact bulk (D >= 1.85, density non-decaying) \u2014 NOT a fractal",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.9708,
+        1.85
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 KPZ growth exponent beta in [0.24, 0.42] (target 1/3)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.3456,
+        0.24
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 KPZ roughness exponent alpha in [0.35, 0.60] (target 1/2), W_sat monotone in L",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.5491,
+        0.35
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/eden-growth/results.json",
+      "sha256": "6e2f2ac74e9caf1b2c21eec05f1ccb773d70031b97619c5d849ca2966000c9f4",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/eden-growth/PREDICTIONS-locked.md",
+      "sha256": "96c036db7ac54bea6fec747ef986cfa4cbd810b1207da90472bad6c5fe59f152",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/eden-growth/FINDINGS.md",
+      "sha256": "705f34c09399c125102345bff0439071959e351fd99229c8196537d2f386dcf4",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "eden-1961-growth",
+    "mean_D": 1.9708148434306405,
+    "beta": 0.3455729427546203,
+    "alpha": 0.5491226680719239,
+    "framing": "stochastic particle growth on a grid (hybrid)",
+    "scope": "faithful reproduction of Eden's compact bulk + KPZ rough interface"
+  },
+  "citations": [
+    "Eden, M. (1961). A two-dimensional growth process. Proc. 4th Berkeley Symp. 4:223-239. KPZ scaling: Kardar, Parisi & Zhang (1986), Phys. Rev. Lett. 56:889."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful reproduction graded against the compact bulk dimension + KPZ growth/roughness exponents"
+  }
+}

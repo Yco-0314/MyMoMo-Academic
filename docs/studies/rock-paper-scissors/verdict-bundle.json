@@ -1,0 +1,111 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Mobility promotes and jeopardizes biodiversity in rock-paper-scissors games",
+    "authors": [
+      "Tobias Reichenbach",
+      "Mauro Mobilia",
+      "Erwin Frey"
+    ],
+    "year": 2007,
+    "journal": "Nature 448:1046-1049",
+    "doi": "10.1038/nature06095"
+  },
+  "headline": "Spatial rock-paper-scissors (agent-based): 3/3 locked clauses REPRO; spatial #surviving=3.0 (coexist 100%) vs well-mixed #surviving=1.0 (biodiversity lost)",
+  "code_commit": "47fce1ebec681a5e089dfdd05b76135b37b01b8b",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 spatial coexistence (all 3 species fraction > 0.05 in >=80% of seeds)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.8
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 well-mixed loses biodiversity (>=1 species extinct; max #surviving < 3)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        3.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 contrast (spatial #surviving > well-mixed #surviving)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        3.0,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/rock-paper-scissors/results.json",
+      "sha256": "14d1b3529e83b8983fb7defc531049a4c3368e4dd55dd3941595e35a4f7dcf08",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/rock-paper-scissors/PREDICTIONS-locked.md",
+      "sha256": "0e8aa44844a7ae3d681314834c732845fbb324439aea60412e2bdce689dd84d0",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/rock-paper-scissors/FINDINGS.md",
+      "sha256": "ba785c5573cb8339b0d2157f35f76da7b49f09ea4dc59b0d97533e7ce5c79fc8",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveB-design.md",
+      "sha256": "d9d7d5adbf6787392250b97a7543c247c4790382b9f3bf2685b59f323915a905",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "spatial-rock-paper-scissors",
+    "L": 100,
+    "sigma": 1.0,
+    "mu": 1.0,
+    "epsilon": 0.0,
+    "n_gen": 500,
+    "n_seeds": 5,
+    "seed_base": 0,
+    "coexist_threshold": 0.05,
+    "metric_locked": "number of surviving species",
+    "spatial_mean_n_surviving": 3.0,
+    "well_mixed_mean_n_surviving": 1.0,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the spatial-coexistence vs well-mixed-extinction result and would catch an artifact"
+  },
+  "citations": [
+    "Reichenbach, T., Mobilia, M. & Frey, E. (2007). Mobility promotes and jeopardizes biodiversity in rock-paper-scissors games. Nature 448:1046-1049. doi:10.1038/nature06095.",
+    "Reichenbach, T., Mobilia, M. & Frey, E. (2008). Self-organization of mobile populations in cyclic competition. J. Theor. Biol. 254(2):368-383. doi:10.1016/j.jtbi.2008.05.014.",
+    "May, R.M. & Leonard, W.J. (1975). Nonlinear aspects of competition between three species. SIAM J. Appl. Math. 29(2):243-253. doi:10.1137/0129022."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}
