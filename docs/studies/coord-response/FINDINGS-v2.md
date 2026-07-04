@@ -46,7 +46,7 @@ A 23-agent adversarial audit (verdicts independently reproduced) found that the 
 
 **3. CEI validation.** mean makespan increase on removal: top-CEI dept=-10.000, median-CEI dept=11.673. **P5 FALSIFIED** (top-CEI delta <= median-CEI delta).
 
-**Null-gate (refutation tier).** [coord optimization beats original AND random-edge null (makespan)] PASS (not refuted) — score=1.84 threshold=1  
+**Null-gate (refutation tier).** [coord optimization beats original AND random-edge null (makespan)] PASS (not refuted) — score=1.84 threshold=1
 PASS renders as 'not refuted', never 'verified'.
 
 ## P4 — phase ranking (reported-only)

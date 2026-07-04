@@ -56,7 +56,7 @@ are not a validation of the method.
 
    - *Why (honest mechanism, not tuned away):* isolating the top-CEI department (often 省水利厅) makes an EARLY task's collaborator unreachable, so that one task fails immediately and blocks all downstream tasks (makespan = 1 failed task × penalty). In the intact network MORE tasks reach-then-fail under capacity overload, each adding a penalty, so the intact makespan is HIGHER. The penalty-based makespan therefore does not rank node importance monotonically when failures cascade. This is itself a 'static metric (CEI) can diverge from process outcome' divergence — the DOC-B thesis — surfacing through P5 rather than P3's counterexample. Reported as-is; NOT engineered to pass.
 
-**Null-gate (refutation tier).** [coord optimization beats original AND random-edge null (makespan)] PASS (not refuted) — score=69.55 threshold=1  
+**Null-gate (refutation tier).** [coord optimization beats original AND random-edge null (makespan)] PASS (not refuted) — score=69.55 threshold=1
 PASS renders as 'not refuted', never 'verified'.
 
 ## P4 — phase ranking (reported-only)

@@ -78,7 +78,7 @@
     "design_spec": {
       "kind": "file",
       "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
-      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
       "replay": "strong"
     }
   },

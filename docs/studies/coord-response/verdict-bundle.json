@@ -99,7 +99,7 @@
     "findings": {
       "kind": "file",
       "path": "docs/studies/coord-response/FINDINGS.md",
-      "sha256": "42a33c98abae69366fd5f437f04e801f61c026b18228a42f993186b5fcbee9e8",
+      "sha256": "4aa5c5ff96ccb6c03e3549dff0702fad7a4119f2dc24713b46e23f81cc1a30b9",
       "replay": "strong"
     },
     "design_spec": {
