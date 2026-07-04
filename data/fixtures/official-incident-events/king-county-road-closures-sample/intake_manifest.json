@@ -1,0 +1,42 @@
+{
+  "schema": "abm-auto/official-incident-event-intake/v1",
+  "dataset": "King County RoadClosures_public bounded closure incident events",
+  "source_url": "https://services.arcgis.com/Ej0PsM5Aw677QF1W/arcgis/rest/services/RoadClosures_public_6e0ca9e8f25344ffa4c4a11b305884c3/FeatureServer/1",
+  "source_agency": "King County Emergency Management",
+  "license": "King County public road-closure service terms; bounded sample for reproducibility tests",
+  "downloaded_at": "2026-07-03",
+  "raw_local_path": "raw.json",
+  "raw_sha256": "e6d8faa8e6877459b35a06fa7dca483c26dd582dfb06c72bf140c4f040f58710",
+  "prepared_events_path": "prepared_events.csv",
+  "prepared_sha256": "d5092f762f0646a5b36e1a04d40b56e0d527ea32d953a19c1453e66511b28a3f",
+  "preparation_steps": [
+    "Prepared close/reopen tick events from the real-sample timestamp clock output.",
+    "Matched the representative closure point against a deterministic local GeoNetwork derived from the sampled geometry."
+  ],
+  "crs": "EPSG:3857",
+  "columns": {
+    "id": "event_id",
+    "x": "x",
+    "y": "y",
+    "t": "t",
+    "closed": "closed"
+  },
+  "event_time_unit": "tick",
+  "geographic_scope": "bounded King County Maple Valley Highway closure sample",
+  "max_distance_m": 1.0,
+  "expected_min_coverage": 1.0,
+  "expected_max_match_distance_m": 1.0,
+  "expected_event_edges": {
+    "67da9afb-5c94-42a1-8406-659ced32b886:close": {
+      "edge": "(-13602067, 6020595)|(-13602372, 6020903)",
+      "t": 0,
+      "closed": true
+    },
+    "67da9afb-5c94-42a1-8406-659ced32b886:reopen": {
+      "edge": "(-13602067, 6020595)|(-13602372, 6020903)",
+      "t": 9,
+      "closed": false
+    }
+  },
+  "boundary_note": "Bounded real official road-closure intake only; not traffic-flow validity, not production map matching, not route-choice validation, not incident calibration, and not a full live feed."
+}

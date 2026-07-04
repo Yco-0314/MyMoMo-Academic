@@ -1,0 +1,16 @@
+{
+  "boundary_note": "This source manifest records committed public sample provenance only; it does not certify traffic-flow validity.",
+  "evidence": [
+    {
+      "id": "king_county_raw_sample",
+      "path": "data/fixtures/official-incident-events/king-county-road-closures-sample/raw.json",
+      "role": "bounded official road-closure sample"
+    },
+    {
+      "id": "incident_repro_manifest",
+      "path": "data/fixtures/official-incident-events/king-county-road-closures-sample/repro_manifest.json",
+      "role": "manifest-backed incident effect smoke"
+    }
+  ],
+  "source": "King County Emergency Management RoadClosures_public bounded sample"
+}

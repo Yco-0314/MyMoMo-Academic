@@ -1,0 +1,99 @@
+{
+  "objectIdFieldName": "OBJECTID",
+  "geometryType": "esriGeometryPoint",
+  "spatialReference": {
+    "wkid": 2926,
+    "latestWkid": 2926
+  },
+  "query": {
+    "where": "STDY_YEAR=2023 AND FLOWMAP='Y'",
+    "outFields": "*",
+    "returnGeometry": true,
+    "resultRecordCount": 3,
+    "f": "json"
+  },
+  "fields": [
+    {
+      "name": "OBJECTID",
+      "type": "esriFieldTypeOID"
+    },
+    {
+      "name": "STUDY_ID",
+      "type": "esriFieldTypeInteger"
+    },
+    {
+      "name": "TITLE",
+      "type": "esriFieldTypeString"
+    },
+    {
+      "name": "STUDY_ADT",
+      "type": "esriFieldTypeInteger"
+    },
+    {
+      "name": "STDY_YEAR",
+      "type": "esriFieldTypeDouble"
+    },
+    {
+      "name": "STUDY_TYPE",
+      "type": "esriFieldTypeString"
+    },
+    {
+      "name": "FLOWMAP",
+      "type": "esriFieldTypeString"
+    },
+    {
+      "name": "STUDY_DIRFLOW",
+      "type": "esriFieldTypeString"
+    }
+  ],
+  "features": [
+    {
+      "attributes": {
+        "OBJECTID": 17776349,
+        "STUDY_ID": 342953,
+        "TITLE": "15TH AVE NE, S/O NE 55TH ST; TOTAL FLOW; CHAGG; 24Oct2023 15:30",
+        "STUDY_ADT": 5497,
+        "STDY_YEAR": 2023,
+        "STUDY_TYPE": "AGGREGATE",
+        "FLOWMAP": "Y",
+        "STUDY_DIRFLOW": "TOTAL"
+      },
+      "geometry": {
+        "x": 1276126.7011755407,
+        "y": 246976.80964894593
+      }
+    },
+    {
+      "attributes": {
+        "OBJECTID": 17776360,
+        "STUDY_ID": 342077,
+        "TITLE": "17TH AVE S, N/O S MASSACHUSETTS ST; TOTAL FLOW; CHAGG; 31Jul2023 12:30",
+        "STUDY_ADT": 1164,
+        "STDY_YEAR": 2023,
+        "STUDY_TYPE": "AGGREGATE",
+        "FLOWMAP": "Y",
+        "STUDY_DIRFLOW": "TOTAL"
+      },
+      "geometry": {
+        "x": 1275912.2778153121,
+        "y": 218425.30344371498
+      }
+    },
+    {
+      "attributes": {
+        "OBJECTID": 17776419,
+        "STUDY_ID": 342019,
+        "TITLE": "MARINE VIEW DR SW, W/O 39TH AVE SW; TOTAL FLOW; CHTOT; 27Jul2023 12:30",
+        "STUDY_ADT": 1047,
+        "STDY_YEAR": 2023,
+        "STUDY_TYPE": "VOLUME COUNT",
+        "FLOWMAP": "Y",
+        "STUDY_DIRFLOW": "TOTAL"
+      },
+      "geometry": {
+        "x": 1257486.2871404439,
+        "y": 188596.15525317192
+      }
+    }
+  ]
+}

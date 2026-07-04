@@ -1,0 +1,105 @@
+{
+  "allowed_data": [
+    {
+      "access": "committed_sample",
+      "id": "king_county_sample",
+      "path": "data/fixtures/official-incident-events/king-county-road-closures-sample/raw.json",
+      "source": "King County Emergency Management RoadClosures_public"
+    },
+    {
+      "access": "committed_manifest",
+      "id": "incident_repro_manifest",
+      "path": "data/fixtures/official-incident-events/king-county-road-closures-sample/repro_manifest.json",
+      "source": "MyMoMo official incident real sample pack"
+    }
+  ],
+  "boundary_note": "Challenge manifest gates contract completeness only.",
+  "challenge_id": "official-incident-real-sample-evidence-contract-v1",
+  "claims": [
+    {
+      "expected_verdict": "PASS",
+      "id": "C1-official-bounded-sample",
+      "required_evidence": [
+        "source_manifest",
+        "incident_repro_manifest"
+      ],
+      "statement": "The challenge must use a bounded committed official incident sample."
+    },
+    {
+      "expected_verdict": "PASS",
+      "id": "C2-clock-and-effect-surface",
+      "required_evidence": [
+        "incident_repro_manifest"
+      ],
+      "statement": "The challenge must declare timestamp-to-tick and dynamic incident effect evidence."
+    },
+    {
+      "expected_verdict": "INCONCLUSIVE",
+      "id": "C3-failure-reporting-required",
+      "required_evidence": [
+        "source_manifest"
+      ],
+      "statement": "A MISS or PARTIAL result must be reported through a failure pack rather than narrative only."
+    }
+  ],
+  "domain": "gis",
+  "evidence_level": "E2",
+  "expected_evidence": [
+    {
+      "id": "source_manifest",
+      "kind": "manifest",
+      "path": "docs/reproduce/evidence-foundry/challenge-manifest-example/source-manifest.json",
+      "required": true
+    },
+    {
+      "id": "incident_repro_manifest",
+      "kind": "manifest",
+      "path": "data/fixtures/official-incident-events/king-county-road-closures-sample/repro_manifest.json",
+      "required": true
+    }
+  ],
+  "failure_reporting": {
+    "failure_pack_schema": "abm-auto/failure-pack/v1",
+    "required": true,
+    "required_fields": [
+      "claims",
+      "residuals",
+      "scope_ceilings",
+      "boundary_note"
+    ]
+  },
+  "forbidden_data": [
+    "private Anshuka reproduction payloads",
+    "private closed-extension artifacts",
+    "uncommitted chat transcript claims"
+  ],
+  "gate_commands": [
+    {
+      "command": ".venv/bin/python -m abm_auto.evidence_challenge_manifest gate docs/reproduce/evidence-foundry/challenge-manifest-example/challenge-manifest.json --repo .",
+      "expected_label": "Evidence Foundry challenge manifest gate passed",
+      "id": "manifest_gate"
+    }
+  ],
+  "schema": "abm-auto/evidence-challenge-manifest/v1",
+  "scope_ceilings": [
+    "This manifest validates a public evidence contract only.",
+    "It does not rerun a paper reproduction or certify scientific truth.",
+    "It does not claim traffic-flow validity, production map matching, or incident calibration."
+  ],
+  "title": "Official Incident Real Sample Evidence Contract",
+  "verdict_bundle": {
+    "allowed_verdicts": [
+      "PASS",
+      "MISS",
+      "PARTIAL",
+      "INCONCLUSIVE"
+    ],
+    "required_fields": [
+      "challenge_id",
+      "claims",
+      "verdict",
+      "scope_ceilings",
+      "failure_report"
+    ]
+  }
+}

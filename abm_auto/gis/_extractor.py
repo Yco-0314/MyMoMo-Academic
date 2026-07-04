@@ -63,10 +63,8 @@ def _parse(raw: str) -> dict:
     return json.loads(raw)
 
 
-def extract_gis_spec(story: str, client, model: str = "default") -> GISModelSpec:
-    """Call the LLM to turn a story into a validated GISModelSpec. ``model`` is
-    passed through to ``client.create``; pass the model id your client expects
-    (the default is a provider-neutral placeholder)."""
+def extract_gis_spec(story: str, client, model: str = "deepseek-chat") -> GISModelSpec:
+    """Call the LLM to turn a story into a validated GISModelSpec."""
     raw = client.create(model=model, max_tokens=300,
                         system=_SYSTEM,
                         user=_PROMPT.format(

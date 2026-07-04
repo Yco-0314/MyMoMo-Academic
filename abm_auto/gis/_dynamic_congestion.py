@@ -1,6 +1,6 @@
 """Dynamic congestion-aware routing over a GeoNetwork road graph.
 
-Migrated onto the GIS platform layer: `CongestionAgent` subclasses
+Migrated onto the GIS platform layer (ADR-020): `CongestionAgent` subclasses
 `GISAgent`, `CongestionModel` subclasses `StagedGISModel`, and the platform owns
 the staged lifecycle (costs -> plan/reroute -> enter -> load -> move -> summary).
 `run_dynamic_congestion_routing` keeps its signature and return shape; behaviour
@@ -12,6 +12,16 @@ from __future__ import annotations
 from math import isfinite
 from numbers import Integral
 
+from abm_auto.gis._dynamic_routing_lifecycle import (
+    advance_on_edge,
+    edge_key,
+    mark_not_arrived,
+    mean_arrival_t,
+    movement_counts,
+    moving_agent_state,
+    record_reroute,
+    try_enter_next_edge,
+)
 from abm_auto.gis._platform import DataCollector, GISAgent, RunReporter, StagedGISModel
 from abm_auto.gis._routing_common import dijkstra_route
 
@@ -58,34 +68,25 @@ class CongestionAgent(GISAgent):
             self.route = _shortest_route_by_cost(
                 model.graph, self.node, model.safe_nodes, model.edge_costs,
             )
-            if count_as_reroute and self.route and self.route != old_route:
-                self.reroutes += 1
-                model.reroutes_this_step += 1
-                model.total_reroutes += 1
+            record_reroute(self, model, old_route, self.route, count_as_reroute)
             self.planned_once = True
 
     def enter_next_edge(self) -> None:
         if self.arrived or self.stranded or self.edge is not None:
             return
-        _try_enter_next_edge(self, self.model.graph)
+        try_enter_next_edge(self, self.model.graph)
 
     def move_along_edge(self) -> None:
         if self.arrived or self.stranded or self.edge is None:
             return
         model = self.model
-        _move_agent(
-            self,
-            model.graph,
-            model.safe_nodes,
-            model.speed,
-            model.current_loads,
-            model.alpha,
-            model.t,
-        )
+        load = model.current_loads.get(edge_key(*self.edge), 1)
+        distance = model.speed / _congestion_multiplier(load, model.alpha)
+        advance_on_edge(self, model.graph, model.safe_nodes, distance, model.t)
 
 
 def _edge_key(u, v) -> tuple:
-    return tuple(sorted((u, v), key=repr))
+    return edge_key(u, v)
 
 
 def _validate_inputs(n_steps, speed_m_per_tick, congestion_alpha) -> tuple[int, float, float]:
@@ -111,7 +112,7 @@ def _edge_loads(agents) -> dict:
     for agent in agents:
         if agent.arrived or agent.stranded or agent.edge is None:
             continue
-        key = _edge_key(*agent.edge)
+        key = edge_key(*agent.edge)
         loads[key] = loads.get(key, 0) + 1
     return loads
 
@@ -124,8 +125,8 @@ def _congested_edge_costs(graph, previous_loads, congestion_alpha) -> dict:
     costs = {}
     for u, v, data in graph.edges(data=True):
         length = float(data.get("length", 1.0))
-        load = previous_loads.get(_edge_key(u, v), 0)
-        costs[_edge_key(u, v)] = length * _congestion_multiplier(load, congestion_alpha)
+        load = previous_loads.get(edge_key(u, v), 0)
+        costs[edge_key(u, v)] = length * _congestion_multiplier(load, congestion_alpha)
     return costs
 
 
@@ -135,62 +136,8 @@ def _shortest_route_by_cost(graph, start, safe_nodes, edge_costs) -> list:
     # shared deterministic Dijkstra (_routing_common); only the cost lookup differs.
     return dijkstra_route(
         graph, start, safe_nodes,
-        edge_cost=lambda u, v, length: edge_costs.get(_edge_key(u, v), length),
+        edge_cost=lambda u, v, length: edge_costs.get(edge_key(u, v), length),
     )
-
-
-def _try_enter_next_edge(agent: CongestionAgent, graph) -> bool:
-    if not agent.route:
-        return False
-    next_node = agent.route[0]
-    if not graph.has_edge(agent.node, next_node):
-        return False
-    agent.edge = (agent.node, next_node)
-    agent.edge_progress_m = 0.0
-    return True
-
-
-def _move_agent(
-    agent: CongestionAgent,
-    graph,
-    safe_nodes: set,
-    speed_m_per_tick: float,
-    edge_loads: dict,
-    congestion_alpha: float,
-    t: int,
-) -> None:
-    u, v = agent.edge
-    edge_length = float(graph.edges[u, v].get("length", 0.0))
-    distance_left = edge_length - agent.edge_progress_m
-    load = edge_loads.get(_edge_key(u, v), 1)
-    speed = speed_m_per_tick / _congestion_multiplier(load, congestion_alpha)
-    if speed < distance_left:
-        agent.edge_progress_m += speed
-        return
-
-    agent.node = v
-    agent.edge = None
-    agent.edge_progress_m = 0.0
-    if agent.route and agent.route[0] == v:
-        agent.route.pop(0)
-    if agent.node in safe_nodes:
-        agent.arrived = True
-        agent.arrival_t = t
-
-
-def _agent_state(agent: CongestionAgent) -> dict:
-    return {
-        "id": agent.id,
-        "node": agent.node,
-        "edge": agent.edge,
-        "edge_progress_m": agent.edge_progress_m,
-        "route": list(agent.route),
-        "arrived": agent.arrived,
-        "stranded": agent.stranded,
-        "stranded_reason": agent.stranded_reason,
-        "reroutes": agent.reroutes,
-        "arrival_t": agent.arrival_t,
-    }
 
 
 class CongestionModel(StagedGISModel):
@@ -214,16 +161,10 @@ class CongestionModel(StagedGISModel):
         self.total_reroutes = 0
         self.reporter = DataCollector({
             "t": lambda m: m.t,
-            "arrived": lambda m: sum(1 for agent in m.agent_list if agent.arrived),
-            "moving": lambda m: sum(
-                1 for agent in m.agent_list
-                if agent.edge is not None and not agent.arrived and not agent.stranded
-            ),
-            "waiting": lambda m: sum(
-                1 for agent in m.agent_list
-                if agent.edge is None and not agent.arrived and not agent.stranded
-            ),
-            "stranded": lambda m: sum(1 for agent in m.agent_list if agent.stranded),
+            "arrived": lambda m: movement_counts(m.agent_list)["arrived"],
+            "moving": lambda m: movement_counts(m.agent_list)["moving"],
+            "waiting": lambda m: movement_counts(m.agent_list)["waiting"],
+            "stranded": lambda m: movement_counts(m.agent_list)["stranded"],
             "edge_loads": lambda m: dict(
                 sorted(m.current_loads.items(), key=lambda item: repr(item[0]))
             ),
@@ -263,32 +204,22 @@ class CongestionModel(StagedGISModel):
 
     def result(self, n_steps: int) -> dict:
         agents = self.agent_list
-        for agent in agents:
-            if not agent.arrived and not agent.stranded:
-                agent.stranded = True
-                agent.stranded_reason = "not_arrived"
-
-        arrival_times = [agent.arrival_t for agent in agents if agent.arrival_t is not None]
-        moving = sum(
-            1 for agent in agents
-            if agent.edge is not None and not agent.arrived and not agent.stranded
-        )
+        mark_not_arrived(agents)
+        counts = movement_counts(agents)
         # The run summary flows through the platform RunReporter: the per-tick
         # `steps` block and the peak `max_edge_load` come from the collected
         # series; run-level rosters/counters pass through as `extra`.
         return RunReporter(self.reporter).report(
             peaks={"max_edge_load": "max_edge_load"},
             extra={
-                "agents": [_agent_state(agent) for agent in agents],
+                "agents": [moving_agent_state(agent) for agent in agents],
                 "n_steps": n_steps,
                 "n_agents": len(agents),
-                "arrived": sum(1 for agent in agents if agent.arrived),
-                "stranded": sum(1 for agent in agents if agent.stranded),
-                "moving": moving,
+                "arrived": counts["arrived"],
+                "stranded": counts["stranded"],
+                "moving": counts["moving"],
                 "total_reroutes": self.total_reroutes,
-                "mean_arrival_t": (
-                    sum(arrival_times) / len(arrival_times) if arrival_times else None
-                ),
+                "mean_arrival_t": mean_arrival_t(agents),
             },
         )
 

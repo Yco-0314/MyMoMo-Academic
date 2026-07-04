@@ -427,6 +427,30 @@ def ingest_netlogo(
 
 
 @app.command()
+def netlogo_behaviorspace_pack(
+    model: Path = typer.Argument(..., help="Path to .nlogo or .nlogox file", exists=True),
+    experiment: str = typer.Argument(..., help="BehaviorSpace experiment name"),
+    table: Path = typer.Argument(..., help="Existing BehaviorSpace table output", exists=True),
+    out: Path = typer.Option(
+        Path("netlogo_behaviorspace_pack"),
+        "--out",
+        "-o",
+        help="Output directory for manifest.json and MANIFEST.md",
+    ),
+):
+    """Write a reviewer-facing repro pack for an existing NetLogo BehaviorSpace table."""
+    from abm_auto.verification.netlogo_behaviorspace import write_behaviorspace_repro_pack
+
+    try:
+        pack = write_behaviorspace_repro_pack(model, experiment, table, out)
+    except ValueError as exc:
+        console.print(f"[red]{exc}[/red]")
+        raise typer.Exit(1) from exc
+    console.print(f"[green]Wrote manifest:[/green] {pack['manifest_path']}")
+    console.print(f"[green]Wrote readme:[/green] {pack['readme_path']}")
+
+
+@app.command()
 def ingest_comses(
     query: str = typer.Argument(..., help="Search query (e.g., 'conflict', 'epidemic', 'cooperation')"),
     output_dir: Path = typer.Option(Path("examples"), "--output-dir", "-o", help="Output directory for generated story.md files"),

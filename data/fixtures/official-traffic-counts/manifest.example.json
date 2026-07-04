@@ -1,0 +1,36 @@
+{
+  "schema": "abm-auto/official-traffic-count-intake/v1",
+  "dataset": "Caltrans 2024 AADT",
+  "source_url": "https://dot.ca.gov/programs/traffic-operations/census",
+  "source_agency": "California Department of Transportation",
+  "license": "Record the source license or public-use statement from the official page",
+  "downloaded_at": "2026-07-02",
+  "raw_local_path": "/local/path/to/caltrans_aadt_raw.xlsx",
+  "raw_sha256": "replace_with_64_character_sha256",
+  "prepared_csv_path": "/local/path/to/caltrans_aadt_prepared.csv",
+  "prepared_sha256": "replace_with_64_character_sha256",
+  "preparation_steps": [
+    "Downloaded the official AADT file outside this repository.",
+    "Selected a small district, corridor, county, or bbox slice.",
+    "Converted station geometry or route/postmile records into x/y coordinates matching the target GeoNetwork CRS.",
+    "Wrote station_id,x,y,count columns into the prepared CSV."
+  ],
+  "crs": "EPSG:3857",
+  "columns": {
+    "id": "station_id",
+    "x": "x",
+    "y": "y",
+    "count": "count"
+  },
+  "count_metric": "AADT",
+  "year": 2024,
+  "geographic_scope": "describe district, corridor, county, bbox, or route slice",
+  "max_distance_m": 50.0,
+  "aggregation": "sum",
+  "expected_min_coverage": 0.95,
+  "expected_max_match_distance_m": 50.0,
+  "expected_edge_values": {
+    "repr(node_a)|repr(node_b)": 12345.0
+  },
+  "boundary_note": "Official traffic-count intake and map-match quality only; not traffic-flow validity."
+}

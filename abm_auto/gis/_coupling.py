@@ -1,12 +1,24 @@
 """Coupling operators between GIS space layers — the first operators of the
-coupled multi-layer space seam.
+coupled multi-layer space seam (ADR-019).
 
 flood_depth_per_edge couples a road GeoNetwork with a flood-depth RasterSpace:
 for each road edge, the max flood depth sampled along the segment.
 """
 from __future__ import annotations
 
+from pathlib import Path
+
+import networkx as nx
 import numpy as np
+
+from abm_auto.terrain_bridge import (
+    load_terrain_bridge_manifest,
+    validate_terrain_bridge_manifest,
+)
+
+
+def _edge_key(u, v) -> tuple:
+    return tuple(sorted((u, v), key=repr))
 
 
 def flood_depth_per_edge(geonet, flood, n_samples: int = 8) -> dict:
@@ -33,6 +45,322 @@ def flood_depth_per_edge(geonet, flood, n_samples: int = 8) -> dict:
                     maxd = d
         depths[tuple(sorted((u, v)))] = maxd
     return depths
+
+
+def _require_n_samples(n_samples: int) -> None:
+    if isinstance(n_samples, bool) or not isinstance(n_samples, int) or n_samples < 2:
+        raise ValueError("n_samples must be an integer >= 2")
+
+
+def _terrain_repo(repo) -> Path:
+    return Path.cwd().resolve() if repo is None else Path(repo).resolve()
+
+
+def _terrain_grid_from_manifest(terrain_manifest: dict, repo=None) -> list[list[float]]:
+    repo_root = _terrain_repo(repo)
+    validation = validate_terrain_bridge_manifest(terrain_manifest, repo=repo_root)
+    if not validation["ok"]:
+        raise ValueError(f"invalid terrain bridge manifest: {validation['issues'][:3]}")
+
+    source = terrain_manifest["terrain_source"]
+    if source["kind"] != "ascii_heightfield":
+        raise ValueError("terrain network coupling supports ascii_heightfield only")
+
+    path = Path(source["path"])
+    source_path = path if path.is_absolute() else repo_root / path
+    rows: list[list[float]] = []
+    for line_no, line in enumerate(source_path.read_text(encoding="utf-8").splitlines(), start=1):
+        stripped = line.strip()
+        if not stripped:
+            continue
+        try:
+            row = [float(value) for value in stripped.split()]
+        except ValueError as exc:
+            raise ValueError(
+                f"terrain_source ASCII row {line_no} contains a non-numeric value"
+            ) from exc
+        rows.append(row)
+
+    if not rows or not rows[0]:
+        raise ValueError("terrain_source ASCII heightfield is empty")
+    width = len(rows[0])
+    if any(len(row) != width for row in rows):
+        raise ValueError("terrain_source ASCII rows have inconsistent column counts")
+    return rows
+
+
+def _terrain_extent(terrain_manifest: dict) -> tuple[float, float, float, float]:
+    frame = terrain_manifest.get("coordinate_frame", {})
+    extent = frame.get("extent")
+    if (
+        not isinstance(extent, list)
+        or len(extent) != 4
+        or any(isinstance(value, bool) or not isinstance(value, (int, float)) for value in extent)
+    ):
+        raise ValueError("coordinate_frame.extent is required as [min_x, min_y, max_x, max_y]")
+    min_x, min_y, max_x, max_y = (float(value) for value in extent)
+    if min_x >= max_x or min_y >= max_y:
+        raise ValueError("coordinate_frame.extent bounds must be increasing")
+    return min_x, min_y, max_x, max_y
+
+
+def _require_matching_terrain_crs(geonet, terrain_manifest: dict) -> None:
+    terrain_crs = terrain_manifest.get("coordinate_frame", {}).get("crs")
+    if geonet.crs != terrain_crs:
+        raise ValueError("terrain CRS must match GeoNetwork CRS")
+
+
+def _terrain_value_at_world(
+    rows: list[list[float]],
+    extent: tuple[float, float, float, float],
+    x: float,
+    y: float,
+) -> float:
+    min_x, min_y, max_x, max_y = extent
+    if not (min_x <= x <= max_x and min_y <= y <= max_y):
+        raise ValueError("terrain sample is outside extent")
+
+    n_rows = len(rows)
+    n_cols = len(rows[0])
+    col = min(n_cols - 1, int(np.floor((x - min_x) / (max_x - min_x) * n_cols)))
+    row = min(n_rows - 1, int(np.floor((y - min_y) / (max_y - min_y) * n_rows)))
+    return rows[row][col]
+
+
+def terrain_elevation_delta_per_edge(
+    geonet,
+    terrain_manifest: dict,
+    *,
+    repo=None,
+    n_samples: int = 8,
+) -> dict:
+    """Elevation relief sampled along each GeoNetwork edge from a terrain manifest.
+
+    This is a deterministic terrain×network coupling operator. It reads an
+    ASCII heightfield through a terrain bridge manifest and returns
+    `{edge_key: max(sampled elevation) - min(sampled elevation)}`.
+    """
+    _require_n_samples(n_samples)
+    _require_matching_terrain_crs(geonet, terrain_manifest)
+    rows = _terrain_grid_from_manifest(terrain_manifest, repo=repo)
+    extent = _terrain_extent(terrain_manifest)
+    ts = np.linspace(0.0, 1.0, n_samples)
+    deltas = {}
+    for u, v in geonet.graph.edges:
+        x1, y1 = geonet.node_coord(u)
+        x2, y2 = geonet.node_coord(v)
+        samples = [
+            _terrain_value_at_world(
+                rows,
+                extent,
+                x1 + float(t) * (x2 - x1),
+                y1 + float(t) * (y2 - y1),
+            )
+            for t in ts
+        ]
+        deltas[_edge_key(u, v)] = max(samples) - min(samples)
+    return deltas
+
+
+def terrain_grade_proxy_per_edge(
+    geonet,
+    terrain_manifest: dict,
+    *,
+    repo=None,
+    n_samples: int = 8,
+) -> dict:
+    """Edge terrain relief divided by edge length.
+
+    This is a simple coupling proxy, not a physical slope or engineering grade.
+    """
+    deltas = terrain_elevation_delta_per_edge(
+        geonet,
+        terrain_manifest,
+        repo=repo,
+        n_samples=n_samples,
+    )
+    grades = {}
+    for u, v, attrs in geonet.graph.edges(data=True):
+        length = float(attrs.get("length", 0.0))
+        grades[_edge_key(u, v)] = 0.0 if length <= 0.0 else deltas[_edge_key(u, v)] / length
+    return grades
+
+
+def terrain_cost_per_edge(
+    geonet,
+    terrain_manifest: dict,
+    *,
+    repo=None,
+    n_samples: int = 8,
+    grade_weight: float = 1.0,
+) -> dict:
+    """Length-based edge cost with a deterministic terrain grade penalty."""
+    if grade_weight < 0:
+        raise ValueError("grade_weight must be non-negative")
+    grades = terrain_grade_proxy_per_edge(
+        geonet,
+        terrain_manifest,
+        repo=repo,
+        n_samples=n_samples,
+    )
+    costs = {}
+    for u, v, attrs in geonet.graph.edges(data=True):
+        length = float(attrs.get("length", 0.0))
+        costs[_edge_key(u, v)] = length * (1.0 + float(grade_weight) * grades[_edge_key(u, v)])
+    return costs
+
+
+def _require_distinct_existing_nodes(geonet, source, target) -> None:
+    if source not in geonet.graph:
+        raise ValueError("source node is not in GeoNetwork")
+    if target not in geonet.graph:
+        raise ValueError("target node is not in GeoNetwork")
+    if source == target:
+        raise ValueError("source and target must be distinct")
+
+
+def _path_edge_pairs(path) -> list[tuple]:
+    return list(zip(path, path[1:]))
+
+
+def _path_attr_cost(graph, path, attr: str) -> float:
+    return sum(float(graph.edges[u, v].get(attr, 0.0)) for u, v in _path_edge_pairs(path))
+
+
+def _path_edge_cost(costs: dict, path) -> float:
+    return sum(float(costs[_edge_key(u, v)]) for u, v in _path_edge_pairs(path))
+
+
+def terrain_aware_shortest_path(
+    geonet,
+    terrain_manifest: dict,
+    source,
+    target,
+    *,
+    repo=None,
+    n_samples: int = 8,
+    grade_weight: float = 1.0,
+) -> dict:
+    """Compare length-only routing with terrain-cost routing."""
+    _require_distinct_existing_nodes(geonet, source, target)
+    edge_costs = terrain_cost_per_edge(
+        geonet,
+        terrain_manifest,
+        repo=repo,
+        n_samples=n_samples,
+        grade_weight=grade_weight,
+    )
+    terrain_graph = geonet.graph.copy()
+    for u, v in terrain_graph.edges:
+        terrain_graph.edges[u, v]["terrain_cost"] = edge_costs[_edge_key(u, v)]
+
+    try:
+        length_path = nx.shortest_path(geonet.graph, source, target, weight="length")
+        terrain_path = nx.shortest_path(terrain_graph, source, target, weight="terrain_cost")
+    except nx.NetworkXNoPath as exc:
+        raise ValueError("source and target are not connected") from exc
+
+    return {
+        "length_path": length_path,
+        "terrain_path": terrain_path,
+        "length_path_length_m": _path_attr_cost(geonet.graph, length_path, "length"),
+        "length_path_terrain_cost": _path_edge_cost(edge_costs, length_path),
+        "terrain_path_length_m": _path_attr_cost(geonet.graph, terrain_path, "length"),
+        "terrain_path_cost": _path_edge_cost(edge_costs, terrain_path),
+        "changed_path": length_path != terrain_path,
+        "edge_costs": edge_costs,
+    }
+
+
+def terrain_aware_routing_gate(
+    geonet,
+    terrain_manifest: dict,
+    source,
+    target,
+    *,
+    repo=None,
+    n_samples: int = 8,
+    grade_weight: float = 1.0,
+) -> tuple[bool, str]:
+    """Gate proving terrain-derived edge cost can change shortest-path routing."""
+    result = terrain_aware_shortest_path(
+        geonet,
+        terrain_manifest,
+        source,
+        target,
+        repo=repo,
+        n_samples=n_samples,
+        grade_weight=grade_weight,
+    )
+    evidence = (
+        f"length_path={result['length_path']} "
+        f"terrain_path={result['terrain_path']} "
+        f"length_path_terrain_cost={result['length_path_terrain_cost']:.6f} "
+        f"terrain_path_cost={result['terrain_path_cost']:.6f}"
+    )
+    if not result["changed_path"]:
+        return (
+            False,
+            "terrain did not change shortest-path routing; "
+            "not traffic flow, vehicle dynamics, or 3D terrain physics; "
+            f"{evidence}",
+        )
+    if result["terrain_path_cost"] >= result["length_path_terrain_cost"]:
+        return (
+            False,
+            "terrain changed path but did not reduce terrain-weighted route cost; "
+            "not traffic flow, vehicle dynamics, or 3D terrain physics; "
+            f"{evidence}",
+        )
+    return (
+        True,
+        "terrain changes shortest-path routing; "
+        "not traffic flow, vehicle dynamics, or 3D terrain physics; "
+        f"{evidence}",
+    )
+
+
+def terrain_network_coupling_gate(
+    geonet,
+    terrain_manifest: dict,
+    *,
+    repo=None,
+    threshold: float = 0.01,
+) -> tuple[bool, str]:
+    """Gate for terrain×network coupling.
+
+    Passes when sampled terrain creates a positive edge-grade signal and changes
+    deterministic network edge cost. This is not a 3D renderer or physical
+    traffic model.
+    """
+    if threshold < 0:
+        raise ValueError("threshold must be non-negative")
+
+    grades = terrain_grade_proxy_per_edge(geonet, terrain_manifest, repo=repo)
+    costs = terrain_cost_per_edge(geonet, terrain_manifest, repo=repo)
+    max_grade = max(grades.values()) if grades else 0.0
+    min_cost = min(costs.values()) if costs else 0.0
+    max_cost = max(costs.values()) if costs else 0.0
+    if max_grade <= threshold:
+        return (
+            False,
+            f"terrain network coupling gate failed: no terrain grade above threshold "
+            f"(max_grade={max_grade:.6f}, threshold={threshold:.6f}); "
+            "not a 3D renderer or physical traffic model",
+        )
+    if max_cost <= min_cost:
+        return (
+            False,
+            f"terrain network coupling gate failed: terrain cost range did not change "
+            f"(min_cost={min_cost:.6f}, max_cost={max_cost:.6f}); "
+            "not a 3D renderer or physical traffic model",
+        )
+    return (
+        True,
+        f"terrain changes network edge cost: max_grade={max_grade:.6f}, "
+        f"min_cost={min_cost:.6f}, max_cost={max_cost:.6f}; "
+        "not a 3D renderer or physical traffic model",
+    )
 
 
 def sample_raster_at_points(raster, points) -> dict:

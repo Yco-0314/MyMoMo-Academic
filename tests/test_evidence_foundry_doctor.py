@@ -27,7 +27,7 @@ def test_seed_workspace_doctor_passes():
     )
 
     assert result["ok"] is True
-    assert result["summary"]["batch_entries"] == 13
+    assert result["summary"]["batch_entries"] == 14
     assert result["summary"]["batch_failed"] == 0
     assert result["summary"]["challenge_entries"] == 2
     assert result["summary"]["challenge_failed"] == 0
@@ -76,7 +76,7 @@ def test_cli_doctor_prints_json_result():
     result = json.loads(completed.stdout)
 
     assert result["ok"] is True
-    assert result["summary"]["batch_entries"] == 13
+    assert result["summary"]["batch_entries"] == 14
     assert result["summary"]["challenge_entries"] == 2
     assert result["summary"]["naming_issues"] == 0
     assert result["summary"]["report_matches_committed"] is True

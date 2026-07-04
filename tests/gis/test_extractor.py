@@ -55,6 +55,13 @@ def test_prompt_lists_renderable_registry_capabilities_only():
     assert 'mechanism="dynamic_flood_evacuation"' in prompt
     assert "dynamic_congestion_routing" in prompt
     assert 'mechanism="dynamic_congestion_routing"' in prompt
+    assert "dynamic_incident_routing" in prompt
+    assert 'mechanism="dynamic_incident_routing"' in prompt
+    assert "terrain_network_cost" in prompt
+    assert 'mechanism="terrain_network_cost"' in prompt
+    assert "terrain_aware_routing" in prompt
+    assert 'spatial_type="terrain"' in prompt
+    assert 'mechanism="terrain_aware_routing"' in prompt
 
 
 def test_extracts_network_spec_with_path():
@@ -182,6 +189,16 @@ def test_extracts_explicit_dynamic_congestion_renderable_capability():
     assert spec.mechanism == "dynamic_congestion_routing"
 
 
+def test_extracts_explicit_dynamic_incident_renderable_capability():
+    c = _client(
+        '{"capability": "dynamic_incident_routing", "spatial_type": "network", '
+        '"mechanism": "dynamic_incident_routing", "data_path": "", "params": {}}'
+    )
+    spec = extract_gis_spec("dynamic incident rerouting on roads", c)
+    assert spec.capability == "dynamic_incident_routing"
+    assert spec.mechanism == "dynamic_incident_routing"
+
+
 def test_extracts_explicit_mechanism_contagion_renderable_capability():
     c = _client(
         '{"capability": "mechanism_contagion", "spatial_type": "mechanism", '
@@ -190,3 +207,34 @@ def test_extracts_explicit_mechanism_contagion_renderable_capability():
     spec = extract_gis_spec("contagion over neighbors", c)
     assert spec.capability == "mechanism_contagion"
     assert spec.mechanism == "contagion"
+
+
+def test_extracts_explicit_terrain_aware_routing_renderable_capability():
+    c = _client(
+        '{"capability": "terrain_aware_routing", "spatial_type": "terrain", '
+        '"mechanism": "terrain_aware_routing", "data_path": "", '
+        '"params": {"grade_weight": 0.25, "n_samples": 5}}'
+    )
+
+    spec = extract_gis_spec("terrain-aware routing over a synthetic road network", c)
+
+    assert spec.capability == "terrain_aware_routing"
+    assert spec.mechanism == "terrain_aware_routing"
+    assert spec.params["grade_weight"] == 0.25
+    assert spec.params["n_samples"] == 5
+
+
+def test_extracts_explicit_terrain_network_cost_renderable_capability():
+    c = _client(
+        '{"capability": "terrain_network_cost", "spatial_type": "terrain", '
+        '"mechanism": "terrain_network_cost", "data_path": "", '
+        '"params": {"grade_weight": 1.0, "n_samples": 5, "threshold": 0.01}}'
+    )
+
+    spec = extract_gis_spec("terrain-derived edge costs on a road network", c)
+
+    assert spec.capability == "terrain_network_cost"
+    assert spec.mechanism == "terrain_network_cost"
+    assert spec.params["grade_weight"] == 1.0
+    assert spec.params["n_samples"] == 5
+    assert spec.params["threshold"] == 0.01

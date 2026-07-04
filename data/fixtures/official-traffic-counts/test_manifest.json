@@ -1,0 +1,36 @@
+{
+  "schema": "abm-auto/official-traffic-count-intake/v1",
+  "dataset": "Caltrans 2024 AADT synthetic fixture",
+  "source_url": "https://dot.ca.gov/programs/traffic-operations/census",
+  "source_agency": "California Department of Transportation",
+  "license": "Synthetic fixture following public Caltrans Traffic Census shape; not official data",
+  "downloaded_at": "2026-07-02",
+  "raw_local_path": "test_raw.csv",
+  "raw_sha256": "82a21750cf088efdfae82b3f9ffa62447a1753270dadf0f6adedb11a4508531b",
+  "prepared_csv_path": "test_counts.csv",
+  "prepared_sha256": "b2ff6e30ddad4e8bacd3f9874ebcdfd1050ca9ad41606b00c49d1ded50bc4e95",
+  "preparation_steps": [
+    "Created a tiny synthetic Caltrans-style raw fixture for deterministic tests.",
+    "Copied station id, fixture coordinates, and AADT into the prepared CSV contract.",
+    "Kept the fixture in EPSG:3857 coordinates to match the synthetic GeoNetwork."
+  ],
+  "crs": "EPSG:3857",
+  "columns": {
+    "id": "station_id",
+    "x": "x",
+    "y": "y",
+    "count": "count"
+  },
+  "count_metric": "AADT",
+  "year": 2024,
+  "geographic_scope": "synthetic Caltrans-style corridor fixture",
+  "max_distance_m": 1.0,
+  "aggregation": "sum",
+  "expected_min_coverage": 1.0,
+  "expected_max_match_distance_m": 0.5,
+  "expected_edge_values": {
+    "(0, 0)|(10, 0)": 100.0,
+    "(0, 10)|(10, 10)": 40.0
+  },
+  "boundary_note": "Official intake plumbing only; not traffic-flow validity."
+}

@@ -1,12 +1,12 @@
-"""Outcome calibration for the Anshuka evacuation model.
+"""ADR-024 ladder #5 — outcome calibration for the Anshuka evacuation model.
 
 Wires the evacuation OUTCOME (evac / incap counts) into the base ABC calibrator (a
 Bayesian-posterior backend, stronger than grid-search) through the same
 ``simulate(params, targets) -> stats`` contract as ``_calibration_objective_bridge`` —
 WITHOUT editing ``abm_auto/calibration/``.
 
-Honest scope: this is the calibration CAPABILITY plus
-its **parameter-recovery proof**, NOT a tuning of the real-DEM reproduction to the
+Honest scope (per ADR-024 D3 step 5, Option A): this is the calibration CAPABILITY plus
+its **parameter-recovery proof**, NOT a tuning of the candidate-#10 reproduction to the
 paper (that would overfit the locked validation set and undermine the EARNED result). It
 answers "is parameter X identifiable from evacuation outcomes?" so that, in the L1 engine,
 a reproduction can calibrate to a paper's STATED targets and a residual MISS is

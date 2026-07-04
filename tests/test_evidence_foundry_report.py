@@ -21,9 +21,10 @@ def test_batch_report_includes_summary_table_and_boundary():
 
     assert report.startswith("# MyMoMo Evidence Foundry Batch Report")
     assert "- Overall gate: PASS" in report
-    assert "- Entries: 13" in report
+    assert "- Entries: 14" in report
     assert "- Failed: 0" in report
     assert "| challenge-registry | repro_challenge_registry | PASS |" in report
+    assert "| challenge-manifest | evidence_challenge_manifest | PASS |" in report
     assert "| platform-capability-registry | platform_capability_registry | PASS |" in report
     assert "| unified-abm-bridge | unified_abm_bridge_contract | PASS |" in report
     assert "| terrain-bridge | terrain_bridge_manifest | PASS |" in report

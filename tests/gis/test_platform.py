@@ -1,4 +1,5 @@
-"""GIS platform layer (floor) — agents, scheduler, collector, run loop."""
+"""GIS platform layer (floor) — ADR-020. Predictions in
+docs/reproduce/gis-platform/PREDICTIONS-locked.md."""
 import random
 
 import pytest

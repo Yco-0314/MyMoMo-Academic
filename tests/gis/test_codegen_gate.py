@@ -122,6 +122,14 @@ def test_gate_passes_clean_dynamic_congestion_code():
     assert ok, reasons
 
 
+def test_gate_passes_clean_dynamic_incident_code():
+    spec = GISModelSpec(spatial_type="network",
+                        mechanism="dynamic_incident_routing",
+                        capability="dynamic_incident_routing")
+    ok, reasons = gis_codegen_gate(render(spec), spec)
+    assert ok, reasons
+
+
 def test_gate_fails_on_missing_gate_call():
     spec = GISModelSpec(spatial_type="raster", mechanism="sir")
     files = render(spec)
@@ -314,5 +322,72 @@ def test_gate_uses_registry_required_tokens_for_dynamic_congestion_template():
     assert not ok
     assert any(
         "dynamic_congestion_routing model missing required call: dynamic_congestion_reroute_gate" in r
+        for r in reasons
+    )
+
+
+def test_gate_uses_registry_required_tokens_for_dynamic_incident_template():
+    spec = GISModelSpec(spatial_type="network",
+                        mechanism="dynamic_incident_routing",
+                        capability="dynamic_incident_routing")
+    files = render(spec)
+    files["main.py"] = files["main.py"].replace(
+        "dynamic_incident_reroute_gate",
+        "other_gate",
+    )
+    ok, reasons = gis_codegen_gate(files, spec)
+    assert not ok
+    assert any(
+        "dynamic_incident_routing model missing required call: dynamic_incident_reroute_gate" in r
+        for r in reasons
+    )
+
+
+def test_gate_passes_clean_terrain_aware_routing_code():
+    spec = GISModelSpec(spatial_type="terrain",
+                        mechanism="terrain_aware_routing",
+                        capability="terrain_aware_routing")
+    ok, reasons = gis_codegen_gate(render(spec), spec)
+    assert ok, reasons
+
+
+def test_gate_uses_registry_required_tokens_for_terrain_aware_routing_template():
+    spec = GISModelSpec(spatial_type="terrain",
+                        mechanism="terrain_aware_routing",
+                        capability="terrain_aware_routing")
+    files = render(spec)
+    files["main.py"] = files["main.py"].replace(
+        "terrain_aware_routing_gate",
+        "other_gate",
+    )
+    ok, reasons = gis_codegen_gate(files, spec)
+    assert not ok
+    assert any(
+        "terrain_aware_routing model missing required call: terrain_aware_routing_gate" in r
+        for r in reasons
+    )
+
+
+def test_gate_passes_clean_terrain_network_cost_code():
+    spec = GISModelSpec(spatial_type="terrain",
+                        mechanism="terrain_network_cost",
+                        capability="terrain_network_cost")
+    ok, reasons = gis_codegen_gate(render(spec), spec)
+    assert ok, reasons
+
+
+def test_gate_uses_registry_required_tokens_for_terrain_network_cost_template():
+    spec = GISModelSpec(spatial_type="terrain",
+                        mechanism="terrain_network_cost",
+                        capability="terrain_network_cost")
+    files = render(spec)
+    files["main.py"] = files["main.py"].replace(
+        "terrain_network_coupling_gate",
+        "other_gate",
+    )
+    ok, reasons = gis_codegen_gate(files, spec)
+    assert not ok
+    assert any(
+        "terrain_network_cost model missing required call: terrain_network_coupling_gate" in r
         for r in reasons
     )

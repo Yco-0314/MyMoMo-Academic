@@ -1,0 +1,42 @@
+{
+  "schema": "abm-auto/official-incident-event-intake/v1",
+  "dataset": "Synthetic official-style incident fixture",
+  "source_url": "https://example.test/transport/incidents",
+  "source_agency": "Example Department of Transportation",
+  "license": "Synthetic fixture for tests; cite source in real manifests",
+  "downloaded_at": "2026-07-03",
+  "raw_local_path": "test_raw.csv",
+  "raw_sha256": "f99ae2bd26768f4dde61a997eb6940b29bd764d598251c896dd77410c6211671",
+  "prepared_events_path": "test_prepared_events.csv",
+  "prepared_sha256": "07eafc1967ee3fed640c45e24422cd9e840247c1d6b8a0adb4b17c801065a3dc",
+  "preparation_steps": [
+    "Prepared two official-style event rows for deterministic tests.",
+    "Mapped source timestamps to integer simulation ticks by hand."
+  ],
+  "crs": "EPSG:3857",
+  "columns": {
+    "id": "event_id",
+    "x": "x",
+    "y": "y",
+    "t": "t",
+    "closed": "closed"
+  },
+  "event_time_unit": "tick",
+  "geographic_scope": "synthetic incident detour fixture",
+  "max_distance_m": 1.0,
+  "expected_min_coverage": 1.0,
+  "expected_max_match_distance_m": 0.2,
+  "expected_event_edges": {
+    "evt-close": {
+      "edge": "(100, 0)|(200, 0)",
+      "t": 1,
+      "closed": true
+    },
+    "evt-open": {
+      "edge": "(100, 0)|(200, 0)",
+      "t": 3,
+      "closed": false
+    }
+  },
+  "boundary_note": "Official incident intake plumbing only; not traffic-flow validity, not production map matching, and not optimal incident management."
+}

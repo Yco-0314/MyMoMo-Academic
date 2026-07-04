@@ -52,6 +52,12 @@ def _seed_entries():
             "boundary_note": "Checks declared signatures, not mechanism truth.",
         },
         {
+            "id": "challenge-manifest",
+            "kind": "evidence_challenge_manifest",
+            "path": "docs/reproduce/evidence-foundry/challenge-manifest-example/challenge-manifest.json",
+            "boundary_note": "Validates challenge contract completeness, not scientific truth.",
+        },
+        {
             "id": "synthetic-population",
             "kind": "synthetic_population_manifest",
             "path": "docs/reproduce/synthetic-population/example-panel/manifest.json",
@@ -113,14 +119,15 @@ def test_valid_batch_runs_all_seed_artifact_kinds():
     result = run_evidence_foundry_batch(_batch(_seed_entries()), repo=REPO_ROOT)
 
     assert result["ok"] is True
-    assert result["entry_count"] == 13
-    assert result["passed_count"] == 13
+    assert result["entry_count"] == 14
+    assert result["passed_count"] == 14
     assert result["failed_count"] == 0
     assert [entry["kind"] for entry in result["results"]] == [
         "repro_challenge_registry",
         "failure_pack",
         "counterfactual_challenge",
         "mechanism_challenge",
+        "evidence_challenge_manifest",
         "synthetic_population_manifest",
         "llm_agent_replay",
         "synthetic_survey_gate",
@@ -223,4 +230,4 @@ def test_cli_gate_prints_json_result():
     result = json.loads(completed.stdout)
 
     assert result["ok"] is True
-    assert result["entry_count"] == 13
+    assert result["entry_count"] == 14

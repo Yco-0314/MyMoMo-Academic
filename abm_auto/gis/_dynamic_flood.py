@@ -1,6 +1,6 @@
 """Dynamic flood evacuation over a time-varying raster and road network.
 
-Migrated onto the GIS platform layer: `FloodAgent` subclasses
+Migrated onto the GIS platform layer (ADR-020): `FloodAgent` subclasses
 `GISAgent`, `FloodModel` subclasses `StagedGISModel`, and the platform owns the
 staged lifecycle (read flood frame -> flooded edges -> strand on flooded edge ->
 plan/enter -> move -> summary). `run_dynamic_flood_evacuation` keeps its
@@ -12,9 +12,18 @@ from __future__ import annotations
 from math import isfinite
 from numbers import Integral
 
-import networkx as nx
-
 from abm_auto.gis._coupling import flood_depth_per_edge
+from abm_auto.gis._dynamic_routing_lifecycle import (
+    advance_on_edge,
+    edge_key,
+    mark_not_arrived,
+    mean_arrival_t,
+    movement_counts,
+    moving_agent_state,
+    record_reroute,
+    routable_graph,
+    try_enter_next_edge,
+)
 from abm_auto.gis._flood_model import _require_raster_timeline
 from abm_auto.gis._platform import DataCollector, GISAgent, StagedGISModel
 from abm_auto.gis._routing_common import dijkstra_route
@@ -59,7 +68,7 @@ class FloodAgent(GISAgent):
         if self.arrived or self.stranded or self.edge is None:
             return
         model = self.model
-        depth = model.depths.get(_edge_key(*self.edge), 0.0)
+        depth = model.depths.get(edge_key(*self.edge), 0.0)
         if depth > model.threshold:
             self.stranded = True
             self.stranded_reason = "flooded_on_edge"
@@ -78,7 +87,7 @@ class FloodAgent(GISAgent):
         next_unavailable = (
             next_node is not None
             and (not model.graph.has_edge(self.node, next_node)
-                 or _edge_key(self.node, next_node) in model.flooded_edges)
+                 or edge_key(self.node, next_node) in model.flooded_edges)
         )
         should_plan = False
         count_as_reroute = False
@@ -94,83 +103,22 @@ class FloodAgent(GISAgent):
             new_route = _shortest_route(model.routable, self.node, model.safe_nodes)
             self.route = new_route
             self.planned_once = True
-            if count_as_reroute and new_route and new_route != old_route:
-                self.reroutes += 1
-                model.reroutes_this_step += 1
-                model.total_reroutes += 1
+            record_reroute(self, model, old_route, new_route, count_as_reroute)
 
-        _try_enter_next_edge(self, model.graph, model.flooded_edges)
+        try_enter_next_edge(self, model.graph, model.flooded_edges)
 
     def move_along_edge(self) -> None:
         if self.arrived or self.stranded or self.edge is None:
             return
         model = self.model
-        _move_agent(self, model.graph, model.safe_nodes, model.speed, model.t)
-
-
-def _edge_key(u, v) -> tuple:
-    return tuple(sorted((u, v)))
-
-
-def _routable_graph(graph, flooded_edges: set) -> nx.Graph:
-    routable = graph.copy()
-    routable.remove_edges_from(flooded_edges)
-    return routable
+        advance_on_edge(self, model.graph, model.safe_nodes, model.speed, model.t)
 
 
 def _shortest_route(graph, start, safe_nodes: set) -> list:
     # Flood routes over the already-flood-pruned graph by raw edge length (no
     # congestion cost), so the default distance-weighted search is exactly right.
-    # Flooded edges are removed from `graph` upstream (_routable_graph) before this.
+    # Flooded edges are removed from `graph` upstream by `routable_graph`.
     return dijkstra_route(graph, start, safe_nodes)
-
-
-def _try_enter_next_edge(agent: FloodAgent, graph, flooded_edges: set) -> bool:
-    if not agent.route:
-        return False
-    next_node = agent.route[0]
-    if not graph.has_edge(agent.node, next_node):
-        return False
-    if _edge_key(agent.node, next_node) in flooded_edges:
-        return False
-    agent.edge = (agent.node, next_node)
-    agent.edge_progress_m = 0.0
-    return True
-
-
-def _move_agent(agent: FloodAgent, graph, safe_nodes: set,
-                speed_m_per_tick: float, t: int) -> None:
-    u, v = agent.edge
-    edge_length = float(graph.edges[u, v].get("length", 0.0))
-    distance_left = edge_length - agent.edge_progress_m
-    if speed_m_per_tick < distance_left:
-        agent.edge_progress_m += speed_m_per_tick
-        return
-
-    agent.node = v
-    agent.edge = None
-    agent.edge_progress_m = 0.0
-    if agent.route and agent.route[0] == v:
-        agent.route.pop(0)
-    if agent.node in safe_nodes:
-        agent.arrived = True
-        agent.arrival_t = t
-
-
-def _agent_state(agent: FloodAgent) -> dict:
-    return {
-        "id": agent.id,
-        "node": agent.node,
-        "edge": agent.edge,
-        "edge_progress_m": agent.edge_progress_m,
-        "route": list(agent.route),
-        "arrived": agent.arrived,
-        "stranded": agent.stranded,
-        "stranded_reason": agent.stranded_reason,
-        "reroutes": agent.reroutes,
-        "exposure_depth": agent.exposure_depth,
-        "arrival_t": agent.arrival_t,
-    }
 
 
 class FloodModel(StagedGISModel):
@@ -200,16 +148,10 @@ class FloodModel(StagedGISModel):
         self.routable = self.graph
         self.reporter = DataCollector({
             "t": lambda m: m.t,
-            "arrived": lambda m: sum(1 for agent in m.agent_list if agent.arrived),
-            "moving": lambda m: sum(
-                1 for agent in m.agent_list
-                if agent.edge is not None and not agent.arrived and not agent.stranded
-            ),
-            "waiting": lambda m: sum(
-                1 for agent in m.agent_list
-                if agent.edge is None and not agent.arrived and not agent.stranded
-            ),
-            "stranded": lambda m: sum(1 for agent in m.agent_list if agent.stranded),
+            "arrived": lambda m: movement_counts(m.agent_list)["arrived"],
+            "moving": lambda m: movement_counts(m.agent_list)["moving"],
+            "waiting": lambda m: movement_counts(m.agent_list)["waiting"],
+            "stranded": lambda m: movement_counts(m.agent_list)["stranded"],
             "n_flooded_edges": lambda m: len(m.flooded_edges),
             "reroutes_this_step": lambda m: m.reroutes_this_step,
             "total_reroutes": lambda m: m.total_reroutes,
@@ -228,35 +170,31 @@ class FloodModel(StagedGISModel):
     def begin_step(self) -> None:
         t = self.t
         flood = self.flood_timeline.at(t)
-        self.depths = flood_depth_per_edge(self.geonet, flood, n_samples=self.n_samples)
+        raw_depths = flood_depth_per_edge(self.geonet, flood, n_samples=self.n_samples)
+        self.depths = {edge_key(*edge): depth for edge, depth in raw_depths.items()}
         self.flooded_edges = {
             edge for edge, depth in self.depths.items() if depth > self.threshold
         }
-        self.routable = _routable_graph(self.graph, self.flooded_edges)
+        self.routable = routable_graph(self.graph, self.flooded_edges)
         self.reroutes_this_step = 0
 
     def result(self) -> dict:
         agents = self.agent_list
-        for agent in agents:
-            if not agent.arrived and not agent.stranded:
-                agent.stranded = True
-                agent.stranded_reason = "not_arrived"
-
-        arrival_times = [agent.arrival_t for agent in agents if agent.arrival_t is not None]
-        moving = sum(
-            1 for agent in agents
-            if agent.edge is not None and not agent.arrived and not agent.stranded
-        )
+        mark_not_arrived(agents)
+        counts = movement_counts(agents)
         return {
             "steps": self.summaries,
-            "agents": [_agent_state(agent) for agent in agents],
+            "agents": [
+                moving_agent_state(agent, extra={"exposure_depth": agent.exposure_depth})
+                for agent in agents
+            ],
             "n_steps": self.flood_timeline.n_steps,
             "n_agents": len(agents),
-            "arrived": sum(1 for agent in agents if agent.arrived),
-            "stranded": sum(1 for agent in agents if agent.stranded),
-            "moving": moving,
+            "arrived": counts["arrived"],
+            "stranded": counts["stranded"],
+            "moving": counts["moving"],
             "total_reroutes": self.total_reroutes,
-            "mean_arrival_t": (sum(arrival_times) / len(arrival_times)) if arrival_times else None,
+            "mean_arrival_t": mean_arrival_t(agents),
             "max_exposure_depth": max((agent.exposure_depth for agent in agents), default=0.0),
         }
 

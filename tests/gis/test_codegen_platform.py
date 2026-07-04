@@ -1,4 +1,4 @@
-"""Codegen emits a full platform ABM: the gis_abm_platform
+"""Codegen emits a full platform ABM (ADR-020 step 4): the gis_abm_platform
 capability renders a GISAgent/GISModel/DataCollector ABM that runs end-to-end and
 passes the codegen-fidelity gate; fault injection still fails the gate."""
 import os

@@ -117,6 +117,53 @@ def test_dynamic_congestion_routing_is_renderable_dynamic_capability():
     assert capability.gate == "dynamic_congestion_reroute_gate"
 
 
+def test_dynamic_incident_routing_is_renderable_dynamic_capability():
+    capability = get_capability("dynamic_incident_routing")
+
+    assert capability.renderable is True
+    assert capability.spatial_type == "network"
+    assert capability.mechanism == "dynamic_incident_routing"
+    assert capability.temporal is False
+    assert capability.dynamic is True
+    assert capability.coupling == "dynamic_network_incident"
+    assert capability.layers == ("GeoNetwork", "moving agents", "per-tick incident events")
+    assert "GeoNetwork" in capability.required_tokens
+    assert "LineString" in capability.required_tokens
+    assert "run_dynamic_incident_routing" in capability.required_tokens
+    assert "dynamic_incident_reroute_gate" in capability.required_tokens
+    assert capability.gate == "dynamic_incident_reroute_gate"
+
+
+def test_terrain_network_cost_is_renderable_capability():
+    capability = get_capability("terrain_network_cost")
+
+    assert capability.renderable is True
+    assert capability.spatial_type == "terrain"
+    assert capability.mechanism == "terrain_network_cost"
+    assert capability.coupling == "terrain_network"
+    assert capability.layers == ("terrain bridge heightfield", "GeoNetwork")
+    assert "GeoNetwork" in capability.required_tokens
+    assert "LineString" in capability.required_tokens
+    assert "terrain_cost_per_edge" in capability.required_tokens
+    assert "terrain_network_coupling_gate" in capability.required_tokens
+    assert capability.gate == "terrain_network_coupling_gate"
+
+
+def test_terrain_aware_routing_is_renderable_capability():
+    capability = get_capability("terrain_aware_routing")
+
+    assert capability.renderable is True
+    assert capability.spatial_type == "terrain"
+    assert capability.mechanism == "terrain_aware_routing"
+    assert capability.coupling == "terrain_network_routing"
+    assert capability.layers == ("terrain bridge heightfield", "GeoNetwork")
+    assert "GeoNetwork" in capability.required_tokens
+    assert "LineString" in capability.required_tokens
+    assert "terrain_aware_shortest_path" in capability.required_tokens
+    assert "terrain_aware_routing_gate" in capability.required_tokens
+    assert capability.gate == "terrain_aware_routing_gate"
+
+
 def test_mechanism_contagion_is_renderable_capability():
     capability = get_capability("mechanism_contagion")
 
@@ -168,12 +215,15 @@ def test_renderable_capability_list_only_contains_codegen_supported_cells():
         "temporal_flood_evacuation",
         "dynamic_flood_evacuation",
         "dynamic_congestion_routing",
+        "dynamic_incident_routing",
         # NetLogo gis-extension parity (Phase 1 / 2 / 3)
         "topology_clip",
         "raster_focal",
         "raster_coverage",
-        # Platform ABM: codegen emits a full GISAgent/GISModel ABM
+        # Platform ABM (ADR-020): codegen emits a full GISAgent/GISModel ABM
         "gis_abm_platform",
+        "terrain_network_cost",
+        "terrain_aware_routing",
     }
 
 

@@ -1,0 +1,19 @@
+{
+  "csv_path": "my_downloaded_counts.csv",
+  "dataset": "human-downloaded-traffic-counts",
+  "source_url": "https://example.test/replace-with-source-url",
+  "license": "replace with source license",
+  "crs": "EPSG:3857",
+  "columns": {
+    "id": "station_id",
+    "x": "x",
+    "y": "y",
+    "count": "count"
+  },
+  "max_distance_m": 25.0,
+  "aggregation": "sum",
+  "expected_edge_values": {
+    "(0, 0)|(10, 0)": 100.0
+  },
+  "description": "Template for a locally prepared traffic-count CSV."
+}

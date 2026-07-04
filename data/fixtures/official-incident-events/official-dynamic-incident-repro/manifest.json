@@ -1,0 +1,23 @@
+{
+  "schema": "abm-auto/official-dynamic-incident-event-effect-repro/v1",
+  "dataset": "Synthetic official-style incident dynamic event-effect smoke",
+  "source_url": "https://example.test/transport/incidents",
+  "source_agency": "Example Department of Transportation",
+  "license": "Synthetic fixture for tests; cite source in real manifests",
+  "downloaded_at": "2026-07-03",
+  "incident_manifest_path": "../test_manifest.json",
+  "run": {
+    "n_steps": 4,
+    "speed_m_per_tick": 100.0,
+    "reroute": false
+  },
+  "expected": {
+    "expected_n_matched_incidents": 2,
+    "expected_arrival_delay": 2.0,
+    "expected_waiting_delta": 2.0,
+    "expected_incident_steps_with_closed_edges": [1, 2],
+    "expected_max_closed_edges": 1,
+    "expected_changed": true
+  },
+  "boundary_note": "Official dynamic incident reproducibility pack over a synthetic official-style fixture only; not traffic-flow validity, not production map matching, not real incident calibration, not route optimality, and not optimal incident management."
+}

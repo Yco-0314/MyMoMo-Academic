@@ -1,0 +1,38 @@
+{
+  "schema": "abm-auto/official-incident-event-intake/v1",
+  "dataset": "Agency road closure events prepared sample",
+  "source_url": "https://agency.example/road-closures",
+  "source_agency": "Example Transportation Agency",
+  "license": "Document the official license or public-domain statement here",
+  "downloaded_at": "2026-07-03",
+  "raw_local_path": "raw_events.csv",
+  "raw_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "prepared_events_path": "prepared_events.csv",
+  "prepared_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+  "preparation_steps": [
+    "Downloaded agency event rows outside the test suite.",
+    "Selected a bounded spatial and temporal slice.",
+    "Mapped event timestamps to integer simulation ticks explicitly."
+  ],
+  "crs": "EPSG:3857",
+  "columns": {
+    "id": "event_id",
+    "x": "x",
+    "y": "y",
+    "t": "t",
+    "closed": "closed"
+  },
+  "event_time_unit": "tick",
+  "geographic_scope": "bounded agency event sample",
+  "max_distance_m": 25.0,
+  "expected_min_coverage": 1.0,
+  "expected_max_match_distance_m": 25.0,
+  "expected_event_edges": {
+    "evt-1": {
+      "edge": "(0, 0)|(100, 0)",
+      "t": 1,
+      "closed": true
+    }
+  },
+  "boundary_note": "Official incident intake plumbing only; not traffic-flow validity, not production map matching, and not optimal incident management."
+}

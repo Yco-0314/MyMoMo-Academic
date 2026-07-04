@@ -15,6 +15,10 @@ from abm_auto.gis._observed_raster_repro import (
 )
 
 
+FIXTURE_DIR = Path("data/fixtures/observed-raster")
+TEST_MANIFEST = FIXTURE_DIR / "test_manifest.json"
+
+
 def _cluster(top: int, left: int, size: int = 2, shape=(6, 6)) -> np.ndarray:
     # ponytail: dtype is float32 ON PURPOSE here (the repro path pins float32
     # reproduction — see astype/dtype="float32" below). The sibling test files use
@@ -158,11 +162,8 @@ def test_calibrate_observed_raster_from_manifest_uses_grid_and_metadata(tmp_path
     assert result["manifest_license"].startswith("local test fixture")
 
 
-def test_observed_raster_repro_gate_passes_with_local_fixture_boundary(tmp_path):
-    _write_tiff(tmp_path / "observed.tif")
-    _write_manifest(tmp_path / "manifest.json")
-
-    ok, desc = observed_raster_repro_gate(tmp_path / "manifest.json")
+def test_observed_raster_repro_gate_passes_with_local_fixture_boundary():
+    ok, desc = observed_raster_repro_gate(TEST_MANIFEST)
 
     assert ok, desc
     assert "observed-raster repro pack selected expected parameters" in desc

@@ -1,0 +1,42 @@
+{
+  "schema": "abm-auto/official-incident-clock-map/v1",
+  "dataset": "King County RoadClosures_public bounded closure timestamp map",
+  "source_url": "https://services.arcgis.com/Ej0PsM5Aw677QF1W/arcgis/rest/services/RoadClosures_public_6e0ca9e8f25344ffa4c4a11b305884c3/FeatureServer/1",
+  "source_agency": "King County Emergency Management",
+  "license": "King County public road-closure service terms; bounded sample for reproducibility tests",
+  "downloaded_at": "2026-07-03",
+  "timestamped_events_path": "timestamped_events.csv",
+  "timestamped_sha256": "349ed200b87b10979cc616c72255bb9d90d051fe1d6b1c785707b652fc0f0024",
+  "preparation_steps": [
+    "Saved one bounded non-test closure feature from King County RoadClosures_public Closures layer.",
+    "Converted ArcGIS epoch-millisecond starttime/endtime to ISO-8601 UTC timestamps.",
+    "Used the first closure segment midpoint as the representative event point."
+  ],
+  "columns": {
+    "id": "incident_id",
+    "x": "x",
+    "y": "y",
+    "started_at": "started_at",
+    "ended_at": "ended_at"
+  },
+  "clock": {
+    "simulation_start": "2025-12-17T07:00:00+00:00",
+    "tick_seconds": 3600,
+    "local_utc_offset": null,
+    "start_rounding": "floor",
+    "end_rounding": "ceil"
+  },
+  "expected_tick_events": {
+    "67da9afb-5c94-42a1-8406-659ced32b886:close": {
+      "incident_id": "67da9afb-5c94-42a1-8406-659ced32b886",
+      "t": 0,
+      "closed": true
+    },
+    "67da9afb-5c94-42a1-8406-659ced32b886:reopen": {
+      "incident_id": "67da9afb-5c94-42a1-8406-659ced32b886",
+      "t": 9,
+      "closed": false
+    }
+  },
+  "boundary_note": "Bounded real official road-closure timestamp map only; not traffic-flow validity, not production map matching, not route-choice validation, not incident calibration, and not a full live feed."
+}

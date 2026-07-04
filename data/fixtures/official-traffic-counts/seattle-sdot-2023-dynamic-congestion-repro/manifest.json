@@ -1,0 +1,27 @@
+{
+  "schema": "abm-auto/official-dynamic-congestion-validation-repro/v1",
+  "dataset": "Seattle SDOT 2023 FLOWMAP dynamic congestion validation smoke",
+  "source_url": "https://services.arcgis.com/ZOyb2t4B0UYuYNYH/arcgis/rest/services/Seattle_Streets_1/FeatureServer/0",
+  "source_agency": "Seattle Department of Transportation",
+  "license": "City of Seattle open data terms; official item states no representation or warranty as to accuracy",
+  "downloaded_at": "2026-07-02",
+  "centerline_match_manifest_path": "../seattle-sdot-2023-centerline-match/manifest.json",
+  "run": {
+    "agents_per_edge": 1,
+    "comparison_agents_per_edge": 2,
+    "n_steps": 2,
+    "speed_m_per_tick": 1000.0,
+    "congestion_alpha": 0.0,
+    "reroute": true
+  },
+  "expected": {
+    "expected_n_edges": 3,
+    "expected_min_coverage": 1.0,
+    "expected_low_simulated_total": 3.0,
+    "expected_high_simulated_total": 6.0,
+    "expected_worst_edge_street": "15TH AVE NE",
+    "expected_worst_edge_objectid": 9659868,
+    "expected_min_loss_delta": 0.0001
+  },
+  "boundary_note": "Official dynamic congestion reproducibility pack over a bounded Seattle SDOT sample only; not traffic-flow validity, not congestion calibration, not capacity inference, and not production traffic assignment."
+}

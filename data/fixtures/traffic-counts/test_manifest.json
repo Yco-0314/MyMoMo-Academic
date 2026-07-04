@@ -1,0 +1,20 @@
+{
+  "csv_path": "test_counts.csv",
+  "dataset": "local-test-traffic-counts",
+  "source_url": "local://data/fixtures/traffic-counts",
+  "license": "local test fixture; not official traffic data",
+  "crs": "EPSG:3857",
+  "columns": {
+    "id": "station_id",
+    "x": "x",
+    "y": "y",
+    "count": "count"
+  },
+  "max_distance_m": 1.0,
+  "aggregation": "sum",
+  "expected_edge_values": {
+    "(0, 0)|(10, 0)": 100.0,
+    "(0, 10)|(10, 10)": 40.0
+  },
+  "description": "Tiny local count-station fixture for manifest plumbing."
+}

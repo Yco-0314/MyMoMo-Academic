@@ -1,11 +1,15 @@
-"""Tests for the L3 reproduction-bundle primitive."""
+"""Tests for the L3 reproduction-bundle primitive (ADR-023 L3 / ladder #6)."""
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import abm_auto.gis._repro_bundle as repro_bundle
 from abm_auto.verification.gate import Verdict
 from abm_auto.gis._repro_bundle import SCHEMA, build_bundle, verdict_to_dict, write_bundle
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+ANSHUKA_BUNDLE = REPO_ROOT / "docs/reproduce/anshuka-2026-real-dem/verdict-bundle.json"
 
 
 def test_verdict_to_dict_carries_value_and_threshold():
@@ -64,6 +68,43 @@ def test_write_bundle_roundtrips(tmp_path):
                      data_artifacts={}, doc_artifacts={}, repo=tmp_path)
     p = write_bundle(b, tmp_path / "verdict-bundle.json")
     assert json.loads(p.read_text(encoding="utf-8"))["schema"] == SCHEMA
+
+
+def test_committed_anshuka_l3_bundle_passes_integrity_gate():
+    result = repro_bundle.validate_repro_bundle_file(ANSHUKA_BUNDLE, repo=REPO_ROOT)
+
+    assert result["ok"], result["issues"]
+    assert result["verdict_count"] == 5
+    assert result["failed_verdict_count"] == 2
+    assert result["doc_hashes_checked"] >= 3
+    assert result["data_fingerprint_count"] >= 1
+
+    ok, desc = repro_bundle.repro_bundle_integrity_gate(ANSHUKA_BUNDLE, repo=REPO_ROOT)
+    assert ok, desc
+    assert "L3 bundle integrity gate passed" in desc
+    assert "not a rerun of the reproduction" in desc
+
+
+def test_validate_repro_bundle_rejects_absolute_local_paths():
+    bundle = json.loads(ANSHUKA_BUNDLE.read_text(encoding="utf-8"))
+    bundle["docs"]["predictions_locked"]["path"] = str(
+        REPO_ROOT / "docs/reproduce/anshuka-2026-real-dem/PREDICTIONS-locked.md"
+    )
+
+    result = repro_bundle.validate_repro_bundle(bundle, repo=REPO_ROOT)
+
+    assert not result["ok"]
+    assert any("absolute local path" in issue for issue in result["issues"])
+
+
+def test_validate_repro_bundle_detects_stale_doc_hash():
+    bundle = json.loads(ANSHUKA_BUNDLE.read_text(encoding="utf-8"))
+    bundle["docs"]["findings"]["sha256"] = "0" * 64
+
+    result = repro_bundle.validate_repro_bundle(bundle, repo=REPO_ROOT)
+
+    assert not result["ok"]
+    assert any("sha256 mismatch" in issue for issue in result["issues"])
 
 
 def _minimal_l3_bundle(tmp_path, **extra_kwargs):
@@ -156,24 +197,3 @@ def test_validate_repro_bundle_flags_malformed_benchmark(tmp_path):
 
     assert not result["ok"]
     assert any("benchmark" in issue for issue in result["issues"])
-
-
-def test_validate_repro_bundle_rejects_absolute_local_paths(tmp_path):
-    b = _minimal_l3_bundle(tmp_path)
-    # an authored bundle must store repo-relative paths, never machine-local absolutes
-    b["docs"]["predictions_locked"]["path"] = str(tmp_path / "predictions_locked.md")
-
-    result = repro_bundle.validate_repro_bundle(b, repo=tmp_path)
-
-    assert not result["ok"]
-    assert any("absolute local path" in issue for issue in result["issues"])
-
-
-def test_validate_repro_bundle_detects_stale_doc_hash(tmp_path):
-    b = _minimal_l3_bundle(tmp_path)
-    b["docs"]["findings"]["sha256"] = "0" * 64
-
-    result = repro_bundle.validate_repro_bundle(b, repo=tmp_path)
-
-    assert not result["ok"]
-    assert any("sha256 mismatch" in issue for issue in result["issues"])

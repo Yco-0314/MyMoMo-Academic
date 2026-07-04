@@ -206,11 +206,8 @@ def test_load_traffic_count_manifest_rejects_json_non_object(tmp_path):
         load_traffic_count_manifest(path)
 
 
-def test_fixture_manifest_loads_and_resolves_csv_path(tmp_path):
-    _write_csv(tmp_path / "test_counts.csv")
-    _write_manifest(tmp_path / "manifest.json", csv_path="test_counts.csv")
-
-    manifest = load_traffic_count_manifest(tmp_path / "manifest.json")
+def test_fixture_manifest_loads_from_default_path():
+    manifest = load_traffic_count_manifest(DEFAULT_TRAFFIC_COUNT_MANIFEST)
 
     assert manifest["dataset"] == "local-test-traffic-counts"
     assert manifest["csv_path"].endswith("test_counts.csv")
@@ -434,14 +431,8 @@ def test_observed_network_from_traffic_count_manifest_rejects_crs_mismatch(tmp_p
         )
 
 
-def test_traffic_count_repro_gate_passes_with_local_fixture_boundary(tmp_path):
-    _write_multi_station_csv(tmp_path / "traffic_counts.csv")
-    _write_manifest(
-        tmp_path / "manifest.json",
-        columns={"id": "id_col", "x": "easting", "y": "northing", "count": "vehicles"},
-    )
-
-    ok, desc = traffic_count_repro_gate(tmp_path / "manifest.json")
+def test_traffic_count_repro_gate_passes_with_local_fixture_boundary():
+    ok, desc = traffic_count_repro_gate(DEFAULT_TRAFFIC_COUNT_MANIFEST)
 
     assert ok, desc
     assert "traffic-count repro pack matched manifest stations" in desc
