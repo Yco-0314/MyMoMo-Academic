@@ -1,0 +1,128 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Biological homeostasis of the global environment: the parable of Daisyworld",
+    "authors": [
+      "Andrew J. Watson",
+      "James E. Lovelock"
+    ],
+    "year": 1983,
+    "journal": "Tellus B 35(4):284-289",
+    "doi": "10.1111/j.1600-0889.1983.tb00031.x"
+  },
+  "headline": "Watson-Lovelock Daisyworld (agent-based): 2/3 locked clauses REPRO; WITH-daisy temp range 45.3 C over the full locked grid (within the populated window only 6.9 C) vs bare-control 45.3 C; daisy mix shifts black->white as L_sol rises",
+  "code_commit": "faab4405601bdbae9ae61f8f17d1ea6e3dd46e16",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 WITH-daisy mean-temp range over L_sol[0.7,1.3] < 10.0 C (temperature homeostasis)",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        45.2636,
+        10.0
+      ],
+      "reasons": [
+        "WITH-daisy temp range over the full locked grid = 45.26 C (need < 10.0); daisies go extinct at the grid extremes (cold/hot death), where temperature reverts to the bare control \u2014 see the within-window range in results.json"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P2 BARE-control mean-temp range over the same L_sol grid >= 30.0 C (tracks luminosity, no regulation)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        45.2636,
+        30.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 daisy mix shifts black-dominated (low L_sol) -> white-dominated (high L_sol)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.5325,
+        0.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "daisyworld_results": {
+      "kind": "file",
+      "path": "docs/studies/daisyworld/results.json",
+      "sha256": "ed046db55c937cb9847f5704aa4f9ef1fb2eaaad5f9e3e70584d44bad9510501",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/daisyworld/PREDICTIONS-locked.md",
+      "sha256": "33a315b82a4bc48e721f9dbc020f3c5084d721846d59a67f2c5e5ce14bc07808",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/daisyworld/FINDINGS.md",
+      "sha256": "6daf34a7ba696c9d3ee8b17a27f03a6c71e935c1af6ceca8609f83c7f33c6120",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveA-design.md",
+      "sha256": "e43b07a40ac65baa1c4ac23cd98ea8f1c33dfc09492958c894f155047f3d6ecd",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "watson-lovelock-daisyworld",
+    "L": 50,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "L_sol_grid": [
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95,
+      1.0,
+      1.05,
+      1.1,
+      1.15,
+      1.2,
+      1.25,
+      1.3
+    ],
+    "ranges": {
+      "with_daisies_full_grid": 45.2636463669486,
+      "bare_control_full_grid": 45.2636463669486,
+      "with_daisies_populated_window": 6.893168493391837
+    },
+    "model_class": "genuine agent-based, spatial: each grid cell is a Patch agent that perceives its local temperature and acts (death + colonisation); temperature regulation is EMERGENT from local selection, with no global control law",
+    "scope": "faithful reproduction of a published synthetic model (the spatial agent-based analogue of the Watson-Lovelock box model); no real-world data; the contribution is whether the harness + discipline reproduce temperature homeostasis and the black->white albedo shift, and would catch an artifact",
+    "caveat": "Homeostasis is STRONG but BOUNDED: within the populated luminosity window (where daisies persist) the WITH-daisy temperature range is only ~6.9 C while the bare control swings ~33 C \u2014 the regulation mechanism (white daisies cool / black daisies warm via local albedo selection) is clearly reproduced. But at the locked-grid EXTREMES daisies suffer cold death (too cold for the first daisies to establish) / hot death (the optimum is exceeded), and temperature reverts to the bare control. Graded on the FULL locked grid [0.7,1.3], P1's <10 C band is therefore a MISS; this is reported honestly rather than tuned away (the locked grid is wider than this model's homeostasis window). Watson & Lovelock's own Daisyworld also collapses outside a luminosity window."
+  },
+  "citations": [
+    "Watson, A.J. & Lovelock, J.E. (1983). Biological homeostasis of the global environment: the parable of Daisyworld. Tellus B 35(4):284-289. doi:10.1111/j.1600-0889.1983.tb00031.x.",
+    "Lovelock, J.E. (1983). Daisy world - a cybernetic proof of the Gaia hypothesis. CoEvolution Quarterly 38:66-72."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction. The literature anchor is temperature homeostasis over a luminosity range plus the black->white albedo shift; the spatial agent-based world reproduces both WITHIN its homeostasis window and collapses outside it (as the original does)."
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Nonlinear q-voter model",
+    "authors": [
+      "Claudio Castellano",
+      "Miguel A. Munoz",
+      "Romualdo Pastor-Satorras"
+    ],
+    "year": 2009,
+    "journal": "Physical Review E 80, 041129",
+    "doi": "10.1103/PhysRevE.80.041129"
+  },
+  "headline": "q-voter nonlinear opinion dynamics: 1/3 locked clauses REPRO; q=1 worst offset=0.092, q=4 max nonlinear deviation=0.300, noise P(all-up) drop=0.000",
+  "code_commit": "ef44a7e33a5f7b31e242f3e5b9e9875ed869b1ff",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 q=1, epsilon=0: P(all-up) within +/-0.07 of u",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.0917,
+        0.07
+      ],
+      "reasons": [
+        "offsets: u=0.2: 0.0167, u=0.5: 0.0917, u=0.8: 0.0917"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P2 q=4, epsilon=0 nonlinear exit curve: off-centre deviation >=0.08 and E(0.5) within +/-0.08",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.3,
+        0.08
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 q=4, u=0.7: epsilon=0.15 lowers P(all-up) or raises capped/mixed outcomes vs epsilon=0",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.0,
+        0.0
+      ],
+      "reasons": [
+        "P(all-up) epsilon=0=1.0000, epsilon=0.15=1.0000; capped rates 0.0000 -> 0.0000"
+      ],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/q-voter/results.json",
+      "sha256": "89eeca49dbb5407aa0e211f4bde282ae6e3bb36ea8dd762e74539df1371a6510",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/q-voter/PREDICTIONS-locked.md",
+      "sha256": "77fb8e81c16a4cadc6e4782830568c27a3253fb802b7a31d5de810d3f0d98264",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/q-voter/FINDINGS.md",
+      "sha256": "aac320c29fae5a2567fbf660f438e083704846e27fddf47149099675ea267678",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-batch7-design.md",
+      "sha256": "38e5c736701fcc2618fa92f6cceeb79d4a4e70ad6b5969b50f515f28396349bc",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "q-voter",
+    "n": 400,
+    "n_runs": 120,
+    "scope": "faithful synthetic-model reproduction; no empirical opinion data"
+  },
+  "citations": [
+    "Castellano, C., Munoz, M.A., & Pastor-Satorras, R. (2009). Nonlinear q-voter model. Physical Review E 80, 041129. doi:10.1103/PhysRevE.80.041129."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "single implementation checked against locked qualitative q-voter signatures"
+  }
+}

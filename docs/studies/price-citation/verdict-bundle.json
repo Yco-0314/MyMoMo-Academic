@@ -1,0 +1,118 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "A general theory of bibliometric and other cumulative advantage processes",
+    "authors": [
+      "Derek J. de Solla Price"
+    ],
+    "year": 1976,
+    "journal": "Journal of the American Society for Information Science 27(5):292-306",
+    "doi": "10.1002/asi.4630270505"
+  },
+  "headline": "Price 1976 cumulative-advantage citation model (agent-based): 2/3 locked clauses REPRO; never-cited p0=0.571 (analytic 0.571), tail gamma-hat=2.21 vs m=1 contrast 2.73; constant out-degree m=3, k_max~2734",
+  "code_commit": "a37ffe4ca272c8a31ab41caf32522946d8a46521",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 directed DAG + constant out-degree: non-seed out-degree exactly m (var~0), k_max in [40,400], Var(in)/Var(out)>50",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        2733.7,
+        400.0
+      ],
+      "reasons": [
+        "non-seed out-degree all == m: True; out-degree var ~ 0: True; k_max per seed = [2841, 3381, 1979] (band [40,400]); Var(in)/Var(out) per seed = [261997.4, 274241.9, 233020.4] (need > 50.0)"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P2 large never-cited mass: zero-in-degree fraction in [0.52,0.62] (analytic 4/7~0.571; BA gives 0)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.5712,
+        0.62
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 tunable heavy tail gamma<3: KS-selected discrete-MLE gamma-hat in [2.1,2.9] at m=3, and higher at the m=1 contrast (a/m tunability)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        2.21,
+        2.9
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/price-citation/results.json",
+      "sha256": "427aaa3a85c29ca584715152df410fe8f6ff5a1bacb99df8bc3633d972be98a0",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/price-citation/PREDICTIONS-locked.md",
+      "sha256": "9f5de66487cdd29276dd787fd105effdfa1d085407c49137d38ca52b37a89596",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/price-citation/FINDINGS.md",
+      "sha256": "8d86b069bfdec178148284a1aafc3122fe02bc8b0751dc24cfb77e0c70aa70a1",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "price-1976-cumulative-advantage-citation",
+    "m": 3,
+    "a": 1,
+    "n_seeds": 20,
+    "n_struct": 50000,
+    "n_tail": 100000,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "analytic_gamma": 2.3333333333333335,
+    "analytic_p0": 0.5714285714285714,
+    "mean_p0": 0.57116,
+    "mean_kmax": 2733.6666666666665,
+    "mean_gamma_m3": 2.210028672202872,
+    "mean_gamma_m1_contrast": 2.7349260083771036,
+    "framing": "network-generation reproduction (disclosed)",
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the FIRST cumulative-advantage network (directed DAG, large never-cited mass, tunable gamma<3) and would catch an artifact, and how it is distinct from BA"
+  },
+  "citations": [
+    "Price, D. J. de Solla (1976). A general theory of bibliometric and other cumulative advantage processes. Journal of the American Society for Information Science 27(5):292-306. doi:10.1002/asi.4630270505.",
+    "Price, D. J. de Solla (1965). Networks of scientific papers. Science 149(3683):510-515.",
+    "Newman, M. E. J. (2010). Networks: An Introduction (Oxford Univ. Press), ch. 14 (Price model master-equation derivation of gamma = 2 + a/m).",
+    "Clauset, A., Shalizi, C. R. & Newman, M. E. J. (2009). Power-law distributions in empirical data. SIAM Review 51(4):661-703."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against finite-size-robust structural signatures (constant out-degree, never-cited mass, in/out variance ratio) plus the CSN KS-selected tail exponent"
+  }
+}

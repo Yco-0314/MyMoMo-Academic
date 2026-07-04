@@ -1,0 +1,243 @@
+{
+  "model": "couzin-informed-leadership-2005 (genuine-agent zonal SPP, disclosed)",
+  "config": {
+    "omega": 0.5,
+    "zor": 1.0,
+    "dzoo": 6.0,
+    "zoa_width": 8.0,
+    "theta_max": 0.35,
+    "sigma": 0.05,
+    "speed": 1.0,
+    "init_radius": 5.0,
+    "n_steps": 800,
+    "measure_last": 300,
+    "n_seeds": 6,
+    "n_seeds_p3": 8,
+    "seed_base": 0,
+    "target_accuracy": 0.9,
+    "p1_n": 100,
+    "p1_max_fraction": 0.1,
+    "p2_n_small": 30,
+    "p2_n_large": 200,
+    "theta_small_deg": 40.0,
+    "theta_large_deg": 150.0,
+    "p3_small_max_offset_deg": 30.0,
+    "p3_large_min_offset_deg": 60.0,
+    "knob": "informed fraction p and group size N are swept; all rules/geometry fixed"
+  },
+  "sweep_N30": {
+    "n": 30,
+    "realised_p_inf": [
+      0.03333333333333333,
+      0.06666666666666667,
+      0.1,
+      0.13333333333333333,
+      0.2,
+      0.3,
+      0.4
+    ],
+    "n_informed": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      9,
+      12
+    ],
+    "mean_accuracy": [
+      0.9416281385949564,
+      0.9826557107462065,
+      0.9760197889804272,
+      0.9889425452279488,
+      0.9937824728047119,
+      0.9968919998045737,
+      0.9983182806675988
+    ],
+    "std_accuracy": [
+      0.0648952743610255,
+      0.006227227156840552,
+      0.02281017556816217,
+      0.006656968510499746,
+      0.0036429846024044993,
+      0.0013108781256002868,
+      0.00040442598909975656
+    ],
+    "min_accuracy": [
+      0.800560410082433,
+      0.9754260681845179,
+      0.940478836727278,
+      0.9773220601688888,
+      0.987312532005465,
+      0.9948292618850377,
+      0.9978625288528178
+    ],
+    "fraction_to_reach_target": 0.03333333333333333
+  },
+  "sweep_N100": {
+    "n": 100,
+    "realised_p_inf": [
+      0.02,
+      0.05,
+      0.08,
+      0.1,
+      0.15,
+      0.2,
+      0.3
+    ],
+    "n_informed": [
+      2,
+      5,
+      8,
+      10,
+      15,
+      20,
+      30
+    ],
+    "mean_accuracy": [
+      0.7050394250748804,
+      0.4336067143488062,
+      0.8531514418869234,
+      0.9201919905557013,
+      0.9505961342160147,
+      0.9511113088006448,
+      0.9729430464209253
+    ],
+    "std_accuracy": [
+      0.13780141779543936,
+      0.5699451409309616,
+      0.17503208246901364,
+      0.035737819303824345,
+      0.030692702868337498,
+      0.019635202524121403,
+      0.01843210885811712
+    ],
+    "min_accuracy": [
+      0.5232028093394289,
+      -0.5691246663351816,
+      0.4831926250588993,
+      0.8712276530364009,
+      0.9009734038390433,
+      0.9107818635399442,
+      0.9335079677220678
+    ],
+    "fraction_to_reach_target": 0.1
+  },
+  "sweep_N200": {
+    "n": 200,
+    "realised_p_inf": [
+      0.02,
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.3,
+      0.4
+    ],
+    "n_informed": [
+      4,
+      10,
+      20,
+      30,
+      40,
+      60,
+      80
+    ],
+    "mean_accuracy": [
+      0.24619472937343492,
+      0.5276320863715206,
+      0.794535361045146,
+      0.8647433442627369,
+      0.8411995591700204,
+      0.9740187479002002,
+      0.9634478533281775
+    ],
+    "std_accuracy": [
+      0.5469556566966505,
+      0.33308551997542124,
+      0.15369111200482174,
+      0.10638102415045093,
+      0.10957905124726727,
+      0.014182431713610942,
+      0.02788046760804026
+    ],
+    "min_accuracy": [
+      -0.6117587636095704,
+      0.1713379393444953,
+      0.5260629828031023,
+      0.6966335527302017,
+      0.6357718887033591,
+      0.9548630236989146,
+      0.9024103393865573
+    ],
+    "fraction_to_reach_target": 0.3
+  },
+  "p3_small_theta": {
+    "theta_deg": 40.0,
+    "half_theta_deg": 20.0,
+    "n_informed": 10,
+    "mean_abs_offset_deg": 15.318232360244554,
+    "per_seed_abs_offset_deg": [
+      8.327682156361906,
+      19.32442771885186,
+      2.943715323982778,
+      18.699782891658234,
+      6.726560756313262,
+      17.491090184273872,
+      18.367460439534092,
+      30.665139410980427
+    ],
+    "mean_polarization": 0.7592090805591962
+  },
+  "p3_large_theta": {
+    "theta_deg": 150.0,
+    "half_theta_deg": 75.0,
+    "n_informed": 10,
+    "mean_abs_offset_deg": 84.77745825259635,
+    "per_seed_abs_offset_deg": [
+      142.3593529574865,
+      2.0829674308772117,
+      11.784510966880806,
+      109.63450049255789,
+      64.22282149396203,
+      60.65138792180233,
+      111.69226759900315,
+      175.7918571582008
+    ],
+    "mean_polarization": 0.753166549217438
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 few leaders suffice: at N=100, mean accuracy > 0.9 with informed fraction <= 0.1",
+      "salient_number": [
+        0.92,
+        0.9
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": false,
+      "gate": "P2 leader economy: fraction to reach accuracy 0.9 is strictly smaller for N=200 than N=30",
+      "salient_number": [
+        0.3,
+        0.033
+      ],
+      "reasons": [
+        "fraction to reach 0.9: N=30 -> 0.033; N=200 -> 0.300; need N=200 STRICTLY smaller than N=30 (observed: larger group needs a LARGER fraction — fixed zone radii do not scale with N, so the big group is sparser and less cohesive)"
+      ]
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 averaging->commitment: heading offset from bisector <= 30deg at theta=40deg (averaged) AND >= 60deg at theta=150deg (committed)",
+      "salient_number": [
+        84.8,
+        60.0
+      ],
+      "reasons": []
+    }
+  ]
+}

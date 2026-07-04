@@ -1,0 +1,107 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Continuous opinions and discrete actions in opinion dynamics problems",
+    "authors": [
+      "Andre C. R. Martins"
+    ],
+    "year": 2008,
+    "journal": "Int. J. Mod. Phys. C 19(4):617-624",
+    "doi": "10.1142/S0129183108012339"
+  },
+  "headline": "Martins 2008 CODA (agent-based): 3/3 locked clauses REPRO; hidden beliefs extremize to max|l|/nu~1756 (still doubling), final extremist-dominated, same-action clusters collapse ~337->8 (bar 250); distinctness signature: discrete-action Bayesian updating DIVERGES to certainty, inverting bounded-confidence averaging",
+  "code_commit": "2f0c8692ae38489d4820cf6a73062eff51eab24c",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 opinions extremize without bound: max|l|/nu >= 100 at 2M updates AND still growing (>= 1.3x when doubled to 4M)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        879.0,
+        100.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 final distribution is U-shaped / extremist-dominated: frac(|l|/nu >= 50) > frac(|l|/nu < 1) at the end of the run",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9448,
+        0.0032
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 agreeing agents form contiguous same-action domains: connected same-action clusters <= 0.1*N (far below the random start)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        8.0,
+        250.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/coda-continuous-opinions/results.json",
+      "sha256": "262cdc561fecbe417064b9163afa509f534a7b788d715623624003cc4d297212",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/coda-continuous-opinions/PREDICTIONS-locked.md",
+      "sha256": "3849361b514f468f2cbe0542e86b4c2ec3e88d350f839911e676f0dac1f122dc",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/coda-continuous-opinions/FINDINGS.md",
+      "sha256": "07838714c8acea64bb80b8253d2b374c9b34ed823b690df6ab50fd6bffe08f2f",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-batch7-design.md",
+      "sha256": "38e5c736701fcc2618fa92f6cceeb79d4a4e70ad6b5969b50f515f28396349bc",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "martins-2008-coda",
+    "L": 50,
+    "N": 2500,
+    "alpha": 0.7,
+    "nu": 0.8472978603872034,
+    "n_seeds": 3,
+    "n_updates": 4000000,
+    "framing": "genuine agent-based \u2014 each agent carries a hidden continuous log-odds belief and exposes only a discrete action; the unit of action is one asynchronous single-observation Bayesian update",
+    "final_max_abs_l_over_nu": 1755.8257329113806,
+    "final_max_components": 8,
+    "baseline_max_components": 337,
+    "distinctness": "discrete-action Bayesian updating DIVERGES to certainty (extremization); inverts bounded-confidence (Deffuant/HK) averaging toward moderation",
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + lock-first discipline reproduce extremization + same-action domain formation and would catch an artifact"
+  },
+  "citations": [
+    "Martins, A.C.R. (2008). Continuous opinions and discrete actions in opinion dynamics problems. Int. J. Mod. Phys. C 19(4):617-624. doi:10.1142/S0129183108012339. (arXiv:0711.1199.)"
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the locked extremization, bimodality, and same-action domain-count metrics"
+  }
+}

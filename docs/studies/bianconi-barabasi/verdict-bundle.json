@@ -1,0 +1,110 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Bose-Einstein condensation in complex networks",
+    "authors": [
+      "Ginestra Bianconi",
+      "Albert-Laszlo Barabasi"
+    ],
+    "year": 2001,
+    "journal": "Physical Review Letters 86:5632-5635",
+    "doi": "10.1103/PhysRevLett.86.5632"
+  },
+  "headline": "Bianconi-Barabasi 2001 (fitness network): 2/3 locked clauses REPRO; fit-get-richer aged-Spearman=0.532, condensation f_max=0.145 (uniform 0.024), gamma=2.587",
+  "code_commit": "3b6786cd68569ee0f5459bcf3640b263b958850c",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 fit-get-richer (uniform rho): median(k|eta>0.67)/median(k|eta<0.33) >= 2.0 in >= 3/4 birth-time bins AND aged-cohort Spearman(eta,k) >= 0.5; no-fitness BA rerun shows neither",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.5317,
+        0.5
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 condensation contrast: condensing f_max >= 0.15 at N=5e4 AND >= 0.7*f_max(1e4) (non-vanishing); uniform f_max <= 0.05 AND shrinking; gap >= 0.10",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.145,
+        0.15
+      ],
+      "reasons": [
+        "condensing f_max: 1e4=0.1415, 5e4=0.1450 (need 5e4>=0.15 AND >=0.7*1e4=0.0990); uniform f_max: 1e4=0.0401, 5e4=0.0240 (need 5e4<=0.05 AND < 1e4); gap=0.1210 (need >= 0.1)"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P3 (soft, corroborating) uniform-rho degree exponent gamma in [1.9, 2.7] AND < 2.9 (distinguishable from BA's 3)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        2.5871,
+        2.7
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/bianconi-barabasi/results.json",
+      "sha256": "bde64225cdcb8d9e4e86916bc42de93956001ffcd808ad5ec8521a13461bac0d",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/bianconi-barabasi/PREDICTIONS-locked.md",
+      "sha256": "647a4a1bb4e5ecf1554ed943f6604ea668f04827577dc40e6ef5d9a7fd9d8d53",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/bianconi-barabasi/FINDINGS.md",
+      "sha256": "0a1a884fcded389f13fdfdb2dee93d95f00ba0c9dd191480796c7c174fcfa1c5",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "bianconi-barabasi-2001-fitness-network",
+    "n": 50000,
+    "n_small": 10000,
+    "m": 2,
+    "n_seeds": 4,
+    "condensing_theta": 10.0,
+    "uniform_mean_spearman_aged": 0.5317498996139922,
+    "uniform_mean_spearman_all": 0.3650878863281004,
+    "condensing_mean_fmax_5e4": 0.14496934908047243,
+    "condensing_mean_fmax_1e4": 0.14149622443366505,
+    "uniform_mean_fmax_5e4": 0.023995719871596148,
+    "uniform_mean_gamma": 2.587097133867792,
+    "scope": "faithful reproduction of a published synthetic network-generation model; no real-world data. The contribution is whether the harness + locked-prediction discipline reproduce fit-get-richer + Bose-Einstein condensation with the paper's disclosed condensing fitness law, and would catch an artifact (the no-fitness BA rerun must fail P1/P2)"
+  },
+  "citations": [
+    "Bianconi, G. & Barabasi, A.-L. (2001). Bose-Einstein condensation in complex networks. Physical Review Letters 86:5632-5635. doi:10.1103/PhysRevLett.86.5632."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the fit-get-richer coupling, the condensate fraction f_max, and the soft degree exponent, with a no-fitness BA control"
+  }
+}

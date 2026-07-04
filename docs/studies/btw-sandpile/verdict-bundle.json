@@ -1,0 +1,108 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Self-organized criticality: An explanation of the 1/f noise",
+    "authors": [
+      "Per Bak",
+      "Chao Tang",
+      "Kurt Wiesenfeld"
+    ],
+    "year": 1987,
+    "journal": "Phys. Rev. Lett. 59:381-384",
+    "doi": "10.1103/PhysRevLett.59.381"
+  },
+  "headline": "BTW sandpile (cellular automaton / SOC): 3/3 locked clauses REPRO; fitted tau=1.261 (kmin=1), nonzero sizes span 4.0 decades (max/median=414x), stationary mean height=2.098",
+  "code_commit": "7d70ec48db8c4d9e7b50ab335047d7c4c85dfa9b",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 fitted tail exponent tau in [0.9, 1.6] (power-law avalanche sizes, BTW 2D tau~1.2)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.261,
+        1.6
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 heavy-tailed: nonzero sizes span >= 2.0 decades AND max >= 100.0x median nonzero",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        3.9973,
+        2.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 stationary mean height in [2.0, 2.2] (self-organized critical state)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        2.0978,
+        2.2
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sandpile_results": {
+      "kind": "file",
+      "path": "docs/studies/btw-sandpile/results.json",
+      "sha256": "48866815282b5bea8c80b85ff414270a43c369d728400243f189b0d59dcb10bc",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/btw-sandpile/PREDICTIONS-locked.md",
+      "sha256": "9516b55d158f6870b9ce25160753190da4dec388564718019db697fadaad4a12",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/btw-sandpile/FINDINGS.md",
+      "sha256": "55e07fb6c9a379960bb5ff0a58d671ef32aca2a2a603f986526aeb74a944c7b7",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave3-design.md",
+      "sha256": "f19764e539b43f5dd824fa3ba874cf52380ae1f8bda4e2a520381a8fe25fef6a",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "btw-sandpile",
+    "L": 50,
+    "transient": 100000,
+    "n_avalanches": 200000,
+    "seed": 0,
+    "fit_method": "exact discrete power-law MLE (zeta-likelihood; Clauset et al. 2009), kmin=1",
+    "kmin": 1,
+    "tau": 1.2609836433062374,
+    "stationary_mean_height": 2.0977726000000003,
+    "model_class": "cellular automaton / self-organized criticality (NOT agent-stepping ABM): a deterministic toppling rule is applied to a grid of integer heights; there are no agents, no scheduler, no per-agent decisions",
+    "scope": "faithful reproduction of a published synthetic CA/SOC result; no real-world data; the contribution is whether the harness + discipline reproduce the SOC power-law (tau~1.2) and would catch an artifact (e.g. a non-power-law or wrong critical mean height)"
+  },
+  "citations": [
+    "Bak, P., Tang, C. & Wiesenfeld, K. (1987). Self-organized criticality: An explanation of the 1/f noise. Phys. Rev. Lett. 59:381-384. doi:10.1103/PhysRevLett.59.381.",
+    "Clauset, A., Shalizi, C.R. & Newman, M.E.J. (2009). Power-law distributions in empirical data. SIAM Review 51(4):661-703 (discrete-MLE estimator)."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction. Canonical 2D BTW exponent tau~1.2 serves as the literature anchor (P1)."
+  }
+}

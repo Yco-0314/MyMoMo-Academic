@@ -1,0 +1,111 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Threshold-range scaling of excitable cellular automata",
+    "authors": [
+      "Robert Fisch",
+      "Janko Gravner",
+      "David Griffeath"
+    ],
+    "year": 1991,
+    "journal": "Statistics and Computing 1(1):23-39",
+    "doi": "10.1007/BF01890834"
+  },
+  "headline": "Cyclic CA (Fisch-Gravner-Griffeath 1991): 2/3 locked clauses REPRO; n=8 spiral plateau change-fraction=1.00 with colour-return period=8.0=n; n=16 does NOT fixate (final change=1.00) \u2014 Moore range-1 threshold-1 n_c is above 16",
+  "code_commit": "ed6fe16bf3c0d8ceee6f0a9f4098acb2dd0c2b8a",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 spiral plateau at n=8: mean tail change-fraction > 0.2 (nonzero, non-decaying)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.2
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 fixation at n=16: change fraction decays to < 0.01",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        1.0,
+        0.01
+      ],
+      "reasons": [
+        "n=16: max final change-fraction over seeds = 1.0000 (mean tail change 1.0000; need final < 0.01 to count as fixation); the field stays ACTIVE \u2014 n=16 is inside the spiral regime for Moore range-1 threshold-1, NOT the fixating regime"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P3 colour-return period = n at n=8: median return period == 8 (+-1)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        8.0,
+        8.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/cyclic-ca/results.json",
+      "sha256": "03d33ba69692b482646b7e7483a7083d2f8db906c991b4db81d57b8a099b7bf7",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/cyclic-ca/PREDICTIONS-locked.md",
+      "sha256": "c8db92ea44b53f61b83593f172510c51662596487f339906c7bc999289f57b22",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/cyclic-ca/FINDINGS.md",
+      "sha256": "2916eba5d17d7d0e8f765aa3f5a115d4631d21d638af022f7f5c3220c0bc86b0",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "cyclic-ca-1991",
+    "grid": 256,
+    "moore": true,
+    "threshold": 1,
+    "steps": 500,
+    "n_seeds": 2,
+    "n_spiral": 8,
+    "n_fixate": 16,
+    "framing": "CA (disclosed) \u2014 synchronous n-colour cyclic cellular automaton on a torus, Moore-8, threshold 1; not agent-stepping",
+    "spiral_mean_tail_change": 1.0,
+    "spiral_median_return_period": 8.0,
+    "fixate_max_final_change": 1.0,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the cyclic-CA spiral phenomenology (a persistent activity plateau and a colour-return period equal to the number of colours) and honestly flag where the locked spiral->fixation colour count is falsified: for the Moore range-1 threshold-1 rule the critical colour count n_c lies ABOVE 16, so n=16 still spirals rather than fixating"
+  },
+  "citations": [
+    "Fisch, R., Gravner, J. & Griffeath, D. (1991). Threshold-range scaling of excitable cellular automata. Statistics and Computing 1(1):23-39. doi:10.1007/BF01890834."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the cyclic-CA spiral phenomenology (activity plateau, colour-return period) and the spiral/fixation colour-count transition"
+  }
+}

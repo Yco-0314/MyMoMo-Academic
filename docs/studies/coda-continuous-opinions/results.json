@@ -1,0 +1,237 @@
+{
+  "model": "martins-2008-coda (agent-based: hidden continuous belief, discrete action)",
+  "config": {
+    "L": 50,
+    "N": 2500,
+    "alpha": 0.7,
+    "nu": 0.8472978603872034,
+    "p_lo": 0.4,
+    "p_hi": 0.6,
+    "neighbourhood": "von Neumann (4), periodic",
+    "n_seeds": 3,
+    "seed_base": 0,
+    "n_updates": 4000000,
+    "snapshot_half": 2000000,
+    "unit_of_action": "one asynchronous single-observation Bayesian update (random agent observes one random neighbour's discrete action)",
+    "p1_max_bar": 100.0,
+    "p1_growth_bar": 1.3,
+    "p2_extreme_threshold": 50.0,
+    "p2_moderate_threshold": 1.0,
+    "p3_cluster_bar_frac": 0.1,
+    "p3_cluster_bar": 250.0
+  },
+  "per_seed": [
+    {
+      "seed": 0,
+      "snap_2M": {
+        "updates": 2000000,
+        "max_abs_l_over_nu": 891.7144435418141,
+        "median_abs_l_over_nu": 748.0378190564774,
+        "frac_extreme_ge50": 0.9288,
+        "frac_moderate_lt1": 0.0024,
+        "like_neighbour_fraction": 0.8704,
+        "n_components_all": 10,
+        "n_macro_domains": 3,
+        "macro_domain_sizes": [
+          1278,
+          988,
+          171
+        ],
+        "frac_action_plus": 0.4792
+      },
+      "snap_4M": {
+        "updates": 4000000,
+        "max_abs_l_over_nu": 1726.5743431694164,
+        "median_abs_l_over_nu": 1532.660332712253,
+        "frac_extreme_ge50": 0.9492,
+        "frac_moderate_lt1": 0.0016,
+        "like_neighbour_fraction": 0.8796,
+        "n_components_all": 7,
+        "n_macro_domains": 2,
+        "macro_domain_sizes": [
+          1279,
+          1003
+        ],
+        "frac_action_plus": 0.4816
+      }
+    },
+    {
+      "seed": 1,
+      "snap_2M": {
+        "updates": 2000000,
+        "max_abs_l_over_nu": 896.7781967310059,
+        "median_abs_l_over_nu": 759.8393705706137,
+        "frac_extreme_ge50": 0.9392,
+        "frac_moderate_lt1": 0.0012,
+        "like_neighbour_fraction": 0.884,
+        "n_components_all": 8,
+        "n_macro_domains": 4,
+        "macro_domain_sizes": [
+          1493,
+          540,
+          161,
+          140
+        ],
+        "frac_action_plus": 0.4028
+      },
+      "snap_4M": {
+        "updates": 4000000,
+        "max_abs_l_over_nu": 1755.8257329113806,
+        "median_abs_l_over_nu": 1547.0970099823146,
+        "frac_extreme_ge50": 0.9528,
+        "frac_moderate_lt1": 0.0032,
+        "like_neighbour_fraction": 0.886,
+        "n_components_all": 8,
+        "n_macro_domains": 4,
+        "macro_domain_sizes": [
+          1502,
+          542,
+          162,
+          136
+        ],
+        "frac_action_plus": 0.3992
+      }
+    },
+    {
+      "seed": 2,
+      "snap_2M": {
+        "updates": 2000000,
+        "max_abs_l_over_nu": 878.9960680676232,
+        "median_abs_l_over_nu": 740.6223265329908,
+        "frac_extreme_ge50": 0.928,
+        "frac_moderate_lt1": 0.0008,
+        "like_neighbour_fraction": 0.866,
+        "n_components_all": 9,
+        "n_macro_domains": 3,
+        "macro_domain_sizes": [
+          1239,
+          977,
+          168
+        ],
+        "frac_action_plus": 0.472
+      },
+      "snap_4M": {
+        "updates": 4000000,
+        "max_abs_l_over_nu": 1726.26225420236,
+        "median_abs_l_over_nu": 1524.248164911057,
+        "frac_extreme_ge50": 0.9448,
+        "frac_moderate_lt1": 0.0028,
+        "like_neighbour_fraction": 0.8712,
+        "n_components_all": 8,
+        "n_macro_domains": 3,
+        "macro_domain_sizes": [
+          1248,
+          974,
+          170
+        ],
+        "frac_action_plus": 0.4696
+      }
+    }
+  ],
+  "baselines": [
+    {
+      "L": 50,
+      "N": 2500,
+      "seed": 0,
+      "n_components_all": 336,
+      "n_macro_domains": 2,
+      "like_neighbour_fraction": 0.4936,
+      "median_abs_l_over_nu": 0.24022534511808696,
+      "max_abs_l_over_nu": 0.47835217683280207
+    },
+    {
+      "L": 50,
+      "N": 2500,
+      "seed": 1,
+      "n_components_all": 337,
+      "n_macro_domains": 3,
+      "like_neighbour_fraction": 0.5048,
+      "median_abs_l_over_nu": 0.23683006297178802,
+      "max_abs_l_over_nu": 0.4784445870822873
+    },
+    {
+      "L": 50,
+      "N": 2500,
+      "seed": 2,
+      "n_components_all": 301,
+      "n_macro_domains": 2,
+      "like_neighbour_fraction": 0.5012,
+      "median_abs_l_over_nu": 0.2476225861487099,
+      "max_abs_l_over_nu": 0.4784978214271869
+    }
+  ],
+  "aux": {
+    "p1_max2m": [
+      891.7144435418141,
+      896.7781967310059,
+      878.9960680676232
+    ],
+    "p1_max4m": [
+      1726.5743431694164,
+      1755.8257329113806,
+      1726.26225420236
+    ],
+    "p1_growth": [
+      1.9362413109645387,
+      1.9579264296476324,
+      1.9639021343944791
+    ],
+    "p2_ext": [
+      0.9492,
+      0.9528,
+      0.9448
+    ],
+    "p2_mod": [
+      0.0016,
+      0.0032,
+      0.0028
+    ],
+    "p3_comp": [
+      7,
+      8,
+      8
+    ],
+    "p3_baseline": [
+      336,
+      337,
+      301
+    ],
+    "p3_macro": [
+      2,
+      4,
+      3
+    ]
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 opinions extremize without bound: max|l|/nu >= 100 at 2M updates AND still growing (>= 1.3x when doubled to 4M)",
+      "salient_number": [
+        879.0,
+        100.0
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 final distribution is U-shaped / extremist-dominated: frac(|l|/nu >= 50) > frac(|l|/nu < 1) at the end of the run",
+      "salient_number": [
+        0.9448,
+        0.0032
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 agreeing agents form contiguous same-action domains: connected same-action clusters <= 0.1*N (far below the random start)",
+      "salient_number": [
+        8.0,
+        250.0
+      ],
+      "reasons": []
+    }
+  ]
+}

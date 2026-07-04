@@ -1,0 +1,462 @@
+{
+  "model": "newman-2002-sir-on-networks (bond-percolation mapping)",
+  "framing": "network-generation + bond-percolation; NOT autonomous agent-stepping",
+  "config": {
+    "n": 15000,
+    "mean_k": 4.0,
+    "sf_gamma": 2.5,
+    "sf_kmin": 2,
+    "sf_kmax": 500,
+    "n_graphs": 5,
+    "n_perc": 20,
+    "hom_grid": [
+      0.05,
+      0.1,
+      0.15,
+      0.18,
+      0.2,
+      0.22,
+      0.24,
+      0.25,
+      0.26,
+      0.28,
+      0.3,
+      0.35,
+      0.4,
+      0.5,
+      0.6
+    ],
+    "sf_grid": [
+      0.01,
+      0.02,
+      0.03,
+      0.037,
+      0.04,
+      0.05,
+      0.06,
+      0.07,
+      0.08,
+      0.1,
+      0.15,
+      0.2,
+      0.3,
+      0.4,
+      0.6
+    ],
+    "p3_T_values": [
+      0.3,
+      0.4,
+      0.6
+    ],
+    "p3_below_T": 0.2,
+    "p3_tol": 0.05,
+    "p3_no_outbreak_frac": 0.05,
+    "p1_abs_tol": 0.03,
+    "p1_rel_tol": 0.15,
+    "p2_half_rule": 0.5,
+    "p2_sf_abs": 0.1
+  },
+  "homogeneous": {
+    "mean_k": 3.9701333333333335,
+    "mean_k2": 19.762533333333334,
+    "T_c_formula": 0.25139518586999654,
+    "T_c_giant_onset": 0.22278794601589944,
+    "T_c_susceptibility": 0.26,
+    "sweep": [
+      {
+        "T": 0.05,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.0004733333333333333,
+        "std_giant_fraction": 7.272474743090476e-05,
+        "mean_second_fraction": 0.00042333333333333334,
+        "max_second_fraction": 0.0006,
+        "gf_final_size": 4.163336342344337e-14
+      },
+      {
+        "T": 0.1,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.0009373333333333333,
+        "std_giant_fraction": 0.00023604519341289995,
+        "mean_second_fraction": 0.000788,
+        "max_second_fraction": 0.0014,
+        "gf_final_size": 1.1401990462900358e-13
+      },
+      {
+        "T": 0.15,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.0018693333333333333,
+        "std_giant_fraction": 0.00048248615409034163,
+        "mean_second_fraction": 0.0015186666666666669,
+        "max_second_fraction": 0.002266666666666667,
+        "gf_final_size": 7.279732372467151e-13
+      },
+      {
+        "T": 0.18,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.00317,
+        "std_giant_fraction": 0.000856938996921277,
+        "mean_second_fraction": 0.0024293333333333333,
+        "max_second_fraction": 0.0038,
+        "gf_final_size": 1.4755974220292956e-12
+      },
+      {
+        "T": 0.2,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.004808,
+        "std_giant_fraction": 0.0012283785156773858,
+        "mean_second_fraction": 0.0036833333333333336,
+        "max_second_fraction": 0.006466666666666667,
+        "gf_final_size": 3.0819791163594346e-12
+      },
+      {
+        "T": 0.22,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.008492,
+        "std_giant_fraction": 0.0030823624417355955,
+        "mean_second_fraction": 0.006136,
+        "max_second_fraction": 0.010133333333333333,
+        "gf_final_size": 6.1031180109694105e-12
+      },
+      {
+        "T": 0.24,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.01931,
+        "std_giant_fraction": 0.011975962499013504,
+        "mean_second_fraction": 0.011186,
+        "max_second_fraction": 0.0268,
+        "gf_final_size": 1.975464236636526e-11
+      },
+      {
+        "T": 0.25,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.03240333333333333,
+        "std_giant_fraction": 0.01839435027996972,
+        "mean_second_fraction": 0.015156666666666667,
+        "max_second_fraction": 0.047266666666666665,
+        "gf_final_size": 1.7699286480876708e-10
+      },
+      {
+        "T": 0.26,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.060026,
+        "std_giant_fraction": 0.030416049703331883,
+        "mean_second_fraction": 0.019497333333333332,
+        "max_second_fraction": 0.06333333333333334,
+        "gf_final_size": 0.06513433344112185
+      },
+      {
+        "T": 0.28,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.19087066666666666,
+        "std_giant_fraction": 0.028744337908147715,
+        "mean_second_fraction": 0.01131,
+        "max_second_fraction": 0.04973333333333333,
+        "gf_final_size": 0.1962468643490941
+      },
+      {
+        "T": 0.3,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.303626,
+        "std_giant_fraction": 0.020627582171020974,
+        "mean_second_fraction": 0.005755333333333334,
+        "max_second_fraction": 0.016866666666666665,
+        "gf_final_size": 0.3042882091986706
+      },
+      {
+        "T": 0.35,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.5017193333333334,
+        "std_giant_fraction": 0.011323471375863498,
+        "mean_second_fraction": 0.002328666666666667,
+        "max_second_fraction": 0.0041333333333333335,
+        "gf_final_size": 0.5031880404113203
+      },
+      {
+        "T": 0.4,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.63615,
+        "std_giant_fraction": 0.006879459765611456,
+        "mean_second_fraction": 0.0013926666666666668,
+        "max_second_fraction": 0.002533333333333333,
+        "gf_final_size": 0.6354979654341387
+      },
+      {
+        "T": 0.5,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.7911239999999999,
+        "std_giant_fraction": 0.004782523926872833,
+        "mean_second_fraction": 0.0007486666666666667,
+        "max_second_fraction": 0.0012666666666666666,
+        "gf_final_size": 0.7923453625533582
+      },
+      {
+        "T": 0.6,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.8758626666666666,
+        "std_giant_fraction": 0.002764663049591714,
+        "mean_second_fraction": 0.0004766666666666667,
+        "max_second_fraction": 0.0008,
+        "gf_final_size": 0.8754967468338546
+      }
+    ]
+  },
+  "scale_free": {
+    "mean_k": 4.446866666666667,
+    "mean_k2": 122.97433333333333,
+    "max_k": 482,
+    "T_c_formula": 0.03751760492082848,
+    "T_c_giant_onset": 0.04900893388921977,
+    "T_c_susceptibility": 0.06,
+    "sweep": [
+      {
+        "T": 0.01,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.0005606666666666667,
+        "std_giant_fraction": 0.00015494658577859806,
+        "mean_second_fraction": 0.00044133333333333335,
+        "max_second_fraction": 0.0008,
+        "gf_final_size": 5.218048215738236e-15
+      },
+      {
+        "T": 0.02,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.0012246666666666667,
+        "std_giant_fraction": 0.00037006365818749497,
+        "mean_second_fraction": 0.0008853333333333333,
+        "max_second_fraction": 0.0014666666666666667,
+        "gf_final_size": 6.439293542825908e-14
+      },
+      {
+        "T": 0.03,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.002688,
+        "std_giant_fraction": 0.00117298782791828,
+        "mean_second_fraction": 0.001628,
+        "max_second_fraction": 0.0038,
+        "gf_final_size": 4.672928710647284e-13
+      },
+      {
+        "T": 0.037,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.004038,
+        "std_giant_fraction": 0.0018696227783521822,
+        "mean_second_fraction": 0.0022500000000000003,
+        "max_second_fraction": 0.004,
+        "gf_final_size": 1.1785017406396037e-11
+      },
+      {
+        "T": 0.04,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.004958000000000001,
+        "std_giant_fraction": 0.002247104902857106,
+        "mean_second_fraction": 0.0025306666666666667,
+        "max_second_fraction": 0.005666666666666667,
+        "gf_final_size": 0.002870674653161931
+      },
+      {
+        "T": 0.05,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.010554666666666667,
+        "std_giant_fraction": 0.004636961457199699,
+        "mean_second_fraction": 0.004141333333333334,
+        "max_second_fraction": 0.008466666666666667,
+        "gf_final_size": 0.014837798106512534
+      },
+      {
+        "T": 0.06,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.021594666666666668,
+        "std_giant_fraction": 0.00739486716881679,
+        "mean_second_fraction": 0.004211333333333333,
+        "max_second_fraction": 0.012866666666666667,
+        "gf_final_size": 0.027939861155703016
+      },
+      {
+        "T": 0.07,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.036428666666666665,
+        "std_giant_fraction": 0.007770321057288002,
+        "mean_second_fraction": 0.004,
+        "max_second_fraction": 0.019333333333333334,
+        "gf_final_size": 0.04243601284754306
+      },
+      {
+        "T": 0.08,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.054682,
+        "std_giant_fraction": 0.007100021001533884,
+        "mean_second_fraction": 0.0028326666666666665,
+        "max_second_fraction": 0.0138,
+        "gf_final_size": 0.05822027754193326
+      },
+      {
+        "T": 0.1,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.08986866666666665,
+        "std_giant_fraction": 0.005505047825001665,
+        "mean_second_fraction": 0.0019633333333333334,
+        "max_second_fraction": 0.005066666666666666,
+        "gf_final_size": 0.09264052038696668
+      },
+      {
+        "T": 0.15,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.185118,
+        "std_giant_fraction": 0.0056837300350307905,
+        "mean_second_fraction": 0.0014273333333333332,
+        "max_second_fraction": 0.0028666666666666667,
+        "gf_final_size": 0.18673238926406333
+      },
+      {
+        "T": 0.2,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.281428,
+        "std_giant_fraction": 0.005551041383780565,
+        "mean_second_fraction": 0.0011133333333333334,
+        "max_second_fraction": 0.0024666666666666665,
+        "gf_final_size": 0.2827001798282057
+      },
+      {
+        "T": 0.3,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.46088466666666666,
+        "std_giant_fraction": 0.0055737627824976165,
+        "mean_second_fraction": 0.0008173333333333334,
+        "max_second_fraction": 0.0018,
+        "gf_final_size": 0.46230298988015206
+      },
+      {
+        "T": 0.4,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.6158440000000001,
+        "std_giant_fraction": 0.004610415454887627,
+        "mean_second_fraction": 0.0006900000000000001,
+        "max_second_fraction": 0.0014,
+        "gf_final_size": 0.6161439366533235
+      },
+      {
+        "T": 0.6,
+        "n": 15000,
+        "n_graphs": 5,
+        "n_perc": 20,
+        "mean_giant_fraction": 0.8409346666666667,
+        "std_giant_fraction": 0.0034337537606661454,
+        "mean_second_fraction": 0.0004926666666666666,
+        "max_second_fraction": 0.0008,
+        "gf_final_size": 0.83986124112901
+      }
+    ]
+  },
+  "p3_points": {
+    "0.3": {
+      "sim_mean": 0.30286,
+      "sim_std": 0.020145030818210896,
+      "gf": 0.3042882091986706
+    },
+    "0.4": {
+      "sim_mean": 0.6343653333333333,
+      "sim_std": 0.007597262547932792,
+      "gf": 0.6354979654341387
+    },
+    "0.6": {
+      "sim_mean": 0.8752533333333333,
+      "sim_std": 0.0031228690512269497,
+      "gf": 0.8754967468338546
+    },
+    "0.2": {
+      "sim_mean": 0.0049303333333333334,
+      "sim_std": 0.0016246065848554091,
+      "gf": 3.0819791163594346e-12
+    }
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 homogeneous epidemic threshold matches T_c = <k>/(<k^2>-<k>) from the realized degree sequence",
+      "salient_number": [
+        0.26,
+        0.2514
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 degree heterogeneity lowers the threshold: T_c(power-law) < 0.5*T_c(homogeneous) and < 0.10",
+      "salient_number": [
+        0.0375,
+        0.1257
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 generating-function final size S=1-g0(1-T+Tu), u=g1(...) matches simulation at T in {0.3,0.4,0.6}; no outbreak below T_c",
+      "salient_number": [
+        0.0014,
+        0.05
+      ],
+      "reasons": []
+    }
+  ]
+}

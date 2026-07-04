@@ -1,0 +1,124 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Wealth condensation in a simple model of economy",
+    "authors": [
+      "Jean-Philippe Bouchaud",
+      "Marc M\u00e9zard"
+    ],
+    "year": 2000,
+    "journal": "Physica A 282:536-545",
+    "doi": "10.1016/S0378-4371(00)00205-3"
+  },
+  "headline": "Bouchaud-M\u00e9zard 2000 (agent-based mean-field): 3/3 locked clauses REPRO; Gini mu=1.4/2/3/5 = 0.66/0.50/0.37/0.27; mu=2 tail slope=-1.89, max/mean=47, Hill mu-hat=1.78",
+  "code_commit": "2a7ccd08811fc6475d9b84670f4cacae2021da98",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 inequality decreases monotonically with redistribution J: Gini(mu=2)\u2208[.45,.55], (mu=3)\u2208[.33,.42], (mu=5)\u2208[.22,.32], strict decrease mu=1.4>2>3>5",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.4953,
+        0.5
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 stationary tail is a genuine POWER LAW at mu=2: CCDF top-decile slope\u2208[-2.5,-1.5], 99.9pct/mean>=12, max/mean>=25, power-law beats exponential by AIC",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        -1.8935,
+        -2.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 tail exponent mu-hat tracks mu=1+J/sigma^2 in ordering: Hill mu-hat at mu=2 \u2208[1.5,2.6] AND mu-hat monotone increasing over the J-sweep",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.7843,
+        2.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/bouchaud-mezard/results.json",
+      "sha256": "3abe70137f6aca94169624861ba9125c690d8661158f220bc6929d0b75ffb2ec",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/bouchaud-mezard/PREDICTIONS-locked.md",
+      "sha256": "651c45e9a6b6758b34369ea62f88665a35683af050247ea48158a7022613e4e8",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/bouchaud-mezard/FINDINGS.md",
+      "sha256": "49a2f155fe8e09c5d6d2cfbe90f622289c440fc99647a7af92b0b6eb1bae3c89",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "bouchaud-mezard-2000",
+    "n": 3000,
+    "sigma": 0.1,
+    "dt": 0.02,
+    "mu_targets": [
+      1.4,
+      2.0,
+      3.0,
+      5.0
+    ],
+    "n_seeds": 3,
+    "n_steps": 100000,
+    "measure_last": 50000,
+    "noise_normalisation": "<deta^2>=2*sigma^2*dt (=> mu=1+J/sigma^2)",
+    "gini_by_mu": {
+      "1.4": 0.6643717770229518,
+      "2.0": 0.4953059595109048,
+      "3.0": 0.37378462492536757,
+      "5.0": 0.2731479905750733
+    },
+    "hill_mu_hat_by_mu": {
+      "1.4": 1.3043400065436563,
+      "2.0": 1.7842796210395937,
+      "3.0": 2.4442207720889177,
+      "5.0": 3.502437857638538
+    },
+    "op_slope": -1.8934681162722942,
+    "op_max_over_mean": 47.42972310096628,
+    "scope": "faithful reproduction of a published synthetic mean-field model; no real-world data; the contribution is whether the harness + discipline reproduce the redistribution-tunable Pareto wealth condensation (multiplicative growth => power-law tail, distinct from a conserved-exchange exponential) and would catch an artifact"
+  },
+  "citations": [
+    "Bouchaud, J.-P. & M\u00e9zard, M. (2000). Wealth condensation in a simple model of economy. Physica A 282:536-545. doi:10.1016/S0378-4371(00)00205-3."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the stationary Gini bands, the heavy-tail ratios + CCDF slope + Hill exponent, and a power-law-vs-exponential AIC on the top decile"
+  }
+}

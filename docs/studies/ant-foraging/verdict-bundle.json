@@ -1,0 +1,121 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Self-organized shortcuts in the Argentine ant",
+    "authors": [
+      "Simon Goss",
+      "Serge Aron",
+      "Jean-Louis Deneubourg",
+      "Jacques M. Pasteels"
+    ],
+    "year": 1989,
+    "journal": "Naturwissenschaften 76:579-581",
+    "doi": "10.1007/BF00462870"
+  },
+  "headline": "Deneubourg/Goss 1989 ant double-bridge (agent-based): 3/3 locked clauses REPRO; asymmetric short-path fraction 0.99 (5/5 seeds >0.8); symmetric symmetry-breaking 5/5 (winners short/long 2/3)",
+  "code_commit": "faab4405601bdbae9ae61f8f17d1ea6e3dd46e16",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 asymmetric (Ll=2Ls): short-path traffic fraction > 0.8 at steady state in >= 80% of seeds",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.8
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 symmetric (Ll=Ls): symmetry breaks \u2014 one path wins (final > 0.8 or < 0.2) in >= 80% of seeds, winner seed-dependent",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.8
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 self-reinforcement: cross-seed mean short fraction non-decreasing over the run (tol 0.05) and final >= 0.8",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.002,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/ant-foraging/results.json",
+      "sha256": "f43103ec1081ad147f1f23d44d3daea4c4def1cd6c08d60149aec3014918e994",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/ant-foraging/PREDICTIONS-locked.md",
+      "sha256": "28e9662ead52688fa2787f241e8cbce8c62027c9f22f3a6a0beeae4c0c315bcf",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/ant-foraging/FINDINGS.md",
+      "sha256": "20b1eefc1c3d81a9b1bd85853cc6e7507afd12251ac45a0059abd90736fb6753",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveA-design.md",
+      "sha256": "e43b07a40ac65baa1c4ac23cd98ea8f1c33dfc09492958c894f155047f3d6ecd",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "deneubourg-goss-1989-ant-double-bridge",
+    "n_ants": 64,
+    "len_short": 1.0,
+    "len_long_asym": 2.0,
+    "len_long_sym": 1.0,
+    "k": 20.0,
+    "alpha": 2.0,
+    "q": 1.0,
+    "rho": 0.02,
+    "speed": 10.0,
+    "deposit_on": "both",
+    "inject_per_tick": 2,
+    "n_seeds": 5,
+    "n_ticks": 2000,
+    "measure_last": 200,
+    "asym_mean_steady_short_fraction": 0.9869450000000018,
+    "asym_n_short_dominant": 5,
+    "sym_n_symmetry_broken": 5,
+    "sym_winners_short_long": [
+      2,
+      3
+    ],
+    "scope": "faithful reproduction of a published synthetic/biological model; no real-world data; the contribution is whether the harness + discipline reproduce the self-organized shorter-path selection and symmetry breaking, and would catch an artifact"
+  },
+  "citations": [
+    "Goss, S., Aron, S., Deneubourg, J.-L. & Pasteels, J.-M. (1989). Self-organized shortcuts in the Argentine ant. Naturwissenschaften 76:579-581. doi:10.1007/BF00462870.",
+    "Deneubourg, J.-L., Aron, S., Goss, S. & Pasteels, J.-M. (1990). The self-organizing exploratory pattern of the Argentine ant. Journal of Insect Behavior 3:159-168. doi:10.1007/BF01417909."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the short-path traffic fraction"
+  }
+}

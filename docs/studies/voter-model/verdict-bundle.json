@@ -1,0 +1,107 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "A model for spatial conflict (the voter model)",
+    "authors": [
+      "Peter Clifford",
+      "Aidan Sudbury"
+    ],
+    "year": 1973,
+    "journal": "Biometrika 60(3):581-588",
+    "doi": "10.1093/biomet/60.3.581"
+  },
+  "headline": "Voter fixation (agent-based): 3/3 locked clauses REPRO; P(all-up) tracks u [u=0.2:P=0.200, u=0.5:P=0.460, u=0.8:P=0.790]; consensus rate 1.000",
+  "code_commit": "a0eb52407b208acbed7fe69771c0cd7b6d6ea8c0",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 every run reaches absorbing consensus (consensus rate = 1.0 at every u)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 P(all-up) within +/-0.07 of u for every u in [0.2, 0.5, 0.8]",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.04,
+        0.07
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 mean final magnetization within +/-0.1 of 2u-1 for every u",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.08,
+        0.1
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/voter-model/results.json",
+      "sha256": "48e3fd6e1e1cb197b70fcefa13052e02a63c91ed61f5d7a825cc40d53d144f3c",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/voter-model/PREDICTIONS-locked.md",
+      "sha256": "7cdc5efedead0ceda8c68ed245992343f3d0fa97279161acb267433cb69cc2b6",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/voter-model/FINDINGS.md",
+      "sha256": "31926de1c56fc544a736601a94f56a551a2504bfb49eac0559a14a7106df3ded",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-design.md",
+      "sha256": "574409d9b8c005bd730cc4f98b84de57e61cfaac5591f3e590128dc2b8341df0",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "voter-model-fixation",
+    "n": 1000,
+    "u_grid": [
+      0.2,
+      0.5,
+      0.8
+    ],
+    "n_runs": 200,
+    "seed_base": 0,
+    "metric": "P(fixation to all-up) = fraction of runs ending all-1",
+    "scope": "faithful reproduction of a published synthetic model (mean-field / complete-graph voter); no real-world data; the contribution is whether the harness + discipline reproduce the fixation=initial-density result and would catch an artifact"
+  },
+  "citations": [
+    "Clifford, P. & Sudbury, A. (1973). A model for spatial conflict. Biometrika 60(3):581-588. doi:10.1093/biomet/60.3.581.",
+    "Holley, R.A. & Liggett, T.M. (1975). Ergodic theorems for weakly interacting infinite systems and the voter model. Ann. Probab. 3(4):643-663. doi:10.1214/aop/1176996306. (consensus / clustering; mean-field fixation prob = initial density, magnetization conserved in expectation)."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction validated against the mean-field anchors P(all-up)=u and mean magnetization=2u-1"
+  }
+}

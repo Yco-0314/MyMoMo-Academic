@@ -1,0 +1,30 @@
+{
+  "citations": {
+    "P1-records-miss": [
+      "failure_pack"
+    ],
+    "P2-preserves-scope-ceiling": [
+      "failure_pack"
+    ],
+    "P3-not-retroactive-pass": [
+      "failure_pack",
+      "design_spec"
+    ]
+  },
+  "claims": [
+    {
+      "id": "P1-records-miss",
+      "verdict": "PASS"
+    },
+    {
+      "id": "P2-preserves-scope-ceiling",
+      "verdict": "PASS"
+    },
+    {
+      "id": "P3-not-retroactive-pass",
+      "verdict": "PASS"
+    }
+  ],
+  "schema": "abm-auto/repro-challenge-answer/v1",
+  "task_id": "failure-pack-verdict-summary"
+}

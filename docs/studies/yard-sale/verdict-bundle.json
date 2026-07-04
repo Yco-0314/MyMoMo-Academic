@@ -1,0 +1,123 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Distributions of money in model markets of economy",
+    "authors": [
+      "Anirban Chakraborti"
+    ],
+    "year": 2002,
+    "journal": "International Journal of Modern Physics C 13(10):1315-1321",
+    "doi": "10.1142/S0129183102003905"
+  },
+  "headline": "Chakraborti 2002 Yard-Sale (agent-based): 2/3 locked clauses REPRO; final Gini=0.993 (>>DY 0.5) with bottom-50% ~4e-46, but richest-agent share 0.27 < 0.90 at 2e4 sweeps (oligarchy, not yet single-winner) -> P2 MISS",
+  "code_commit": "44d52f0a6a49cdf7e3e5b92f8d78ab5b95bd893a",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 condensation: final Gini >= 0.95 on every seed AND the Gini(t) trajectory climbs monotonically toward 1",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9929,
+        0.95
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 oligarchy: the single richest agent holds >= 0.90 of total wealth AND the bottom 50% jointly hold <= 0.01",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.2741,
+        0.9
+      ],
+      "reasons": [
+        "mean richest-agent share = 0.2741 over 10 seeds (range [0.203, 0.349]); need >= 0.9",
+        "bottom-50% share max = 1.30e-45 (mean 3.64e-46); need <= 0.01 [OK]",
+        "at the locked 2e4-sweep budget wealth has condensed onto a small OLIGARCHY (a handful of agents), not yet a SINGLE winner; single-agent takeover to >=0.90 is the asymptotic limit but needs far more than 2e4 sweeps for N=1000"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P3 distinct from the exponential: final Gini >= 0.70, well above the Dragulescu-Yakovenko exponential's 0.5 (condensation, not thermalization)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9929,
+        0.7
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/yard-sale/results.json",
+      "sha256": "61c6305c723e4f800a76530d9cdfc8a62d7e04385a46f6ab45a6213c88f745ce",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/yard-sale/PREDICTIONS-locked.md",
+      "sha256": "4cf373bd289ff48c995342049c980e50f92da97e49f07c412d5ef701e921fd6d",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/yard-sale/FINDINGS.md",
+      "sha256": "ed6d1686fb4f0a53f630940f6f86494c838aa016b433349752778ca7ab248fe9",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "chakraborti-2002-yard-sale",
+    "n": 1000,
+    "beta": 0.1,
+    "sweeps": 20000,
+    "n_transactions": 20000000,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "record_every": 500,
+    "mean_final_gini": 0.9928751076169418,
+    "mean_final_top_share": 0.2740918584262445,
+    "mean_final_bottom_half_share": 3.6375174273107995e-46,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce multiplicative wealth condensation (Gini->1, opposite the DY exponential's 0.5), isolate that it is the stake-the-poorer rule (not the conservation law) that condenses, and would catch an artifact"
+  },
+  "citations": [
+    "Chakraborti, A. (2002). Distributions of money in model markets of economy. Int. J. Mod. Phys. C 13(10):1315-1321. doi:10.1142/S0129183102003905.",
+    "Hayes, B. (2002). Follow the Money. American Scientist 90(5):400-405.",
+    "Boghosian, B.M. (2014). Kinetics of wealth and the Pareto law. Phys. Rev. E 89:042804. doi:10.1103/PhysRevE.89.042804.",
+    "Dragulescu, A. & Yakovenko, V.M. (2000). Statistical mechanics of money. Eur. Phys. J. B 17:723-729. (the additive-exchange exponential contrast)."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the Gini, richest-agent share, and bottom-50% share of the conserved wealth vector"
+  }
+}

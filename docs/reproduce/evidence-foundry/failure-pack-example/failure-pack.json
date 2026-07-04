@@ -1,0 +1,27 @@
+{
+  "boundary_note": "Failure pack records a MISS; it does not turn it into a pass.",
+  "claims": [
+    {
+      "evidence_refs": [
+        "findings",
+        "results"
+      ],
+      "id": "P1",
+      "reason": "Observed evacuation did not increase under intervention.",
+      "verdict": "MISS"
+    }
+  ],
+  "residuals": [
+    {
+      "error": 0.25,
+      "metric": "evacuation_lift",
+      "observed": 0.0,
+      "predicted": 0.25
+    }
+  ],
+  "schema": "abm-auto/failure-pack/v1",
+  "scope_ceilings": [
+    "Synthetic fixture only; no real-world external validity claim."
+  ],
+  "source_id": "synthetic-miss-v1"
+}

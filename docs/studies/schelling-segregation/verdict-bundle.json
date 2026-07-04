@@ -1,0 +1,117 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Dynamic Models of Segregation",
+    "authors": [
+      "Thomas C. Schelling"
+    ],
+    "year": 1971,
+    "journal": "Journal of Mathematical Sociology 1:143-186",
+    "doi": "10.1080/0022250X.1971.9989794"
+  },
+  "headline": "Schelling 1971 (agent-based): 3/3 locked clauses REPRO; mild F=1/3 preference -> segregation index 0.50 (random) -> 0.73 (stable)",
+  "code_commit": "b53ac6696bb55235fb15cdab22943420d67a4a2d",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 mild F=1/3 preference -> strong segregation (final mean same-fraction >= 0.70)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.7342,
+        0.7
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 segregation rises far above random baseline (final - initial >= +0.15)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.236,
+        0.15
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 emergence: global segregation >> agent demand (final >= 2*F = 0.667)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.7342,
+        0.6667
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/schelling-segregation/results.json",
+      "sha256": "c69dc42c91a8c14c9092d3395bc2a2b866e9a8fcc310012f5087bb34a2008a95",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/schelling-segregation/PREDICTIONS-locked.md",
+      "sha256": "a6761c6a4f2f0344222085f8e718e47d61952793332523b5fcc3d823726c98d7",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/schelling-segregation/FINDINGS.md",
+      "sha256": "e8036ff5b3b34775667d208ae14e81b80b26273423005f3697ab20653662ae7e",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch2-design.md",
+      "sha256": "8b389d27a3cbd667288cac113043396a73cccbf006703c4d07ccd3627ace7e0c",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "schelling-1971-segregation",
+    "nrows": 50,
+    "ncols": 50,
+    "vacancy": 0.28,
+    "f": 0.3333333333333333,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "max_steps": 200,
+    "mean_initial_segregation": 0.4982196869488537,
+    "mean_final_segregation": 0.7342402447089934,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the segregation result and would catch an artifact"
+  },
+  "citations": [
+    "Schelling, T.C. (1971). Dynamic Models of Segregation. Journal of Mathematical Sociology 1:143-186. doi:10.1080/0022250X.1971.9989794."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Initiation of slime mold aggregation viewed as an instability",
+    "authors": [
+      "Evelyn F. Keller",
+      "Lee A. Segel"
+    ],
+    "year": 1970,
+    "journal": "Journal of Theoretical Biology 26(3):399-415",
+    "doi": "10.1016/0022-5193(70)90092-5"
+  },
+  "headline": "Keller-Segel 1970 chemotaxis (grid PDE): 3/3 locked clauses REPRO; super-critical S=5.0 peak=869x CV grows 2406x (low-q grows 5/5) vs sub-critical S=0.3 peak=1.00x uniform (low-q grows 0/5)",
+  "code_commit": "19ca84491a02afa95e615d90bce0f7f706f50015",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 aggregation at S>=3: mean max(rho)/rho0 >= 3.0 AND mean std/mean grows >= 5x",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        869.061,
+        3.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 uniform at S<=0.5: mean max(rho)/rho0 <= 1.5 AND std/mean does not grow (<= 1x)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0002,
+        1.5
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 long-wavelength instability sign: low-q mode grows early at S>=3, not at S<=0.5",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        5,
+        5
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/keller-segel/results.json",
+      "sha256": "1134820fb8bf5e1f16fcfdd6e15bcf428a8f7b37ba90c860aa509c6ceb3c0eae",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/keller-segel/PREDICTIONS-locked.md",
+      "sha256": "f72bc758dc2f0de22602b2275a2c5a60d9a3b6feb044ec07a2a0aaf1666ba8ae",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/keller-segel/FINDINGS.md",
+      "sha256": "dca19267db3d322fd95ecf9cf8df8e36a3cc73adfdb2031ba2e94d6ccd826d0c",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "keller-segel-1970",
+    "grid": 96,
+    "side": 20.0,
+    "dt": 0.0005,
+    "n_steps": 30000,
+    "n_seeds": 5,
+    "S_super": 5.0,
+    "S_sub": 0.3,
+    "framing": "two-field chemotaxis PDE on a periodic grid (CA), not agent-stepping",
+    "numerics": "conservative upwind chemotactic flux (mass-conserving, non-negative); explicit Euler with dt within the CFL limit (peak CFL recorded); a numerical blow-up would be reported, not scored as aggregation",
+    "chi_super": 5.0,
+    "chi_sub": 0.3,
+    "super_mean_peak_ratio": 869.0605577201904,
+    "super_mean_cv_growth": 2405.810460416225,
+    "sub_mean_peak_ratio": 1.0002241497110123,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the Keller-Segel chemotactic-collapse instability threshold (aggregation above a sensitivity threshold, uniform below, long-wavelength mode) and would catch an artifact"
+  },
+  "citations": [
+    "Keller, E.F. & Segel, L.A. (1970). Initiation of slime mold aggregation viewed as an instability. Journal of Theoretical Biology 26(3):399-415. doi:10.1016/0022-5193(70)90092-5."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the Keller-Segel aggregation threshold (peak ratio, CV growth, long-wavelength mode sign)"
+  }
+}

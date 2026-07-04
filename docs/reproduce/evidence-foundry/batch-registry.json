@@ -1,0 +1,86 @@
+{
+  "boundary_note": "Batch gate checks artifact health only; it is not a scientific truth certificate.",
+  "entries": [
+    {
+      "boundary_note": "Checks answer/evidence alignment only.",
+      "id": "challenge-registry",
+      "kind": "repro_challenge_registry",
+      "path": "docs/reproduce/autodata-challenges/registry.json"
+    },
+    {
+      "boundary_note": "Validates failure artifact structure, not scientific success.",
+      "id": "failure-pack",
+      "kind": "failure_pack",
+      "path": "docs/reproduce/evidence-foundry/failure-pack-example/failure-pack.json"
+    },
+    {
+      "boundary_note": "Compares recorded metrics, not causal proof.",
+      "id": "counterfactual",
+      "kind": "counterfactual_challenge",
+      "path": "docs/reproduce/evidence-foundry/counterfactual-example/challenge.json"
+    },
+    {
+      "boundary_note": "Checks declared signatures, not mechanism truth.",
+      "id": "mechanism",
+      "kind": "mechanism_challenge",
+      "path": "docs/reproduce/evidence-foundry/mechanism-example/challenge.json"
+    },
+    {
+      "boundary_note": "Validates provenance manifest only.",
+      "id": "synthetic-population",
+      "kind": "synthetic_population_manifest",
+      "path": "docs/reproduce/synthetic-population/example-panel/manifest.json"
+    },
+    {
+      "boundary_note": "Validates replay trace shape only.",
+      "id": "llm-replay",
+      "kind": "llm_agent_replay",
+      "path": "docs/reproduce/llm-agent-replay/fake-agent/events.jsonl"
+    },
+    {
+      "answer": "docs/reproduce/synthetic-survey-gate/example-panel/synthetic-answer.json",
+      "boundary_note": "Compares distributions, not human validity.",
+      "id": "synthetic-survey",
+      "kind": "synthetic_survey_gate",
+      "observed": "docs/reproduce/synthetic-survey-gate/example-panel/observed.json"
+    },
+    {
+      "boundary_note": "Checks deterministic exposure fixture only.",
+      "id": "social-platform",
+      "kind": "social_platform_environment",
+      "path": "docs/reproduce/social-platform-environment/example-feed/scenario.json"
+    },
+    {
+      "boundary_note": "Validates bridge manifest only.",
+      "id": "transport-bridge",
+      "kind": "transport_bridge_manifest",
+      "path": "docs/reproduce/transport-bridge/synthetic-evacuation/bridge-manifest.json"
+    },
+    {
+      "boundary_note": "Validates native/bridge/audit classification only.",
+      "id": "platform-capability-registry",
+      "kind": "platform_capability_registry",
+      "path": "docs/reproduce/platform-capabilities/registry.json"
+    },
+    {
+      "boundary_note": "Validates public bridge contract shape only.",
+      "id": "unified-abm-bridge",
+      "kind": "unified_abm_bridge_contract",
+      "path": "docs/reproduce/unified-abm-bridge/example-contract.json"
+    },
+    {
+      "boundary_note": "Validates terrain exchange contract shape only.",
+      "id": "terrain-bridge",
+      "kind": "terrain_bridge_manifest",
+      "path": "docs/reproduce/terrain-bridge/example-manifest.json"
+    },
+    {
+      "boundary_note": "Checks handoff note completeness, not factual truth.",
+      "id": "agent-handoff-note",
+      "kind": "agent_handoff_note",
+      "path": "docs/reproduce/evidence-foundry/agent-handoff-example/handoff-note.md"
+    }
+  ],
+  "schema": "abm-auto/evidence-foundry-batch/v1",
+  "title": "MyMoMo Evidence Foundry Seed Batch"
+}

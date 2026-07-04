@@ -1,0 +1,32 @@
+{
+  "boundary_note": "Synthetic answer fixture; not a human-validity proof.",
+  "population_id": "example-panel-v1",
+  "rows": [
+    {
+      "group": "all",
+      "option": "yes",
+      "question_id": "q_support",
+      "share": 0.56
+    },
+    {
+      "group": "all",
+      "option": "no",
+      "question_id": "q_support",
+      "share": 0.44
+    },
+    {
+      "group": "region:north",
+      "option": "yes",
+      "question_id": "q_support",
+      "share": 0.62
+    },
+    {
+      "group": "all",
+      "option": "high",
+      "question_id": "q_trust",
+      "share": 0.5
+    }
+  ],
+  "schema": "abm-auto/synthetic-survey-answer/v1",
+  "survey_id": "example-panel-survey-v1"
+}

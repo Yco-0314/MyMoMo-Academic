@@ -1,0 +1,695 @@
+{
+  "model": "axelrod-1997-dissemination-of-culture (agent-based)",
+  "config": {
+    "L": 10,
+    "neighborhood": "von-Neumann-4 (bounded, no wrap)",
+    "stop_rule": "absorbing state: no adjacent pair has 0 < similarity < 1",
+    "n_seeds_per_cell": 10,
+    "q_grid_at_F5": [
+      2,
+      5,
+      10,
+      15
+    ],
+    "F_fixed_for_q": 5,
+    "F_grid_at_q": [
+      5,
+      10
+    ],
+    "q_fixed_for_F": 10,
+    "monoculture_max_regions": 3.0,
+    "outcome": "number of distinct stable cultural regions (connected components of identical-culture neighbours)"
+  },
+  "regions_vs_q_F5": [
+    {
+      "L": 10,
+      "n_features": 5,
+      "n_traits": 2,
+      "n_seeds": 10,
+      "seed_base": 0,
+      "mean_regions": 1.0,
+      "min_regions": 1,
+      "max_regions": 1,
+      "mean_largest_region_fraction": 1.0,
+      "all_absorbed": true,
+      "per_seed_regions": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "per_seed": [
+        {
+          "seed": 0,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 64400,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 1,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 54400,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 2,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 32800,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 3,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 33300,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 4,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 43100,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 5,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 42900,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 6,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 45900,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 7,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 40100,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 8,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 35800,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 9,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 82800,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        }
+      ]
+    },
+    {
+      "L": 10,
+      "n_features": 5,
+      "n_traits": 5,
+      "n_seeds": 10,
+      "seed_base": 0,
+      "mean_regions": 1.0,
+      "min_regions": 1,
+      "max_regions": 1,
+      "mean_largest_region_fraction": 1.0,
+      "all_absorbed": true,
+      "per_seed_regions": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "per_seed": [
+        {
+          "seed": 0,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 43700,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 1,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 52100,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 2,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 80200,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 3,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 57700,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 4,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 61400,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 5,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 71200,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 6,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 63900,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 7,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 66400,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 8,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 55200,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 9,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 57900,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        }
+      ]
+    },
+    {
+      "L": 10,
+      "n_features": 5,
+      "n_traits": 10,
+      "n_seeds": 10,
+      "seed_base": 0,
+      "mean_regions": 2.6,
+      "min_regions": 1,
+      "max_regions": 6,
+      "mean_largest_region_fraction": 0.95,
+      "all_absorbed": true,
+      "per_seed_regions": [
+        6,
+        1,
+        4,
+        2,
+        2,
+        2,
+        3,
+        2,
+        3,
+        1
+      ],
+      "per_seed": [
+        {
+          "seed": 0,
+          "regions": 6,
+          "distinct_cultures": 6,
+          "steps": 136200,
+          "absorbed": true,
+          "largest_region_fraction": 0.78
+        },
+        {
+          "seed": 1,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 52600,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 2,
+          "regions": 4,
+          "distinct_cultures": 4,
+          "steps": 109800,
+          "absorbed": true,
+          "largest_region_fraction": 0.92
+        },
+        {
+          "seed": 3,
+          "regions": 2,
+          "distinct_cultures": 2,
+          "steps": 79100,
+          "absorbed": true,
+          "largest_region_fraction": 0.99
+        },
+        {
+          "seed": 4,
+          "regions": 2,
+          "distinct_cultures": 2,
+          "steps": 108300,
+          "absorbed": true,
+          "largest_region_fraction": 0.99
+        },
+        {
+          "seed": 5,
+          "regions": 2,
+          "distinct_cultures": 2,
+          "steps": 44700,
+          "absorbed": true,
+          "largest_region_fraction": 0.91
+        },
+        {
+          "seed": 6,
+          "regions": 3,
+          "distinct_cultures": 3,
+          "steps": 92300,
+          "absorbed": true,
+          "largest_region_fraction": 0.98
+        },
+        {
+          "seed": 7,
+          "regions": 2,
+          "distinct_cultures": 2,
+          "steps": 102200,
+          "absorbed": true,
+          "largest_region_fraction": 0.97
+        },
+        {
+          "seed": 8,
+          "regions": 3,
+          "distinct_cultures": 3,
+          "steps": 120700,
+          "absorbed": true,
+          "largest_region_fraction": 0.96
+        },
+        {
+          "seed": 9,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 63700,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        }
+      ]
+    },
+    {
+      "L": 10,
+      "n_features": 5,
+      "n_traits": 15,
+      "n_seeds": 10,
+      "seed_base": 0,
+      "mean_regions": 17.5,
+      "min_regions": 10,
+      "max_regions": 32,
+      "mean_largest_region_fraction": 0.541,
+      "all_absorbed": true,
+      "per_seed_regions": [
+        20,
+        16,
+        13,
+        13,
+        13,
+        21,
+        14,
+        32,
+        10,
+        23
+      ],
+      "per_seed": [
+        {
+          "seed": 0,
+          "regions": 20,
+          "distinct_cultures": 20,
+          "steps": 43100,
+          "absorbed": true,
+          "largest_region_fraction": 0.51
+        },
+        {
+          "seed": 1,
+          "regions": 16,
+          "distinct_cultures": 16,
+          "steps": 114100,
+          "absorbed": true,
+          "largest_region_fraction": 0.73
+        },
+        {
+          "seed": 2,
+          "regions": 13,
+          "distinct_cultures": 13,
+          "steps": 118800,
+          "absorbed": true,
+          "largest_region_fraction": 0.47
+        },
+        {
+          "seed": 3,
+          "regions": 13,
+          "distinct_cultures": 13,
+          "steps": 53900,
+          "absorbed": true,
+          "largest_region_fraction": 0.51
+        },
+        {
+          "seed": 4,
+          "regions": 13,
+          "distinct_cultures": 13,
+          "steps": 169700,
+          "absorbed": true,
+          "largest_region_fraction": 0.82
+        },
+        {
+          "seed": 5,
+          "regions": 21,
+          "distinct_cultures": 21,
+          "steps": 50800,
+          "absorbed": true,
+          "largest_region_fraction": 0.33
+        },
+        {
+          "seed": 6,
+          "regions": 14,
+          "distinct_cultures": 14,
+          "steps": 88000,
+          "absorbed": true,
+          "largest_region_fraction": 0.68
+        },
+        {
+          "seed": 7,
+          "regions": 32,
+          "distinct_cultures": 32,
+          "steps": 74400,
+          "absorbed": true,
+          "largest_region_fraction": 0.27
+        },
+        {
+          "seed": 8,
+          "regions": 10,
+          "distinct_cultures": 10,
+          "steps": 103400,
+          "absorbed": true,
+          "largest_region_fraction": 0.75
+        },
+        {
+          "seed": 9,
+          "regions": 23,
+          "distinct_cultures": 23,
+          "steps": 58300,
+          "absorbed": true,
+          "largest_region_fraction": 0.34
+        }
+      ]
+    }
+  ],
+  "regions_vs_F_q10": [
+    {
+      "L": 10,
+      "n_features": 5,
+      "n_traits": 10,
+      "n_seeds": 10,
+      "seed_base": 0,
+      "mean_regions": 2.6,
+      "min_regions": 1,
+      "max_regions": 6,
+      "mean_largest_region_fraction": 0.95,
+      "all_absorbed": true,
+      "per_seed_regions": [
+        6,
+        1,
+        4,
+        2,
+        2,
+        2,
+        3,
+        2,
+        3,
+        1
+      ],
+      "per_seed": [
+        {
+          "seed": 0,
+          "regions": 6,
+          "distinct_cultures": 6,
+          "steps": 136200,
+          "absorbed": true,
+          "largest_region_fraction": 0.78
+        },
+        {
+          "seed": 1,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 52600,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 2,
+          "regions": 4,
+          "distinct_cultures": 4,
+          "steps": 109800,
+          "absorbed": true,
+          "largest_region_fraction": 0.92
+        },
+        {
+          "seed": 3,
+          "regions": 2,
+          "distinct_cultures": 2,
+          "steps": 79100,
+          "absorbed": true,
+          "largest_region_fraction": 0.99
+        },
+        {
+          "seed": 4,
+          "regions": 2,
+          "distinct_cultures": 2,
+          "steps": 108300,
+          "absorbed": true,
+          "largest_region_fraction": 0.99
+        },
+        {
+          "seed": 5,
+          "regions": 2,
+          "distinct_cultures": 2,
+          "steps": 44700,
+          "absorbed": true,
+          "largest_region_fraction": 0.91
+        },
+        {
+          "seed": 6,
+          "regions": 3,
+          "distinct_cultures": 3,
+          "steps": 92300,
+          "absorbed": true,
+          "largest_region_fraction": 0.98
+        },
+        {
+          "seed": 7,
+          "regions": 2,
+          "distinct_cultures": 2,
+          "steps": 102200,
+          "absorbed": true,
+          "largest_region_fraction": 0.97
+        },
+        {
+          "seed": 8,
+          "regions": 3,
+          "distinct_cultures": 3,
+          "steps": 120700,
+          "absorbed": true,
+          "largest_region_fraction": 0.96
+        },
+        {
+          "seed": 9,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 63700,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        }
+      ]
+    },
+    {
+      "L": 10,
+      "n_features": 10,
+      "n_traits": 10,
+      "n_seeds": 10,
+      "seed_base": 0,
+      "mean_regions": 1.1,
+      "min_regions": 1,
+      "max_regions": 2,
+      "mean_largest_region_fraction": 0.999,
+      "all_absorbed": true,
+      "per_seed_regions": [
+        1,
+        1,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "per_seed": [
+        {
+          "seed": 0,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 101300,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 1,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 121700,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 2,
+          "regions": 2,
+          "distinct_cultures": 2,
+          "steps": 77100,
+          "absorbed": true,
+          "largest_region_fraction": 0.99
+        },
+        {
+          "seed": 3,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 122000,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 4,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 72600,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 5,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 92900,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 6,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 124600,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 7,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 102100,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 8,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 89400,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        },
+        {
+          "seed": 9,
+          "regions": 1,
+          "distinct_cultures": 1,
+          "steps": 123000,
+          "absorbed": true,
+          "largest_region_fraction": 1.0
+        }
+      ]
+    }
+  ],
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 #regions increases with traits q (#regions(q=15) > #regions(q=5) at F=5)",
+      "salient_number": [
+        17.5,
+        1.0
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 #regions decreases with features F (#regions(F=10) < #regions(F=5) at q=10)",
+      "salient_number": [
+        1.1,
+        2.6
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 monoculture limit: small q (2..5, F=5) -> <= 3 regions",
+      "salient_number": [
+        1.0,
+        3.0
+      ],
+      "reasons": []
+    }
+  ]
+}

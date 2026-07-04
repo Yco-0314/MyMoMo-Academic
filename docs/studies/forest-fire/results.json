@@ -1,0 +1,241 @@
+{
+  "model": "drossel-schwabl-forest-fire (cellular automaton / SOC, NOT agent-stepping)",
+  "implementation": "standard double-separation (instantaneous burning): plant theta=p/f trees one-at-a-time between strikes, then one lightning strike burns the whole toroidal connected von-Neumann cluster instantly; fire size = cluster size",
+  "config": {
+    "L": 128,
+    "p": 0.05,
+    "f": 5e-05,
+    "theta_trees_per_strike": 1000,
+    "neighbourhood": "von Neumann (4)",
+    "boundary": "literal CA open; scale-separated fire-size clusters toroidal",
+    "transient_fires": 5000,
+    "n_fires": 20000,
+    "seed": 0,
+    "inits": [
+      "empty",
+      "trees"
+    ],
+    "fit_method": "exact discrete power-law MLE (zeta-likelihood; Clauset et al. 2009), kmin=1",
+    "kmin": 1,
+    "metric": "fire-size tail exponent tau (discrete MLE) + heavy tail + init-independent stationary density",
+    "p1_tau_range": [
+      1.0,
+      2.5
+    ],
+    "p2_min_decades": 2.0,
+    "p2_min_max_over_median": 100.0,
+    "p3_density_tol": 0.05
+  },
+  "results": {
+    "tau": 1.1990435971602642,
+    "tau_stderr": 0.0022281620141307566,
+    "n_tail": 7980,
+    "kmin": 1,
+    "tau_by_kmin": {
+      "1": {
+        "tau": 1.1990435971602642,
+        "n_tail": 7980
+      },
+      "5": {
+        "tau": 1.2332998401306532,
+        "n_tail": 5993
+      },
+      "10": {
+        "tau": 1.2434258461724466,
+        "n_tail": 5238
+      },
+      "20": {
+        "tau": 1.25296416603579,
+        "n_tail": 4555
+      }
+    },
+    "stationary_tree_density_by_init": {
+      "empty": 0.34861776733398436,
+      "trees": 0.33741799926757815
+    },
+    "n_fires": 20000,
+    "n_zero_fires": 12020,
+    "heavy_tail": {
+      "n_nonzero": 7980,
+      "max": 14900.0,
+      "min_nonzero": 1.0,
+      "median_nonzero": 41.0,
+      "decades": 4.173186268412274,
+      "max_over_median": 363.4146341463415
+    },
+    "size_histogram_log_binned": [
+      {
+        "lo": 1.0,
+        "hi": 2.0,
+        "count": 936
+      },
+      {
+        "lo": 2.0,
+        "hi": 3.0,
+        "count": 457
+      },
+      {
+        "lo": 3.0,
+        "hi": 4.0,
+        "count": 320
+      },
+      {
+        "lo": 4.0,
+        "hi": 6.0,
+        "count": 488
+      },
+      {
+        "lo": 6.0,
+        "hi": 9.0,
+        "count": 452
+      },
+      {
+        "lo": 9.0,
+        "hi": 12.0,
+        "count": 277
+      },
+      {
+        "lo": 12.0,
+        "hi": 17.0,
+        "count": 343
+      },
+      {
+        "lo": 17.0,
+        "hi": 24.0,
+        "count": 324
+      },
+      {
+        "lo": 24.0,
+        "hi": 33.0,
+        "count": 226
+      },
+      {
+        "lo": 33.0,
+        "hi": 46.0,
+        "count": 244
+      },
+      {
+        "lo": 46.0,
+        "hi": 64.0,
+        "count": 222
+      },
+      {
+        "lo": 64.0,
+        "hi": 88.0,
+        "count": 194
+      },
+      {
+        "lo": 88.0,
+        "hi": 122.0,
+        "count": 187
+      },
+      {
+        "lo": 122.0,
+        "hi": 168.0,
+        "count": 134
+      },
+      {
+        "lo": 168.0,
+        "hi": 231.0,
+        "count": 137
+      },
+      {
+        "lo": 231.0,
+        "hi": 319.0,
+        "count": 121
+      },
+      {
+        "lo": 319.0,
+        "hi": 439.0,
+        "count": 110
+      },
+      {
+        "lo": 439.0,
+        "hi": 605.0,
+        "count": 114
+      },
+      {
+        "lo": 605.0,
+        "hi": 834.0,
+        "count": 109
+      },
+      {
+        "lo": 834.0,
+        "hi": 1149.0,
+        "count": 108
+      },
+      {
+        "lo": 1149.0,
+        "hi": 1582.0,
+        "count": 103
+      },
+      {
+        "lo": 1582.0,
+        "hi": 2180.0,
+        "count": 82
+      },
+      {
+        "lo": 2180.0,
+        "hi": 3003.0,
+        "count": 107
+      },
+      {
+        "lo": 3003.0,
+        "hi": 4137.0,
+        "count": 146
+      },
+      {
+        "lo": 4137.0,
+        "hi": 5699.0,
+        "count": 192
+      },
+      {
+        "lo": 5699.0,
+        "hi": 7851.0,
+        "count": 362
+      },
+      {
+        "lo": 7851.0,
+        "hi": 10816.0,
+        "count": 1021
+      },
+      {
+        "lo": 10816.0,
+        "hi": 14900.0,
+        "count": 464
+      }
+    ]
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 fitted tail exponent tau in [1.0, 2.5] (power-law fire sizes, SOC)",
+      "salient_number": [
+        1.199,
+        2.5
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 heavy-tailed: nonzero fire sizes span >= 2.0 decades AND max >= 100.0x median nonzero",
+      "salient_number": [
+        4.1732,
+        2.0
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 stationary tree density init-independent (|empty - trees| <= 0.05)",
+      "salient_number": [
+        0.0112,
+        0.05
+      ],
+      "reasons": []
+    }
+  ]
+}

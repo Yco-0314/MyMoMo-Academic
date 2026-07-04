@@ -1,0 +1,99 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Growing scale-free networks with tunable clustering",
+    "authors": [
+      "Petter Holme",
+      "Beom Jun Kim"
+    ],
+    "year": 2002,
+    "journal": "Physical Review E 65:026107",
+    "doi": "10.1103/PhysRevE.65.026107"
+  },
+  "headline": "Holme-Kim 2002: 2/3 locked clauses REPRO; average C(p=1)=0.617, gamma stable, but P3 misses because L(p=1,N=1000)=4.154 exceeds the locked <=4.0 bar",
+  "code_commit": "09e4e882c6c8bdb3278f061b391d9c468497712c",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 tunable clustering: average local C(p=1)>=0.40, C(p=1)/C(p=0)>=5, and C(0)<C(0.45)<C(1)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.6172,
+        0.4
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 scale-free preserved: gamma_fit(p=0) and gamma_fit(p=1) both in [2.0,3.5], with absolute difference <=0.4",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0069,
+        0.4
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 small-world path length: L(1000) in [3,4], L(5000) in [3.5,5], and growth <=1 for p in {0,1}",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        4.1543,
+        4.0
+      ],
+      "reasons": [
+        "path means p0_n1000=3.4746, p0_n5000=4.0163, p1_n1000=4.1543, p1_n5000=4.9359"
+      ],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/holme-kim/results.json",
+      "sha256": "19110df36f4ea1cc18bef524e655666bfce639e86c0bdc5948d8684a85fc7c6f",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/holme-kim/PREDICTIONS-locked.md",
+      "sha256": "5e0ae5f40817b32d13162af5bd99dabaca8cf32cdb22043feb83b57abf587e75",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/holme-kim/FINDINGS.md",
+      "sha256": "bf37c92a46d3944d21622abcde2ab291467bc0c85cbbd624860ab056e134beba",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "holme-kim-2002-tunable-clustering-network",
+    "scope": "faithful reproduction of a published network-generation / mildly agent-based model; no real-world data; P1 uses average local clustering and reports transitivity separately"
+  },
+  "citations": [
+    "Holme, P. & Kim, B.J. (2002). Growing scale-free networks with tunable clustering. Physical Review E 65:026107. doi:10.1103/PhysRevE.65.026107."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "networkx powerlaw_cluster_graph is used in unit tests as an independent same-algorithm clustering-regime cross-check"
+  }
+}

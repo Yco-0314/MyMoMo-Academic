@@ -1,0 +1,4 @@
+{"agent_id":"agent-1","event_type":"environment_event","payload":{"state":"queue_length=2"},"schema":"abm-auto/llm-agent-replay-event/v1","t":0}
+{"agent_id":"agent-1","event_type":"prompt","payload":{"text":"Observe the queue and decide whether to wait."},"schema":"abm-auto/llm-agent-replay-event/v1","t":0}
+{"agent_id":"agent-1","event_type":"model_response","payload":{"text":"I will wait because the queue is short."},"schema":"abm-auto/llm-agent-replay-event/v1","t":1}
+{"agent_id":"agent-1","event_type":"state_update","payload":{"decision":"wait"},"schema":"abm-auto/llm-agent-replay-event/v1","t":1}

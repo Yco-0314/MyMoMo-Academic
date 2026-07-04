@@ -1,0 +1,65 @@
+{
+  "artifacts": {
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-23-mir-v0-forward-design.md",
+      "replay": "strong",
+      "sha256": "e6339fc7ee02a71c7b724c6bc8337b6f5deaedd7728d92d76c25522c6506af5a"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/reproduce/mir-v0/FINDINGS.md",
+      "replay": "strong",
+      "sha256": "743018c50b80352fcf8b7d04fbff53e0b49e654963fe83bef5ef74b6a4af9246"
+    },
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/reproduce/mir-v0/PREDICTIONS-locked.md",
+      "replay": "strong",
+      "sha256": "eed407f279a9f7021d430684ea5a71434ee0d59d7c7546a7880ddddd412d1993"
+    }
+  },
+  "challenge_id": "mir-v0-half-a-evidence-answering-v1",
+  "challenge_mode": "evidence_answering",
+  "extra": {
+    "ceiling": "This pack grades answer/evidence alignment only; it is not a MIR rerun or scientific truth certificate.",
+    "owner": "codex",
+    "phase": "MyMoMo Evidence Foundry Challenge Harness Phase 1.1"
+  },
+  "schema": "abm-auto/repro-challenge/v1",
+  "source": {
+    "kind": "committed-evidence",
+    "reference": "docs/reproduce/mir-v0",
+    "subject": "MIR v0 Half A forward round-trip"
+  },
+  "tasks": [
+    {
+      "expected_claims": [
+        {
+          "id": "P1-field-identity",
+          "verdict": "PASS"
+        },
+        {
+          "id": "P3-byte-identical-render",
+          "verdict": "PASS"
+        },
+        {
+          "id": "P5-extensions-seam",
+          "verdict": "PASS"
+        },
+        {
+          "id": "P7-zero-change",
+          "verdict": "PASS"
+        }
+      ],
+      "id": "mir-half-a-verdict-summary",
+      "prompt": "Using the locked predictions, design spec, and findings artifacts, report whether MIR v0 Half A P1, P3, P5, and P7 passed or missed. Cite the evidence artifact used for each claim.",
+      "required_artifacts": [
+        "predictions_locked",
+        "design_spec",
+        "findings"
+      ]
+    }
+  ],
+  "title": "MIR v0 Half A Evidence Answering Challenge"
+}

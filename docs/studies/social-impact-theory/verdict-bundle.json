@@ -1,0 +1,115 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "From private attitudes to public opinion: A dynamic theory of social impact",
+    "authors": [
+      "Andrzej Nowak",
+      "Jacek Szamrej",
+      "Bibb Latane"
+    ],
+    "year": 1990,
+    "journal": "Psychological Review 97(3):362-376",
+    "doi": "10.1037/0033-295X.97.3.362"
+  },
+  "headline": "Nowak-Szamrej-Latane 1990 Social Impact (agent-based): 1/3 locked clauses REPRO; mean minority fraction 0.045 (band [0.08,0.45]), bond 0.998, minority survival 0.10",
+  "code_commit": "1d232ed2d0136c30789bb2c75315c46e9f2f1ddf",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 stable nonzero minority survives: mean final minority fraction in [0.08, 0.45] (not 0=consensus, not ~0.5=frozen noise)",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.0446,
+        0.08
+      ],
+      "reasons": [
+        "mean final minority fraction = 0.0446 over 50 seeds (range [0.000, 0.488]); need in [0.08, 0.45]. 45/50 seeds reached full consensus (minority -> 0)."
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P2 spatial self-organisation: mean same-opinion bond fraction >= 0.75 at freeze (vs ~0.5 random)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9983,
+        0.75
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 minority in coherent clusters: largest majority cluster >= 0.55*N AND a minority cluster >= 5 survives in >= 80% of seeds",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.1,
+        0.8
+      ],
+      "reasons": [
+        "mean largest-majority-cluster fraction = 0.9511 (need >= 0.55: OK); minority-cluster (>= 5) survival fraction = 0.1000 (5/50 seeds) (need >= 0.8: MISS)"
+      ],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/social-impact-theory/results.json",
+      "sha256": "2c61f2fcd10ed02f4ee24c2303d1098c045a3f19a24acd73b71e93ef2ee8adfb",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/social-impact-theory/PREDICTIONS-locked.md",
+      "sha256": "a737906a78fab05c59347f2fc7d631f06499914d399d456e3fe79f7f2f24481e",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/social-impact-theory/FINDINGS.md",
+      "sha256": "4d738ba20a89f882709e2587bb257e998a858a5d0884161af697204d8b8fb382",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-batch7-design.md",
+      "sha256": "38e5c736701fcc2618fa92f6cceeb79d4a4e70ad6b5969b50f515f28396349bc",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "nowak-szamrej-latane-1990-social-impact",
+    "L": 41,
+    "N": 1681,
+    "alpha": 2.0,
+    "f0": 0.5,
+    "update": "sequential",
+    "n_seeds": 50,
+    "max_sweeps": 200,
+    "min_cluster_threshold": 5,
+    "mean_minority_fraction": 0.044616299821534804,
+    "mean_bond_fraction": 0.9982682926829267,
+    "minority_survival_fraction": 0.1,
+    "full_consensus_seeds": 45,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data. The contribution is whether the harness + locked-prediction discipline reproduce minority survival and spatial self-organisation under the EXACT locked functional (inverse-square decay, U[0,1] traits, deterministic h=0), and would honestly report a falsified clause"
+  },
+  "citations": [
+    "Nowak, A., Szamrej, J. & Latane, B. (1990). From private attitudes to public opinion: A dynamic theory of social impact. Psychological Review 97(3):362-376. doi:10.1037/0033-295X.97.3.362.",
+    "Castellano, C., Fortunato, S. & Loreto, V. (2009). Statistical physics of social dynamics. Rev. Mod. Phys. 81:591-646 (impact functional, Eq. 16). doi:10.1103/RevModPhys.81.591."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the minority fraction, same-opinion bond fraction, and connected-cluster sizes"
+  }
+}

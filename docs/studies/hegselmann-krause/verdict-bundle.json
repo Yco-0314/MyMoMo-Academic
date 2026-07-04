@@ -1,0 +1,122 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Opinion dynamics and bounded confidence: models, analysis and simulation",
+    "authors": [
+      "Rainer Hegselmann",
+      "Ulrich Krause"
+    ],
+    "year": 2002,
+    "journal": "Journal of Artificial Societies and Social Simulation (JASSS) 5(3)",
+    "doi": null
+  },
+  "headline": "Hegselmann-Krause 2002 (agent-based): 3/3 locked clauses REPRO; consensus fraction at eps=0.3 = 1.00, mean #clusters at eps=0.05 = 8.25",
+  "code_commit": "6ddaf3e777b1989bec06849eeb54d7b9002bed0e",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 consensus above confidence threshold (eps>=0.25 -> 1 cluster in >=90% of runs)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.9
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 mean #clusters non-increasing across the eps grid",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        -0.8,
+        0.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 fragmentation at low eps (eps<=0.1 -> mean #clusters >= 2.0)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        4.2,
+        2.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/hegselmann-krause/results.json",
+      "sha256": "c773e511ae375a01cc5c45a8610ce5961c80d4b3ebed1867b726ad8673094d54",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/hegselmann-krause/PREDICTIONS-locked.md",
+      "sha256": "b14f9d491008c3b4d06ce25ce7bb0afc6c7edd4a8a9b046645f3282b14e7be0b",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/hegselmann-krause/FINDINGS.md",
+      "sha256": "2644043715c1e3c43ab319aa337063a1943ffdb07a81ee4927a4391194caafc6",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave2-design.md",
+      "sha256": "a0fee69f835bb4a97addff28f12cc4b0f21192456b67a21a77255b9314086435",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "hegselmann-krause-2002-bounded-confidence",
+    "n": 1000,
+    "eps_grid": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.3
+    ],
+    "n_seeds_per_eps": 20,
+    "cluster_tol": 0.01,
+    "move_tol": 1e-06,
+    "mean_clusters_by_eps": {
+      "0.05": 8.25,
+      "0.1": 4.2,
+      "0.15": 2.6,
+      "0.2": 1.8,
+      "0.3": 1.0
+    },
+    "consensus_fraction_by_eps": {
+      "0.05": 0.0,
+      "0.1": 0.0,
+      "0.15": 0.0,
+      "0.2": 0.2,
+      "0.3": 1.0
+    },
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the consensus/fragmentation result and would catch an artifact. DISTINCT from Deffuant: HK is synchronous all-neighbours-average, not pairwise."
+  },
+  "citations": [
+    "Hegselmann, R. & Krause, U. (2002). Opinion dynamics and bounded confidence: models, analysis and simulation. Journal of Artificial Societies and Social Simulation (JASSS) 5(3). Open: https://www.jasss.org/5/3/2.html"
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

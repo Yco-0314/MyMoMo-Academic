@@ -1,0 +1,116 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Evolution in Mendelian populations (neutral drift) / The Genetical Theory of Natural Selection",
+    "authors": [
+      "Sewall Wright",
+      "Ronald A. Fisher"
+    ],
+    "year": 1931,
+    "journal": "Genetics 16:97-159 (Wright 1931); Oxford (Fisher 1930)",
+    "doi": "10.1093/genetics/16.2.97"
+  },
+  "headline": "Wright-Fisher neutral drift (agent-based): 3/3 locked clauses REPRO; fixation prob = p0 (worst |err|=0.009); per-gen mean-H decay ~0.9899 vs 1-1/N=0.9900",
+  "code_commit": "faab4405601bdbae9ae61f8f17d1ea6e3dd46e16",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 neutral fixation prob of A equals initial frequency p0 (within +-0.05)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.009,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 per-gen mean-heterozygosity decay factor in [0.9800, 0.9975] (brackets 1-1/N=0.9900)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.98993,
+        0.98
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 neutral drift: E[Delta p]~=0 (per-step martingale) and ensemble mean p(t)~=p0 (no selection bias)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        9e-05,
+        0.005
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/wright-fisher/results.json",
+      "sha256": "a0420ce5361473e79cc7aa1e3f6ec5311762a889c1ce77921da8ef269a3adfc5",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/wright-fisher/PREDICTIONS-locked.md",
+      "sha256": "1b2472b04249d1c98119499c221c467a08332ae9d2049d351320ab48fd407379",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/wright-fisher/FINDINGS.md",
+      "sha256": "e9d368adefd42b8e74e634caf33ed5b7e5b3f50c5c7e0651dbafb1db7732964d",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveA-design.md",
+      "sha256": "e43b07a40ac65baa1c4ac23cd98ea8f1c33dfc09492958c894f155047f3d6ecd",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "wright-fisher-neutral-drift",
+    "N": 100,
+    "p0_grid": [
+      0.2,
+      0.5,
+      0.8
+    ],
+    "n_runs_per_p0": 2000,
+    "fixation_prob_by_p0": {
+      "0.2": 0.2005,
+      "0.5": 0.498,
+      "0.8": 0.791
+    },
+    "decay_factor_by_p0": {
+      "0.2": 0.9900098799413999,
+      "0.5": 0.9899270451535931,
+      "0.8": 0.9900955790910165
+    },
+    "haploid_decay_law_1_minus_1_over_N": 0.99,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the neutral fixation-prob=p0 and heterozygosity-decay results and would catch an artifact"
+  },
+  "citations": [
+    "Wright, S. (1931). Evolution in Mendelian populations. Genetics 16(2):97-159. doi:10.1093/genetics/16.2.97.",
+    "Fisher, R.A. (1930). The Genetical Theory of Natural Selection. Oxford: Clarendon Press."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction. Analytic anchors: neutral fixation prob = p0; haploid heterozygosity decay factor 1-1/N."
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "allowed_claims": [
+    "provenance fields are present",
+    "no direct person identifiers are stored"
+  ],
+  "boundary_note": "This manifest does not validate synthetic people as human substitutes.",
+  "construction": {
+    "direct_person_identifiers": false,
+    "method": "hand-authored fixture for manifest validation",
+    "variables": [
+      "age_band",
+      "region",
+      "prior_experience"
+    ]
+  },
+  "frame": {
+    "geography": "not applicable",
+    "source": "synthetic fixture",
+    "time_scope": "2026 design fixture",
+    "unit": "aggregate persona group"
+  },
+  "population_id": "example-panel-v1",
+  "schema": "abm-auto/synthetic-population-manifest/v1",
+  "validation": {
+    "metrics": [
+      "field completeness"
+    ],
+    "target": "manifest schema only"
+  },
+  "weighting": {
+    "scheme": "uniform fixture weights"
+  }
+}

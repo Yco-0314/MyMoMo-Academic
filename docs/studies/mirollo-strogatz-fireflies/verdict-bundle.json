@@ -1,0 +1,111 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Synchronization of pulse-coupled biological oscillators",
+    "authors": [
+      "Renato E. Mirollo",
+      "Steven H. Strogatz"
+    ],
+    "year": 1990,
+    "journal": "SIAM Journal on Applied Mathematics 50(6):1645-1662",
+    "doi": "10.1137/0150098"
+  },
+  "headline": "Mirollo-Strogatz 1990 pulse-coupled oscillators (genuine-agent): 3/3 locked clauses REPRO; concave N=100 eps=0.1 syncs 100% of seeds (median 17.0 cycles), stronger coupling faster (median 8.0 @ eps=0.2 vs 31.5 @ eps=0.05), LINEAR curve syncs 0% (concavity necessary)",
+  "code_commit": "78e9afde8e80a408cee8a4ee33cc34a5a59fc926",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 universal sync: concave curve (b=3), N=100, eps=0.1 syncs >= 95% of seeds",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.95
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 coupling speeds sync: median cycles-to-sync smaller at eps=0.2 than eps=0.05",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        8.0,
+        31.5
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 concavity necessary: LINEAR curve (b=0), N=100, eps=0.1 syncs < 50% of seeds",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0,
+        0.5
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/mirollo-strogatz-fireflies/results.json",
+      "sha256": "028527545da9769ec9442fd006fe887b769dfeb8673ff17a22d6e2f3a447a1f7",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/mirollo-strogatz-fireflies/PREDICTIONS-locked.md",
+      "sha256": "2e9b3e81cf9db1763525790d4c5620e2c1d2218cd9408cd66e9306b53e6e4aa7",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/mirollo-strogatz-fireflies/FINDINGS.md",
+      "sha256": "baf167c7099b4111e13f15c3c92c913baea237e03b52d2af16094403934b19c1",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "mirollo-strogatz-1990",
+    "n": 100,
+    "n_seeds": 20,
+    "max_cycles": 20000,
+    "b_concave": 3.0,
+    "b_linear": 0.0,
+    "eps_p1": 0.1,
+    "eps_lo": 0.05,
+    "eps_hi": 0.2,
+    "framing": "genuine-agent (integrate-and-fire oscillators, disclosed)",
+    "dynamics": "event-driven fire / reset / SINGLE collective eps pulse in voltage / absorption (firings coalesce into one phase-locked group); concave charging curve f(phi)=(1/b)ln(1+(e^b-1)phi) with exact inverse; a firing group emits ONE eps pulse (not a domino of per-member re-kicks)",
+    "p1_concave_sync_fraction": 1.0,
+    "p2_weak_median": 31.5,
+    "p2_strong_median": 8.0,
+    "p3_linear_sync_fraction": 0.0,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the Mirollo-Strogatz result (universal synchrony of concave pulse-coupled integrate-and-fire oscillators with NO finite coupling threshold, driven by curve concavity) and would catch an artifact"
+  },
+  "citations": [
+    "Mirollo, R.E. & Strogatz, S.H. (1990). Synchronization of pulse-coupled biological oscillators. SIAM Journal on Applied Mathematics 50(6):1645-1662. doi:10.1137/0150098."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the Mirollo-Strogatz universal-sync result (sync fraction, cycles-to-sync monotone in eps, concavity-necessity)"
+  }
+}

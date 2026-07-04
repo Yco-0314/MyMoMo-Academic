@@ -1,0 +1,127 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Inductive Reasoning and Bounded Rationality (The El Farol Bar problem)",
+    "authors": [
+      "W. Brian Arthur"
+    ],
+    "year": 1994,
+    "journal": "American Economic Review 84(2):406-411",
+    "doi": null
+  },
+  "headline": "El Farol (Arthur 1994, agent-based): 3/3 locked clauses REPRO; cross-seed mean attendance = 56.8 (capacity 60; Arthur ~56.0-60.0)",
+  "code_commit": "97edd251ce992863ebadb226d1ce7aafa05b506d",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 mean attendance self-organizes near capacity (mean \u2208 [50, 65])",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        56.806,
+        65.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 attendance fluctuates (mean within-run std > 2)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        23.82,
+        2.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 efficient level emerges without coordination (every seed mean \u2208 [50, 65])",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        54.488,
+        50.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/el-farol/results.json",
+      "sha256": "4b05d819346496eb9642968207645a331c3e9f2acfc9902567d5f50878c7d399",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/el-farol/PREDICTIONS-locked.md",
+      "sha256": "8007ccab613262cc721d0a0e6890850d8cf29cd1507f596aaaea82c448f01d11",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/el-farol/FINDINGS.md",
+      "sha256": "0ef74888ad9a65b0292d3337f090896e3dfc89bb6ddb41650861264bcd258416",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveB-design.md",
+      "sha256": "d9d7d5adbf6787392250b97a7543c247c4790382b9f3bf2685b59f323915a905",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "el-farol-bar",
+    "n": 100,
+    "capacity": 60,
+    "k": 6,
+    "memory_ewma": 0.3,
+    "history_len": 12,
+    "n_seeds": 8,
+    "weeks": 250,
+    "transient": 100,
+    "predictor_repertoire": [
+      "same_as_last_week",
+      "mirror_around_half",
+      "avg_last_2",
+      "avg_last_3",
+      "avg_last_4",
+      "avg_last_5",
+      "avg_last_8",
+      "fixed_40",
+      "fixed_50",
+      "fixed_55",
+      "fixed_60",
+      "fixed_65",
+      "trend_2",
+      "trend_3",
+      "trend_5",
+      "weighted_last_two"
+    ],
+    "cross_seed_mean_attendance": 56.8055,
+    "arthur_band": [
+      56.0,
+      60.0
+    ],
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce Arthur's near-capacity self-organization and would catch an artifact"
+  },
+  "citations": [
+    "Arthur, W.B. (1994). Inductive Reasoning and Bounded Rationality. American Economic Review 84(2):406-411. Open: https://www.santafe.edu/research/results/working-papers/inductive-reasoning-and-bounded-rationality"
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

@@ -1,0 +1,3522 @@
+{
+  "model": "abrams-strogatz-language",
+  "config": {
+    "n": 500,
+    "alpha": 1.31,
+    "status_a": 0.6,
+    "equal_status": 0.5,
+    "initial_grid": [
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6
+    ],
+    "n_runs": 80,
+    "seed_base": 0,
+    "max_sweeps": 1200,
+    "interior_max": 0.15,
+    "boundary_tol": 0.08,
+    "symmetry_tol": 0.1
+  },
+  "unequal_status_sweep": [
+    {
+      "n": 500,
+      "initial_a": 0.2,
+      "status_a": 0.6,
+      "alpha": 1.31,
+      "n_runs": 80,
+      "seed_base": 0,
+      "max_sweeps": 1200,
+      "boundary": 0.21282975684914024,
+      "p_a_win": 0.225,
+      "p_b_win": 0.775,
+      "p_interior": 0.0,
+      "mean_final_a_fraction": 0.2525000000000003,
+      "per_run": [
+        {
+          "seed": 0,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 47.0,
+          "capped": false
+        },
+        {
+          "seed": 1,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 15.346,
+          "capped": false
+        },
+        {
+          "seed": 2,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 20.632,
+          "capped": false
+        },
+        {
+          "seed": 3,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 27.036,
+          "capped": false
+        },
+        {
+          "seed": 4,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 34.166,
+          "capped": false
+        },
+        {
+          "seed": 5,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 17.394,
+          "capped": false
+        },
+        {
+          "seed": 6,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 29.418,
+          "capped": false
+        },
+        {
+          "seed": 7,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 7.542,
+          "capped": false
+        },
+        {
+          "seed": 8,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 36.538,
+          "capped": false
+        },
+        {
+          "seed": 9,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 16.084,
+          "capped": false
+        },
+        {
+          "seed": 10,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 17.364,
+          "capped": false
+        },
+        {
+          "seed": 11,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 22.382,
+          "capped": false
+        },
+        {
+          "seed": 12,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 21.638,
+          "capped": false
+        },
+        {
+          "seed": 13,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 18.994,
+          "capped": false
+        },
+        {
+          "seed": 14,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 22.376,
+          "capped": false
+        },
+        {
+          "seed": 15,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 30.89,
+          "capped": false
+        },
+        {
+          "seed": 16,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 35.584,
+          "capped": false
+        },
+        {
+          "seed": 17,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 45.862,
+          "capped": false
+        },
+        {
+          "seed": 18,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 32.752,
+          "capped": false
+        },
+        {
+          "seed": 19,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 13.132,
+          "capped": false
+        },
+        {
+          "seed": 20,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 15.958,
+          "capped": false
+        },
+        {
+          "seed": 21,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 31.056,
+          "capped": false
+        },
+        {
+          "seed": 22,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 22.036,
+          "capped": false
+        },
+        {
+          "seed": 23,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 33.518,
+          "capped": false
+        },
+        {
+          "seed": 24,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 20.864,
+          "capped": false
+        },
+        {
+          "seed": 25,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 20.366,
+          "capped": false
+        },
+        {
+          "seed": 26,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 32.194,
+          "capped": false
+        },
+        {
+          "seed": 27,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 31.352,
+          "capped": false
+        },
+        {
+          "seed": 28,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 26.046,
+          "capped": false
+        },
+        {
+          "seed": 29,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 32.954,
+          "capped": false
+        },
+        {
+          "seed": 30,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 37.804,
+          "capped": false
+        },
+        {
+          "seed": 31,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 14.158,
+          "capped": false
+        },
+        {
+          "seed": 32,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 30.868,
+          "capped": false
+        },
+        {
+          "seed": 33,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 17.092,
+          "capped": false
+        },
+        {
+          "seed": 34,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 40.476,
+          "capped": false
+        },
+        {
+          "seed": 35,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 18.0,
+          "capped": false
+        },
+        {
+          "seed": 36,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 26.298,
+          "capped": false
+        },
+        {
+          "seed": 37,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 14.226,
+          "capped": false
+        },
+        {
+          "seed": 38,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 19.216,
+          "capped": false
+        },
+        {
+          "seed": 39,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 23.944,
+          "capped": false
+        },
+        {
+          "seed": 40,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 26.548,
+          "capped": false
+        },
+        {
+          "seed": 41,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 23.328,
+          "capped": false
+        },
+        {
+          "seed": 42,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 56.054,
+          "capped": false
+        },
+        {
+          "seed": 43,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 13.248,
+          "capped": false
+        },
+        {
+          "seed": 44,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 25.086,
+          "capped": false
+        },
+        {
+          "seed": 45,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 18.484,
+          "capped": false
+        },
+        {
+          "seed": 46,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 21.104,
+          "capped": false
+        },
+        {
+          "seed": 47,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 27.822,
+          "capped": false
+        },
+        {
+          "seed": 48,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 31.982,
+          "capped": false
+        },
+        {
+          "seed": 49,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 12.266,
+          "capped": false
+        },
+        {
+          "seed": 50,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 24.94,
+          "capped": false
+        },
+        {
+          "seed": 51,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 23.442,
+          "capped": false
+        },
+        {
+          "seed": 52,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 11.45,
+          "capped": false
+        },
+        {
+          "seed": 53,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 25.624,
+          "capped": false
+        },
+        {
+          "seed": 54,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 29.2,
+          "capped": false
+        },
+        {
+          "seed": 55,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 12.434,
+          "capped": false
+        },
+        {
+          "seed": 56,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 30.282,
+          "capped": false
+        },
+        {
+          "seed": 57,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 35.086,
+          "capped": false
+        },
+        {
+          "seed": 58,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 17.41,
+          "capped": false
+        },
+        {
+          "seed": 59,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 23.924,
+          "capped": false
+        },
+        {
+          "seed": 60,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 71.422,
+          "capped": false
+        },
+        {
+          "seed": 61,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 16.508,
+          "capped": false
+        },
+        {
+          "seed": 62,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 31.584,
+          "capped": false
+        },
+        {
+          "seed": 63,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 63.02,
+          "capped": false
+        },
+        {
+          "seed": 64,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 18.23,
+          "capped": false
+        },
+        {
+          "seed": 65,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 13.75,
+          "capped": false
+        },
+        {
+          "seed": 66,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 45.218,
+          "capped": false
+        },
+        {
+          "seed": 67,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 30.716,
+          "capped": false
+        },
+        {
+          "seed": 68,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 25.802,
+          "capped": false
+        },
+        {
+          "seed": 69,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 15.806,
+          "capped": false
+        },
+        {
+          "seed": 70,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 24.228,
+          "capped": false
+        },
+        {
+          "seed": 71,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 11.268,
+          "capped": false
+        },
+        {
+          "seed": 72,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 21.746,
+          "capped": false
+        },
+        {
+          "seed": 73,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 20.682,
+          "capped": false
+        },
+        {
+          "seed": 74,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 18.26,
+          "capped": false
+        },
+        {
+          "seed": 75,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 28.638,
+          "capped": false
+        },
+        {
+          "seed": 76,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 19.246,
+          "capped": false
+        },
+        {
+          "seed": 77,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 13.376,
+          "capped": false
+        },
+        {
+          "seed": 78,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 34.88,
+          "capped": false
+        },
+        {
+          "seed": 79,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 57.19,
+          "capped": false
+        }
+      ]
+    },
+    {
+      "n": 500,
+      "initial_a": 0.3,
+      "status_a": 0.6,
+      "alpha": 1.31,
+      "n_runs": 80,
+      "seed_base": 0,
+      "max_sweeps": 1200,
+      "boundary": 0.21282975684914024,
+      "p_a_win": 0.9875,
+      "p_b_win": 0.0125,
+      "p_interior": 0.0,
+      "mean_final_a_fraction": 0.9387500000000013,
+      "per_run": [
+        {
+          "seed": 0,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 26.124,
+          "capped": false
+        },
+        {
+          "seed": 1,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 18.126,
+          "capped": false
+        },
+        {
+          "seed": 2,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 21.336,
+          "capped": false
+        },
+        {
+          "seed": 3,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 17.462,
+          "capped": false
+        },
+        {
+          "seed": 4,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.676,
+          "capped": false
+        },
+        {
+          "seed": 5,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.12,
+          "capped": false
+        },
+        {
+          "seed": 6,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.726,
+          "capped": false
+        },
+        {
+          "seed": 7,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 26.31,
+          "capped": false
+        },
+        {
+          "seed": 8,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.382,
+          "capped": false
+        },
+        {
+          "seed": 9,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 20.478,
+          "capped": false
+        },
+        {
+          "seed": 10,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 24.552,
+          "capped": false
+        },
+        {
+          "seed": 11,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 14.754,
+          "capped": false
+        },
+        {
+          "seed": 12,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 18.756,
+          "capped": false
+        },
+        {
+          "seed": 13,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 21.004,
+          "capped": false
+        },
+        {
+          "seed": 14,
+          "final_a_fraction": 0.05,
+          "outcome": "B",
+          "sweeps": 35.318,
+          "capped": false
+        },
+        {
+          "seed": 15,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 23.976,
+          "capped": false
+        },
+        {
+          "seed": 16,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 17.664,
+          "capped": false
+        },
+        {
+          "seed": 17,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 15.546,
+          "capped": false
+        },
+        {
+          "seed": 18,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 15.892,
+          "capped": false
+        },
+        {
+          "seed": 19,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 17.678,
+          "capped": false
+        },
+        {
+          "seed": 20,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 17.808,
+          "capped": false
+        },
+        {
+          "seed": 21,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 18.834,
+          "capped": false
+        },
+        {
+          "seed": 22,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 25.892,
+          "capped": false
+        },
+        {
+          "seed": 23,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 18.176,
+          "capped": false
+        },
+        {
+          "seed": 24,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 19.284,
+          "capped": false
+        },
+        {
+          "seed": 25,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 24.228,
+          "capped": false
+        },
+        {
+          "seed": 26,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.63,
+          "capped": false
+        },
+        {
+          "seed": 27,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 17.316,
+          "capped": false
+        },
+        {
+          "seed": 28,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 21.29,
+          "capped": false
+        },
+        {
+          "seed": 29,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 21.912,
+          "capped": false
+        },
+        {
+          "seed": 30,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 17.278,
+          "capped": false
+        },
+        {
+          "seed": 31,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 19.072,
+          "capped": false
+        },
+        {
+          "seed": 32,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 18.01,
+          "capped": false
+        },
+        {
+          "seed": 33,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 14.86,
+          "capped": false
+        },
+        {
+          "seed": 34,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.38,
+          "capped": false
+        },
+        {
+          "seed": 35,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 26.27,
+          "capped": false
+        },
+        {
+          "seed": 36,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 20.432,
+          "capped": false
+        },
+        {
+          "seed": 37,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.644,
+          "capped": false
+        },
+        {
+          "seed": 38,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.474,
+          "capped": false
+        },
+        {
+          "seed": 39,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 24.102,
+          "capped": false
+        },
+        {
+          "seed": 40,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 17.842,
+          "capped": false
+        },
+        {
+          "seed": 41,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 26.804,
+          "capped": false
+        },
+        {
+          "seed": 42,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 21.212,
+          "capped": false
+        },
+        {
+          "seed": 43,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.572,
+          "capped": false
+        },
+        {
+          "seed": 44,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 24.292,
+          "capped": false
+        },
+        {
+          "seed": 45,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 21.01,
+          "capped": false
+        },
+        {
+          "seed": 46,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 15.05,
+          "capped": false
+        },
+        {
+          "seed": 47,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 19.264,
+          "capped": false
+        },
+        {
+          "seed": 48,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 15.008,
+          "capped": false
+        },
+        {
+          "seed": 49,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 17.674,
+          "capped": false
+        },
+        {
+          "seed": 50,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 22.1,
+          "capped": false
+        },
+        {
+          "seed": 51,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 23.988,
+          "capped": false
+        },
+        {
+          "seed": 52,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 26.23,
+          "capped": false
+        },
+        {
+          "seed": 53,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.38,
+          "capped": false
+        },
+        {
+          "seed": 54,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.142,
+          "capped": false
+        },
+        {
+          "seed": 55,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 19.8,
+          "capped": false
+        },
+        {
+          "seed": 56,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 20.154,
+          "capped": false
+        },
+        {
+          "seed": 57,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 19.52,
+          "capped": false
+        },
+        {
+          "seed": 58,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 18.726,
+          "capped": false
+        },
+        {
+          "seed": 59,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 18.74,
+          "capped": false
+        },
+        {
+          "seed": 60,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 19.566,
+          "capped": false
+        },
+        {
+          "seed": 61,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 18.782,
+          "capped": false
+        },
+        {
+          "seed": 62,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 21.904,
+          "capped": false
+        },
+        {
+          "seed": 63,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 24.932,
+          "capped": false
+        },
+        {
+          "seed": 64,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 18.102,
+          "capped": false
+        },
+        {
+          "seed": 65,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 22.916,
+          "capped": false
+        },
+        {
+          "seed": 66,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 20.554,
+          "capped": false
+        },
+        {
+          "seed": 67,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 15.518,
+          "capped": false
+        },
+        {
+          "seed": 68,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 18.702,
+          "capped": false
+        },
+        {
+          "seed": 69,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.606,
+          "capped": false
+        },
+        {
+          "seed": 70,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 14.134,
+          "capped": false
+        },
+        {
+          "seed": 71,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 18.534,
+          "capped": false
+        },
+        {
+          "seed": 72,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 19.014,
+          "capped": false
+        },
+        {
+          "seed": 73,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 19.022,
+          "capped": false
+        },
+        {
+          "seed": 74,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 17.566,
+          "capped": false
+        },
+        {
+          "seed": 75,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.778,
+          "capped": false
+        },
+        {
+          "seed": 76,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 21.714,
+          "capped": false
+        },
+        {
+          "seed": 77,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 25.172,
+          "capped": false
+        },
+        {
+          "seed": 78,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 17.192,
+          "capped": false
+        },
+        {
+          "seed": 79,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 17.246,
+          "capped": false
+        }
+      ]
+    },
+    {
+      "n": 500,
+      "initial_a": 0.4,
+      "status_a": 0.6,
+      "alpha": 1.31,
+      "n_runs": 80,
+      "seed_base": 0,
+      "max_sweeps": 1200,
+      "boundary": 0.21282975684914024,
+      "p_a_win": 1.0,
+      "p_b_win": 0.0,
+      "p_interior": 0.0,
+      "mean_final_a_fraction": 0.9500000000000014,
+      "per_run": [
+        {
+          "seed": 0,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 14.002,
+          "capped": false
+        },
+        {
+          "seed": 1,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 11.828,
+          "capped": false
+        },
+        {
+          "seed": 2,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.474,
+          "capped": false
+        },
+        {
+          "seed": 3,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.964,
+          "capped": false
+        },
+        {
+          "seed": 4,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.086,
+          "capped": false
+        },
+        {
+          "seed": 5,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 15.05,
+          "capped": false
+        },
+        {
+          "seed": 6,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 14.09,
+          "capped": false
+        },
+        {
+          "seed": 7,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.798,
+          "capped": false
+        },
+        {
+          "seed": 8,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.742,
+          "capped": false
+        },
+        {
+          "seed": 9,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.166,
+          "capped": false
+        },
+        {
+          "seed": 10,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.894,
+          "capped": false
+        },
+        {
+          "seed": 11,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.942,
+          "capped": false
+        },
+        {
+          "seed": 12,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.132,
+          "capped": false
+        },
+        {
+          "seed": 13,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 11.45,
+          "capped": false
+        },
+        {
+          "seed": 14,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 15.15,
+          "capped": false
+        },
+        {
+          "seed": 15,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 14.668,
+          "capped": false
+        },
+        {
+          "seed": 16,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.426,
+          "capped": false
+        },
+        {
+          "seed": 17,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.272,
+          "capped": false
+        },
+        {
+          "seed": 18,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 11.442,
+          "capped": false
+        },
+        {
+          "seed": 19,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.88,
+          "capped": false
+        },
+        {
+          "seed": 20,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.304,
+          "capped": false
+        },
+        {
+          "seed": 21,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.918,
+          "capped": false
+        },
+        {
+          "seed": 22,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.912,
+          "capped": false
+        },
+        {
+          "seed": 23,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.158,
+          "capped": false
+        },
+        {
+          "seed": 24,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.938,
+          "capped": false
+        },
+        {
+          "seed": 25,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.71,
+          "capped": false
+        },
+        {
+          "seed": 26,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.982,
+          "capped": false
+        },
+        {
+          "seed": 27,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.764,
+          "capped": false
+        },
+        {
+          "seed": 28,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.424,
+          "capped": false
+        },
+        {
+          "seed": 29,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.418,
+          "capped": false
+        },
+        {
+          "seed": 30,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.928,
+          "capped": false
+        },
+        {
+          "seed": 31,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.354,
+          "capped": false
+        },
+        {
+          "seed": 32,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 14.178,
+          "capped": false
+        },
+        {
+          "seed": 33,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.09,
+          "capped": false
+        },
+        {
+          "seed": 34,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.652,
+          "capped": false
+        },
+        {
+          "seed": 35,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.316,
+          "capped": false
+        },
+        {
+          "seed": 36,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.79,
+          "capped": false
+        },
+        {
+          "seed": 37,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.686,
+          "capped": false
+        },
+        {
+          "seed": 38,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 11.942,
+          "capped": false
+        },
+        {
+          "seed": 39,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.078,
+          "capped": false
+        },
+        {
+          "seed": 40,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.454,
+          "capped": false
+        },
+        {
+          "seed": 41,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.618,
+          "capped": false
+        },
+        {
+          "seed": 42,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.476,
+          "capped": false
+        },
+        {
+          "seed": 43,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.646,
+          "capped": false
+        },
+        {
+          "seed": 44,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 14.664,
+          "capped": false
+        },
+        {
+          "seed": 45,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.952,
+          "capped": false
+        },
+        {
+          "seed": 46,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.85,
+          "capped": false
+        },
+        {
+          "seed": 47,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.224,
+          "capped": false
+        },
+        {
+          "seed": 48,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 11.118,
+          "capped": false
+        },
+        {
+          "seed": 49,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 11.748,
+          "capped": false
+        },
+        {
+          "seed": 50,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 14.026,
+          "capped": false
+        },
+        {
+          "seed": 51,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.356,
+          "capped": false
+        },
+        {
+          "seed": 52,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.134,
+          "capped": false
+        },
+        {
+          "seed": 53,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 14.964,
+          "capped": false
+        },
+        {
+          "seed": 54,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.256,
+          "capped": false
+        },
+        {
+          "seed": 55,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.432,
+          "capped": false
+        },
+        {
+          "seed": 56,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.448,
+          "capped": false
+        },
+        {
+          "seed": 57,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 14.134,
+          "capped": false
+        },
+        {
+          "seed": 58,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 15.778,
+          "capped": false
+        },
+        {
+          "seed": 59,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.876,
+          "capped": false
+        },
+        {
+          "seed": 60,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.192,
+          "capped": false
+        },
+        {
+          "seed": 61,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.532,
+          "capped": false
+        },
+        {
+          "seed": 62,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.408,
+          "capped": false
+        },
+        {
+          "seed": 63,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.732,
+          "capped": false
+        },
+        {
+          "seed": 64,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 11.154,
+          "capped": false
+        },
+        {
+          "seed": 65,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.366,
+          "capped": false
+        },
+        {
+          "seed": 66,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.584,
+          "capped": false
+        },
+        {
+          "seed": 67,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.38,
+          "capped": false
+        },
+        {
+          "seed": 68,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 15.596,
+          "capped": false
+        },
+        {
+          "seed": 69,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 15.39,
+          "capped": false
+        },
+        {
+          "seed": 70,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.59,
+          "capped": false
+        },
+        {
+          "seed": 71,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.58,
+          "capped": false
+        },
+        {
+          "seed": 72,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.9,
+          "capped": false
+        },
+        {
+          "seed": 73,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.396,
+          "capped": false
+        },
+        {
+          "seed": 74,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.656,
+          "capped": false
+        },
+        {
+          "seed": 75,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 16.472,
+          "capped": false
+        },
+        {
+          "seed": 76,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 14.996,
+          "capped": false
+        },
+        {
+          "seed": 77,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 19.544,
+          "capped": false
+        },
+        {
+          "seed": 78,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 11.726,
+          "capped": false
+        },
+        {
+          "seed": 79,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 13.424,
+          "capped": false
+        }
+      ]
+    },
+    {
+      "n": 500,
+      "initial_a": 0.5,
+      "status_a": 0.6,
+      "alpha": 1.31,
+      "n_runs": 80,
+      "seed_base": 0,
+      "max_sweeps": 1200,
+      "boundary": 0.21282975684914024,
+      "p_a_win": 1.0,
+      "p_b_win": 0.0,
+      "p_interior": 0.0,
+      "mean_final_a_fraction": 0.9500000000000014,
+      "per_run": [
+        {
+          "seed": 0,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.34,
+          "capped": false
+        },
+        {
+          "seed": 1,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.546,
+          "capped": false
+        },
+        {
+          "seed": 2,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.886,
+          "capped": false
+        },
+        {
+          "seed": 3,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.596,
+          "capped": false
+        },
+        {
+          "seed": 4,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.984,
+          "capped": false
+        },
+        {
+          "seed": 5,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 11.09,
+          "capped": false
+        },
+        {
+          "seed": 6,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.312,
+          "capped": false
+        },
+        {
+          "seed": 7,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.418,
+          "capped": false
+        },
+        {
+          "seed": 8,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.298,
+          "capped": false
+        },
+        {
+          "seed": 9,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.08,
+          "capped": false
+        },
+        {
+          "seed": 10,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.448,
+          "capped": false
+        },
+        {
+          "seed": 11,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.186,
+          "capped": false
+        },
+        {
+          "seed": 12,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.822,
+          "capped": false
+        },
+        {
+          "seed": 13,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.822,
+          "capped": false
+        },
+        {
+          "seed": 14,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.718,
+          "capped": false
+        },
+        {
+          "seed": 15,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.912,
+          "capped": false
+        },
+        {
+          "seed": 16,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.484,
+          "capped": false
+        },
+        {
+          "seed": 17,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.562,
+          "capped": false
+        },
+        {
+          "seed": 18,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 11.26,
+          "capped": false
+        },
+        {
+          "seed": 19,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.404,
+          "capped": false
+        },
+        {
+          "seed": 20,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.726,
+          "capped": false
+        },
+        {
+          "seed": 21,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.594,
+          "capped": false
+        },
+        {
+          "seed": 22,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.788,
+          "capped": false
+        },
+        {
+          "seed": 23,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.212,
+          "capped": false
+        },
+        {
+          "seed": 24,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 11.06,
+          "capped": false
+        },
+        {
+          "seed": 25,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.538,
+          "capped": false
+        },
+        {
+          "seed": 26,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.972,
+          "capped": false
+        },
+        {
+          "seed": 27,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.752,
+          "capped": false
+        },
+        {
+          "seed": 28,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.106,
+          "capped": false
+        },
+        {
+          "seed": 29,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.89,
+          "capped": false
+        },
+        {
+          "seed": 30,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 12.18,
+          "capped": false
+        },
+        {
+          "seed": 31,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.21,
+          "capped": false
+        },
+        {
+          "seed": 32,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 11.074,
+          "capped": false
+        },
+        {
+          "seed": 33,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.424,
+          "capped": false
+        },
+        {
+          "seed": 34,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.278,
+          "capped": false
+        },
+        {
+          "seed": 35,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.332,
+          "capped": false
+        },
+        {
+          "seed": 36,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.698,
+          "capped": false
+        },
+        {
+          "seed": 37,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.9,
+          "capped": false
+        },
+        {
+          "seed": 38,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.896,
+          "capped": false
+        },
+        {
+          "seed": 39,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.856,
+          "capped": false
+        },
+        {
+          "seed": 40,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.43,
+          "capped": false
+        },
+        {
+          "seed": 41,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.888,
+          "capped": false
+        },
+        {
+          "seed": 42,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.456,
+          "capped": false
+        },
+        {
+          "seed": 43,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 11.922,
+          "capped": false
+        },
+        {
+          "seed": 44,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 11.032,
+          "capped": false
+        },
+        {
+          "seed": 45,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.62,
+          "capped": false
+        },
+        {
+          "seed": 46,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.664,
+          "capped": false
+        },
+        {
+          "seed": 47,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.364,
+          "capped": false
+        },
+        {
+          "seed": 48,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.804,
+          "capped": false
+        },
+        {
+          "seed": 49,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.536,
+          "capped": false
+        },
+        {
+          "seed": 50,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.906,
+          "capped": false
+        },
+        {
+          "seed": 51,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.522,
+          "capped": false
+        },
+        {
+          "seed": 52,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.192,
+          "capped": false
+        },
+        {
+          "seed": 53,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 11.102,
+          "capped": false
+        },
+        {
+          "seed": 54,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.08,
+          "capped": false
+        },
+        {
+          "seed": 55,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.658,
+          "capped": false
+        },
+        {
+          "seed": 56,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.668,
+          "capped": false
+        },
+        {
+          "seed": 57,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.952,
+          "capped": false
+        },
+        {
+          "seed": 58,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.182,
+          "capped": false
+        },
+        {
+          "seed": 59,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.018,
+          "capped": false
+        },
+        {
+          "seed": 60,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.694,
+          "capped": false
+        },
+        {
+          "seed": 61,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.868,
+          "capped": false
+        },
+        {
+          "seed": 62,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.612,
+          "capped": false
+        },
+        {
+          "seed": 63,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.082,
+          "capped": false
+        },
+        {
+          "seed": 64,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.706,
+          "capped": false
+        },
+        {
+          "seed": 65,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.642,
+          "capped": false
+        },
+        {
+          "seed": 66,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.958,
+          "capped": false
+        },
+        {
+          "seed": 67,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.218,
+          "capped": false
+        },
+        {
+          "seed": 68,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.846,
+          "capped": false
+        },
+        {
+          "seed": 69,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.174,
+          "capped": false
+        },
+        {
+          "seed": 70,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.468,
+          "capped": false
+        },
+        {
+          "seed": 71,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.376,
+          "capped": false
+        },
+        {
+          "seed": 72,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.708,
+          "capped": false
+        },
+        {
+          "seed": 73,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.552,
+          "capped": false
+        },
+        {
+          "seed": 74,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.864,
+          "capped": false
+        },
+        {
+          "seed": 75,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 15.312,
+          "capped": false
+        },
+        {
+          "seed": 76,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.432,
+          "capped": false
+        },
+        {
+          "seed": 77,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.332,
+          "capped": false
+        },
+        {
+          "seed": 78,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.89,
+          "capped": false
+        },
+        {
+          "seed": 79,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.388,
+          "capped": false
+        }
+      ]
+    },
+    {
+      "n": 500,
+      "initial_a": 0.6,
+      "status_a": 0.6,
+      "alpha": 1.31,
+      "n_runs": 80,
+      "seed_base": 0,
+      "max_sweeps": 1200,
+      "boundary": 0.21282975684914024,
+      "p_a_win": 1.0,
+      "p_b_win": 0.0,
+      "p_interior": 0.0,
+      "mean_final_a_fraction": 0.9500000000000014,
+      "per_run": [
+        {
+          "seed": 0,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.368,
+          "capped": false
+        },
+        {
+          "seed": 1,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.39,
+          "capped": false
+        },
+        {
+          "seed": 2,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.534,
+          "capped": false
+        },
+        {
+          "seed": 3,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.546,
+          "capped": false
+        },
+        {
+          "seed": 4,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.752,
+          "capped": false
+        },
+        {
+          "seed": 5,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.874,
+          "capped": false
+        },
+        {
+          "seed": 6,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.51,
+          "capped": false
+        },
+        {
+          "seed": 7,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.63,
+          "capped": false
+        },
+        {
+          "seed": 8,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.51,
+          "capped": false
+        },
+        {
+          "seed": 9,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.892,
+          "capped": false
+        },
+        {
+          "seed": 10,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.384,
+          "capped": false
+        },
+        {
+          "seed": 11,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.514,
+          "capped": false
+        },
+        {
+          "seed": 12,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.98,
+          "capped": false
+        },
+        {
+          "seed": 13,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.42,
+          "capped": false
+        },
+        {
+          "seed": 14,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.826,
+          "capped": false
+        },
+        {
+          "seed": 15,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.45,
+          "capped": false
+        },
+        {
+          "seed": 16,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.802,
+          "capped": false
+        },
+        {
+          "seed": 17,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.862,
+          "capped": false
+        },
+        {
+          "seed": 18,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.386,
+          "capped": false
+        },
+        {
+          "seed": 19,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.508,
+          "capped": false
+        },
+        {
+          "seed": 20,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.238,
+          "capped": false
+        },
+        {
+          "seed": 21,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.264,
+          "capped": false
+        },
+        {
+          "seed": 22,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 10.126,
+          "capped": false
+        },
+        {
+          "seed": 23,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.982,
+          "capped": false
+        },
+        {
+          "seed": 24,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.286,
+          "capped": false
+        },
+        {
+          "seed": 25,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.698,
+          "capped": false
+        },
+        {
+          "seed": 26,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.622,
+          "capped": false
+        },
+        {
+          "seed": 27,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.128,
+          "capped": false
+        },
+        {
+          "seed": 28,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.526,
+          "capped": false
+        },
+        {
+          "seed": 29,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.012,
+          "capped": false
+        },
+        {
+          "seed": 30,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 11.058,
+          "capped": false
+        },
+        {
+          "seed": 31,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.65,
+          "capped": false
+        },
+        {
+          "seed": 32,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.102,
+          "capped": false
+        },
+        {
+          "seed": 33,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.128,
+          "capped": false
+        },
+        {
+          "seed": 34,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.932,
+          "capped": false
+        },
+        {
+          "seed": 35,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.578,
+          "capped": false
+        },
+        {
+          "seed": 36,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.864,
+          "capped": false
+        },
+        {
+          "seed": 37,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.282,
+          "capped": false
+        },
+        {
+          "seed": 38,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.432,
+          "capped": false
+        },
+        {
+          "seed": 39,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.406,
+          "capped": false
+        },
+        {
+          "seed": 40,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.638,
+          "capped": false
+        },
+        {
+          "seed": 41,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.762,
+          "capped": false
+        },
+        {
+          "seed": 42,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.94,
+          "capped": false
+        },
+        {
+          "seed": 43,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.27,
+          "capped": false
+        },
+        {
+          "seed": 44,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.22,
+          "capped": false
+        },
+        {
+          "seed": 45,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.484,
+          "capped": false
+        },
+        {
+          "seed": 46,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.494,
+          "capped": false
+        },
+        {
+          "seed": 47,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.79,
+          "capped": false
+        },
+        {
+          "seed": 48,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.002,
+          "capped": false
+        },
+        {
+          "seed": 49,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.42,
+          "capped": false
+        },
+        {
+          "seed": 50,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.846,
+          "capped": false
+        },
+        {
+          "seed": 51,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.324,
+          "capped": false
+        },
+        {
+          "seed": 52,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.19,
+          "capped": false
+        },
+        {
+          "seed": 53,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 9.496,
+          "capped": false
+        },
+        {
+          "seed": 54,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.186,
+          "capped": false
+        },
+        {
+          "seed": 55,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.426,
+          "capped": false
+        },
+        {
+          "seed": 56,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.332,
+          "capped": false
+        },
+        {
+          "seed": 57,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.632,
+          "capped": false
+        },
+        {
+          "seed": 58,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.014,
+          "capped": false
+        },
+        {
+          "seed": 59,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.35,
+          "capped": false
+        },
+        {
+          "seed": 60,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.602,
+          "capped": false
+        },
+        {
+          "seed": 61,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.328,
+          "capped": false
+        },
+        {
+          "seed": 62,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.338,
+          "capped": false
+        },
+        {
+          "seed": 63,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.572,
+          "capped": false
+        },
+        {
+          "seed": 64,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.596,
+          "capped": false
+        },
+        {
+          "seed": 65,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.524,
+          "capped": false
+        },
+        {
+          "seed": 66,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 5.38,
+          "capped": false
+        },
+        {
+          "seed": 67,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.266,
+          "capped": false
+        },
+        {
+          "seed": 68,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.368,
+          "capped": false
+        },
+        {
+          "seed": 69,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.274,
+          "capped": false
+        },
+        {
+          "seed": 70,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.906,
+          "capped": false
+        },
+        {
+          "seed": 71,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.89,
+          "capped": false
+        },
+        {
+          "seed": 72,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 7.672,
+          "capped": false
+        },
+        {
+          "seed": 73,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.706,
+          "capped": false
+        },
+        {
+          "seed": 74,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 6.454,
+          "capped": false
+        },
+        {
+          "seed": 75,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.998,
+          "capped": false
+        },
+        {
+          "seed": 76,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.188,
+          "capped": false
+        },
+        {
+          "seed": 77,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.312,
+          "capped": false
+        },
+        {
+          "seed": 78,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.416,
+          "capped": false
+        },
+        {
+          "seed": 79,
+          "final_a_fraction": 0.95,
+          "outcome": "A",
+          "sweeps": 8.772,
+          "capped": false
+        }
+      ]
+    }
+  ],
+  "equal_status": {
+    "n": 500,
+    "initial_a": 0.5,
+    "status_a": 0.5,
+    "alpha": 1.31,
+    "n_runs": 80,
+    "seed_base": 0,
+    "max_sweeps": 1200,
+    "boundary": 0.5,
+    "p_a_win": 0.5375,
+    "p_b_win": 0.4625,
+    "p_interior": 0.0,
+    "mean_final_a_fraction": 0.5337500000000001,
+    "per_run": [
+      {
+        "seed": 0,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 26.792,
+        "capped": false
+      },
+      {
+        "seed": 1,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 24.876,
+        "capped": false
+      },
+      {
+        "seed": 2,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 28.912,
+        "capped": false
+      },
+      {
+        "seed": 3,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 27.948,
+        "capped": false
+      },
+      {
+        "seed": 4,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 36.304,
+        "capped": false
+      },
+      {
+        "seed": 5,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 15.912,
+        "capped": false
+      },
+      {
+        "seed": 6,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 20.148,
+        "capped": false
+      },
+      {
+        "seed": 7,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 17.726,
+        "capped": false
+      },
+      {
+        "seed": 8,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 24.496,
+        "capped": false
+      },
+      {
+        "seed": 9,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 16.298,
+        "capped": false
+      },
+      {
+        "seed": 10,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 34.722,
+        "capped": false
+      },
+      {
+        "seed": 11,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 13.52,
+        "capped": false
+      },
+      {
+        "seed": 12,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 74.806,
+        "capped": false
+      },
+      {
+        "seed": 13,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 24.198,
+        "capped": false
+      },
+      {
+        "seed": 14,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 19.4,
+        "capped": false
+      },
+      {
+        "seed": 15,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 21.876,
+        "capped": false
+      },
+      {
+        "seed": 16,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 30.494,
+        "capped": false
+      },
+      {
+        "seed": 17,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 58.942,
+        "capped": false
+      },
+      {
+        "seed": 18,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 29.438,
+        "capped": false
+      },
+      {
+        "seed": 19,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 28.522,
+        "capped": false
+      },
+      {
+        "seed": 20,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 35.084,
+        "capped": false
+      },
+      {
+        "seed": 21,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 29.256,
+        "capped": false
+      },
+      {
+        "seed": 22,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 23.942,
+        "capped": false
+      },
+      {
+        "seed": 23,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 22.454,
+        "capped": false
+      },
+      {
+        "seed": 24,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 24.942,
+        "capped": false
+      },
+      {
+        "seed": 25,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 28.898,
+        "capped": false
+      },
+      {
+        "seed": 26,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 57.968,
+        "capped": false
+      },
+      {
+        "seed": 27,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 60.486,
+        "capped": false
+      },
+      {
+        "seed": 28,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 37.85,
+        "capped": false
+      },
+      {
+        "seed": 29,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 35.554,
+        "capped": false
+      },
+      {
+        "seed": 30,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 45.496,
+        "capped": false
+      },
+      {
+        "seed": 31,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 21.064,
+        "capped": false
+      },
+      {
+        "seed": 32,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 29.964,
+        "capped": false
+      },
+      {
+        "seed": 33,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 24.434,
+        "capped": false
+      },
+      {
+        "seed": 34,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 17.712,
+        "capped": false
+      },
+      {
+        "seed": 35,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 32.862,
+        "capped": false
+      },
+      {
+        "seed": 36,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 20.132,
+        "capped": false
+      },
+      {
+        "seed": 37,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 31.524,
+        "capped": false
+      },
+      {
+        "seed": 38,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 34.054,
+        "capped": false
+      },
+      {
+        "seed": 39,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 26.422,
+        "capped": false
+      },
+      {
+        "seed": 40,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 31.0,
+        "capped": false
+      },
+      {
+        "seed": 41,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 52.92,
+        "capped": false
+      },
+      {
+        "seed": 42,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 37.898,
+        "capped": false
+      },
+      {
+        "seed": 43,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 31.31,
+        "capped": false
+      },
+      {
+        "seed": 44,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 22.718,
+        "capped": false
+      },
+      {
+        "seed": 45,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 30.348,
+        "capped": false
+      },
+      {
+        "seed": 46,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 25.656,
+        "capped": false
+      },
+      {
+        "seed": 47,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 32.848,
+        "capped": false
+      },
+      {
+        "seed": 48,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 25.098,
+        "capped": false
+      },
+      {
+        "seed": 49,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 65.77,
+        "capped": false
+      },
+      {
+        "seed": 50,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 30.372,
+        "capped": false
+      },
+      {
+        "seed": 51,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 23.142,
+        "capped": false
+      },
+      {
+        "seed": 52,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 19.68,
+        "capped": false
+      },
+      {
+        "seed": 53,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 22.584,
+        "capped": false
+      },
+      {
+        "seed": 54,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 24.426,
+        "capped": false
+      },
+      {
+        "seed": 55,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 17.404,
+        "capped": false
+      },
+      {
+        "seed": 56,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 36.056,
+        "capped": false
+      },
+      {
+        "seed": 57,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 22.002,
+        "capped": false
+      },
+      {
+        "seed": 58,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 24.13,
+        "capped": false
+      },
+      {
+        "seed": 59,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 17.648,
+        "capped": false
+      },
+      {
+        "seed": 60,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 21.052,
+        "capped": false
+      },
+      {
+        "seed": 61,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 22.118,
+        "capped": false
+      },
+      {
+        "seed": 62,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 24.962,
+        "capped": false
+      },
+      {
+        "seed": 63,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 32.002,
+        "capped": false
+      },
+      {
+        "seed": 64,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 54.266,
+        "capped": false
+      },
+      {
+        "seed": 65,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 26.362,
+        "capped": false
+      },
+      {
+        "seed": 66,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 25.704,
+        "capped": false
+      },
+      {
+        "seed": 67,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 31.386,
+        "capped": false
+      },
+      {
+        "seed": 68,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 37.246,
+        "capped": false
+      },
+      {
+        "seed": 69,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 43.83,
+        "capped": false
+      },
+      {
+        "seed": 70,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 21.026,
+        "capped": false
+      },
+      {
+        "seed": 71,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 21.288,
+        "capped": false
+      },
+      {
+        "seed": 72,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 27.656,
+        "capped": false
+      },
+      {
+        "seed": 73,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 23.848,
+        "capped": false
+      },
+      {
+        "seed": 74,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 22.672,
+        "capped": false
+      },
+      {
+        "seed": 75,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 26.576,
+        "capped": false
+      },
+      {
+        "seed": 76,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 18.238,
+        "capped": false
+      },
+      {
+        "seed": 77,
+        "final_a_fraction": 0.05,
+        "outcome": "B",
+        "sweeps": 14.67,
+        "capped": false
+      },
+      {
+        "seed": 78,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 33.332,
+        "capped": false
+      },
+      {
+        "seed": 79,
+        "final_a_fraction": 0.95,
+        "outcome": "A",
+        "sweeps": 26.98,
+        "capped": false
+      }
+    ]
+  },
+  "evaluation": {
+    "interior_fraction": 0.0,
+    "measured_boundary": 0.2360655737704918,
+    "theoretical_boundary": 0.21282975684914024,
+    "boundary_error": 0.02323581692135157,
+    "equal_p_a_win": 0.5375,
+    "equal_p_b_win": 0.4625,
+    "equal_p_interior": 0.0,
+    "symmetry_error": 0.03749999999999998
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 unequal status: late interior fraction <= 0.15",
+      "salient_number": [
+        0.0,
+        0.15
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 measured basin boundary within +/-0.08 of mean-field boundary",
+      "salient_number": [
+        0.0232,
+        0.08
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 equal status: A-win fraction within +/-0.1 of 0.5",
+      "salient_number": [
+        0.0375,
+        0.1
+      ],
+      "reasons": []
+    }
+  ]
+}

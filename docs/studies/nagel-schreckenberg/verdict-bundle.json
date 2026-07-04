@@ -1,0 +1,112 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "A cellular automaton model for freeway traffic",
+    "authors": [
+      "Kai Nagel",
+      "Michael Schreckenberg"
+    ],
+    "year": 1992,
+    "journal": "Journal de Physique I 2(12):2221-2229",
+    "doi": "10.1051/jp1:1992277"
+  },
+  "headline": "Nagel-Schreckenberg 1992 (agent-based): 3/3 locked clauses REPRO; fundamental-diagram flow peaks at rho=0.1 (interior; canonical rho_c~0.1)",
+  "code_commit": "af9b07d8c426a3935f60201a54a8b9e8a3148f2c",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 fundamental diagram has an interior flow maximum (argmax rho not at the density endpoints; canonical rho_c~0.1)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.1,
+        0.7
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 free-flow at low density, congested at high (mean v >= 3 at rho=0.05 AND mean v <= 2 at rho=0.5)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        4.6822,
+        3.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 spontaneous jams emerge (stopped-car fraction v=0 >= 0.1 at rho=0.5, no obstacle)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.6049,
+        0.1
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/nagel-schreckenberg/results.json",
+      "sha256": "5a6553f1993c9a7c33467d5e08d2764e452a94c2d2e9d7ce3e99d5e8350a778f",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/nagel-schreckenberg/PREDICTIONS-locked.md",
+      "sha256": "471eefc8ef07f6f16ae6ac21738f85433f0ad6c70edc06107d78053d983bcc09",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/nagel-schreckenberg/FINDINGS.md",
+      "sha256": "4bb06b379901df7ec33f64aaf634c53a0348b16df22726c27f49e3481f96bcb9",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave3-design.md",
+      "sha256": "f19764e539b43f5dd824fa3ba874cf52380ae1f8bda4e2a520381a8fe25fef6a",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "nagel-schreckenberg-1992",
+    "length": 1000,
+    "vmax": 5,
+    "p": 0.3,
+    "n_seeds_per_rho": 10,
+    "rho_grid": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.7
+    ],
+    "peak_rho": 0.1,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the fundamental diagram (interior flow maximum, free-flow->jam transition, spontaneous jams) and would catch an artifact"
+  },
+  "citations": [
+    "Nagel, K., Schreckenberg, M. (1992). A cellular automaton model for freeway traffic. Journal de Physique I 2(12):2221-2229. doi:10.1051/jp1:1992277."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "An Evolutionary Approach to Norms",
+    "authors": [
+      "Robert Axelrod"
+    ],
+    "year": 1986,
+    "journal": "American Political Science Review 80(4):1095-1111",
+    "doi": "10.2307/1960858"
+  },
+  "headline": "Axelrod 1986 Norms/Metanorms (agent-based): 2/3 locked clauses REPRO; metanorm seed-mean V=5.942 vs no-metanorm V=2.877; metanorm B=0.139 vs no-metanorm B=0.880",
+  "code_commit": "165d2bd0957c0776e438e843bb853c105b1481cb",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 plain norm collapses: majority of no-metanorm seeds end with mean vengefulness < 2.5 (norm not enforced)",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        6.0,
+        11.0
+      ],
+      "reasons": [
+        "only 6/20 no-metanorm seeds ended below V<2.5 (need >= 11 for a majority); no-metanorm seed-mean final V = 2.877 (range [0.045, 5.165], std 1.397) \u2014 the plain norm does not collapse in a majority of seeds here"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P2 metanorms raise enforcement: with-metanorm seed-mean final vengefulness > no-metanorm seed-mean final vengefulness",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        5.942,
+        2.8772
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 contrast holds: vengefulness rises (V_meta - V_nometa > 0) AND boldness falls (B_meta < B_nometa) under metanorms",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        3.0648,
+        0.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/axelrod-norms/results.json",
+      "sha256": "44a6f5544fc376d5409c78d869f751856584dd731b2889b19ed94f868263a33a",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/axelrod-norms/PREDICTIONS-locked.md",
+      "sha256": "5c5e54a4e62c105147244c7e1a9892e253e585ac24a5bca1625db29de45d5661",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/axelrod-norms/FINDINGS.md",
+      "sha256": "2aee8713378783fe1b3b0cccaad583abcb1977ed7068bb0494fb3123846ed5d3",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveB-design.md",
+      "sha256": "b3423f48dd7bff7441742d3bb61c4e4c44f973b3f562cc0b1a7e03856bd6e277",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "axelrod-1986-norms",
+    "n": 20,
+    "rounds_per_gen": 4,
+    "mut_rate": 0.01,
+    "n_generations": 100,
+    "n_seeds": 20,
+    "measure_last": 20,
+    "no_metanorm_mean_V": 2.8772499999999996,
+    "metanorm_mean_V": 5.942000000000001,
+    "no_metanorm_mean_B": 0.88025,
+    "metanorm_mean_B": 0.1385,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce Axelrod's COMPARATIVE result \u2014 metanorms raise enforcement (vengefulness) and suppress boldness vs the plain norm \u2014 and would catch an artifact. The locked claims are comparative, not 'the norm always establishes'."
+  },
+  "citations": [
+    "Axelrod, R. (1986). An Evolutionary Approach to Norms. American Political Science Review 80(4):1095-1111. doi:10.2307/1960858."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the population-mean vengefulness and boldness, comparing the metanorm vs no-metanorm arm"
+  }
+}

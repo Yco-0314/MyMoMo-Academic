@@ -1,0 +1,416 @@
+{
+  "model": "gilbert-disk-random-geometric-graph-2d (network generation)",
+  "config": {
+    "n": 1500,
+    "k_grid": [
+      1.0,
+      2.0,
+      3.0,
+      4.0,
+      4.5,
+      5.0,
+      6.0,
+      8.0,
+      12.0
+    ],
+    "n_seeds": 10,
+    "seed_base": 0,
+    "boundary": "hard (unit square [0,1)^2, no wrap / no torus)",
+    "connection_rule": "Euclidean distance <= r, r = sqrt(<k>/(N*pi))",
+    "p1_c_band": [
+      0.5,
+      0.62
+    ],
+    "p1_k_range": [
+      8.0,
+      12.0
+    ],
+    "p1_ratio_min": 30.0,
+    "p2_k_low": 2.0,
+    "p2_s_low_max": 0.3,
+    "p2_k_high": 8.0,
+    "p2_s_high_min": 0.85,
+    "p3_ratio_band": [
+      0.85,
+      1.05
+    ],
+    "p3_corr_min": 0.99,
+    "control": "Erdos-Renyi G(n,p) at matched N, <k> (non-spatial baseline for the P1 clustering ratio)"
+  },
+  "sweep": [
+    {
+      "k_target": 1.0,
+      "r": 0.014567312407894387,
+      "ideal_mean_degree": 0.9999999999999999,
+      "mean_clustering": 0.15692888888888887,
+      "std_clustering": 0.012743663833499145,
+      "per_seed_clustering": [
+        0.14531111111111114,
+        0.15575555555555556,
+        0.1424888888888889,
+        0.1506888888888889,
+        0.15771111111111116,
+        0.18213333333333329,
+        0.15755555555555553,
+        0.1608888888888889,
+        0.17546666666666663,
+        0.14128888888888888
+      ],
+      "er_mean_clustering": 0.0002,
+      "clustering_ratio_rgg_over_er": 784.6444444444443,
+      "mean_largest_component_fraction": 0.0077333333333333325,
+      "std_largest_component_fraction": 0.00155492050529208,
+      "per_seed_largest_component_fraction": [
+        0.008,
+        0.01,
+        0.007333333333333333,
+        0.006666666666666667,
+        0.008,
+        0.006,
+        0.009333333333333334,
+        0.005333333333333333,
+        0.006666666666666667,
+        0.01
+      ],
+      "mean_measured_mean_degree": 1.0116,
+      "std_measured_mean_degree": 0.04579781654183964,
+      "measured_over_ideal": 1.0116000000000003
+    },
+    {
+      "k_target": 2.0,
+      "r": 0.02060129077457011,
+      "ideal_mean_degree": 1.9999999999999998,
+      "mean_clustering": 0.3494123809523808,
+      "std_clustering": 0.011969006834978969,
+      "per_seed_clustering": [
+        0.33146825396825397,
+        0.35475873015872994,
+        0.3577174603174603,
+        0.34700634920634904,
+        0.33887619047619033,
+        0.35519523809523773,
+        0.32948412698412666,
+        0.3546841269841267,
+        0.3694317460317461,
+        0.35550158730158726
+      ],
+      "er_mean_clustering": 0.0009098412698412698,
+      "clustering_ratio_rgg_over_er": 384.03663642707596,
+      "mean_largest_component_fraction": 0.019466666666666667,
+      "std_largest_component_fraction": 0.0031804961178337507,
+      "per_seed_largest_component_fraction": [
+        0.014,
+        0.018666666666666668,
+        0.019333333333333334,
+        0.018,
+        0.015333333333333332,
+        0.024666666666666667,
+        0.021333333333333333,
+        0.019333333333333334,
+        0.024,
+        0.02
+      ],
+      "mean_measured_mean_degree": 1.9987999999999997,
+      "std_measured_mean_degree": 0.07468440265544073,
+      "measured_over_ideal": 0.9994
+    },
+    {
+      "k_target": 3.0,
+      "r": 0.025231325220201602,
+      "ideal_mean_degree": 3.0000000000000004,
+      "mean_clustering": 0.4671695670995672,
+      "std_clustering": 0.012994532321263122,
+      "per_seed_clustering": [
+        0.4592529100529103,
+        0.4911444444444447,
+        0.4600772486772483,
+        0.45079894179894187,
+        0.44732010582010595,
+        0.48069975949976007,
+        0.4627978835978838,
+        0.4759677248677246,
+        0.46898956228956235,
+        0.47464708994708993
+      ],
+      "er_mean_clustering": 0.0018216931216931218,
+      "clustering_ratio_rgg_over_er": 256.4480051751908,
+      "mean_largest_component_fraction": 0.05833333333333333,
+      "std_largest_component_fraction": 0.021637929660667632,
+      "per_seed_largest_component_fraction": [
+        0.04666666666666667,
+        0.06066666666666667,
+        0.048,
+        0.058,
+        0.118,
+        0.048666666666666664,
+        0.054,
+        0.036,
+        0.04533333333333334,
+        0.068
+      ],
+      "mean_measured_mean_degree": 2.9778666666666664,
+      "std_measured_mean_degree": 0.08424345671920162,
+      "measured_over_ideal": 0.992622222222222
+    },
+    {
+      "k_target": 4.0,
+      "r": 0.029134624815788775,
+      "ideal_mean_degree": 3.9999999999999996,
+      "mean_clustering": 0.5322701720501721,
+      "std_clustering": 0.011765482277800146,
+      "per_seed_clustering": [
+        0.5175091871091879,
+        0.5512515817515811,
+        0.517196988196989,
+        0.5312768157768158,
+        0.5159620009620011,
+        0.5307981721981719,
+        0.5433038480038479,
+        0.5454280423280422,
+        0.5352468975468974,
+        0.5347281866281866
+      ],
+      "er_mean_clustering": 0.0026764983164983165,
+      "clustering_ratio_rgg_over_er": 198.86811389687153,
+      "mean_largest_component_fraction": 0.22240000000000001,
+      "std_largest_component_fraction": 0.09278467306379626,
+      "per_seed_largest_component_fraction": [
+        0.136,
+        0.128,
+        0.336,
+        0.4053333333333333,
+        0.306,
+        0.25933333333333336,
+        0.18133333333333335,
+        0.13733333333333334,
+        0.166,
+        0.16866666666666666
+      ],
+      "mean_measured_mean_degree": 3.964266666666666,
+      "std_measured_mean_degree": 0.0899358783924536,
+      "measured_over_ideal": 0.9910666666666667
+    },
+    {
+      "k_target": 4.5,
+      "r": 0.030901936161855166,
+      "ideal_mean_degree": 4.5,
+      "mean_clustering": 0.5537062859362859,
+      "std_clustering": 0.010392802835146263,
+      "per_seed_clustering": [
+        0.5555585118585121,
+        0.5649681355681353,
+        0.5332762829762826,
+        0.547837566137566,
+        0.5449816257816267,
+        0.5546277833277827,
+        0.5668009139009141,
+        0.5645835016835012,
+        0.5601770710770706,
+        0.5442514670514669
+      ],
+      "er_mean_clustering": 0.003119227069227068,
+      "clustering_ratio_rgg_over_er": 177.5139397188843,
+      "mean_largest_component_fraction": 0.49079999999999985,
+      "std_largest_component_fraction": 0.16491204389680647,
+      "per_seed_largest_component_fraction": [
+        0.23266666666666666,
+        0.612,
+        0.7153333333333334,
+        0.6186666666666667,
+        0.6153333333333333,
+        0.6313333333333333,
+        0.35133333333333333,
+        0.5146666666666667,
+        0.34,
+        0.27666666666666667
+      ],
+      "mean_measured_mean_degree": 4.445199999999999,
+      "std_measured_mean_degree": 0.09980683565991069,
+      "measured_over_ideal": 0.9878222222222219
+    },
+    {
+      "k_target": 5.0,
+      "r": 0.032573500793528,
+      "ideal_mean_degree": 5.000000000000001,
+      "mean_clustering": 0.5683445154845158,
+      "std_clustering": 0.0066752740004131774,
+      "per_seed_clustering": [
+        0.5633020461020463,
+        0.5781247493247501,
+        0.557025674325674,
+        0.571441887741888,
+        0.5664647056647071,
+        0.565165371665371,
+        0.5718461279461287,
+        0.577767573167573,
+        0.5717439708439711,
+        0.5605630480630488
+      ],
+      "er_mean_clustering": 0.0034066603766603745,
+      "clustering_ratio_rgg_over_er": 166.83333606670726,
+      "mean_largest_component_fraction": 0.7974000000000001,
+      "std_largest_component_fraction": 0.08999775305837115,
+      "per_seed_largest_component_fraction": [
+        0.7073333333333334,
+        0.8866666666666667,
+        0.8726666666666667,
+        0.8286666666666667,
+        0.676,
+        0.8846666666666667,
+        0.748,
+        0.6413333333333333,
+        0.8553333333333333,
+        0.8733333333333333
+      ],
+      "mean_measured_mean_degree": 4.923333333333334,
+      "std_measured_mean_degree": 0.10923613565726914,
+      "measured_over_ideal": 0.9846666666666666
+    },
+    {
+      "k_target": 6.0,
+      "r": 0.035682482323055424,
+      "ideal_mean_degree": 6.0,
+      "mean_clustering": 0.5861673863173862,
+      "std_clustering": 0.005772333693864263,
+      "per_seed_clustering": [
+        0.5866577866577867,
+        0.5922825452325441,
+        0.5805012931512938,
+        0.5734321160321146,
+        0.5858143190143192,
+        0.5877459466459471,
+        0.5884106893106897,
+        0.5927165945165936,
+        0.5920135864135865,
+        0.5820989861989855
+      ],
+      "er_mean_clustering": 0.0042378652828652785,
+      "clustering_ratio_rgg_over_er": 138.31666350683767,
+      "mean_largest_component_fraction": 0.9466000000000001,
+      "std_largest_component_fraction": 0.04859304934293017,
+      "per_seed_largest_component_fraction": [
+        0.9733333333333334,
+        0.9633333333333334,
+        0.9633333333333334,
+        0.9773333333333334,
+        0.8146666666666667,
+        0.9513333333333334,
+        0.9606666666666667,
+        0.9666666666666667,
+        0.9066666666666666,
+        0.9886666666666667
+      ],
+      "mean_measured_mean_degree": 5.877466666666667,
+      "std_measured_mean_degree": 0.1219755166689883,
+      "measured_over_ideal": 0.9795777777777778
+    },
+    {
+      "k_target": 8.0,
+      "r": 0.04120258154914022,
+      "ideal_mean_degree": 7.999999999999999,
+      "mean_clustering": 0.5986283658498361,
+      "std_clustering": 0.006233589747620447,
+      "per_seed_clustering": [
+        0.6003807673807676,
+        0.6044225896108243,
+        0.5913038218288987,
+        0.5966161493190895,
+        0.5979643619996554,
+        0.5927463995699288,
+        0.5991013515895866,
+        0.5988561293826004,
+        0.6131645129953185,
+        0.5917275748216919
+      ],
+      "er_mean_clustering": 0.005496964227149983,
+      "clustering_ratio_rgg_over_er": 108.90163026587635,
+      "mean_largest_component_fraction": 0.998,
+      "std_largest_component_fraction": 0.0022900752049756987,
+      "per_seed_largest_component_fraction": [
+        1.0,
+        0.998,
+        0.9933333333333333,
+        0.9993333333333333,
+        0.994,
+        0.9986666666666667,
+        1.0,
+        0.998,
+        0.9986666666666667,
+        1.0
+      ],
+      "mean_measured_mean_degree": 7.791466666666667,
+      "std_measured_mean_degree": 0.14962970590390434,
+      "measured_over_ideal": 0.9739333333333335
+    },
+    {
+      "k_target": 12.0,
+      "r": 0.050462650440403205,
+      "ideal_mean_degree": 12.000000000000002,
+      "mean_clustering": 0.6068936458820638,
+      "std_clustering": 0.005496765505457571,
+      "per_seed_clustering": [
+        0.6029608658627238,
+        0.6080822499479451,
+        0.598997925228179,
+        0.6008814601908962,
+        0.6055586273604845,
+        0.6064353302451022,
+        0.6111437597639642,
+        0.6096555925670477,
+        0.6194561631421327,
+        0.6057644845121614
+      ],
+      "er_mean_clustering": 0.007961880238176944,
+      "clustering_ratio_rgg_over_er": 76.22491518674565,
+      "mean_largest_component_fraction": 0.9996,
+      "std_largest_component_fraction": 0.0008537498983243863,
+      "per_seed_largest_component_fraction": [
+        1.0,
+        1.0,
+        0.9986666666666667,
+        1.0,
+        0.9973333333333333,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "mean_measured_mean_degree": 11.5008,
+      "std_measured_mean_degree": 0.20640689049652527,
+      "measured_over_ideal": 0.9583999999999998
+    }
+  ],
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 high clustering far above ER: C in [0.50,0.62] at <k> in [8,12] AND C_RGG/C_ER >= 30 (matched N, <k>)",
+      "salient_number": [
+        0.5986,
+        0.5
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 giant component at HIGH <k>: S(<k>=2) < 0.30 AND S(<k>=8) > 0.85 AND S monotone non-decreasing",
+      "salient_number": [
+        0.998,
+        0.85
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 mean-degree relation <k> = N*pi*r^2: <k>_meas/(N*pi*r^2) in [0.85,1.05] for every r AND corr > 0.99 across the sweep",
+      "salient_number": [
+        0.999908,
+        0.99
+      ],
+      "reasons": []
+    }
+  ]
+}

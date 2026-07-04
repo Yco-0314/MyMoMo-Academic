@@ -1,0 +1,137 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "A simple model of global cascades on random networks",
+    "authors": [
+      "Duncan J. Watts"
+    ],
+    "year": 2002,
+    "journal": "PNAS 99(9):5766-5771",
+    "doi": "10.1073/pnas.082090499"
+  },
+  "headline": "Watts 2002 (agent-based): 4/4 locked clauses REPRO; measured cascade window z in [1.0, 6.0] (canonical ~[1.0, 5.8])",
+  "code_commit": "713b7a5cafdaa762390054ba84905e99cb1f948f",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 cascade frequency non-monotonic in z (low~0, interior peak, high~0)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.91,
+        0.02
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 lower window boundary in [0.8, 2.0] (ER connectivity onset)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        2.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 upper window boundary in [4, 7] (vulnerable k<=5 stop percolating)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        6.0,
+        7.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P4 cascade-size distribution bimodal (tiny-local vs system-spanning)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        660.0,
+        0.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/watts-cascades/results.json",
+      "sha256": "71702749a1fe12cb81e6d3f70973ac66d4ee8ab14544f238c066497949abf53d",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/watts-cascades/PREDICTIONS-locked.md",
+      "sha256": "d3b36d1a5e66de6d86626327be08e019afe8647456a593f7fdef19b04450626d",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/watts-cascades/FINDINGS.md",
+      "sha256": "092f365c317bf4851704953e86c5bd4bed45e7ab6ed223c436f5d59ba949c825",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-network-abm-reproductions-design.md",
+      "sha256": "8c8cb2fc6aec89d85b1e47b12481523f681e213f7ceec34300a71b4dd9f39faa",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "watts-2002-global-cascades",
+    "n": 10000,
+    "phi": 0.18,
+    "cascade_cutoff": 0.1,
+    "n_seeds_per_z": 100,
+    "z_grid": [
+      0.5,
+      1.0,
+      1.5,
+      2.0,
+      2.5,
+      3.0,
+      3.5,
+      4.0,
+      4.5,
+      5.0,
+      5.5,
+      6.0,
+      6.5,
+      7.0,
+      7.5,
+      8.0
+    ],
+    "measured_window": {
+      "lower": 1.0,
+      "upper": 6.0
+    },
+    "canonical_window": [
+      1.0,
+      5.8
+    ],
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the cascade-window result and would catch an artifact"
+  },
+  "citations": [
+    "Watts, D.J. (2002). A simple model of global cascades on random networks. PNAS 99(9):5766-5771. doi:10.1073/pnas.082090499. Open: https://pmc.ncbi.nlm.nih.gov/articles/PMC122850/"
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "The logic of animal conflict",
+    "authors": [
+      "John Maynard Smith",
+      "George R. Price"
+    ],
+    "year": 1973,
+    "journal": "Nature 246:15-18",
+    "doi": "10.1038/246015a0"
+  },
+  "headline": "Hawk-Dove ESS (agent-based): 3/3 locked clauses REPRO; steady hawk fraction -> p*=V/C from both x0=0.1 and x0=0.9 (V=2,C=4 -> ~0.50; V=1,C=4 -> ~0.25)",
+  "code_commit": "02ee7f8a62a1668f877bf0349592ab87359a6657",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 V=2,C=4 -> steady hawk fraction = p*=0.5 from both x0=0.1 and x0=0.9 (+-0.05)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0038,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 V=1,C=4 -> steady hawk fraction = p*=0.25 (tracks V/C ratio) (+-0.05)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0027,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 ESS is an attractor: x0=0.1 and x0=0.9 converge to the same p* (+-0.05)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0039,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/hawk-dove-ess/results.json",
+      "sha256": "6e34491988872abeef5ef1ca07bbe936ca1007b730f0eed36d33ff3fdef6917d",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/hawk-dove-ess/PREDICTIONS-locked.md",
+      "sha256": "04d7d761ae2cc57984b4eae271cf98fa629815c41fbe10f968b5e32ae750deed",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/hawk-dove-ess/FINDINGS.md",
+      "sha256": "edcfa263cffdb71262c5bc72704c825102a6f0bcc5f22d6f38fc3cade93877cb",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave2-design.md",
+      "sha256": "a0fee69f835bb4a97addff28f12cc4b0f21192456b67a21a77255b9314086435",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "hawk-dove-ess",
+    "n": 1000,
+    "games_VC": [
+      [
+        2.0,
+        4.0
+      ],
+      [
+        1.0,
+        4.0
+      ]
+    ],
+    "x0": [
+      0.1,
+      0.9
+    ],
+    "n_seeds": 10,
+    "update_rule": "payoff-proportional imitation (replicator mean field)",
+    "steady_hawk_fraction": {
+      "V=2.0,C=4.0,x0=0.1": 0.496202,
+      "V=2.0,C=4.0,x0=0.9": 0.500086,
+      "V=1.0,C=4.0,x0=0.1": 0.24886200000000006,
+      "V=1.0,C=4.0,x0=0.9": 0.247318
+    },
+    "ess_p_star": {
+      "V=2.0,C=4.0": 0.5,
+      "V=1.0,C=4.0": 0.25
+    },
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the mixed-ESS p*=V/C and would catch an artifact. The ESS is the comparison anchor, never an input."
+  },
+  "citations": [
+    "Maynard Smith, J. & Price, G.R. (1973). The logic of animal conflict. Nature 246:15-18. doi:10.1038/246015a0.",
+    "Schlag, K.H. (1998). Why imitate, and if so, how? A boundedly rational approach to multi-armed bandits. J. Econ. Theory 78(1):130-156 (proportional imitation -> replicator dynamics)."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the analytic ESS p*=V/C"
+  }
+}

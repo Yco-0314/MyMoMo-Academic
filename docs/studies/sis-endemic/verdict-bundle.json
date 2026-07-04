@@ -1,0 +1,113 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "A contribution to the mathematical theory of epidemics (SIS variant; endemic threshold)",
+    "authors": [
+      "W. O. Kermack",
+      "A. G. McKendrick"
+    ],
+    "year": 1927,
+    "journal": "Proc. R. Soc. Lond. A 115(772):700-721",
+    "doi": "10.1098/rspa.1927.0118"
+  },
+  "headline": "SIS endemic threshold (agent-based): 3/3 locked clauses REPRO; prevalence(R0=0.8)=0.0000, prevalence(R0=2.0)=0.4761 (i*=0.5)",
+  "code_commit": "a0eb52407b208acbed7fe69771c0cd7b6d6ea8c0",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 endemic threshold at R0=1 (prevalence<0.02 at R0=0.8 AND >0.3 at R0=2.0)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.4761,
+        0.3
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 endemic prevalence within +/-0.05 of i*=1-1/R0 at R0 in [1.5, 2.0, 3.0]",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0337,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 prevalence monotone non-decreasing in R0; <0.02 at R0=0.8",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0,
+        0.02
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/sis-endemic/results.json",
+      "sha256": "23c85f2575ce493d2c61c20a1ec5c664919975289fe8d6f1999008daa9fbf564",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/sis-endemic/PREDICTIONS-locked.md",
+      "sha256": "3408de8c3dd2e437920e1be96f6bf10100fd14c73bb4236a5052475ffeed9721",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/sis-endemic/FINDINGS.md",
+      "sha256": "e482ccd2593f7993429d4bc6b9dc68549a1f6e2f9e572474d245a29505b0505a",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-design.md",
+      "sha256": "574409d9b8c005bd730cc4f98b84de57e61cfaac5591f3e590128dc2b8341df0",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "sis-endemic-threshold",
+    "n": 10000,
+    "gamma": 0.1,
+    "i0": 10,
+    "ticks": 500,
+    "tail": 50,
+    "n_seeds_per_R0": 20,
+    "R0_grid": [
+      0.8,
+      1.0,
+      1.5,
+      2.0,
+      3.0
+    ],
+    "i_star_formula": "i* = 1 - 1/R0 (R0>1), evaluated at the LOCKED R0",
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the SIS endemic threshold + i*=1-1/R0 and would catch an artifact"
+  },
+  "citations": [
+    "Kermack, W.O. & McKendrick, A.G. (1927). A contribution to the mathematical theory of epidemics. Proc. R. Soc. Lond. A 115(772):700-721. doi:10.1098/rspa.1927.0118.",
+    "Hethcote, H.W. (2000). The Mathematics of Infectious Diseases. SIAM Review 42(4):599-653. doi:10.1137/S0036144500371907. (Standard SIS endemic equilibrium i* = 1 - 1/R0.)",
+    "Anderson, R.M. & May, R.M. (1991). Infectious Diseases of Humans: Dynamics and Control. Oxford University Press."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction; the analytic i*=1-1/R0 is the comparison anchor"
+  }
+}

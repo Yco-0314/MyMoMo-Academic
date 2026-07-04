@@ -1,0 +1,112 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Exactly solved model of self-organized critical phenomena",
+    "authors": [
+      "Deepak Dhar",
+      "Ramakrishna Ramaswamy"
+    ],
+    "year": 1989,
+    "journal": "Physical Review Letters 63(16):1659-1662",
+    "doi": "10.1103/PhysRevLett.63.1659"
+  },
+  "headline": "Directed abelian sandpile 1989 (CA): 2/3 locked clauses REPRO; discrete-MLE tau=1.391 (exact 4/3), avalanche anisotropy longitudinal/transverse=2.00x, sizes span 4.9 decades with max/median=15740x",
+  "code_commit": "7a0d7566d48fd3f6fa883e7c91ab91de8fc0fd7e",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 tail exponent: mean discrete-MLE tau in [1.2, 1.5] (exact Dhar-Ramaswamy 4/3~=1.333)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.3912,
+        1.5
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 anisotropy: mean longitudinal extent >= 2.0x mean transverse extent",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        1.9987,
+        2.0
+      ],
+      "reasons": [
+        "mean anisotropy ratio = 1.9987 (per-seed [1.955, 2.071]; mean longitudinal 15.51 vs transverse 7.76) < 2.0x"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P3 heavy tail: sizes span >= 2.0 decades AND max >= 100.0x median nonzero",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        4.896,
+        2.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/abelian-directed-sandpile/results.json",
+      "sha256": "18b067a7ad1755c9cbc3d0dc491233a7a0122b33476443d0857ce4485d66a458",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/abelian-directed-sandpile/PREDICTIONS-locked.md",
+      "sha256": "3b3b81b7bfbbd6c943ec468911cc56369c732715b80da70fa64eaf82d93afe1c",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/abelian-directed-sandpile/FINDINGS.md",
+      "sha256": "b9757f14d64c630561229d3b8ce9e010ee715bdd2ea76bd26295c50a45082149",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "directed-abelian-sandpile-1989",
+    "H": 500,
+    "W": 200,
+    "threshold": 2,
+    "transient": 10000,
+    "n_avalanches": 10000,
+    "n_seeds": 5,
+    "framing": "CA (disclosed)",
+    "rule": "directed abelian toppling: a cell at height >= 2 sheds 2 grains DOWNWARD to the two down-diagonal neighbours (y+1, x) and (y+1, (x+1) mod W); transverse periodic, bottom row open (dissipative); abelian (order-independent) toppling verified against a naive single-cell relaxation",
+    "mean_tau": 1.3911922391504572,
+    "tau_theory": 1.3333333333333333,
+    "mean_aniso_ratio": 1.998691270449783,
+    "mean_decades": 4.895973052862056,
+    "mean_max_over_median": 15739.960000000001,
+    "scope": "faithful reproduction of a published exactly-solvable SOC model; no real-world data; the contribution is whether the harness + discipline reproduce the Dhar-Ramaswamy directed sandpile's exact tail exponent tau=4/3, its directional avalanche anisotropy, and its heavy-tailed size distribution, and would catch an artifact"
+  },
+  "citations": [
+    "Dhar, D. & Ramaswamy, R. (1989). Exactly solved model of self-organized critical phenomena. Physical Review Letters 63(16):1659-1662. doi:10.1103/PhysRevLett.63.1659."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the Dhar-Ramaswamy directed sandpile (exact tail exponent tau=4/3, avalanche anisotropy, heavy-tailed sizes)"
+  }
+}

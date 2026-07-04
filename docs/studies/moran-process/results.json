@@ -1,0 +1,126 @@
+{
+  "model": "moran-process-with-selection (agent-based; fitness-weighted Birth-Death)",
+  "config": {
+    "n": 100,
+    "r_grid": [
+      1.0,
+      1.05,
+      1.1,
+      1.2,
+      2.0
+    ],
+    "n_runs_per_r": 2000,
+    "seed_base": 0,
+    "tolerance_P1_selection": 0.03,
+    "tolerance_P2_neutral": 0.01,
+    "rule": "one mutant (fitness r) vs N-1 residents (fitness 1); each step: BIRTH = reproducer chosen prob proportional to fitness, DEATH = dier chosen uniformly, offspring replaces dier; run to fixation (m=0 or m=N)",
+    "metric": "fixation probability = fraction of runs in which the mutant fixed (m reached N), over n_runs independent single-mutant runs (different seed each)",
+    "analytic_anchor": "rho = (1-1/r)/(1-1/r**N), and 1/N at r=1 (exact Moran 1958); evaluated at the LOCKED r,N (not fit); never fed into the dynamics",
+    "large_N_note": "the Moran large-N limit is 1-1/r ~= s (the selection coefficient), NOT the Wright-Fisher diffusion 2s"
+  },
+  "monotone_in_r": true,
+  "per_r": [
+    {
+      "r": 1.0,
+      "n_runs": 2000,
+      "fixations": 19,
+      "measured_fixation": 0.0095,
+      "binomial_se": 0.002169072382379159,
+      "analytic_fixation": 0.01,
+      "error": -0.0005000000000000004,
+      "abs_error": 0.0005000000000000004,
+      "n_absorbed": 2000,
+      "all_absorbed": true,
+      "mean_events": 557.3045,
+      "max_events_observed": 32829
+    },
+    {
+      "r": 1.05,
+      "n_runs": 2000,
+      "fixations": 99,
+      "measured_fixation": 0.0495,
+      "binomial_se": 0.004850244839180801,
+      "analytic_fixation": 0.04798394101858203,
+      "error": 0.0015160589814179753,
+      "abs_error": 0.0015160589814179753,
+      "n_absorbed": 2000,
+      "all_absorbed": true,
+      "mean_events": 708.628,
+      "max_events_observed": 21900
+    },
+    {
+      "r": 1.1,
+      "n_runs": 2000,
+      "fixations": 177,
+      "measured_fixation": 0.0885,
+      "binomial_se": 0.0063508956061330436,
+      "analytic_fixation": 0.09091568827109701,
+      "error": -0.002415688271097019,
+      "abs_error": 0.002415688271097019,
+      "n_absorbed": 2000,
+      "all_absorbed": true,
+      "mean_events": 729.892,
+      "max_events_observed": 13537
+    },
+    {
+      "r": 1.2,
+      "n_runs": 2000,
+      "fixations": 337,
+      "measured_fixation": 0.1685,
+      "binomial_se": 0.00836981929315084,
+      "analytic_fixation": 0.16666666867911223,
+      "error": 0.0018333313208877822,
+      "abs_error": 0.0018333313208877822,
+      "n_absorbed": 2000,
+      "all_absorbed": true,
+      "mean_events": 751.282,
+      "max_events_observed": 8249
+    },
+    {
+      "r": 2.0,
+      "n_runs": 2000,
+      "fixations": 975,
+      "measured_fixation": 0.4875,
+      "binomial_se": 0.011176845485198405,
+      "analytic_fixation": 0.5,
+      "error": -0.012500000000000011,
+      "abs_error": 0.012500000000000011,
+      "n_absorbed": 2000,
+      "all_absorbed": true,
+      "mean_events": 694.0025,
+      "max_events_observed": 2490
+    }
+  ],
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 fixation prob matches exact Moran rho=(1-1/r)/(1-1/r**N) at r in {1.05,1.1,1.2,2.0} (+-0.03)",
+      "salient_number": [
+        0.0125,
+        0.03
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 neutral r=1.0 -> fixation prob ~= 1/N = 0.01 (+-0.01)",
+      "salient_number": [
+        0.0005,
+        0.01
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 fixation prob monotone increasing in r across the grid",
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": []
+    }
+  ]
+}

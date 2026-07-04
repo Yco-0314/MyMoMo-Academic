@@ -1,0 +1,114 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Random geometric graphs",
+    "authors": [
+      "Jesper Dall",
+      "Michael Christensen"
+    ],
+    "year": 2002,
+    "journal": "Physical Review E 66:016121",
+    "doi": "10.1103/PhysRevE.66.016121"
+  },
+  "headline": "Random Geometric Graph (Gilbert disk, 2D): 3/3 locked clauses REPRO; C(<k>=8)=0.599 (vs ER ~0.005), giant-component S(<k>=8)=0.998, mean-degree relation corr=0.9999",
+  "code_commit": "7722f1732b71e740e714c0e12fd8cb2a80bfde82",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 high clustering far above ER: C in [0.50,0.62] at <k> in [8,12] AND C_RGG/C_ER >= 30 (matched N, <k>)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.5986,
+        0.5
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 giant component at HIGH <k>: S(<k>=2) < 0.30 AND S(<k>=8) > 0.85 AND S monotone non-decreasing",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.998,
+        0.85
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 mean-degree relation <k> = N*pi*r^2: <k>_meas/(N*pi*r^2) in [0.85,1.05] for every r AND corr > 0.99 across the sweep",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.999908,
+        0.99
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/random-geometric-graph/results.json",
+      "sha256": "8c45abbc0e9698c944ff6b40aaca64ed0ccad5c95bacc2e47ced4e196e883e20",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/random-geometric-graph/PREDICTIONS-locked.md",
+      "sha256": "8a45da1f92fdbe5065352b3f0443c533e5ab0137ba5812d4be797e0df70057c6",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/random-geometric-graph/FINDINGS.md",
+      "sha256": "b5e4b5c3d1cb3356dd2e6416e7da6f0ad6fd001bbfd80eea612c986930e9bb06",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "gilbert-disk-random-geometric-graph-2d",
+    "n": 1500,
+    "k_grid": [
+      1.0,
+      2.0,
+      3.0,
+      4.0,
+      4.5,
+      5.0,
+      6.0,
+      8.0,
+      12.0
+    ],
+    "n_seeds": 10,
+    "boundary": "hard (unit square, no wrap)",
+    "control": "Erdos-Renyi G(n,p) at matched N, <k>",
+    "scope": "faithful reproduction of a published network-generation model (network-GENERATION, disclosed \u2014 no agents, no ticks); no real-world data; the contribution is whether the harness + lock-first discipline reproduce the RGG's high geometric clustering, its high-<k> giant-component threshold, and its mean-degree relation, and would catch an artifact"
+  },
+  "citations": [
+    "Dall, J. & Christensen, M. (2002). Random geometric graphs. Physical Review E 66:016121. doi:10.1103/PhysRevE.66.016121.",
+    "Gilbert, E.N. (1961). Random plane networks. J. Soc. Indust. Appl. Math. 9(4):533-543.",
+    "Penrose, M. (2003). Random Geometric Graphs. Oxford University Press."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against average clustering C, giant-component fraction S, and the measured mean degree, with an Erdos-Renyi G(n,p) control at matched N and <k> for the P1 clustering ratio"
+  }
+}

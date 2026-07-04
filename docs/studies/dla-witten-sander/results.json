@@ -1,0 +1,82 @@
+{
+  "model": "witten-sander-1981-dla (on-lattice, agent-based)",
+  "config": {
+    "n_particles": 6000,
+    "n_seeds": 4,
+    "seed_base": 0,
+    "D_band": [
+      1.55,
+      1.9
+    ],
+    "geometry": "square lattice, von-Neumann sticking"
+  },
+  "result": {
+    "n": 6000,
+    "n_seeds": 4,
+    "seed_base": 0,
+    "per_seed_D": [
+      1.6525863183828078,
+      1.6678147061041564,
+      1.5959277827700895,
+      1.7226535111608647
+    ],
+    "per_seed_r2": [
+      0.9983196161831421,
+      0.9991248048798139,
+      0.9997021108874984,
+      0.9996069404865745
+    ],
+    "per_seed_outer_fraction": [
+      0.08984830805134189,
+      0.08968161360226705,
+      0.10001666944490749,
+      0.11185197532922153
+    ],
+    "per_seed_density_decreasing": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "mean_D": 1.6597455796044795,
+    "std_D": 0.04512893990890504,
+    "min_D": 1.5959277827700895,
+    "max_D": 1.7226535111608647,
+    "mean_outer_fraction": 0.09784964160693449,
+    "all_density_decreasing": true
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 fractal mass dimension D in [1.55, 1.90] (target ~1.66-1.71)",
+      "salient_number": [
+        1.6597,
+        1.55
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 fractal not compact: D <= 1.85 AND interior density decreasing",
+      "salient_number": [
+        1.6597,
+        1.85
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": false,
+      "gate": "P3 tip-screening: outer-shell (r>0.75 R) attachment fraction >= 0.60",
+      "salient_number": [
+        0.0978,
+        0.6
+      ],
+      "reasons": [
+        "mean outer-shell attachment fraction = 0.0978 (need >= 0.6)"
+      ]
+    }
+  ]
+}

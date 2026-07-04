@@ -1,0 +1,126 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "The Evolution of Cooperation",
+    "authors": [
+      "Robert Axelrod"
+    ],
+    "year": 1984,
+    "journal": "Basic Books (IPD computer tournament)",
+    "doi": null
+  },
+  "headline": "Axelrod 1984 (agent-based): 3/3 locked clauses REPRO; winner=TitForTwoTats, TitForTat rank=2 (gap-to-top 0.24% < 1%); AllD rank=7",
+  "code_commit": "c1a01ecbb3ae578ae2536317787d5510d43bced1",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 TitForTat wins (rank 1, or tied-1 within <1% of the top score)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.002433,
+        0.01
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 nice strategies dominate (mean rank NICE < mean rank non-nice)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        3.0,
+        7.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 greedy defection does NOT win (AllD is not rank 1)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        7.0,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "tournament_results": {
+      "kind": "file",
+      "path": "docs/studies/axelrod-ipd-tournament/results.json",
+      "sha256": "5c6fa8fe92166781c4abfbdf56b08fc9f04d6d3b2dd4ff8d56a702077811c77b",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/axelrod-ipd-tournament/PREDICTIONS-locked.md",
+      "sha256": "6f596fe2e24634fd66a4b29dbef4feb1f07565ac8193bd4830b995cc1d8c2546",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/axelrod-ipd-tournament/FINDINGS.md",
+      "sha256": "33aceea9def0e6324c062dc8f62bfa36247cb857c9073bed14b86631477ebf8e",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch3-design.md",
+      "sha256": "8c4ee1eccc914e5f17e9edaee1db1b5ec58a58d7493562a3dec8cd63764c3a25",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "axelrod-1984-ipd-tournament",
+    "rounds": 200,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "pool": [
+      "TitForTat",
+      "AllD",
+      "AllC",
+      "Random",
+      "Grudger",
+      "TitForTwoTats",
+      "SuspiciousTFT",
+      "Pavlov"
+    ],
+    "nice_strategies": [
+      "AllC",
+      "Grudger",
+      "Pavlov",
+      "TitForTat",
+      "TitForTwoTats"
+    ],
+    "metric": "total-score ranking (mean over seeds)",
+    "winner": "TitForTwoTats",
+    "tft_rank": 2,
+    "tft_gap_pct": 0.243,
+    "scope": "faithful reproduction of a published synthetic tournament; no real-world data; the result is pool-dependent (a known Axelrod caveat). The contribution is whether the harness + lock-first discipline reproduce TFT's top-bracket finish and the nice-strategy advantage, and would surface an artifact"
+  },
+  "citations": [
+    "Axelrod, R. (1984). The Evolution of Cooperation. Basic Books. (IPD round-robin computer tournament; TIT-FOR-TAT wins by total score.)",
+    "Axelrod, R. & Hamilton, W.D. (1981). The Evolution of Cooperation. Science 211(4489):1390-1396. doi:10.1126/science.7466396."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

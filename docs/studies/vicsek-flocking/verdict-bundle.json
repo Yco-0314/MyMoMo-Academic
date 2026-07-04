@@ -1,0 +1,126 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Novel type of phase transition in a system of self-driven particles",
+    "authors": [
+      "Tamas Vicsek",
+      "Andras Czirok",
+      "Eshel Ben-Jacob",
+      "Inon Cohen",
+      "Ofer Shochet"
+    ],
+    "year": 1995,
+    "journal": "Physical Review Letters 75:1226-1229",
+    "doi": "10.1103/PhysRevLett.75.1226"
+  },
+  "headline": "Vicsek 1995 (agent-based): 3/3 locked clauses REPRO; noise-driven order-disorder transition phi: 1.00(eta=0.1) -> 0.98(0.5) -> 0.06(eta=5.0)",
+  "code_commit": "7d70ec48db8c4d9e7b50ab335047d7c4c85dfa9b",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 order-disorder transition: phi>0.5 at eta=0.5 AND phi<0.2 at eta=5.0",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.1414,
+        0.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 phi non-increasing in eta across [0.5, 1.0, 2.0, 3.0, 4.0, 5.0] (tol 0.02)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0,
+        0.02
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 strong alignment in ordered phase: phi>0.8 at eta=0.1",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9971,
+        0.8
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/vicsek-flocking/results.json",
+      "sha256": "54944ed1dc93041207d75f6c816d7008f36ecbadc6477184f420255a2fbfec47",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/vicsek-flocking/PREDICTIONS-locked.md",
+      "sha256": "97c2fa0928a66e6e76ae171d0386554be36c7b9cdfbe1963f03b052f30346d4d",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/vicsek-flocking/FINDINGS.md",
+      "sha256": "40e686201a21e5bd6402df007527f15bd39ae8dfb39ab90083f8b910eafbc11a",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave3-design.md",
+      "sha256": "f19764e539b43f5dd824fa3ba874cf52380ae1f8bda4e2a520381a8fe25fef6a",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "vicsek-1995-flocking",
+    "n": 300,
+    "L": 12.0,
+    "density_rho": 2.0833333333333335,
+    "v": 0.03,
+    "r": 1.0,
+    "eta_grid": [
+      0.1,
+      0.5,
+      1.0,
+      2.0,
+      3.0,
+      4.0,
+      5.0
+    ],
+    "n_seeds": 10,
+    "n_ticks": 500,
+    "measure_last": 100,
+    "phi_vs_eta": {
+      "0.1": 0.9970529321705828,
+      "0.5": 0.9751160517651642,
+      "1.0": 0.9164973621925103,
+      "2.0": 0.6400274858763018,
+      "3.0": 0.2961805026141119,
+      "4.0": 0.10515456241937238,
+      "5.0": 0.0586379941759521
+    },
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the noise-driven order-disorder transition and would catch an artifact"
+  },
+  "citations": [
+    "Vicsek, T., Czirok, A., Ben-Jacob, E., Cohen, I. & Shochet, O. (1995). Novel type of phase transition in a system of self-driven particles. Phys. Rev. Lett. 75:1226-1229. doi:10.1103/PhysRevLett.75.1226."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the order parameter phi"
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "A New Product Growth for Model Consumer Durables",
+    "authors": [
+      "Frank M. Bass"
+    ],
+    "year": 1969,
+    "journal": "Management Science 15(5):215-227",
+    "doi": "10.1287/mnsc.15.5.215"
+  },
+  "headline": "Bass 1969 (agent-based): 2/3 locked clauses REPRO; measured discrete peak tick = 8 vs continuous t* = 6.19 (offset +29%), final adoption 0.993",
+  "code_commit": "178d85a526f2f8bc9ee103fd37648c25e7f3f94b",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 cumulative adoption is a sigmoid reaching near-full adoption",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9927,
+        0.98
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 measured peak-adoption tick within +-15% of continuous t*=ln(q/p)/(p+q)",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.2919,
+        0.15
+      ],
+      "reasons": [
+        "measured discrete peak tick = 8 vs continuous t* = 6.1926: offset +29.2% (need within +-15%). Discrete-vs-continuous subtlety: the unit-\u0394t Bass map lags the continuous ODE peak (forward-difference lag)"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P3 q>p => interior bell peak; q=0 => rate monotonically decreasing",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        8.0,
+        0.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/bass-diffusion/results.json",
+      "sha256": "2ddf56b5c8ec6096d5c1acebbfaa572fe9eaa7720871bd800b987c50e20ee850",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/bass-diffusion/PREDICTIONS-locked.md",
+      "sha256": "36ebd0ee1f28bd05db3a2a6449466e60412dcc1f737874df0afa7c45ea76bdd4",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/bass-diffusion/FINDINGS.md",
+      "sha256": "d4a6a83d92717d826d39a74f3c201e0f27cc4a6c363a75c5f5ff51f4d155b19f",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch2-design.md",
+      "sha256": "8b389d27a3cbd667288cac113043396a73cccbf006703c4d07ccd3627ace7e0c",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "bass-1969-diffusion",
+    "n": 10000,
+    "p": 0.03,
+    "q": 0.38,
+    "n_seeds": 20,
+    "stop_fraction": 0.99,
+    "t_star_continuous": 6.192619197703112,
+    "measured_peak_tick": 8,
+    "peak_offset_fraction": 0.29186047851404434,
+    "final_cumulative_fraction": 0.9927100000000001,
+    "control_q0_rate_argmax": 0,
+    "discrete_vs_continuous_note": "the agent model advances in unit-\u0394t ticks; the analytic t* is a continuous-time result. The discrete Bass map (forward-difference) systematically lags the continuous ODE peak, so the measured peak tick sits later than t*. This is a known discretization effect, not an artifact \u2014 verified: the deterministic mean-field discrete map peaks at the same tick as the stochastic agent runs.",
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the Bass S-curve / bell-rate result and would catch an artifact"
+  },
+  "citations": [
+    "Bass, F.M. (1969). A New Product Growth for Model Consumer Durables. Management Science 15(5):215-227. doi:10.1287/mnsc.15.5.215."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

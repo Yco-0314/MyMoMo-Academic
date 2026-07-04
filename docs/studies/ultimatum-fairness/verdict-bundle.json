@@ -1,0 +1,120 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Fairness versus reason in the ultimatum game",
+    "authors": [
+      "Martin A. Nowak",
+      "Karen M. Page",
+      "Karl Sigmund"
+    ],
+    "year": 2000,
+    "journal": "Science 289(5485):1773-1775",
+    "doi": "10.1126/science.289.5485.1773"
+  },
+  "headline": "Nowak-Page-Sigmund 2000 ultimatum game (agent-based): 3/3 locked clauses REPRO; anonymous (w=0) q\u0304=0.064, p\u0304=0.190 (rational collapse) vs full reputation (w=1.0) q\u0304=0.967, p\u0304=0.570 (fair); q\u0304 rises monotonically with w",
+  "code_commit": "1ed2b669a937adf89c8d9b2634edfaf4c748fff5",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 no-reputation collapse: w=0 steady q\u0304 < 0.15 AND p\u0304 < 0.20 (evolution toward the rational near-0 offer)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0643,
+        0.15
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 reputation -> fairness: w=1.0 steady q\u0304 > 0.30 AND p\u0304 > 0.30 (offers rise toward a fair split)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9668,
+        0.3
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 reputation is the cause: (q\u0304 at w>=0.8) - (q\u0304 at w=0) >= 0.20 AND q\u0304 non-decreasing across w in {0, 0.2, 0.5, 1.0}",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9025,
+        0.2
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/ultimatum-fairness/results.json",
+      "sha256": "00f2c92693ca50283d72343fb2f0138bf3bda7496a353e19e57d366e88bb4497",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/ultimatum-fairness/PREDICTIONS-locked.md",
+      "sha256": "a7cabacb779dd31151a2b88116f4673a65ebf5c120560d561325797f3b5032a2",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/ultimatum-fairness/FINDINGS.md",
+      "sha256": "3fbafc731befd8384dd69607f389b5da1862d4bbb7a8031809cfd71f0a736651",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "nowak-page-sigmund-2000-ultimatum-fairness",
+    "n": 200,
+    "rounds_per_gen": 10,
+    "mutation": 0.02,
+    "n_seeds": 10,
+    "n_gens": 500,
+    "measure_last": 100,
+    "w_grid": [
+      0.0,
+      0.2,
+      0.5,
+      1.0
+    ],
+    "anon_mean_q": 0.06429299158407582,
+    "anon_mean_p": 0.19022858166982445,
+    "rep_mean_q": 0.9667778977542794,
+    "rep_mean_p": 0.5696146590700535,
+    "q_by_w": [
+      0.06429299158407582,
+      0.14188688544194233,
+      0.46978459801297046,
+      0.9667778977542794
+    ],
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the reputation-driven transition from the rational near-0 offer to fairness, and would catch an artifact"
+  },
+  "citations": [
+    "Nowak, M.A., Page, K.M. & Sigmund, K. (2000). Fairness versus reason in the ultimatum game. Science 289(5485):1773-1775. doi:10.1126/science.289.5485.1773."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the population-mean acceptance threshold q\u0304 and mean offer p\u0304 across the reputation grid"
+  }
+}

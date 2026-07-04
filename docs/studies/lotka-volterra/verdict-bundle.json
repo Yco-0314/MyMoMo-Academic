@@ -1,0 +1,118 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Lotka-Volterra predator-prey dynamics (agent-based; NetLogo wolf-sheep-grass realisation)",
+    "authors": [
+      "Alfred J. Lotka",
+      "Vito Volterra"
+    ],
+    "year": 1926,
+    "journal": "Lotka 1925, Elements of Physical Biology; Volterra 1926, Nature 118:558-560",
+    "doi": "10.1038/118558a0"
+  },
+  "headline": "Agent Lotka-Volterra (wolf-sheep-grass): 3/3 locked clauses REPRO; survival 100% (10/10 seeds), predator lags prey (median cross-corr lag = +119 ticks)",
+  "code_commit": "598344ab8f5499069b3510ceed5d05d93cb60d22",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 sustained oscillations, no extinction: both species >=2 peaks AND neither extinct in >=60% of seeds",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.6
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 predator lags prey: cross-correlation(prey, predator) peaks at a POSITIVE lag (majority of surviving seeds; positive median lag)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        119.0,
+        0.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 persistence: oscillation continues into the last third (both species peak there) in >=60% of surviving seeds",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.8,
+        0.6
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/lotka-volterra/results.json",
+      "sha256": "4a2b910c75dfc3d20b63ecede242d7ddddb17bfc00a2627bf9c56dd6807c0892",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/lotka-volterra/PREDICTIONS-locked.md",
+      "sha256": "06601b8cfa31b62e6f9633ec9734040c40a67f4a4e6345283ba8e92c37598e91",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/lotka-volterra/FINDINGS.md",
+      "sha256": "24a6b4d76798f1664c2659d8542c7bcfc4e7c4c2bd01ba041ffd9dd312c60141",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveB-design.md",
+      "sha256": "d9d7d5adbf6787392250b97a7543c247c4790382b9f3bf2685b59f323915a905",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "lotka-volterra-agent-predator-prey",
+    "grid": "100x100 toroidal",
+    "n_prey_initial": 500,
+    "n_pred_initial": 100,
+    "n_steps": 1000,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "survival_fraction": 1.0,
+    "median_best_lag_surviving": 119,
+    "locked_metric": "prey/predator population series; survival; cross-corr lag",
+    "scope": "faithful reproduction of the classic Lotka-Volterra result via its standard agent-based (NetLogo wolf-sheep-grass) realisation; no real-world data; the contribution is whether the harness + discipline reproduce sustained oscillations with the predator lagging the prey, and report the extinction-proneness honestly. The grass resource supplies the carrying-capacity term that lets the discrete stochastic system settle onto a sustained cycle rather than diverging or collapsing."
+  },
+  "citations": [
+    "Lotka, A.J. (1925). Elements of Physical Biology. Williams & Wilkins.",
+    "Volterra, V. (1926). Fluctuations in the abundance of a species considered mathematically. Nature 118:558-560. doi:10.1038/118558a0.",
+    "Wilensky, U. (1997). NetLogo Wolf Sheep Predation model. Center for Connected Learning and Computer-Based Modeling, Northwestern University. (the standard agent-based realisation reproduced here.)"
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded on the prey/predator population series (survival, peaks, predator-lags-prey cross-correlation)"
+  }
+}
