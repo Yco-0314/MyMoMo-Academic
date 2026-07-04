@@ -446,8 +446,8 @@ def netlogo_behaviorspace_pack(
     except ValueError as exc:
         console.print(f"[red]{exc}[/red]")
         raise typer.Exit(1) from exc
-    console.print(f"[green]Wrote manifest:[/green] {pack['manifest_path']}")
-    console.print(f"[green]Wrote readme:[/green] {pack['readme_path']}")
+    console.print("[green]Wrote manifest.json[/green]")
+    console.print("[green]Wrote MANIFEST.md[/green]")
 
 
 @app.command()
