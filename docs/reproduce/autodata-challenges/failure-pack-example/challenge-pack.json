@@ -1,0 +1,54 @@
+{
+  "artifacts": {
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-failure-pack-phase1-design.md",
+      "replay": "strong",
+      "sha256": "19eb7c8137bba75f9f6bb8b8adeff95243a5c9ad1d6b901bf60c03ae2a05fb19"
+    },
+    "failure_pack": {
+      "kind": "file",
+      "path": "docs/reproduce/evidence-foundry/failure-pack-example/failure-pack.json",
+      "replay": "strong",
+      "sha256": "b808d8b991dd0d97e7eadcc2f1a71690ea6b2d8438a51f2bceb289fc67326271"
+    }
+  },
+  "challenge_id": "failure-pack-evidence-answering-v1",
+  "challenge_mode": "evidence_answering",
+  "extra": {
+    "ceiling": "This pack grades answer/evidence alignment only; it is not a reproduction rerun or scientific truth certificate.",
+    "owner": "codex",
+    "phase": "Evidence Foundry non-MIR seed challenge"
+  },
+  "schema": "abm-auto/repro-challenge/v1",
+  "source": {
+    "kind": "committed-evidence",
+    "reference": "docs/reproduce/evidence-foundry/failure-pack-example",
+    "subject": "Evidence Foundry failure-pack seed"
+  },
+  "tasks": [
+    {
+      "expected_claims": [
+        {
+          "id": "P1-records-miss",
+          "verdict": "PASS"
+        },
+        {
+          "id": "P2-preserves-scope-ceiling",
+          "verdict": "PASS"
+        },
+        {
+          "id": "P3-not-retroactive-pass",
+          "verdict": "PASS"
+        }
+      ],
+      "id": "failure-pack-verdict-summary",
+      "prompt": "Using the failure pack and design spec artifacts, report whether the seed failure pack records a MISS, preserves its scope ceiling, and avoids converting the failure into a pass. Cite the evidence artifact used for each claim.",
+      "required_artifacts": [
+        "failure_pack",
+        "design_spec"
+      ]
+    }
+  ],
+  "title": "Failure Pack Evidence Answering Challenge"
+}

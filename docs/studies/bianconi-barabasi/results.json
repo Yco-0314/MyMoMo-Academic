@@ -1,0 +1,161 @@
+{
+  "model": "bianconi-barabasi-2001-fitness-network (network-generation / mildly agent-based)",
+  "framing": "network-generation (disclosed); outcome is emergent structure, not agent trajectories",
+  "config": {
+    "n": 50000,
+    "n_small": 10000,
+    "m": 2,
+    "n_seeds": 4,
+    "seed_base": 0,
+    "uniform_law": "rho(eta) = U[0,1]",
+    "condensing_law": "rho(eta) = (theta+1)*(1-eta)^theta, theta=10.0 (paper condensation example; verified to condense before locking)",
+    "ba_control": "use_fitness=False (pure Barabasi-Albert, no fitness), correlated with an INDEPENDENT random label - the distinctness rerun",
+    "p1_thresholds": {
+      "ratio": 2.0,
+      "bins_needed": 3,
+      "spearman": 0.5
+    },
+    "p2_thresholds": {
+      "fmax_cond": 0.15,
+      "nonvanish": 0.7,
+      "fmax_uni": 0.05,
+      "gap": 0.1
+    },
+    "p3_thresholds": {
+      "gamma_lo": 1.9,
+      "gamma_hi": 2.7,
+      "gamma_max": 2.9
+    },
+    "f_max_definition": "k_max / (#edges): fraction of all edges incident on the largest-degree node",
+    "p1_operationalisation": "aged cohort (oldest 50% by birth), 4 birth-time bins; 'holding birth-time fixed' per bin"
+  },
+  "uniform_arm": {
+    "n": 50000,
+    "mean_spearman_aged": 0.5317498996139922,
+    "mean_spearman_all": 0.3650878863281004,
+    "per_seed_spearman_aged": [
+      0.536686262688245,
+      0.5320600269725532,
+      0.5277350900630324,
+      0.5305182187321383
+    ],
+    "per_seed_bins_pass_2x": [
+      3,
+      3,
+      3,
+      3
+    ],
+    "min_bins_pass_2x": 3,
+    "example_bin_ratios": [
+      6.0,
+      2.5,
+      2.0,
+      1.5
+    ],
+    "mean_f_max": 0.023995719871596148,
+    "per_seed_f_max": [
+      0.018730561916857506,
+      0.02929087872636179,
+      0.03651109533285998,
+      0.011450343510305308
+    ],
+    "mean_gamma": 2.587097133867792,
+    "per_seed_gamma": [
+      2.5808204467939877,
+      2.58993297049118,
+      2.605146339288687,
+      2.5724887788973128
+    ],
+    "example_max_degree": 1873
+  },
+  "uniform_arm_1e4": {
+    "n": 10000,
+    "mean_f_max": 0.04008101215182277,
+    "per_seed_f_max": [
+      0.03205480822123318,
+      0.0506075911386708,
+      0.05715857378606791,
+      0.020503075461319197
+    ]
+  },
+  "condensing_arm_5e4": {
+    "n": 50000,
+    "mean_f_max": 0.14496934908047243,
+    "per_seed_f_max": [
+      0.16440493214796445,
+      0.05856175685270558,
+      0.2648979469384082,
+      0.09201276038281149
+    ],
+    "min_f_max": 0.05856175685270558,
+    "max_f_max": 0.2648979469384082,
+    "mean_gamma": 2.8692002602150923,
+    "example_max_degree": 16440
+  },
+  "condensing_arm_1e4": {
+    "n": 10000,
+    "mean_f_max": 0.14149622443366505,
+    "per_seed_f_max": [
+      0.10421563234485173,
+      0.07296094414162124,
+      0.27474121118167727,
+      0.11406711006650998
+    ]
+  },
+  "ba_control": {
+    "per_seed_spearman_aged": [
+      -0.0036346651397322696,
+      0.0012133400325890994,
+      0.00997080890344909,
+      0.0012843841693708884
+    ],
+    "mean_abs_spearman_aged": 0.004025799561285337,
+    "per_seed_bins_pass_2x": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "max_bins_pass_2x": 0,
+    "mean_bin_ratios": [
+      0.9732142857142857,
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 fit-get-richer (uniform rho): median(k|eta>0.67)/median(k|eta<0.33) >= 2.0 in >= 3/4 birth-time bins AND aged-cohort Spearman(eta,k) >= 0.5; no-fitness BA rerun shows neither",
+      "salient_number": [
+        0.5317,
+        0.5
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": false,
+      "gate": "P2 condensation contrast: condensing f_max >= 0.15 at N=5e4 AND >= 0.7*f_max(1e4) (non-vanishing); uniform f_max <= 0.05 AND shrinking; gap >= 0.10",
+      "salient_number": [
+        0.145,
+        0.15
+      ],
+      "reasons": [
+        "condensing f_max: 1e4=0.1415, 5e4=0.1450 (need 5e4>=0.15 AND >=0.7*1e4=0.0990); uniform f_max: 1e4=0.0401, 5e4=0.0240 (need 5e4<=0.05 AND < 1e4); gap=0.1210 (need >= 0.1)"
+      ]
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 (soft, corroborating) uniform-rho degree exponent gamma in [1.9, 2.7] AND < 2.9 (distinguishable from BA's 3)",
+      "salient_number": [
+        2.5871,
+        2.7
+      ],
+      "reasons": []
+    }
+  ]
+}

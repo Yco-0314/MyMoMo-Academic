@@ -1,0 +1,50 @@
+{
+  "boundary_note": "Tiny held-out fixture for gate plumbing only.",
+  "population_id": "example-panel-v1",
+  "questions": [
+    {
+      "id": "q_support",
+      "options": [
+        "yes",
+        "no"
+      ],
+      "text": "Support evacuation?"
+    },
+    {
+      "id": "q_trust",
+      "options": [
+        "high",
+        "low"
+      ],
+      "text": "Trust warning?"
+    }
+  ],
+  "rows": [
+    {
+      "group": "all",
+      "option": "yes",
+      "question_id": "q_support",
+      "share": 0.6
+    },
+    {
+      "group": "all",
+      "option": "no",
+      "question_id": "q_support",
+      "share": 0.4
+    },
+    {
+      "group": "region:north",
+      "option": "yes",
+      "question_id": "q_support",
+      "share": 0.7
+    },
+    {
+      "group": "all",
+      "option": "high",
+      "question_id": "q_trust",
+      "share": 0.55
+    }
+  ],
+  "schema": "abm-auto/synthetic-survey-observed/v1",
+  "survey_id": "example-panel-survey-v1"
+}

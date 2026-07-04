@@ -1,0 +1,892 @@
+{
+  "model": "directed-abelian-sandpile-1989 (Dhar-Ramaswamy; CA disclosed)",
+  "config": {
+    "H": 500,
+    "W": 200,
+    "threshold": 2,
+    "transient": 10000,
+    "n_avalanches": 10000,
+    "n_seeds": 5,
+    "seed_base": 0,
+    "kmin": 1,
+    "tau_theory": 1.3333333333333333,
+    "p1_tau_lo": 1.2,
+    "p1_tau_hi": 1.5,
+    "p2_min_aniso": 2.0,
+    "p3_min_decades": 2.0,
+    "p3_min_max_over_median": 100.0,
+    "geometry": "periodic in transverse x (cylinder), open at bottom row; drive at a random top-row column; grains topple DOWNWARD to the two down-diagonal neighbours"
+  },
+  "aggregate": {
+    "mean_tau": 1.3911922391504572,
+    "min_tau": 1.3897662471024945,
+    "max_tau": 1.3932579284506237,
+    "mean_aniso_ratio": 1.998691270449783,
+    "min_aniso_ratio": 1.9548199620972837,
+    "max_aniso_ratio": 2.071442061243761,
+    "mean_longitudinal": 15.508990817080015,
+    "mean_transverse": 7.764522744224614,
+    "mean_decades": 4.895973052862056,
+    "min_decades": 4.895035597452322,
+    "mean_max_over_median": 15739.960000000001,
+    "min_max_over_median": 15706.0,
+    "mean_max": 78699.8,
+    "mean_median_nonzero": 5.0
+  },
+  "per_seed": [
+    {
+      "seed": 0,
+      "tau": 1.3897662471024945,
+      "tau_stderr": 0.005506623255382479,
+      "n_tail": 5010,
+      "mean_longitudinal": 15.7,
+      "mean_transverse": 7.65309381237525,
+      "aniso_ratio": 2.051457931250326,
+      "decades": 4.895035597452322,
+      "max": 78530.0,
+      "min_nonzero": 1.0,
+      "median_nonzero": 5.0,
+      "max_over_median": 15706.0,
+      "n_nonzero": 5010,
+      "n_zero": 4990,
+      "stationary_mean_height": 0.028,
+      "histogram": [
+        {
+          "lo": 1.0,
+          "hi": 2.0,
+          "count": 1257
+        },
+        {
+          "lo": 2.0,
+          "hi": 3.0,
+          "count": 622
+        },
+        {
+          "lo": 3.0,
+          "hi": 4.0,
+          "count": 339
+        },
+        {
+          "lo": 4.0,
+          "hi": 6.0,
+          "count": 403
+        },
+        {
+          "lo": 6.0,
+          "hi": 9.0,
+          "count": 339
+        },
+        {
+          "lo": 9.0,
+          "hi": 13.0,
+          "count": 245
+        },
+        {
+          "lo": 13.0,
+          "hi": 20.0,
+          "count": 292
+        },
+        {
+          "lo": 20.0,
+          "hi": 29.0,
+          "count": 292
+        },
+        {
+          "lo": 29.0,
+          "hi": 42.0,
+          "count": 248
+        },
+        {
+          "lo": 42.0,
+          "hi": 62.0,
+          "count": 185
+        },
+        {
+          "lo": 62.0,
+          "hi": 90.0,
+          "count": 204
+        },
+        {
+          "lo": 90.0,
+          "hi": 132.0,
+          "count": 167
+        },
+        {
+          "lo": 132.0,
+          "hi": 192.0,
+          "count": 94
+        },
+        {
+          "lo": 192.0,
+          "hi": 280.0,
+          "count": 89
+        },
+        {
+          "lo": 280.0,
+          "hi": 408.0,
+          "count": 73
+        },
+        {
+          "lo": 408.0,
+          "hi": 594.0,
+          "count": 22
+        },
+        {
+          "lo": 594.0,
+          "hi": 865.0,
+          "count": 4
+        },
+        {
+          "lo": 865.0,
+          "hi": 1259.0,
+          "count": 28
+        },
+        {
+          "lo": 1259.0,
+          "hi": 1833.0,
+          "count": 19
+        },
+        {
+          "lo": 1833.0,
+          "hi": 2670.0,
+          "count": 14
+        },
+        {
+          "lo": 2670.0,
+          "hi": 3887.0,
+          "count": 8
+        },
+        {
+          "lo": 3887.0,
+          "hi": 5660.0,
+          "count": 19
+        },
+        {
+          "lo": 5660.0,
+          "hi": 8241.0,
+          "count": 13
+        },
+        {
+          "lo": 8241.0,
+          "hi": 12000.0,
+          "count": 10
+        },
+        {
+          "lo": 12000.0,
+          "hi": 17472.0,
+          "count": 0
+        },
+        {
+          "lo": 17472.0,
+          "hi": 25440.0,
+          "count": 0
+        },
+        {
+          "lo": 25440.0,
+          "hi": 37042.0,
+          "count": 0
+        },
+        {
+          "lo": 37042.0,
+          "hi": 53934.0,
+          "count": 0
+        },
+        {
+          "lo": 53934.0,
+          "hi": 78530.0,
+          "count": 24
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "tau": 1.3898197918466895,
+      "tau_stderr": 0.0055106805335752105,
+      "n_tail": 5004,
+      "mean_longitudinal": 15.531974420463628,
+      "mean_transverse": 7.933453237410072,
+      "aniso_ratio": 1.957782311897025,
+      "decades": 4.895544087282545,
+      "max": 78622.0,
+      "min_nonzero": 1.0,
+      "median_nonzero": 5.0,
+      "max_over_median": 15724.4,
+      "n_nonzero": 5004,
+      "n_zero": 4996,
+      "stationary_mean_height": 0.032,
+      "histogram": [
+        {
+          "lo": 1.0,
+          "hi": 2.0,
+          "count": 1255
+        },
+        {
+          "lo": 2.0,
+          "hi": 3.0,
+          "count": 613
+        },
+        {
+          "lo": 3.0,
+          "hi": 4.0,
+          "count": 294
+        },
+        {
+          "lo": 4.0,
+          "hi": 6.0,
+          "count": 386
+        },
+        {
+          "lo": 6.0,
+          "hi": 9.0,
+          "count": 361
+        },
+        {
+          "lo": 9.0,
+          "hi": 13.0,
+          "count": 301
+        },
+        {
+          "lo": 13.0,
+          "hi": 20.0,
+          "count": 355
+        },
+        {
+          "lo": 20.0,
+          "hi": 29.0,
+          "count": 284
+        },
+        {
+          "lo": 29.0,
+          "hi": 42.0,
+          "count": 206
+        },
+        {
+          "lo": 42.0,
+          "hi": 62.0,
+          "count": 203
+        },
+        {
+          "lo": 62.0,
+          "hi": 90.0,
+          "count": 159
+        },
+        {
+          "lo": 90.0,
+          "hi": 132.0,
+          "count": 141
+        },
+        {
+          "lo": 132.0,
+          "hi": 192.0,
+          "count": 114
+        },
+        {
+          "lo": 192.0,
+          "hi": 280.0,
+          "count": 96
+        },
+        {
+          "lo": 280.0,
+          "hi": 408.0,
+          "count": 61
+        },
+        {
+          "lo": 408.0,
+          "hi": 594.0,
+          "count": 17
+        },
+        {
+          "lo": 594.0,
+          "hi": 865.0,
+          "count": 35
+        },
+        {
+          "lo": 865.0,
+          "hi": 1260.0,
+          "count": 34
+        },
+        {
+          "lo": 1260.0,
+          "hi": 1835.0,
+          "count": 7
+        },
+        {
+          "lo": 1835.0,
+          "hi": 2672.0,
+          "count": 21
+        },
+        {
+          "lo": 2672.0,
+          "hi": 3891.0,
+          "count": 4
+        },
+        {
+          "lo": 3891.0,
+          "hi": 5665.0,
+          "count": 13
+        },
+        {
+          "lo": 5665.0,
+          "hi": 8249.0,
+          "count": 4
+        },
+        {
+          "lo": 8249.0,
+          "hi": 12012.0,
+          "count": 17
+        },
+        {
+          "lo": 12012.0,
+          "hi": 17490.0,
+          "count": 0
+        },
+        {
+          "lo": 17490.0,
+          "hi": 25467.0,
+          "count": 0
+        },
+        {
+          "lo": 25467.0,
+          "hi": 37082.0,
+          "count": 0
+        },
+        {
+          "lo": 37082.0,
+          "hi": 53995.0,
+          "count": 0
+        },
+        {
+          "lo": 53995.0,
+          "hi": 78622.0,
+          "count": 23
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "tau": 1.3926159677749173,
+      "tau_stderr": 0.00555242826431526,
+      "n_tail": 5000,
+      "mean_longitudinal": 15.4724,
+      "mean_transverse": 7.915,
+      "aniso_ratio": 1.9548199620972837,
+      "decades": 4.897165064137771,
+      "max": 78916.0,
+      "min_nonzero": 1.0,
+      "median_nonzero": 5.0,
+      "max_over_median": 15783.2,
+      "n_nonzero": 5000,
+      "n_zero": 5000,
+      "stationary_mean_height": 0.024,
+      "histogram": [
+        {
+          "lo": 1.0,
+          "hi": 2.0,
+          "count": 1262
+        },
+        {
+          "lo": 2.0,
+          "hi": 3.0,
+          "count": 636
+        },
+        {
+          "lo": 3.0,
+          "hi": 4.0,
+          "count": 303
+        },
+        {
+          "lo": 4.0,
+          "hi": 6.0,
+          "count": 395
+        },
+        {
+          "lo": 6.0,
+          "hi": 9.0,
+          "count": 349
+        },
+        {
+          "lo": 9.0,
+          "hi": 13.0,
+          "count": 262
+        },
+        {
+          "lo": 13.0,
+          "hi": 20.0,
+          "count": 309
+        },
+        {
+          "lo": 20.0,
+          "hi": 29.0,
+          "count": 288
+        },
+        {
+          "lo": 29.0,
+          "hi": 42.0,
+          "count": 319
+        },
+        {
+          "lo": 42.0,
+          "hi": 62.0,
+          "count": 206
+        },
+        {
+          "lo": 62.0,
+          "hi": 90.0,
+          "count": 150
+        },
+        {
+          "lo": 90.0,
+          "hi": 132.0,
+          "count": 115
+        },
+        {
+          "lo": 132.0,
+          "hi": 192.0,
+          "count": 92
+        },
+        {
+          "lo": 192.0,
+          "hi": 280.0,
+          "count": 58
+        },
+        {
+          "lo": 280.0,
+          "hi": 409.0,
+          "count": 47
+        },
+        {
+          "lo": 409.0,
+          "hi": 595.0,
+          "count": 35
+        },
+        {
+          "lo": 595.0,
+          "hi": 867.0,
+          "count": 45
+        },
+        {
+          "lo": 867.0,
+          "hi": 1263.0,
+          "count": 15
+        },
+        {
+          "lo": 1263.0,
+          "hi": 1839.0,
+          "count": 31
+        },
+        {
+          "lo": 1839.0,
+          "hi": 2679.0,
+          "count": 16
+        },
+        {
+          "lo": 2679.0,
+          "hi": 3901.0,
+          "count": 15
+        },
+        {
+          "lo": 3901.0,
+          "hi": 5681.0,
+          "count": 4
+        },
+        {
+          "lo": 5681.0,
+          "hi": 8274.0,
+          "count": 7
+        },
+        {
+          "lo": 8274.0,
+          "hi": 12049.0,
+          "count": 17
+        },
+        {
+          "lo": 12049.0,
+          "hi": 17547.0,
+          "count": 0
+        },
+        {
+          "lo": 17547.0,
+          "hi": 25553.0,
+          "count": 0
+        },
+        {
+          "lo": 25553.0,
+          "hi": 37212.0,
+          "count": 0
+        },
+        {
+          "lo": 37212.0,
+          "hi": 54190.0,
+          "count": 0
+        },
+        {
+          "lo": 54190.0,
+          "hi": 78916.0,
+          "count": 24
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "tau": 1.3905012605775622,
+      "tau_stderr": 0.0055269451144561,
+      "n_tail": 4992,
+      "mean_longitudinal": 15.380208333333334,
+      "mean_transverse": 7.4248798076923075,
+      "aniso_ratio": 2.071442061243761,
+      "decades": 4.896085085423285,
+      "max": 78720.0,
+      "min_nonzero": 1.0,
+      "median_nonzero": 5.0,
+      "max_over_median": 15744.0,
+      "n_nonzero": 4992,
+      "n_zero": 5008,
+      "stationary_mean_height": 0.028,
+      "histogram": [
+        {
+          "lo": 1.0,
+          "hi": 2.0,
+          "count": 1259
+        },
+        {
+          "lo": 2.0,
+          "hi": 3.0,
+          "count": 599
+        },
+        {
+          "lo": 3.0,
+          "hi": 4.0,
+          "count": 349
+        },
+        {
+          "lo": 4.0,
+          "hi": 6.0,
+          "count": 377
+        },
+        {
+          "lo": 6.0,
+          "hi": 9.0,
+          "count": 307
+        },
+        {
+          "lo": 9.0,
+          "hi": 13.0,
+          "count": 254
+        },
+        {
+          "lo": 13.0,
+          "hi": 20.0,
+          "count": 362
+        },
+        {
+          "lo": 20.0,
+          "hi": 29.0,
+          "count": 315
+        },
+        {
+          "lo": 29.0,
+          "hi": 42.0,
+          "count": 223
+        },
+        {
+          "lo": 42.0,
+          "hi": 62.0,
+          "count": 224
+        },
+        {
+          "lo": 62.0,
+          "hi": 90.0,
+          "count": 172
+        },
+        {
+          "lo": 90.0,
+          "hi": 132.0,
+          "count": 149
+        },
+        {
+          "lo": 132.0,
+          "hi": 192.0,
+          "count": 98
+        },
+        {
+          "lo": 192.0,
+          "hi": 280.0,
+          "count": 50
+        },
+        {
+          "lo": 280.0,
+          "hi": 408.0,
+          "count": 66
+        },
+        {
+          "lo": 408.0,
+          "hi": 594.0,
+          "count": 35
+        },
+        {
+          "lo": 594.0,
+          "hi": 866.0,
+          "count": 29
+        },
+        {
+          "lo": 866.0,
+          "hi": 1261.0,
+          "count": 30
+        },
+        {
+          "lo": 1261.0,
+          "hi": 1836.0,
+          "count": 15
+        },
+        {
+          "lo": 1836.0,
+          "hi": 2674.0,
+          "count": 11
+        },
+        {
+          "lo": 2674.0,
+          "hi": 3894.0,
+          "count": 12
+        },
+        {
+          "lo": 3894.0,
+          "hi": 5671.0,
+          "count": 10
+        },
+        {
+          "lo": 5671.0,
+          "hi": 8257.0,
+          "count": 9
+        },
+        {
+          "lo": 8257.0,
+          "hi": 12024.0,
+          "count": 14
+        },
+        {
+          "lo": 12024.0,
+          "hi": 17509.0,
+          "count": 0
+        },
+        {
+          "lo": 17509.0,
+          "hi": 25496.0,
+          "count": 0
+        },
+        {
+          "lo": 25496.0,
+          "hi": 37126.0,
+          "count": 0
+        },
+        {
+          "lo": 37126.0,
+          "hi": 54060.0,
+          "count": 0
+        },
+        {
+          "lo": 54060.0,
+          "hi": 78720.0,
+          "count": 23
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "tau": 1.3932579284506237,
+      "tau_stderr": 0.005556508350103919,
+      "n_tail": 5009,
+      "mean_longitudinal": 15.460371331603115,
+      "mean_transverse": 7.896186863645438,
+      "aniso_ratio": 1.957954085760518,
+      "decades": 4.896035430014358,
+      "max": 78711.0,
+      "min_nonzero": 1.0,
+      "median_nonzero": 5.0,
+      "max_over_median": 15742.2,
+      "n_nonzero": 5009,
+      "n_zero": 4991,
+      "stationary_mean_height": 0.028,
+      "histogram": [
+        {
+          "lo": 1.0,
+          "hi": 2.0,
+          "count": 1282
+        },
+        {
+          "lo": 2.0,
+          "hi": 3.0,
+          "count": 605
+        },
+        {
+          "lo": 3.0,
+          "hi": 4.0,
+          "count": 324
+        },
+        {
+          "lo": 4.0,
+          "hi": 6.0,
+          "count": 378
+        },
+        {
+          "lo": 6.0,
+          "hi": 9.0,
+          "count": 354
+        },
+        {
+          "lo": 9.0,
+          "hi": 13.0,
+          "count": 294
+        },
+        {
+          "lo": 13.0,
+          "hi": 20.0,
+          "count": 307
+        },
+        {
+          "lo": 20.0,
+          "hi": 29.0,
+          "count": 273
+        },
+        {
+          "lo": 29.0,
+          "hi": 42.0,
+          "count": 255
+        },
+        {
+          "lo": 42.0,
+          "hi": 62.0,
+          "count": 258
+        },
+        {
+          "lo": 62.0,
+          "hi": 90.0,
+          "count": 169
+        },
+        {
+          "lo": 90.0,
+          "hi": 132.0,
+          "count": 100
+        },
+        {
+          "lo": 132.0,
+          "hi": 192.0,
+          "count": 109
+        },
+        {
+          "lo": 192.0,
+          "hi": 280.0,
+          "count": 45
+        },
+        {
+          "lo": 280.0,
+          "hi": 408.0,
+          "count": 50
+        },
+        {
+          "lo": 408.0,
+          "hi": 594.0,
+          "count": 56
+        },
+        {
+          "lo": 594.0,
+          "hi": 866.0,
+          "count": 28
+        },
+        {
+          "lo": 866.0,
+          "hi": 1261.0,
+          "count": 23
+        },
+        {
+          "lo": 1261.0,
+          "hi": 1836.0,
+          "count": 15
+        },
+        {
+          "lo": 1836.0,
+          "hi": 2674.0,
+          "count": 13
+        },
+        {
+          "lo": 2674.0,
+          "hi": 3894.0,
+          "count": 9
+        },
+        {
+          "lo": 3894.0,
+          "hi": 5670.0,
+          "count": 14
+        },
+        {
+          "lo": 5670.0,
+          "hi": 8257.0,
+          "count": 5
+        },
+        {
+          "lo": 8257.0,
+          "hi": 12023.0,
+          "count": 20
+        },
+        {
+          "lo": 12023.0,
+          "hi": 17507.0,
+          "count": 0
+        },
+        {
+          "lo": 17507.0,
+          "hi": 25493.0,
+          "count": 0
+        },
+        {
+          "lo": 25493.0,
+          "hi": 37122.0,
+          "count": 0
+        },
+        {
+          "lo": 37122.0,
+          "hi": 54054.0,
+          "count": 0
+        },
+        {
+          "lo": 54054.0,
+          "hi": 78711.0,
+          "count": 23
+        }
+      ]
+    }
+  ],
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 tail exponent: mean discrete-MLE tau in [1.2, 1.5] (exact Dhar-Ramaswamy 4/3~=1.333)",
+      "salient_number": [
+        1.3912,
+        1.5
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": false,
+      "gate": "P2 anisotropy: mean longitudinal extent >= 2.0x mean transverse extent",
+      "salient_number": [
+        1.9987,
+        2.0
+      ],
+      "reasons": [
+        "mean anisotropy ratio = 1.9987 (per-seed [1.955, 2.071]; mean longitudinal 15.51 vs transverse 7.76) < 2.0x"
+      ]
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 heavy tail: sizes span >= 2.0 decades AND max >= 100.0x median nonzero",
+      "salient_number": [
+        4.896,
+        2.0
+      ],
+      "reasons": []
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Mathematical Games: The fantastic combinations of John Conway's new solitaire game 'life'",
+    "authors": [
+      "Martin Gardner",
+      "John H. Conway"
+    ],
+    "year": 1970,
+    "journal": "Scientific American 223(4):120-123",
+    "doi": "10.1038/scientificamerican1070-120"
+  },
+  "headline": "Conway Game of Life (deterministic cellular automaton): 2/3 locked clauses REPRO; glider period=4 translation=[1, 1], blinker/beacon period 2, block still life (period 1)",
+  "code_commit": "617761b31067292d387f0620d2c0b302af3a1029",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 glider is a period-4 diagonal spaceship (returns to its shape translated by exactly (+1,+1) after 4 generations)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        4.0,
+        4.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 blinker period 2 AND block is a still life (period 1, unchanged)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        2.0,
+        2.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 beacon period 2; live-cell count conserved for the block and oscillates with period 2 for blinker/beacon",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        3.0,
+        4.0
+      ],
+      "reasons": [
+        "measured blinker period=2, blinker count series=[3, 3, 3]; beacon period=2, beacon count series=[8, 6, 8]; block count conserved=True (need beacon period=2, block count conserved, and live-count period-2 oscillation for both blinker and beacon)"
+      ],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "life_results": {
+      "kind": "file",
+      "path": "docs/studies/game-of-life/results.json",
+      "sha256": "0c1d3c008573eeb0d01b084ec588777e71fdf749ec9de7b2b878f2d776dffcd2",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/game-of-life/PREDICTIONS-locked.md",
+      "sha256": "39365872ff54d777a8912d9170b556da5850c9087393f349f9fd1d7d8744c8cb",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/game-of-life/FINDINGS.md",
+      "sha256": "ba1b89fafaabf7dce72b360436783acdc601620f26d21d46f4958521193c8399",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveA-design.md",
+      "sha256": "da9c97bd2ac96e458d6604555d77c414c8747ea27faf75a49559054755b06f8b",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "conway-game-of-life",
+    "L": 64,
+    "rule": "B3/S23",
+    "deterministic": true,
+    "model_class": "deterministic cellular automaton (NOT agent-stepping ABM): a single synchronous B3/S23 transition is applied to the whole grid at once; there are no agents, no scheduler, no per-agent decisions and no randomness",
+    "measured": {
+      "glider": {
+        "period": 4,
+        "translation": [
+          1,
+          1
+        ]
+      },
+      "blinker": {
+        "period": 2,
+        "translation": [
+          0,
+          0
+        ]
+      },
+      "block": {
+        "period": 1,
+        "translation": [
+          0,
+          0
+        ]
+      },
+      "beacon": {
+        "period": 2,
+        "translation": [
+          0,
+          0
+        ]
+      }
+    },
+    "scope": "faithful reproduction of a published synthetic CA result; no real-world data; the contribution is whether the harness + discipline reproduce the catalogued EXACT periods/translation and would catch an artifact (e.g. a wrong rule giving the wrong period)"
+  },
+  "citations": [
+    "Gardner, M. (1970). Mathematical Games: The fantastic combinations of John Conway's new solitaire game 'life'. Scientific American 223(4):120-123. doi:10.1038/scientificamerican1070-120.",
+    "Conway, J.H. (the B3/S23 rule and the glider/blinker/block/beacon catalogue, as popularized by Gardner 1970)."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction. The catalogued Conway/Gardner pattern periods (glider 4, blinker 2, block 1, beacon 2) and the glider's (+1,+1) net translation are the literature anchors."
+  }
+}

@@ -18,9 +18,149 @@ Then generates a story.md suitable for the abm-auto pipeline.
 from __future__ import annotations
 
 import re
+import shlex
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from dataclasses import dataclass, field
+
+
+@dataclass
+class NetLogoControlValue:
+    """Raw NetLogo control value plus parsed float when it is plainly numeric."""
+    raw: str = ""
+    number: float | None = None
+
+    def to_dict(self) -> dict:
+        return {"raw": self.raw, "number": self.number}
+
+
+@dataclass
+class NetLogoSlider:
+    name: str
+    label: str
+    minimum: NetLogoControlValue
+    maximum: NetLogoControlValue
+    default: NetLogoControlValue
+    step: NetLogoControlValue
+    units: str = ""
+    orientation: str = ""
+
+    def to_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "label": self.label,
+            "minimum": self.minimum.to_dict(),
+            "maximum": self.maximum.to_dict(),
+            "default": self.default.to_dict(),
+            "step": self.step.to_dict(),
+            "units": self.units,
+            "orientation": self.orientation,
+        }
+
+
+@dataclass
+class NetLogoSwitch:
+    name: str
+    label: str
+    default: bool
+
+    def to_dict(self) -> dict:
+        return {"name": self.name, "label": self.label, "default": self.default}
+
+
+@dataclass
+class NetLogoChooser:
+    name: str
+    label: str
+    choices: list[str] = field(default_factory=list)
+    default: str | None = None
+
+    def to_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "label": self.label,
+            "choices": list(self.choices),
+            "default": self.default,
+        }
+
+
+@dataclass
+class NetLogoInputBox:
+    name: str
+    label: str
+    default: NetLogoControlValue
+    multiline: bool = False
+
+    def to_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "label": self.label,
+            "default": self.default.to_dict(),
+            "multiline": self.multiline,
+        }
+
+
+@dataclass
+class NetLogoMonitor:
+    name: str
+    reporter: str
+
+    def to_dict(self) -> dict:
+        return {"name": self.name, "reporter": self.reporter}
+
+
+@dataclass
+class NetLogoPlotPen:
+    name: str
+    interval: NetLogoControlValue = field(default_factory=NetLogoControlValue)
+    mode: str = ""
+    color: str = ""
+    update_command: str = ""
+
+    def to_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "interval": self.interval.to_dict(),
+            "mode": self.mode,
+            "color": self.color,
+            "update_command": self.update_command,
+        }
+
+
+@dataclass
+class NetLogoPlotSpec:
+    name: str
+    x_axis: str = ""
+    y_axis: str = ""
+    pens: list[NetLogoPlotPen] = field(default_factory=list)
+
+    def to_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "x_axis": self.x_axis,
+            "y_axis": self.y_axis,
+            "pens": [p.to_dict() for p in self.pens],
+        }
+
+
+@dataclass
+class NetLogoControlsSpec:
+    sliders: list[NetLogoSlider] = field(default_factory=list)
+    switches: list[NetLogoSwitch] = field(default_factory=list)
+    choosers: list[NetLogoChooser] = field(default_factory=list)
+    input_boxes: list[NetLogoInputBox] = field(default_factory=list)
+    monitors: list[NetLogoMonitor] = field(default_factory=list)
+    plots: list[NetLogoPlotSpec] = field(default_factory=list)
+
+    def to_dict(self) -> dict:
+        return {
+            "sliders": [s.to_dict() for s in self.sliders],
+            "switches": [s.to_dict() for s in self.switches],
+            "choosers": [c.to_dict() for c in self.choosers],
+            "input_boxes": [i.to_dict() for i in self.input_boxes],
+            "monitors": [m.to_dict() for m in self.monitors],
+            "plots": [p.to_dict() for p in self.plots],
+        }
 
 
 @dataclass
@@ -37,6 +177,7 @@ class NetLogoModel:
     world_width: int = 0
     world_height: int = 0
     is_wrapping: bool = True
+    controls: NetLogoControlsSpec = field(default_factory=NetLogoControlsSpec)
 
 
 def parse_nlogo(path: Path) -> NetLogoModel:
@@ -86,25 +227,10 @@ def _parse_nlogox(path: Path) -> NetLogoModel:
     if info_el is not None and info_el.text:
         model.info_text = info_el.text.strip()
 
-    # Widgets — sliders, plots, view
+    # Widgets — controls, plots, view
     widgets_el = root.find("widgets")
     if widgets_el is not None:
-        for slider in widgets_el.findall("slider"):
-            attrs = slider.attrib
-            name = attrs.get("variable", "")
-            if name:
-                model.sliders.append({
-                    "name": name,
-                    "min": _safe_float(attrs.get("min", "0")),
-                    "max": _safe_float(attrs.get("max", "0")),
-                    "default": _safe_float(attrs.get("default", "0")),
-                    "step": _safe_float(attrs.get("step", "1")),
-                })
-
-        for plot in widgets_el.findall("plot"):
-            display = plot.attrib.get("display", "")
-            if display:
-                model.plots.append(display)
+        _parse_xml_widgets(model, widgets_el)
 
         # World dimensions from view
         view = widgets_el.find("view")
@@ -176,17 +302,35 @@ def _parse_interface(model: NetLogoModel, interface_text: str) -> None:
 
         # Slider: type "SLIDER" followed by metadata lines
         if line == "SLIDER":
-            slider = _parse_slider_block(lines, i)
+            slider = _parse_slider_control(lines, i)
             if slider:
-                model.sliders.append(slider)
+                _add_slider(model, slider)
+
+        if line == "SWITCH":
+            switch = _parse_switch_control(lines, i)
+            if switch:
+                model.controls.switches.append(switch)
+
+        if line == "CHOOSER":
+            chooser = _parse_chooser_control(lines, i)
+            if chooser:
+                model.controls.choosers.append(chooser)
+
+        if line == "INPUTBOX":
+            input_box = _parse_input_box_control(lines, i)
+            if input_box:
+                model.controls.input_boxes.append(input_box)
+
+        if line == "MONITOR":
+            monitor = _parse_monitor_control(lines, i)
+            if monitor:
+                model.controls.monitors.append(monitor)
 
         # Plot names
         if line == "PLOT":
-            # Plot name is typically a few lines after PLOT
-            if i + 5 < len(lines):
-                plot_name = lines[i + 5].strip() if lines[i + 5].strip() else ""
-                if plot_name and not plot_name.replace(".", "").isdigit():
-                    model.plots.append(plot_name)
+            plot = _parse_plot_control(lines, i)
+            if plot:
+                _add_plot(model, plot)
 
         # World dimensions
         # Look for world-wrap and dimensions in GRAPHICS-WINDOW block
@@ -196,31 +340,318 @@ def _parse_interface(model: NetLogoModel, interface_text: str) -> None:
         i += 1
 
 
-def _parse_slider_block(lines: list[str], start: int) -> dict | None:
+def _parse_slider_control(lines: list[str], start: int) -> NetLogoSlider | None:
     """Parse a SLIDER widget block."""
     try:
         # Standard .nlogo slider layout:
         # SLIDER, x1, y1, x2, y2, variable_name, variable_name, min, max, default, step, ...
         if start + 10 < len(lines):
             var_name = lines[start + 5].strip()
-            var_name2 = lines[start + 6].strip()
+            label = lines[start + 6].strip()
             min_val = lines[start + 7].strip()
             max_val = lines[start + 8].strip()
             default_val = lines[start + 9].strip()
             step_val = lines[start + 10].strip()
+            units = lines[start + 12].strip() if start + 12 < len(lines) else ""
+            orientation = lines[start + 13].strip() if start + 13 < len(lines) else ""
 
             # Validate — var_name should be a word
-            if re.match(r"^[\w-]+$", var_name):
-                return {
-                    "name": var_name,
-                    "min": _safe_float(min_val),
-                    "max": _safe_float(max_val),
-                    "default": _safe_float(default_val),
-                    "step": _safe_float(step_val),
-                }
+            if re.match(r"^[\w?-]+$", var_name):
+                return NetLogoSlider(
+                    name=var_name,
+                    label=label,
+                    minimum=_control_value(min_val),
+                    maximum=_control_value(max_val),
+                    default=_control_value(default_val),
+                    step=_control_value(step_val),
+                    units="" if units == "NIL" else units,
+                    orientation=orientation,
+                )
     except (IndexError, ValueError):
         pass
     return None
+
+
+def _parse_switch_control(lines: list[str], start: int) -> NetLogoSwitch | None:
+    """Parse a SWITCH widget block."""
+    try:
+        if start + 7 < len(lines):
+            name = lines[start + 5].strip()
+            label = lines[start + 6].strip()
+            default = _boolish(lines[start + 7].strip())
+            if name:
+                return NetLogoSwitch(name=name, label=label, default=default)
+    except (IndexError, ValueError):
+        pass
+    return None
+
+
+def _parse_chooser_control(lines: list[str], start: int) -> NetLogoChooser | None:
+    """Parse a CHOOSER widget block."""
+    try:
+        if start + 8 < len(lines):
+            name = lines[start + 5].strip()
+            label = lines[start + 6].strip()
+            choices = _parse_choices(lines[start + 7].strip())
+            default = _choice_default(choices, lines[start + 8].strip())
+            if name:
+                return NetLogoChooser(
+                    name=name,
+                    label=label,
+                    choices=choices,
+                    default=default,
+                )
+    except (IndexError, ValueError):
+        pass
+    return None
+
+
+def _parse_input_box_control(lines: list[str], start: int) -> NetLogoInputBox | None:
+    """Parse an INPUTBOX widget block."""
+    try:
+        if start + 6 < len(lines):
+            name = lines[start + 5].strip()
+            default = lines[start + 6].strip()
+            multiline = _boolish(lines[start + 8].strip()) if start + 8 < len(lines) else False
+            if name:
+                return NetLogoInputBox(
+                    name=name,
+                    label=name,
+                    default=_control_value(default),
+                    multiline=multiline,
+                )
+    except (IndexError, ValueError):
+        pass
+    return None
+
+
+def _parse_monitor_control(lines: list[str], start: int) -> NetLogoMonitor | None:
+    """Parse a MONITOR widget block."""
+    try:
+        if start + 6 < len(lines):
+            name = lines[start + 5].strip()
+            reporter = lines[start + 6].strip()
+            if name:
+                return NetLogoMonitor(name=name, reporter=reporter)
+    except (IndexError, ValueError):
+        pass
+    return None
+
+
+def _parse_plot_control(lines: list[str], start: int) -> NetLogoPlotSpec | None:
+    """Parse a PLOT widget block, including pen update commands when present."""
+    try:
+        if start + 7 >= len(lines):
+            return None
+        name = lines[start + 5].strip()
+        x_axis = lines[start + 6].strip()
+        y_axis = lines[start + 7].strip()
+        if not name or name.replace(".", "").isdigit():
+            return None
+        pens: list[NetLogoPlotPen] = []
+        for offset in range(start + 8, len(lines)):
+            if lines[offset].strip() != "PENS":
+                continue
+            for pen_offset in range(offset + 1, len(lines)):
+                pen_line = lines[pen_offset].strip()
+                if not pen_line:
+                    break
+                if pen_line in _TEXT_WIDGET_MARKERS:
+                    break
+                pen = _parse_pen_line(pen_line)
+                if pen:
+                    pens.append(pen)
+            break
+        return NetLogoPlotSpec(name=name, x_axis=x_axis, y_axis=y_axis, pens=pens)
+    except (IndexError, ValueError):
+        return None
+
+
+_TEXT_WIDGET_MARKERS = {
+    "GRAPHICS-WINDOW",
+    "SLIDER",
+    "SWITCH",
+    "CHOOSER",
+    "INPUTBOX",
+    "MONITOR",
+    "PLOT",
+    "BUTTON",
+    "TEXTBOX",
+    "OUTPUT",
+}
+
+
+def _control_value(raw: object) -> NetLogoControlValue:
+    text = "" if raw is None else str(raw).strip()
+    try:
+        return NetLogoControlValue(raw=text, number=float(text))
+    except (TypeError, ValueError):
+        return NetLogoControlValue(raw=text, number=None)
+
+
+def _legacy_float(value: NetLogoControlValue) -> float:
+    return value.number if value.number is not None else 0.0
+
+
+def _add_slider(model: NetLogoModel, slider: NetLogoSlider) -> None:
+    model.controls.sliders.append(slider)
+    model.sliders.append({
+        "name": slider.name,
+        "min": _legacy_float(slider.minimum),
+        "max": _legacy_float(slider.maximum),
+        "default": _legacy_float(slider.default),
+        "step": _legacy_float(slider.step),
+    })
+
+
+def _add_plot(model: NetLogoModel, plot: NetLogoPlotSpec) -> None:
+    model.controls.plots.append(plot)
+    model.plots.append(plot.name)
+
+
+def _boolish(raw: object) -> bool:
+    text = "" if raw is None else str(raw).strip().lower()
+    return text in {"1", "true", "t", "yes", "on"}
+
+
+def _parse_choices(raw: object) -> list[str]:
+    text = "" if raw is None else str(raw).strip()
+    if text.startswith("[") and text.endswith("]"):
+        text = text[1:-1].strip()
+    if not text:
+        return []
+    try:
+        return [str(part) for part in shlex.split(text)]
+    except ValueError:
+        return [p for p in text.split() if p]
+
+
+def _choice_default(choices: list[str], raw: object) -> str | None:
+    text = "" if raw is None else str(raw).strip()
+    if not text:
+        return choices[0] if choices else None
+    try:
+        idx = int(float(text))
+    except ValueError:
+        return text.strip('"')
+    if 0 <= idx < len(choices):
+        return choices[idx]
+    return None
+
+
+def _parse_pen_line(line: str) -> NetLogoPlotPen | None:
+    try:
+        parts = shlex.split(line)
+    except ValueError:
+        return None
+    if not parts:
+        return None
+    return NetLogoPlotPen(
+        name=parts[0],
+        interval=_control_value(parts[1] if len(parts) > 1 else ""),
+        mode=parts[2] if len(parts) > 2 else "",
+        color=parts[3] if len(parts) > 3 else "",
+        update_command=parts[-1] if len(parts) > 1 else "",
+    )
+
+
+def _attr(el: ET.Element, *names: str, default: str = "") -> str:
+    for name in names:
+        value = el.attrib.get(name)
+        if value is not None:
+            return value
+    return default
+
+
+def _parse_xml_widgets(model: NetLogoModel, widgets_el: ET.Element) -> None:
+    for widget in list(widgets_el):
+        tag = widget.tag.lower().replace("-", "").replace("_", "")
+        if tag == "slider":
+            name = _attr(widget, "variable", "name")
+            if name:
+                _add_slider(model, NetLogoSlider(
+                    name=name,
+                    label=_attr(widget, "display", "label", default=name),
+                    minimum=_control_value(_attr(widget, "min", "minimum", default="0")),
+                    maximum=_control_value(_attr(widget, "max", "maximum", default="0")),
+                    default=_control_value(_attr(widget, "default", "value", default="0")),
+                    step=_control_value(_attr(widget, "step", default="1")),
+                    units=_attr(widget, "units"),
+                    orientation=_attr(widget, "direction", "orientation"),
+                ))
+            continue
+
+        if tag == "switch":
+            name = _attr(widget, "variable", "name")
+            if name:
+                model.controls.switches.append(NetLogoSwitch(
+                    name=name,
+                    label=_attr(widget, "display", "label", default=name),
+                    default=_boolish(_attr(widget, "on", "default", "value")),
+                ))
+            continue
+
+        if tag == "chooser":
+            name = _attr(widget, "variable", "name")
+            choices = _parse_choices(_attr(widget, "choices"))
+            if name:
+                default_raw = _attr(
+                    widget,
+                    "currentChoice",
+                    "current",
+                    "default",
+                    "value",
+                    "currentChoiceIndex",
+                )
+                model.controls.choosers.append(NetLogoChooser(
+                    name=name,
+                    label=_attr(widget, "display", "label", default=name),
+                    choices=choices,
+                    default=_choice_default(choices, default_raw),
+                ))
+            continue
+
+        if tag == "inputbox":
+            name = _attr(widget, "variable", "name")
+            if name:
+                model.controls.input_boxes.append(NetLogoInputBox(
+                    name=name,
+                    label=_attr(widget, "display", "label", default=name),
+                    default=_control_value(_attr(widget, "default", "value")),
+                    multiline=_boolish(_attr(widget, "multiline")),
+                ))
+            continue
+
+        if tag == "monitor":
+            display = _attr(widget, "display", "name")
+            reporter = _attr(widget, "reporter", "source", "value")
+            if display:
+                model.controls.monitors.append(NetLogoMonitor(
+                    name=display,
+                    reporter=reporter,
+                ))
+            continue
+
+        if tag == "plot":
+            display = _attr(widget, "display", "name")
+            if display:
+                pens = []
+                for pen in list(widget):
+                    if pen.tag.lower() != "pen":
+                        continue
+                    pens.append(NetLogoPlotPen(
+                        name=_attr(pen, "display", "name"),
+                        interval=_control_value(_attr(pen, "interval")),
+                        mode=_attr(pen, "mode"),
+                        color=_attr(pen, "color"),
+                        update_command=_attr(pen, "update", "updateCommand"),
+                    ))
+                _add_plot(model, NetLogoPlotSpec(
+                    name=display,
+                    x_axis=_attr(widget, "xAxis", "xaxis", "x_axis"),
+                    y_axis=_attr(widget, "yAxis", "yaxis", "y_axis"),
+                    pens=pens,
+                ))
 
 
 def _parse_world_block(model: NetLogoModel, lines: list[str], start: int) -> None:

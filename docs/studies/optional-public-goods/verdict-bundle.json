@@ -1,0 +1,120 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Volunteering as Red Queen mechanism for cooperation in public goods games",
+    "authors": [
+      "Christoph Hauert",
+      "Silvia De Monte",
+      "Josef Hofbauer",
+      "Karl Sigmund"
+    ],
+    "year": 2002,
+    "journal": "Science 296:1129-1132",
+    "doi": "10.1126/science.1070582"
+  },
+  "headline": "Hauert 2002 Optional Public Goods (agent-based): 3/3 locked clauses REPRO; voluntary r=3 time-avg (C,D,L)=(0.29,0.35,0.36) vs compulsory coop=0.00; loner-dominated at r=1.8 (loner=1.00)",
+  "code_commit": "5d350ac2d9a7f97e09d126db5a46c02b15455993",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 RPS coexistence (r=3, sigma=1): each of C/D/L time-avg in (0.05, 0.90) AND cooperator amplitude > 0.10",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.2867,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 voluntary participation prevents all-D collapse: compulsory coop < 0.05, voluntary coop >= 0.15 AND exceeds compulsory by >= 0.10",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.2849,
+        0.1
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 regime flip across r=2: at r=1.8,sigma=0.5 loner-dominated (loner > 0.5, coop < 0.15); at r=3,sigma=1 cooperation persists (coop >= 0.15)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9956,
+        0.5
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/optional-public-goods/results.json",
+      "sha256": "473b5e7fe58d85e65ef6aab5f2544223c72ca159b66157378a9cc2fa9ec7a8ad",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/optional-public-goods/PREDICTIONS-locked.md",
+      "sha256": "dac48a6f57d64f7352515e4b0d05f47085bcab19660297a1bab4f38a446a25d6",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/optional-public-goods/FINDINGS.md",
+      "sha256": "7fabd945970f729272ad272701cd5e6c2566fdbb6567a9e5ea45e434033b02a7",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "hauert-2002-optional-public-goods-loners",
+    "pop": 5000,
+    "N": 5,
+    "mu": 0.001,
+    "n_seeds": 5,
+    "n_gen": 3000,
+    "measure_from": 1000,
+    "regime_hi": {
+      "r": 3.0,
+      "sigma": 1.0
+    },
+    "regime_lo": {
+      "r": 1.8,
+      "sigma": 0.5
+    },
+    "voluntary_hi_timeavg": [
+      0.28668213893053485,
+      0.35159608195902037,
+      0.361721779110445
+    ],
+    "compulsory_hi_coop": 0.001765197401299321,
+    "voluntary_lo_loner": 0.9956275062468747,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + locked-prediction discipline reproduce the loner-induced RPS coexistence, isolate voluntary participation as the rescue of cooperation, and would catch an artifact"
+  },
+  "citations": [
+    "Hauert, C., De Monte, S., Hofbauer, J. & Sigmund, K. (2002). Volunteering as Red Queen mechanism for cooperation in public goods games. Science 296:1129-1132. doi:10.1126/science.1070582."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the time-averaged strategy frequencies + cooperator amplitude"
+  }
+}

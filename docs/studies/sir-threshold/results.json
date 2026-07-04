@@ -1,0 +1,234 @@
+{
+  "model": "sir-epidemic-threshold (agent-based, well-mixed / mass-action)",
+  "config": {
+    "n": 10000,
+    "gamma": 0.1,
+    "i0": 10,
+    "r0_grid": [
+      0.8,
+      1.0,
+      1.5,
+      2.0,
+      3.0
+    ],
+    "n_seeds": 20,
+    "seed_base": 0,
+    "takeoff_cutoff": 0.05,
+    "beta_rule": "beta = R0 * gamma",
+    "metric": "final attack rate = 1 - S_final/N",
+    "update": "synchronous; force of infection 1-(1-beta/N)^I from start-of-tick I_count; commit S/I/R at tick end; run to I=0"
+  },
+  "analytic_final_size": {
+    "R0": 2.0,
+    "attack_rate": 0.7968121300184279,
+    "relation": "ln(S0/Sinf)=R0(1-Sinf/N), S0~=N  <=>  a = 1 - exp(-R0*a)",
+    "note": "solved from the LOCKED R0, not fit to the run"
+  },
+  "per_r0": [
+    {
+      "R0": 0.8,
+      "beta": 0.08000000000000002,
+      "mean_attack_rate": 0.006145,
+      "var_attack_rate": 3.068147500000005e-05,
+      "min_attack_rate": 0.0012999999999999678,
+      "max_attack_rate": 0.021199999999999997,
+      "n_takeoff": 0,
+      "takeoff_frequency": 0.0,
+      "mean_attack_rate_given_takeoff": 0.0,
+      "attack_rates": [
+        0.0013,
+        0.0015,
+        0.0212,
+        0.0026,
+        0.0059,
+        0.0047,
+        0.0047,
+        0.0021,
+        0.0045,
+        0.0114,
+        0.0025,
+        0.0148,
+        0.0052,
+        0.0057,
+        0.0024,
+        0.0063,
+        0.0028,
+        0.0017,
+        0.0037,
+        0.0179
+      ]
+    },
+    {
+      "R0": 1.0,
+      "beta": 0.1,
+      "mean_attack_rate": 0.023834999999999995,
+      "var_attack_rate": 0.0007537332749999998,
+      "min_attack_rate": 0.0014999999999999458,
+      "max_attack_rate": 0.10980000000000001,
+      "n_takeoff": 2,
+      "takeoff_frequency": 0.1,
+      "mean_attack_rate_given_takeoff": 0.09689999999999999,
+      "attack_rates": [
+        0.1098,
+        0.0015,
+        0.0464,
+        0.0025,
+        0.0177,
+        0.0132,
+        0.0199,
+        0.0023,
+        0.0127,
+        0.0266,
+        0.0036,
+        0.0235,
+        0.008,
+        0.0133,
+        0.0402,
+        0.013,
+        0.0102,
+        0.0017,
+        0.084,
+        0.0266
+      ]
+    },
+    {
+      "R0": 1.5,
+      "beta": 0.15000000000000002,
+      "mean_attack_rate": 0.5751350000000001,
+      "var_attack_rate": 0.0005392682750000003,
+      "min_attack_rate": 0.5138,
+      "max_attack_rate": 0.6231,
+      "n_takeoff": 20,
+      "takeoff_frequency": 1.0,
+      "mean_attack_rate_given_takeoff": 0.5751350000000001,
+      "attack_rates": [
+        0.5708,
+        0.5656,
+        0.5657,
+        0.5722,
+        0.5774,
+        0.5138,
+        0.5637,
+        0.5857,
+        0.602,
+        0.5468,
+        0.5715,
+        0.5589,
+        0.6064,
+        0.5591,
+        0.5732,
+        0.5936,
+        0.5657,
+        0.5865,
+        0.6231,
+        0.601
+      ]
+    },
+    {
+      "R0": 2.0,
+      "beta": 0.2,
+      "mean_attack_rate": 0.7951650000000001,
+      "var_attack_rate": 5.8348274999999936e-05,
+      "min_attack_rate": 0.7773,
+      "max_attack_rate": 0.8068,
+      "n_takeoff": 20,
+      "takeoff_frequency": 1.0,
+      "mean_attack_rate_given_takeoff": 0.7951650000000001,
+      "attack_rates": [
+        0.8032,
+        0.8017,
+        0.7999,
+        0.7868,
+        0.7867,
+        0.7959,
+        0.7957,
+        0.7991,
+        0.7897,
+        0.7988,
+        0.8068,
+        0.8049,
+        0.7939,
+        0.7912,
+        0.7773,
+        0.8058,
+        0.7896,
+        0.7858,
+        0.7909,
+        0.7996
+      ]
+    },
+    {
+      "R0": 3.0,
+      "beta": 0.30000000000000004,
+      "mean_attack_rate": 0.9413050000000001,
+      "var_attack_rate": 1.8195475000000004e-05,
+      "min_attack_rate": 0.9339999999999999,
+      "max_attack_rate": 0.9492,
+      "n_takeoff": 20,
+      "takeoff_frequency": 1.0,
+      "mean_attack_rate_given_takeoff": 0.9413050000000001,
+      "attack_rates": [
+        0.9389,
+        0.9403,
+        0.9419,
+        0.9401,
+        0.9373,
+        0.945,
+        0.943,
+        0.945,
+        0.9492,
+        0.9372,
+        0.9492,
+        0.9407,
+        0.9383,
+        0.9415,
+        0.934,
+        0.9354,
+        0.942,
+        0.9389,
+        0.9392,
+        0.949
+      ]
+    }
+  ],
+  "p2_comparison": {
+    "R0": 2.0,
+    "measured_mean": 0.7951650000000001,
+    "measured_mean_given_takeoff": 0.7951650000000001,
+    "analytic": 0.7968121300184279,
+    "relative_offset": 0.0020671497789443325,
+    "tolerance": 0.1
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 epidemic threshold at R0=1 (attack<0.05 at R0=0.8 AND >0.30 at R0=2.0)",
+      "salient_number": [
+        0.7952,
+        0.3
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 final size at R0=2.0 within +/-10% of analytic ln(S0/Sinf)=R0(1-Sinf/N)",
+      "salient_number": [
+        0.0021,
+        0.1
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 attack rate monotone non-decreasing in R0; <0.05 at R0=0.8",
+      "salient_number": [
+        0.0061,
+        0.05
+      ],
+      "reasons": []
+    }
+  ]
+}

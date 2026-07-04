@@ -1,0 +1,121 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Evolutionary prisoner's dilemma game on a square lattice",
+    "authors": [
+      "Gy\u00f6rgy Szab\u00f3",
+      "Csaba T\u0151ke"
+    ],
+    "year": 1998,
+    "journal": "Physical Review E 58:69-73",
+    "doi": "10.1103/PhysRevE.58.69"
+  },
+  "headline": "Szab\u00f3-T\u0151ke 1998 Fermi spatial PD (agent-based): 1/3 locked clauses REPRO; c(b=1.4,K=0.1)=0.541 & c(b=1.9)~0.0004; K=0.5 transition beta=1.344 (b_c2~1.74); P3 b_cr rise(K0.32-0.05)=0.078 peak K=0.32",
+  "code_commit": "6e8f0fe09d730026bbe89f8d7ab476358f31f6d5",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 cooperators survive above b=1 (self-int von Neumann, K=0.1): c(b=1.4) in [0.35,0.65] AND c(b=1.9) ~ 0",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.5411,
+        0.5
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 C-extinction is CONTINUOUS (K=0.5): no single Delta-b=0.02 jump >0.2, and fitted beta in [0.45,0.75]",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        1.344,
+        0.6
+      ],
+      "reasons": [
+        "max adjacent c-drop = 0.0462; need <= 0.2 -> OK",
+        "fitted beta = 1.344 (b_c2~1.74, 17 coexistence points); need in [0.45,0.75] -> MISS"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P3 noise NON-monotonicity (no-self-int von Neumann): b_cr(K~0.32) - b_cr(K~0.05) >= 0.1, peak K in [0.2,0.5]",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.0781,
+        0.1
+      ],
+      "reasons": [
+        "b_cr(K=0.32) - b_cr(K=0.05) = 1.1016 - 1.0234 = 0.0781; need >= 0.1 -> MISS",
+        "peak K (over grid [0.05, 0.2, 0.32, 0.5, 1.0, 1.5]) = 0.32; need in [0.2,0.5] -> OK"
+      ],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/fermi-spatial-pd/results.json",
+      "sha256": "af65fdd7c6f45c169fa987a28a78977ea9c511ef607ef1428cd17db2d4f3cf0a",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/fermi-spatial-pd/PREDICTIONS-locked.md",
+      "sha256": "1655733378e7d53f672a8e18edfb5f712b014d033fb19be71df8d2fdf5fb9a17",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/fermi-spatial-pd/FINDINGS.md",
+      "sha256": "9222bc122172f70812e3c9ec042e7a70fcba30993412697319e2749ebb59a6c9",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "szabo-toke-1998-fermi-spatial-pd",
+    "P1_L": 400,
+    "P2_L": 500,
+    "P3_L": 200,
+    "c_b1.4": 0.54110578125,
+    "c_b1.9": 0.00042375,
+    "K05_beta": 1.3439635694836782,
+    "K05_b_c2": 1.74,
+    "K05_max_jump": 0.04615751999999998,
+    "P3_peak_k": 0.32,
+    "P3_rise": 0.078125,
+    "P3_bcr": {
+      "0.05": 1.0234375,
+      "0.2": 1.0859375,
+      "0.32": 1.1015625,
+      "0.5": 1.0859375,
+      "1.0": 1.0703125,
+      "1.5": 1.0703125
+    },
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the Fermi-rule spatial PD's stochastic coexistence, its CONTINUOUS (directed-percolation) transition, and its optimal-intermediate-noise effect \u2014 none of which the deterministic nowak_may_pd model has \u2014 and would catch an artifact"
+  },
+  "citations": [
+    "Szab\u00f3, G. & T\u0151ke, C. (1998). Evolutionary prisoner's dilemma game on a square lattice. Physical Review E 58:69-73. doi:10.1103/PhysRevE.58.69."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the stationary cooperator density c and the noise-dependent survival threshold b_cr(K)"
+  }
+}

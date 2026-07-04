@@ -1,0 +1,140 @@
+{
+  "boundary_note": "This public bridge contract is not a unified runtime and not a scientific truth certificate.",
+  "boundary_rules": {
+    "extensions_are_opaque": "Closed overlays and private extension fields may attach through extension seams, but the public side records them as opaque artifacts.",
+    "gates_are_artifact_health_not_truth": "Artifact gates prove schema and declared evidence health, not scientific truth.",
+    "no_cross_runtime_equivalence_claim": "A passing bridge does not claim MIR, GISABM, NetLogo, transport, and closed extension runtimes are equivalent.",
+    "no_private_runtime_claim": "Private or closed runtimes are represented only by public artifact contracts in this repository."
+  },
+  "contract_id": "unified-abm-bridge-seed",
+  "exchange_artifacts": [
+    {
+      "boundary_note": "MIR v0 findings record open semantic round-trip evidence only.",
+      "consumer": "evidence-foundry",
+      "id": "mir-v0-findings",
+      "kind": "mir_findings",
+      "path": "docs/reproduce/mir-v0/FINDINGS.md",
+      "producer": "mir-core"
+    },
+    {
+      "boundary_note": "GIS capability registry records dispositions and gaps, not full platform truth.",
+      "consumer": "evidence-foundry",
+      "id": "platform-capability-registry",
+      "kind": "capability_registry",
+      "path": "docs/reproduce/platform-capabilities/registry.json",
+      "producer": "gisabm"
+    },
+    {
+      "boundary_note": "NetLogo migration fixture is manifest-driven and does not parse .nlogo code.",
+      "consumer": "mir-core",
+      "id": "netlogo-semantic-migration",
+      "kind": "netlogo_migration_manifest",
+      "path": "docs/reproduce/netlogo-semantic-migration/example-spec.json",
+      "producer": "netlogo-semantics"
+    },
+    {
+      "boundary_note": "Evidence Foundry batch checks committed artifact health only.",
+      "consumer": "evidence-foundry",
+      "id": "evidence-foundry-batch",
+      "kind": "evidence_batch_registry",
+      "path": "docs/reproduce/evidence-foundry/batch-registry.json",
+      "producer": "evidence-foundry"
+    },
+    {
+      "boundary_note": "Transport bridge manifest validates a synthetic bridge contract, not traffic-flow validity.",
+      "consumer": "gisabm",
+      "id": "transport-bridge-manifest",
+      "kind": "transport_bridge_manifest",
+      "path": "docs/reproduce/transport-bridge/synthetic-evacuation/bridge-manifest.json",
+      "producer": "transport-bridge"
+    },
+    {
+      "boundary_note": "Closed extension bridge doc records artifact boundaries without exposing or executing private backends.",
+      "consumer": "evidence-foundry",
+      "id": "closed-extension-bridge-doc",
+      "kind": "closed_extension_bridge_doc",
+      "path": "docs/reproduce/unified-abm-bridge/STATUS.md",
+      "producer": "closed-extension-private"
+    }
+  ],
+  "participants": [
+    {
+      "artifact_refs": [
+        "mir-v0-findings"
+      ],
+      "boundary_note": "MIR is the open semantic core, not the whole private platform.",
+      "domain": "mir",
+      "id": "mir-core",
+      "public": true,
+      "role": "open semantic exchange core"
+    },
+    {
+      "artifact_refs": [
+        "platform-capability-registry"
+      ],
+      "boundary_note": "GISABM contributes public runtime cells and codegen capabilities, not all physical simulation.",
+      "domain": "gis",
+      "id": "gisabm",
+      "public": true,
+      "role": "spatial ABM runtime and capability registry"
+    },
+    {
+      "artifact_refs": [
+        "netlogo-semantic-migration"
+      ],
+      "boundary_note": "NetLogo support is native semantic migration, not a NetLogo parser or full interpreter.",
+      "domain": "netlogo",
+      "id": "netlogo-semantics",
+      "public": true,
+      "role": "NetLogo semantic migration source"
+    },
+    {
+      "artifact_refs": [
+        "evidence-foundry-batch"
+      ],
+      "boundary_note": "Evidence Foundry checks challenge and artifact contracts, not scientific truth.",
+      "domain": "evidence",
+      "id": "evidence-foundry",
+      "public": true,
+      "role": "evidence and gate packaging layer"
+    },
+    {
+      "artifact_refs": [
+        "transport-bridge-manifest"
+      ],
+      "boundary_note": "Transport integration is bridge-backed and does not claim full SUMO or MATSim parity.",
+      "domain": "transport",
+      "id": "transport-bridge",
+      "public": true,
+      "role": "transport bridge contract source"
+    },
+    {
+      "artifact_refs": [
+        "closed-extension-bridge-doc"
+      ],
+      "boundary_note": "Closed extension backends are private or external; the public repository records only artifact boundaries.",
+      "domain": "closed_extension",
+      "id": "closed-extension-private",
+      "public": false,
+      "role": "private extension bridge source"
+    }
+  ],
+  "public_surface": {
+    "evidence_foundry": "docs/reproduce/evidence-foundry/batch-registry.json",
+    "gisabm": "docs/reproduce/platform-capabilities/registry.json",
+    "mir_core": "docs/reproduce/mir-v0/FINDINGS.md",
+    "netlogo_semantics": "docs/reproduce/netlogo-semantic-migration/STATUS.md"
+  },
+  "schema": "abm-auto/unified-abm-bridge-contract/v1",
+  "title": "MyMoMo Unified ABM Public Bridge Contract",
+  "verification": {
+    "expected_result": "PASS",
+    "gate_command": ".venv/bin/python -m abm_auto.unified_abm_bridge gate docs/reproduce/unified-abm-bridge/example-contract.json --repo .",
+    "non_claims": [
+      "does not execute private extension backends",
+      "does not parse NetLogo source code",
+      "does not certify scientific truth",
+      "does not prove cross-runtime equivalence"
+    ]
+  }
+}

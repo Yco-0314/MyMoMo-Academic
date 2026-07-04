@@ -1,0 +1,109 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Isotropic majority-vote model on a square lattice",
+    "authors": [
+      "M.J. de Oliveira"
+    ],
+    "year": 1992,
+    "journal": "Journal of Statistical Physics 66(1/2):273-281",
+    "doi": "10.1007/BF01060069"
+  },
+  "headline": "de Oliveira 1992 (agent-based): 3/3 locked clauses REPRO; measured |m|=0.5 half-crossing q_c = 0.0803 (canonical ~0.075)",
+  "code_commit": "617761b31067292d387f0620d2c0b302af3a1029",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 ordered at q=0.02 (|m|>0.7) AND disordered at q=0.15 (|m|<0.3)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9045,
+        0.7
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 |m| half-crossing (|m|=0.5) in q in [0.04, 0.12] (canonical q_c~0.075)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0803,
+        0.12
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 |m| monotone non-increasing in q across the grid",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/majority-vote/results.json",
+      "sha256": "6d0ec16b46e93f997d8f52e1871f40abe8ce00ccf8fdc4f6c147550a4f3c936d",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/majority-vote/PREDICTIONS-locked.md",
+      "sha256": "c312160ef9e6913b8c1302a428802a8b7e333b32a51a8224e240d149923bade0",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/majority-vote/FINDINGS.md",
+      "sha256": "c265ea5a1e8901d082c647c60927a56f02caf284a769ddb7b52574cd7dcbef86",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveA-design.md",
+      "sha256": "da9c97bd2ac96e458d6604555d77c414c8747ea27faf75a49559054755b06f8b",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "de-oliveira-1992-majority-vote",
+    "L": 50,
+    "q_grid": [
+      0.02,
+      0.05,
+      0.075,
+      0.1,
+      0.15
+    ],
+    "n_seeds_per_q": 5,
+    "equilibration_sweeps": 300,
+    "measurement_sweeps": 300,
+    "measured_qc_half_crossing": 0.08030334927217332,
+    "canonical_qc": 0.075,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the order-disorder transition and would catch an artifact"
+  },
+  "citations": [
+    "de Oliveira, M.J. (1992). Isotropic majority-vote model on a square lattice. Journal of Statistical Physics 66(1/2):273-281. doi:10.1007/BF01060069."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

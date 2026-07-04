@@ -1,0 +1,54 @@
+{
+  "bridge_id": "synthetic-evacuation-bridge-v1",
+  "claims": [
+    {
+      "boundary_note": "Manifest contract only; no external traffic engine was run.",
+      "id": "traffic-flow-audit",
+      "metric": "mean edge travel time"
+    }
+  ],
+  "engine": {
+    "command": [
+      "external-traffic-engine",
+      "--scenario",
+      "scenario.json"
+    ],
+    "name": "external",
+    "version": "not-run"
+  },
+  "inputs": [
+    {
+      "key": "network",
+      "path": "inputs/network.json",
+      "role": "road network"
+    },
+    {
+      "key": "demand",
+      "path": "inputs/demand.json",
+      "role": "agent demand"
+    },
+    {
+      "key": "flood_timeline",
+      "path": "inputs/flood-timeline.json",
+      "role": "time-varying flood state"
+    }
+  ],
+  "outputs": [
+    {
+      "key": "edge_travel_time",
+      "path": "outputs/edge-travel-time.csv",
+      "reduction_metric": "mean edge travel time"
+    },
+    {
+      "key": "arrival_summary",
+      "path": "outputs/arrival-summary.json",
+      "reduction_metric": "arrived and stranded counts"
+    }
+  ],
+  "scenario": {
+    "name": "synthetic flood evacuation bridge contract",
+    "spatial_scope": "synthetic road network",
+    "time_unit": "tick"
+  },
+  "schema": "abm-auto/transport-bridge-manifest/v1"
+}

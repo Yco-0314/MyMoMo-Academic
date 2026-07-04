@@ -1,0 +1,157 @@
+{
+  "model": "bikhchandani-hirshleifer-welch-1992-informational-cascade (agent-based)",
+  "config": {
+    "n": 30,
+    "prior_high": 0.5,
+    "precision_grid": [
+      0.7,
+      0.6,
+      0.8,
+      0.9
+    ],
+    "canonical_p": 0.7,
+    "n_queues": 200000,
+    "seed_base": 0,
+    "decision_rule": "Bayes on (public actions + own signal); tie -> follow own signal",
+    "cascade_barrier_abs_d": 2,
+    "p1_form_by_20_threshold": 0.999,
+    "p2_tol": 0.005,
+    "p2_graded_ps": [
+      0.6,
+      0.7,
+      0.8
+    ],
+    "p3_tol": 0.05,
+    "p3_gain_bound": 0.16
+  },
+  "per_precision": {
+    "0.7": {
+      "n": 30,
+      "p": 0.7,
+      "n_queues": 200000,
+      "seed_base": 0,
+      "frac_cascade_formed": 1.0,
+      "frac_cascade_formed_by_agent_20": 0.99984,
+      "frac_no_cascade_by_agent_20": 0.000160000000000049,
+      "cf_no_cascade_by_agent_20": 0.0001708019812167784,
+      "se_frac_no_cascade_by_20": 2.8282008415249523e-05,
+      "p_incorrect_given_cascade": 0.15403,
+      "cf_p_incorrect_given_cascade": 0.1551724137931035,
+      "se_p_incorrect": 0.0008071702394786369,
+      "mean_agents_before_cascade": 3.45554,
+      "cf_expected_agents_before_cascade": 3.4482758620689657,
+      "p_cascade_correct": 0.84597,
+      "social_accuracy_gain": 0.14597000000000004,
+      "cf_social_accuracy_gain": 0.1448275862068965,
+      "lone_agent_accuracy": 0.7,
+      "n_formed": 200000,
+      "n_formed_by_agent_20": 199968,
+      "n_correct": 169194,
+      "n_incorrect": 30806
+    },
+    "0.6": {
+      "n": 30,
+      "p": 0.6,
+      "n_queues": 200000,
+      "seed_base": 0,
+      "frac_cascade_formed": 0.99999,
+      "frac_cascade_formed_by_agent_20": 0.9993,
+      "frac_no_cascade_by_agent_20": 0.0007000000000000339,
+      "cf_no_cascade_by_agent_20": 0.00064925062108545,
+      "se_frac_no_cascade_by_20": 5.914008792688906e-05,
+      "p_incorrect_given_cascade": 0.3067480674806748,
+      "cf_p_incorrect_given_cascade": 0.30769230769230776,
+      "se_p_incorrect": 0.001031149093433016,
+      "mean_agents_before_cascade": 3.8496784967849678,
+      "cf_expected_agents_before_cascade": 3.846153846153846,
+      "p_cascade_correct": 0.6932519325193252,
+      "social_accuracy_gain": 0.09325193251932518,
+      "cf_social_accuracy_gain": 0.09230769230769231,
+      "lone_agent_accuracy": 0.6,
+      "n_formed": 199998,
+      "n_formed_by_agent_20": 199860,
+      "n_correct": 138649,
+      "n_incorrect": 61349
+    },
+    "0.8": {
+      "n": 30,
+      "p": 0.8,
+      "n_queues": 200000,
+      "seed_base": 0,
+      "frac_cascade_formed": 1.0,
+      "frac_cascade_formed_by_agent_20": 0.99999,
+      "frac_no_cascade_by_agent_20": 9.99999999995449e-06,
+      "cf_no_cascade_by_agent_20": 1.1258999068426222e-05,
+      "se_frac_no_cascade_by_20": 7.071032456421937e-06,
+      "p_incorrect_given_cascade": 0.0582,
+      "cf_p_incorrect_given_cascade": 0.05882352941176466,
+      "se_p_incorrect": 0.0005235110314023956,
+      "mean_agents_before_cascade": 2.94707,
+      "cf_expected_agents_before_cascade": 2.9411764705882346,
+      "p_cascade_correct": 0.9418,
+      "social_accuracy_gain": 0.14179999999999993,
+      "cf_social_accuracy_gain": 0.14117647058823524,
+      "lone_agent_accuracy": 0.8,
+      "n_formed": 200000,
+      "n_formed_by_agent_20": 199998,
+      "n_correct": 188360,
+      "n_incorrect": 11640
+    },
+    "0.9": {
+      "n": 30,
+      "p": 0.9,
+      "n_queues": 200000,
+      "seed_base": 0,
+      "frac_cascade_formed": 1.0,
+      "frac_cascade_formed_by_agent_20": 1.0,
+      "frac_no_cascade_by_agent_20": 0.0,
+      "cf_no_cascade_by_agent_20": 3.5704672266239934e-08,
+      "se_frac_no_cascade_by_20": 0.0,
+      "p_incorrect_given_cascade": 0.011965,
+      "cf_p_incorrect_given_cascade": 0.012195121951219506,
+      "se_p_incorrect": 0.00024312382416168102,
+      "mean_agents_before_cascade": 2.44041,
+      "cf_expected_agents_before_cascade": 2.4390243902439024,
+      "p_cascade_correct": 0.988035,
+      "social_accuracy_gain": 0.08803499999999997,
+      "cf_social_accuracy_gain": 0.08780487804878045,
+      "lone_agent_accuracy": 0.9,
+      "n_formed": 200000,
+      "n_formed_by_agent_20": 200000,
+      "n_correct": 197607,
+      "n_incorrect": 2393
+    }
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 cascade forms almost surely: formation-by-agent-20 fraction >= 0.999 for all p>=0.6",
+      "salient_number": [
+        0.9993,
+        0.999
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 cascades can be WRONG: |P(incorrect|cascade) - (1-p)^2/(p^2+(1-p)^2)| <= 0.005 at p in {0.6,0.7,0.8}",
+      "salient_number": [
+        0.15403,
+        0.15517
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 early onset + impaired social learning: E[agents before cascade] ~ 2/(p^2+(1-p)^2)=3.45@p=0.7, and social gain <= 0.16",
+      "salient_number": [
+        3.4555,
+        3.4483
+      ],
+      "reasons": []
+    }
+  ]
+}

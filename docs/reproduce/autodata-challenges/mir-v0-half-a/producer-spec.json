@@ -1,0 +1,61 @@
+{
+  "artifacts": {
+    "design_spec": "docs/superpowers/specs/2026-06-23-mir-v0-forward-design.md",
+    "findings": "docs/reproduce/mir-v0/FINDINGS.md",
+    "predictions_locked": "docs/reproduce/mir-v0/PREDICTIONS-locked.md"
+  },
+  "challenge_id": "mir-v0-half-a-evidence-answering-v1",
+  "extra": {
+    "ceiling": "This pack grades answer/evidence alignment only; it is not a MIR rerun or scientific truth certificate.",
+    "owner": "codex",
+    "phase": "MyMoMo Evidence Foundry Challenge Harness Phase 1.1"
+  },
+  "schema": "abm-auto/repro-challenge-producer/v1",
+  "registry": {
+    "difficulty": "intro",
+    "domain": "architecture",
+    "owner": "codex",
+    "summary": "Evidence-answering challenge for MIR v0 Half A forward round-trip claims.",
+    "tags": [
+      "mir",
+      "architecture",
+      "evidence-answering",
+      "handoff"
+    ]
+  },
+  "source": {
+    "kind": "committed-evidence",
+    "reference": "docs/reproduce/mir-v0",
+    "subject": "MIR v0 Half A forward round-trip"
+  },
+  "tasks": [
+    {
+      "expected_claims": [
+        {
+          "id": "P1-field-identity",
+          "verdict": "PASS"
+        },
+        {
+          "id": "P3-byte-identical-render",
+          "verdict": "PASS"
+        },
+        {
+          "id": "P5-extensions-seam",
+          "verdict": "PASS"
+        },
+        {
+          "id": "P7-zero-change",
+          "verdict": "PASS"
+        }
+      ],
+      "id": "mir-half-a-verdict-summary",
+      "prompt": "Using the locked predictions, design spec, and findings artifacts, report whether MIR v0 Half A P1, P3, P5, and P7 passed or missed. Cite the evidence artifact used for each claim.",
+      "required_artifacts": [
+        "predictions_locked",
+        "design_spec",
+        "findings"
+      ]
+    }
+  ],
+  "title": "MIR v0 Half A Evidence Answering Challenge"
+}

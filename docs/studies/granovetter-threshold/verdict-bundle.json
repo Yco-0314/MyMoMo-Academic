@@ -1,0 +1,104 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Threshold Models of Collective Behavior",
+    "authors": [
+      "Mark Granovetter"
+    ],
+    "year": 1978,
+    "journal": "American Journal of Sociology",
+    "doi": "10.1086/226707"
+  },
+  "headline": "Granovetter 1978 (agent-based, fully-mixed): 3/3 locked predictions REPRO; uniform eq=100 vs perturbed eq=1 (~100x swing) at near-identical means (49.5 vs 49.51, \u0394=0.01) \u2014 collective behavior is a property of the distribution, not its mean",
+  "code_commit": "713b7a5cafdaa762390054ba84905e99cb1f948f",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 uniform thresholds {0..99} cascade to all 100",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        100.0,
+        100.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 perturbed (gap at 1) stalls at the instigator -> equilibrium 1",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 distribution-not-mean: |mean_u - mean_p| < 0.1 AND eq ratio ~100",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        100.0,
+        100.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/granovetter-threshold/results.json",
+      "sha256": "307a9315275cf5a0324fb0001f14744ad3b3af15e802c4670a2519543b9a6189",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/granovetter-threshold/PREDICTIONS-locked.md",
+      "sha256": "edf54a1dd0b2d4021bfc8dba0108e42165406aabee079faced7209d195ea756f",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/granovetter-threshold/FINDINGS.md",
+      "sha256": "a4b886fe26645c47bdd9131eecf9900be0b272bb09dcf7997fcdd1b01263f744",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-network-abm-reproductions-design.md",
+      "sha256": "8c8cb2fc6aec89d85b1e47b12481523f681e213f7ceec34300a71b4dd9f39faa",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "version": "granovetter-1978-agentbased",
+    "n": 100,
+    "rng": "none (deterministic)",
+    "uniform_equilibrium": 100,
+    "perturbed_equilibrium": 1,
+    "mean_uniform": 49.5,
+    "mean_perturbed": 49.51,
+    "mean_difference": 0.00999999999999801,
+    "equilibrium_ratio": 100.0,
+    "scope": "faithful reproduction of a published synthetic model; fully-mixed 1978 formulation; no real-world data; method/discipline validity"
+  },
+  "citations": [
+    "Granovetter, M. (1978). Threshold Models of Collective Behavior. American Journal of Sociology, 83(6), 1420-1443. https://doi.org/10.1086/226707"
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no real cross-tool baseline; faithful synthetic-model reproduction"
+  }
+}

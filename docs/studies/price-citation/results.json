@@ -1,0 +1,149 @@
+{
+  "model": "price-1976-cumulative-advantage-citation (agent-based, directed)",
+  "framing": "network-generation reproduction (disclosed)",
+  "config": {
+    "m": 3,
+    "a": 1,
+    "n_seeds": 20,
+    "n_struct": 50000,
+    "n_tail": 100000,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "m_contrast": 1,
+    "n_seeds_contrast": 5,
+    "analytic_gamma": 2.3333333333333335,
+    "analytic_p0": 0.5714285714285714,
+    "p1_kmax_band": [
+      40,
+      400
+    ],
+    "p1_var_ratio_min": 50.0,
+    "p2_p0_band": [
+      0.52,
+      0.62
+    ],
+    "p3_gamma_band": [
+      2.1,
+      2.9
+    ],
+    "p3_contrast_min_gap": 0.2
+  },
+  "structural_arm": {
+    "p0_per_seed": [
+      0.57002,
+      0.57158,
+      0.57188
+    ],
+    "mean_p0": 0.57116,
+    "kmax_per_seed": [
+      2841,
+      3381,
+      1979
+    ],
+    "mean_kmax": 2733.6666666666665,
+    "var_ratio_per_seed": [
+      261997.39855941,
+      274241.9297051859,
+      233020.37441646564
+    ],
+    "mean_var_ratio": 256419.90089368718,
+    "var_nonseed_out_per_seed": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "nonseed_out_all_m_per_seed": [
+      true,
+      true,
+      true
+    ]
+  },
+  "tail_arm_main_m3": {
+    "gamma_per_seed": [
+      2.2028109711636876,
+      2.2229545061431857,
+      2.2043205393017415
+    ],
+    "mean_gamma": 2.210028672202872,
+    "kmin_per_seed": [
+      14,
+      14,
+      10
+    ],
+    "ntail_per_seed": [
+      3207,
+      3180,
+      4896
+    ],
+    "ks_per_seed": [
+      0.007583305869611756,
+      0.01031794583901846,
+      0.006405986082439585
+    ],
+    "kmax_per_seed": [
+      4777,
+      5602,
+      3346
+    ]
+  },
+  "tail_arm_contrast_m1": {
+    "gamma_per_seed": [
+      2.8926407394195666,
+      2.626755069683524,
+      2.685382216028221
+    ],
+    "mean_gamma": 2.7349260083771036,
+    "kmin_per_seed": [
+      13,
+      7,
+      7
+    ],
+    "ntail_per_seed": [
+      986,
+      2796,
+      2786
+    ],
+    "kmax_per_seed": [
+      359,
+      307,
+      483
+    ]
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": false,
+      "gate": "P1 directed DAG + constant out-degree: non-seed out-degree exactly m (var~0), k_max in [40,400], Var(in)/Var(out)>50",
+      "salient_number": [
+        2733.7,
+        400.0
+      ],
+      "reasons": [
+        "non-seed out-degree all == m: True; out-degree var ~ 0: True; k_max per seed = [2841, 3381, 1979] (band [40,400]); Var(in)/Var(out) per seed = [261997.4, 274241.9, 233020.4] (need > 50.0)"
+      ]
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 large never-cited mass: zero-in-degree fraction in [0.52,0.62] (analytic 4/7~0.571; BA gives 0)",
+      "salient_number": [
+        0.5712,
+        0.62
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 tunable heavy tail gamma<3: KS-selected discrete-MLE gamma-hat in [2.1,2.9] at m=3, and higher at the m=1 contrast (a/m tunability)",
+      "salient_number": [
+        2.21,
+        2.9
+      ],
+      "reasons": []
+    }
+  ]
+}

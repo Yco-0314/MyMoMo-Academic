@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-from abm_auto.analysis.results_reader import numeric_metrics, select_environment_csv
+from abm_auto.analysis.results_reader import final_metrics
 
 
 @dataclass
@@ -232,23 +232,7 @@ def analyze_runs(workspace_path, metric_columns: list[str] | None = None) -> Sta
     run_dirs = sorted(results_dir.glob("run_*"))
 
     for rd in run_dirs:
-        csvs = list(rd.glob("*.csv"))
-        if not csvs:
-            continue
-
-        # Prefer environment CSV (canonical seam — sorted + 'env' match)
-        target = select_environment_csv(csvs)
-
-        try:
-            df = pd.read_csv(target)
-            if df.empty:
-                continue
-        except Exception:
-            continue
-
-        row = {}
-        for col in numeric_metrics(df):  # canonical seam (results_reader.METADATA_COLS)
-            row[col] = float(df[col].iloc[-1])
+        row = final_metrics(list(rd.glob("*.csv")))
         if row:
             run_metrics.append(row)
 

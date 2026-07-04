@@ -316,7 +316,14 @@ class Pipeline:
         # resume_from; in all runs, write a checkpoint after each successful phase
         # (resume_from=None ⇒ skip set empty ⇒ behaviour identical to before).
         skip = plan_skips(self.phases, self.checkpoint_store, self.resume_from)
-        run_phases(self.phases, self.ctx, store=self.checkpoint_store, skip=skip)
+        # The trust report runs as an always-run finalizer (not a main-list phase)
+        # so it is produced on clean completion AND on a halted run — the FAILED
+        # verdict matters most exactly when the pipeline halts.
+        from abm_auto.pipeline.phases.output import TrustReportPhase
+        run_phases(
+            self.phases, self.ctx, store=self.checkpoint_store, skip=skip,
+            finalizers=[TrustReportPhase()],
+        )
         if self.ctx.pipeline_halted:
             console.print(
                 f"[yellow]Pipeline halted: {self.ctx.halt_reason}[/yellow]"

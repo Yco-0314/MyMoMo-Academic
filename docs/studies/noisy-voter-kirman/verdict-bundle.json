@@ -1,0 +1,102 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Noisy voter model / Kirman herding model",
+    "authors": [
+      "Alan Kirman",
+      "Claudio Castellano",
+      "Maxi San Miguel"
+    ],
+    "year": 2016,
+    "journal": "Synthetic complete-graph noisy voter benchmark"
+  },
+  "headline": "Noisy voter / Kirman stationary regimes: 1/3 locked clauses REPRO; weak edge-centre=-0.131, strong centre-edge=0.483, matched ratio diff=4.718",
+  "code_commit": "a93966a1fc6b345dcee1f6f75706bf724ecab213",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 weak noise a*N<1: edge stationary mass exceeds centre mass",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        -0.1311,
+        0.0
+      ],
+      "reasons": [
+        "edge_mass=0.2306, center_mass=0.3617"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P2 strong noise a*N>1: centred mass dominates and |mean m|<=0.15",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.483,
+        0.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 matched a*N: edge/centre ratios differ by <= 0.35",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        4.7178,
+        0.35
+      ],
+      "reasons": [
+        "small ratio=5.3554, large ratio=0.6376"
+      ],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "stationary_results": {
+      "kind": "file",
+      "path": "docs/studies/noisy-voter-kirman/results.json",
+      "sha256": "2790a2578e93c488fd17408f82a97ed50aa88fd5d91be8f77efc31395a2b5047",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/noisy-voter-kirman/PREDICTIONS-locked.md",
+      "sha256": "4c47525f9e7a399417f043f2b8d87d251f25ce9c3eb8c33c7d6cf8ac6178453b",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/noisy-voter-kirman/FINDINGS.md",
+      "sha256": "3860baa78897b8eb80545e2f9b15d78fa0c382aeaa33b2858855a093f634b42d",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-batch7-design.md",
+      "sha256": "38e5c736701fcc2618fa92f6cceeb79d4a4e70ad6b5969b50f515f28396349bc",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "noisy-voter-kirman",
+    "scope": "faithful synthetic-model reproduction; no empirical opinion data"
+  },
+  "citations": [
+    "Carro, A., Toral, R., & San Miguel, M. (2016). The noisy voter model on complex networks. Scientific Reports 6, 24775.",
+    "Kirman, A. (1993). Ants, rationality, and recruitment. Quarterly Journal of Economics 108(1):137-156."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "single implementation with locked stationary gates"
+  }
+}

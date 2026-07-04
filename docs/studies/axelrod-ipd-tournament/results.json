@@ -1,0 +1,483 @@
+{
+  "model": "axelrod-1984-ipd-tournament (agent-based)",
+  "config": {
+    "rounds": 200,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "payoffs": {
+      "T": 5,
+      "R": 3,
+      "P": 1,
+      "S": 0
+    },
+    "pool": [
+      "TitForTat",
+      "AllD",
+      "AllC",
+      "Random",
+      "Grudger",
+      "TitForTwoTats",
+      "SuspiciousTFT",
+      "Pavlov"
+    ],
+    "nice_strategies": [
+      "AllC",
+      "Grudger",
+      "Pavlov",
+      "TitForTat",
+      "TitForTwoTats"
+    ],
+    "metric": "total score across all matches (incl. self-play), mean over seeds",
+    "tie_tolerance": 0.01,
+    "round_robin": "every strategy vs every strategy INCLUDING itself"
+  },
+  "ranking": [
+    {
+      "rank": 1,
+      "name": "TitForTwoTats",
+      "mean_score": 4767.8,
+      "min_score": 4743,
+      "max_score": 4788,
+      "stdev": 18.700267377767624,
+      "nice": true
+    },
+    {
+      "rank": 2,
+      "name": "TitForTat",
+      "mean_score": 4756.2,
+      "min_score": 4741,
+      "max_score": 4766,
+      "stdev": 9.284395510748128,
+      "nice": true
+    },
+    {
+      "rank": 3,
+      "name": "Grudger",
+      "mean_score": 4601.4,
+      "min_score": 4569,
+      "max_score": 4623,
+      "stdev": 22.063544592834578,
+      "nice": true
+    },
+    {
+      "rank": 4,
+      "name": "Pavlov",
+      "mean_score": 4550.8,
+      "min_score": 4525,
+      "max_score": 4592,
+      "stdev": 25.839891640639674,
+      "nice": true
+    },
+    {
+      "rank": 5,
+      "name": "AllC",
+      "mean_score": 4522.8,
+      "min_score": 4515,
+      "max_score": 4545,
+      "stdev": 12.657013865837392,
+      "nice": true
+    },
+    {
+      "rank": 6,
+      "name": "Random",
+      "mean_score": 3874.6,
+      "min_score": 3843,
+      "max_score": 3907,
+      "stdev": 23.20129306741329,
+      "nice": false
+    },
+    {
+      "rank": 7,
+      "name": "AllD",
+      "mean_score": 3420.0,
+      "min_score": 3408,
+      "max_score": 3436,
+      "stdev": 10.198039027185569,
+      "nice": false
+    },
+    {
+      "rank": 8,
+      "name": "SuspiciousTFT",
+      "mean_score": 3360.6,
+      "min_score": 3343,
+      "max_score": 3377,
+      "stdev": 13.520355024924458,
+      "nice": false
+    }
+  ],
+  "mean_scores": {
+    "TitForTat": 4756.2,
+    "AllD": 3420.0,
+    "AllC": 4522.8,
+    "Random": 3874.6,
+    "Grudger": 4601.4,
+    "TitForTwoTats": 4767.8,
+    "SuspiciousTFT": 3360.6,
+    "Pavlov": 4550.8
+  },
+  "per_seed": [
+    {
+      "seed": 0,
+      "scores": {
+        "TitForTat": 4760,
+        "AllD": 3420,
+        "AllC": 4521,
+        "Random": 3866,
+        "Grudger": 4619,
+        "TitForTwoTats": 4788,
+        "SuspiciousTFT": 3367,
+        "Pavlov": 4592
+      },
+      "ranking": [
+        {
+          "rank": 1,
+          "name": "TitForTwoTats",
+          "score": 4788,
+          "nice": true
+        },
+        {
+          "rank": 2,
+          "name": "TitForTat",
+          "score": 4760,
+          "nice": true
+        },
+        {
+          "rank": 3,
+          "name": "Grudger",
+          "score": 4619,
+          "nice": true
+        },
+        {
+          "rank": 4,
+          "name": "Pavlov",
+          "score": 4592,
+          "nice": true
+        },
+        {
+          "rank": 5,
+          "name": "AllC",
+          "score": 4521,
+          "nice": true
+        },
+        {
+          "rank": 6,
+          "name": "Random",
+          "score": 3866,
+          "nice": false
+        },
+        {
+          "rank": 7,
+          "name": "AllD",
+          "score": 3420,
+          "nice": false
+        },
+        {
+          "rank": 8,
+          "name": "SuspiciousTFT",
+          "score": 3367,
+          "nice": false
+        }
+      ]
+    },
+    {
+      "seed": 1,
+      "scores": {
+        "TitForTat": 4756,
+        "AllD": 3408,
+        "AllC": 4515,
+        "Random": 3879,
+        "Grudger": 4569,
+        "TitForTwoTats": 4785,
+        "SuspiciousTFT": 3365,
+        "Pavlov": 4539
+      },
+      "ranking": [
+        {
+          "rank": 1,
+          "name": "TitForTwoTats",
+          "score": 4785,
+          "nice": true
+        },
+        {
+          "rank": 2,
+          "name": "TitForTat",
+          "score": 4756,
+          "nice": true
+        },
+        {
+          "rank": 3,
+          "name": "Grudger",
+          "score": 4569,
+          "nice": true
+        },
+        {
+          "rank": 4,
+          "name": "Pavlov",
+          "score": 4539,
+          "nice": true
+        },
+        {
+          "rank": 5,
+          "name": "AllC",
+          "score": 4515,
+          "nice": true
+        },
+        {
+          "rank": 6,
+          "name": "Random",
+          "score": 3879,
+          "nice": false
+        },
+        {
+          "rank": 7,
+          "name": "AllD",
+          "score": 3408,
+          "nice": false
+        },
+        {
+          "rank": 8,
+          "name": "SuspiciousTFT",
+          "score": 3365,
+          "nice": false
+        }
+      ]
+    },
+    {
+      "seed": 2,
+      "scores": {
+        "TitForTat": 4741,
+        "AllD": 3436,
+        "AllC": 4545,
+        "Random": 3843,
+        "Grudger": 4623,
+        "TitForTwoTats": 4743,
+        "SuspiciousTFT": 3377,
+        "Pavlov": 4540
+      },
+      "ranking": [
+        {
+          "rank": 1,
+          "name": "TitForTwoTats",
+          "score": 4743,
+          "nice": true
+        },
+        {
+          "rank": 2,
+          "name": "TitForTat",
+          "score": 4741,
+          "nice": true
+        },
+        {
+          "rank": 3,
+          "name": "Grudger",
+          "score": 4623,
+          "nice": true
+        },
+        {
+          "rank": 4,
+          "name": "AllC",
+          "score": 4545,
+          "nice": true
+        },
+        {
+          "rank": 5,
+          "name": "Pavlov",
+          "score": 4540,
+          "nice": true
+        },
+        {
+          "rank": 6,
+          "name": "Random",
+          "score": 3843,
+          "nice": false
+        },
+        {
+          "rank": 7,
+          "name": "AllD",
+          "score": 3436,
+          "nice": false
+        },
+        {
+          "rank": 8,
+          "name": "SuspiciousTFT",
+          "score": 3377,
+          "nice": false
+        }
+      ]
+    },
+    {
+      "seed": 3,
+      "scores": {
+        "TitForTat": 4766,
+        "AllD": 3420,
+        "AllC": 4518,
+        "Random": 3907,
+        "Grudger": 4605,
+        "TitForTwoTats": 4761,
+        "SuspiciousTFT": 3351,
+        "Pavlov": 4525
+      },
+      "ranking": [
+        {
+          "rank": 1,
+          "name": "TitForTat",
+          "score": 4766,
+          "nice": true
+        },
+        {
+          "rank": 2,
+          "name": "TitForTwoTats",
+          "score": 4761,
+          "nice": true
+        },
+        {
+          "rank": 3,
+          "name": "Grudger",
+          "score": 4605,
+          "nice": true
+        },
+        {
+          "rank": 4,
+          "name": "Pavlov",
+          "score": 4525,
+          "nice": true
+        },
+        {
+          "rank": 5,
+          "name": "AllC",
+          "score": 4518,
+          "nice": true
+        },
+        {
+          "rank": 6,
+          "name": "Random",
+          "score": 3907,
+          "nice": false
+        },
+        {
+          "rank": 7,
+          "name": "AllD",
+          "score": 3420,
+          "nice": false
+        },
+        {
+          "rank": 8,
+          "name": "SuspiciousTFT",
+          "score": 3351,
+          "nice": false
+        }
+      ]
+    },
+    {
+      "seed": 4,
+      "scores": {
+        "TitForTat": 4758,
+        "AllD": 3416,
+        "AllC": 4515,
+        "Random": 3878,
+        "Grudger": 4591,
+        "TitForTwoTats": 4762,
+        "SuspiciousTFT": 3343,
+        "Pavlov": 4558
+      },
+      "ranking": [
+        {
+          "rank": 1,
+          "name": "TitForTwoTats",
+          "score": 4762,
+          "nice": true
+        },
+        {
+          "rank": 2,
+          "name": "TitForTat",
+          "score": 4758,
+          "nice": true
+        },
+        {
+          "rank": 3,
+          "name": "Grudger",
+          "score": 4591,
+          "nice": true
+        },
+        {
+          "rank": 4,
+          "name": "Pavlov",
+          "score": 4558,
+          "nice": true
+        },
+        {
+          "rank": 5,
+          "name": "AllC",
+          "score": 4515,
+          "nice": true
+        },
+        {
+          "rank": 6,
+          "name": "Random",
+          "score": 3878,
+          "nice": false
+        },
+        {
+          "rank": 7,
+          "name": "AllD",
+          "score": 3416,
+          "nice": false
+        },
+        {
+          "rank": 8,
+          "name": "SuspiciousTFT",
+          "score": 3343,
+          "nice": false
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "winner": "TitForTwoTats",
+    "winner_score": 4767.8,
+    "tft_rank": 2,
+    "tft_score": 4756.2,
+    "tft_gap": 0.0024329879609044764,
+    "alld_rank": 7,
+    "mean_rank_nice": 3.0,
+    "mean_rank_non_nice": 7.0,
+    "top_score": 4767.8
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 TitForTat wins (rank 1, or tied-1 within <1% of the top score)",
+      "salient_number": [
+        0.002433,
+        0.01
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 nice strategies dominate (mean rank NICE < mean rank non-nice)",
+      "salient_number": [
+        3.0,
+        7.0
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 greedy defection does NOT win (AllD is not rank 1)",
+      "salient_number": [
+        7.0,
+        1.0
+      ],
+      "reasons": []
+    }
+  ]
+}

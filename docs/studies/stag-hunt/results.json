@@ -1,0 +1,203 @@
+{
+  "model": "stag-hunt coordination game (agent-based; Skyrms 2004)",
+  "config": {
+    "n": 1000,
+    "canonical_payoffs": {
+      "R": 4.0,
+      "T": 3.0,
+      "P": 2.0,
+      "S_": 0.0
+    },
+    "n_replicates_basin": 500,
+    "x0_grid": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "seed_base": 0,
+    "p1_n_seeds_per_arm": 40,
+    "p1_low_x0": 0.5,
+    "p1_high_x0": 0.9,
+    "p3_payoff_sets": [
+      [
+        4.0,
+        3.0,
+        2.0,
+        0.0
+      ],
+      [
+        5.0,
+        3.0,
+        2.0,
+        0.0
+      ],
+      [
+        5.0,
+        3.0,
+        2.0,
+        1.5
+      ]
+    ],
+    "update_rule": "payoff-proportional imitation (Schlag 1998); mean field = replicator",
+    "thresholds": {
+      "p1_xstar_range": [
+        0.62,
+        0.72
+      ],
+      "p1_low_max_stag": 0.05,
+      "p1_high_min_stag": 0.95,
+      "p2_hare_target": 0.667,
+      "p2_hare_tol": 0.05,
+      "p3_xstar_tol": 0.05
+    }
+  },
+  "p1": {
+    "interior_fixed_point": 0.6666666666666666,
+    "x_star_emp": 0.675,
+    "highest_hare_x0": 0.65,
+    "lowest_stag_x0": 0.7,
+    "x0_grid": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "outcomes_stag": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "p_all_stag_low_x0": 0.0,
+    "p_all_stag_high_x0": 1.0
+  },
+  "p2_basin": {
+    "interior_fixed_point": 0.6666666666666666,
+    "p_fixate_hare": 0.692,
+    "p_fixate_stag": 0.308,
+    "n_fixate_hare": 346,
+    "n_fixate_stag": 154,
+    "all_fixated": true,
+    "frac_fixated": 1.0,
+    "x_star_emp_from_basin": 0.6631602587054435
+  },
+  "p3_threshold_tracking": [
+    {
+      "payoffs": [
+        4.0,
+        3.0,
+        2.0,
+        0.0
+      ],
+      "x_star": 0.6666666666666666,
+      "x_star_emp": 0.675,
+      "err": 0.008333333333333415,
+      "highest_hare_x0": 0.65,
+      "lowest_stag_x0": 0.7
+    },
+    {
+      "payoffs": [
+        5.0,
+        3.0,
+        2.0,
+        0.0
+      ],
+      "x_star": 0.5,
+      "x_star_emp": 0.525,
+      "err": 0.025000000000000022,
+      "highest_hare_x0": 0.5,
+      "lowest_stag_x0": 0.55
+    },
+    {
+      "payoffs": [
+        5.0,
+        3.0,
+        2.0,
+        1.5
+      ],
+      "x_star": 0.2,
+      "x_star_emp": 0.225,
+      "err": 0.024999999999999994,
+      "highest_hare_x0": 0.2,
+      "lowest_stag_x0": 0.25
+    }
+  ],
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 bistable basin threshold at predicted interior fixed point (x*_emp in [0.62,0.72]; all-Stag rare below x*, near-certain above)",
+      "salient_number": [
+        0.675,
+        0.6666666666666666
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 risk-dominant Hare owns the strictly larger basin (P(fixate Hare) = 0.667 +- 0.05 AND > P(fixate Stag))",
+      "salient_number": [
+        0.692,
+        0.667
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 threshold TRACKS the payoff formula (x*_emp within +-0.05 of analytic x* for {0.667, 0.500, 0.200}, not a fixed 50/50)",
+      "salient_number": [
+        0.025,
+        0.05
+      ],
+      "reasons": []
+    }
+  ]
+}

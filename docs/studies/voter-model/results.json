@@ -1,0 +1,4922 @@
+{
+  "model": "voter-model-fixation (agent-based, complete-graph / well-mixed)",
+  "config": {
+    "n": 1000,
+    "u_grid": [
+      0.2,
+      0.5,
+      0.8
+    ],
+    "n_runs": 200,
+    "seed_base": 0,
+    "p2_tol": 0.07,
+    "p3_tol": 0.1,
+    "metric": "P(fixation to all-up) = fraction of runs ending all-1",
+    "update": "asynchronous voter: pick random agent i, pick random OTHER agent j (j!=i, complete graph), set opinion[i]=opinion[j]; N updates = 1 sweep; run to absorbing all-0/all-1; each update reads only the two agents' local opinions"
+  },
+  "analytic_anchors": {
+    "fixation_probability": "P(all-up) = u (mean-field voter; Clifford-Sudbury 1973)",
+    "magnetization": "mean final magnetization = 2u-1 (conserved in expectation; the up-count is a bounded martingale under the symmetric copy rule)",
+    "note": "anchors are the mean-field theory, not fit to the run"
+  },
+  "per_u": [
+    {
+      "u": 0.2,
+      "p_all_up": 0.2,
+      "se_p_all_up": 0.028284271247461905,
+      "n_all_up": 40,
+      "n_runs": 200,
+      "abs_offset_from_u": 0.0,
+      "consensus_rate": 1.0,
+      "n_consensus": 200,
+      "mean_final_magnetization": -0.6,
+      "expected_magnetization": -0.6,
+      "abs_offset_magnetization": 0.0,
+      "consensus_time_sweeps": {
+        "mean": 499.63665499999973,
+        "min": 34.579,
+        "max": 2765.992,
+        "var": 281466.194083466,
+        "n": 200
+      },
+      "per_run": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 477.153,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 1,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 173.233,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1115.662,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 3,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 293.457,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 4,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 297.124,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 5,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 59.922,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1006.223,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 7,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 142.732,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 819.095,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 9,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 174.87,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 10,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 113.933,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 11,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 392.942,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 12,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1061.734,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 13,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 766.381,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 14,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 707.217,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 15,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 111.274,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 16,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 188.192,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 2570.215,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 419.926,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 19,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 249.407,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 20,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 256.875,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 21,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 573.543,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 22,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 416.062,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 23,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 255.754,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 24,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 100.94,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 25,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 440.526,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 26,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 530.726,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 27,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 218.322,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 28,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 90.317,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 29,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 685.547,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 30,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 221.703,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 31,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 90.597,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 32,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 2281.661,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 33,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 296.254,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 34,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 47.773,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 35,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 58.058,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 36,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 153.741,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 37,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1968.38,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 38,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 70.69,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 39,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 112.079,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 40,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 409.261,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 41,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 246.555,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 42,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1678.751,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 43,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 73.264,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 44,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 321.153,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 45,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 71.64,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 46,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 322.325,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 47,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 67.598,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 48,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 286.047,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 49,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 418.141,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 50,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 226.817,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 51,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 122.436,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 52,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 726.782,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 53,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 153.915,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 54,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1213.521,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 55,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 85.97,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 56,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 73.684,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 57,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 244.936,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 58,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 445.61,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 59,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 55.111,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 60,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1208.001,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 61,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 401.299,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 62,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 572.265,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 63,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 2765.992,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 64,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 521.616,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 65,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 133.828,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 66,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 308.717,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 67,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 605.499,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 68,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 432.56,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 69,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 323.288,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 70,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 142.95,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 71,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 252.064,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 72,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 227.067,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 73,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 195.759,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 74,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 581.772,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 75,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 503.727,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 76,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 187.025,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 77,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 419.023,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 78,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 403.521,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 79,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 46.772,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 80,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 793.106,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 81,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 471.736,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 82,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 120.163,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 83,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 152.375,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 84,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 316.532,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 85,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 95.403,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 86,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 477.316,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 87,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 2016.812,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 88,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 66.24,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 89,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1963.998,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 90,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 627.003,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 91,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 455.762,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 92,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1209.705,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 93,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 222.521,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 94,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 890.771,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 95,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 359.422,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 96,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 614.575,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 97,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 164.45,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 98,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1764.536,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 99,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 60.421,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 100,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 489.202,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 101,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 167.861,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 102,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 55.5,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 103,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 85.775,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 104,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 200.569,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 105,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 310.042,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 106,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 153.428,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 107,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 350.886,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 108,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 538.625,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 109,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 903.858,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 110,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 125.893,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 111,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 278.692,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 112,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 508.846,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 113,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 244.039,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 114,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 372.817,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 115,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 422.445,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 116,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 684.437,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 117,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 542.959,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 118,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 216.729,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 119,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 537.669,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 120,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 215.877,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 121,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 134.568,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 122,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 125.12,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 123,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1696.93,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 124,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 144.276,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 125,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 471.217,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 126,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 172.827,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 127,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1523.027,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 128,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 123.77,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 129,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 261.081,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 130,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 148.053,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 131,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 767.475,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 132,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 358.82,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 133,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 90.911,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 134,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1068.847,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 135,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 278.119,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 136,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1345.194,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 137,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 279.861,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 138,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 102.255,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 139,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 941.245,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 140,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1319.875,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 141,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 344.264,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 142,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 248.19,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 143,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 72.955,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 144,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1435.755,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 145,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 261.912,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 146,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 142.431,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 147,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 677.473,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 148,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 192.294,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 149,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 187.658,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 150,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 443.177,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 151,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1286.389,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 152,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 323.001,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 153,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 809.962,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 154,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 334.937,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 155,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 231.109,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 156,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 302.043,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 157,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 493.232,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 158,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1280.729,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 159,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 427.89,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 160,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 874.538,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 161,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 66.696,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 162,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 725.49,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 163,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 61.692,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 164,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 514.58,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 165,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 77.822,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 166,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 101.192,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 167,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 144.045,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 168,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 335.396,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 169,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 678.919,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 170,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 529.581,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 171,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 2006.373,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 172,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1365.858,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 173,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 384.29,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 174,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 128.261,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 175,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 288.213,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 176,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 285.992,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 177,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 84.689,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 178,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 265.132,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 179,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 389.951,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 180,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 208.271,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 181,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1634.311,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 182,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 407.492,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 183,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 81.353,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 184,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 218.325,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 185,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 110.03,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 186,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 2190.91,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 187,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 317.037,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 188,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 240.75,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 189,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 34.579,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 190,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 296.653,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 191,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 256.165,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 192,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 239.499,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 193,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 101.828,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 194,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 312.005,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 195,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1587.539,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 196,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 317.856,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 197,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 70.124,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 198,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1366.92,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 199,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 2042.604,
+          "final_magnetization": -1.0,
+          "capped": false
+        }
+      ]
+    },
+    {
+      "u": 0.5,
+      "p_all_up": 0.46,
+      "se_p_all_up": 0.035242020373412196,
+      "n_all_up": 92,
+      "n_runs": 200,
+      "abs_offset_from_u": 0.03999999999999998,
+      "consensus_rate": 1.0,
+      "n_consensus": 200,
+      "mean_final_magnetization": -0.08,
+      "expected_magnetization": 0.0,
+      "abs_offset_magnetization": 0.08,
+      "consensus_time_sweeps": {
+        "mean": 695.949195,
+        "min": 90.911,
+        "max": 2983.828,
+        "var": 287081.46005691687,
+        "n": 200
+      },
+      "per_run": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 237.702,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 1,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 310.305,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1115.662,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 3,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 698.937,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 4,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 522.104,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 5,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 307.479,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1006.223,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 7,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 431.222,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 819.095,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 9,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1593.609,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 10,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 378.316,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 11,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 392.942,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 12,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 442.275,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 13,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 766.381,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 14,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 707.217,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 15,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 2983.828,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 16,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1203.256,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 911.101,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 419.926,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 19,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 353.755,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 20,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 357.006,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 21,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 635.395,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 22,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 170.757,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 23,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 255.754,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 24,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 287.526,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 25,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 440.526,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 26,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 530.726,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 27,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 772.861,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 28,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 209.047,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 29,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 685.547,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 30,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 359.218,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 31,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 804.03,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 32,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 2281.661,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 33,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 853.923,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 34,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 363.439,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 35,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 511.037,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 36,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 380.056,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 37,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 687.445,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 38,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 383.533,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 39,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1550.298,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 40,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 692.973,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 41,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 842.918,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 42,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 303.483,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 43,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 239.898,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 44,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 379.766,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 45,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 470.949,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 46,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 545.406,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 47,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 227.053,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 48,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 374.263,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 49,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 418.141,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 50,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 762.541,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 51,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 258.75,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 52,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 852.855,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 53,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 241.376,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 54,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1213.521,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 55,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 2144.49,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 56,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 729.31,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 57,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 244.936,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 58,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 232.531,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 59,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 725.073,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 60,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1208.001,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 61,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 401.299,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 62,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 572.265,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 63,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 657.811,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 64,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 521.616,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 65,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 245.885,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 66,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 548.495,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 67,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 605.499,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 68,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 432.56,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 69,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 323.288,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 70,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 239.38,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 71,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1666.54,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 72,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 510.81,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 73,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 195.759,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 74,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 581.772,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 75,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 503.727,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 76,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1156.91,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 77,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 140.214,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 78,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 403.521,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 79,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 362.729,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 80,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 793.106,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 81,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 344.81,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 82,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 681.838,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 83,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 152.375,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 84,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 316.532,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 85,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 266.24,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 86,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 477.316,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 87,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 2016.812,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 88,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 797.73,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 89,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 390.219,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 90,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 627.003,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 91,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 136.185,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 92,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1209.705,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 93,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 374.711,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 94,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 890.771,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 95,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 286.654,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 96,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 614.575,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 97,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 327.731,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 98,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1764.536,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 99,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 345.51,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 100,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 310.414,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 101,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 167.861,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 102,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 630.9,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 103,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 532.097,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 104,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 846.046,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 105,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 763.866,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 106,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 302.891,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 107,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 371.289,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 108,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1724.309,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 109,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 903.858,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 110,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 495.417,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 111,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1221.863,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 112,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1151.788,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 113,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 777.666,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 114,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 332.507,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 115,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 422.445,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 116,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 233.024,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 117,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 542.959,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 118,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 380.034,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 119,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 495.838,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 120,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 252.97,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 121,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 369.027,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 122,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 239.421,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 123,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1696.93,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 124,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 144.276,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 125,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 568.667,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 126,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1911.764,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 127,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1523.027,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 128,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1550.241,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 129,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1261.607,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 130,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 677.726,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 131,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 767.475,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 132,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 693.443,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 133,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 90.911,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 134,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1068.847,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 135,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 455.328,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 136,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1345.194,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 137,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1434.166,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 138,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 710.157,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 139,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 941.245,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 140,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1319.875,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 141,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 312.638,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 142,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 351.385,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 143,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 251.713,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 144,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1435.755,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 145,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 261.912,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 146,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 463.149,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 147,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 677.473,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 148,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 192.294,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 149,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 364.397,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 150,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 717.944,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 151,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 395.71,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 152,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 449.729,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 153,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 809.962,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 154,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 484.369,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 155,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 447.192,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 156,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 361.236,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 157,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 659.776,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 158,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1280.729,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 159,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 427.89,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 160,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 874.538,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 161,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 160.421,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 162,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 204.635,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 163,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 112.532,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 164,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 2354.645,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 165,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 2408.888,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 166,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 697.435,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 167,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 248.041,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 168,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1314.419,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 169,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 461.589,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 170,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 529.581,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 171,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 2006.373,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 172,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 234.75,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 173,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 384.29,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 174,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 289.737,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 175,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 2737.286,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 176,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 285.992,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 177,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 346.806,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 178,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 436.635,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 179,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 601.293,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 180,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 425.669,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 181,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1634.311,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 182,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 277.602,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 183,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 137.907,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 184,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 750.951,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 185,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 631.309,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 186,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 2190.91,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 187,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 505.904,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 188,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 255.586,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 189,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 808.476,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 190,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 579.175,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 191,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 256.165,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 192,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1648.505,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 193,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1306.226,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 194,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 312.005,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 195,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 625.59,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 196,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 792.733,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 197,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 643.771,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 198,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1366.92,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 199,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1261.823,
+          "final_magnetization": 1.0,
+          "capped": false
+        }
+      ]
+    },
+    {
+      "u": 0.8,
+      "p_all_up": 0.79,
+      "se_p_all_up": 0.028801041647829335,
+      "n_all_up": 158,
+      "n_runs": 200,
+      "abs_offset_from_u": 0.010000000000000009,
+      "consensus_rate": 1.0,
+      "n_consensus": 200,
+      "mean_final_magnetization": 0.58,
+      "expected_magnetization": 0.6000000000000001,
+      "abs_offset_magnetization": 0.02000000000000013,
+      "consensus_time_sweeps": {
+        "mean": 524.5941399999995,
+        "min": 35.237,
+        "max": 2463.551,
+        "var": 244110.49789885047,
+        "n": 200
+      },
+      "per_run": [
+        {
+          "seed": 0,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 156.382,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 1,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 310.541,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 2,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 72.842,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 3,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 77.537,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 4,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 745.318,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 5,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 113.698,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 6,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 288.766,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 7,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 149.486,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 8,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 257.117,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 9,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1593.609,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 10,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 154.195,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 11,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 212.124,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 12,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 442.275,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 13,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 766.381,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 14,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1515.267,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 15,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 318.061,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 16,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 398.227,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 17,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 911.101,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 18,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 151.369,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 19,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 383.911,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 20,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 173.565,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 21,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 635.395,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 22,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 170.757,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 23,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 112.635,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 24,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 86.632,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 25,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 440.526,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 26,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 94.074,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 27,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 316.137,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 28,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 508.881,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 29,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 685.547,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 30,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 70.923,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 31,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 804.03,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 32,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 105.829,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 33,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 853.923,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 34,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 436.689,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 35,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1757.192,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 36,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 645.362,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 37,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 687.445,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 38,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1937.446,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 39,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1550.298,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 40,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 152.772,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 41,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 208.693,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 42,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 107.883,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 43,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 86.194,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 44,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 174.948,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 45,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 690.76,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 46,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 718.457,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 47,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 693.386,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 48,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 140.795,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 49,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 248.405,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 50,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 762.541,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 51,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 258.75,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 52,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 278.453,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 53,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 239.573,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 54,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1213.521,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 55,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 2144.49,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 56,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1893.094,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 57,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 233.983,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 58,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 232.531,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 59,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 97.856,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 60,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 299.479,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 61,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 2463.551,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 62,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1209.366,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 63,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 152.308,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 64,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 521.616,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 65,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 720.139,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 66,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 548.495,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 67,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 88.955,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 68,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 95.717,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 69,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 323.288,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 70,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 239.38,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 71,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 263.329,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 72,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 220.47,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 73,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 340.519,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 74,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 581.772,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 75,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 503.727,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 76,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 714.898,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 77,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 35.237,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 78,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 309.318,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 79,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 485.5,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 80,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 793.106,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 81,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 162.0,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 82,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 219.71,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 83,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 495.45,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 84,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 173.572,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 85,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 200.423,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 86,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 107.983,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 87,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 188.322,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 88,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 102.974,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 89,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 117.683,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 90,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 627.003,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 91,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 136.185,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 92,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 139.929,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 93,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 205.854,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 94,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 180.73,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 95,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 121.882,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 96,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 508.796,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 97,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1111.018,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 98,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 488.531,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 99,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 345.51,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 100,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 186.314,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 101,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 604.647,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 102,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 630.9,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 103,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 908.53,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 104,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1827.011,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 105,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 763.866,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 106,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1995.029,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 107,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 234.161,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 108,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1724.309,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 109,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 903.858,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 110,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1981.113,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 111,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 312.298,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 112,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1151.788,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 113,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 777.666,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 114,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 126.796,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 115,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 671.486,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 116,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 233.024,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 117,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 457.676,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 118,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 380.034,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 119,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 495.838,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 120,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 252.97,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 121,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 256.207,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 122,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1085.491,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 123,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 833.703,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 124,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 202.991,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 125,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 568.667,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 126,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 93.909,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 127,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 179.644,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 128,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1550.241,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 129,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 408.375,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 130,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 677.726,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 131,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 368.662,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 132,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 132.146,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 133,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 215.5,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 134,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1068.847,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 135,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 510.384,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 136,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1345.194,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 137,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 382.47,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 138,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 235.905,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 139,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 528.483,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 140,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 132.962,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 141,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 134.467,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 142,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 429.968,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 143,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1189.973,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 144,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 211.351,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 145,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 204.701,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 146,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 112.272,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 147,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 82.823,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 148,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 531.069,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 149,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 138.889,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 150,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 717.944,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 151,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 96.65,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 152,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 449.729,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 153,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 809.962,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 154,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 484.369,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 155,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 778.661,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 156,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 117.162,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 157,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 659.776,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 158,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 184.68,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 159,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 186.986,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 160,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 874.538,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 161,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 774.302,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 162,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 177.757,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 163,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1011.112,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 164,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 2354.645,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 165,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 228.855,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 166,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 697.435,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 167,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 248.041,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 168,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 224.79,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 169,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 281.766,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 170,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 529.581,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 171,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 782.163,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 172,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 234.75,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 173,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 206.164,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 174,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 130.27,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 175,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1587.559,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 176,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 61.508,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 177,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 345.583,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 178,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 116.348,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 179,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 376.013,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 180,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 115.839,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 181,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1634.311,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 182,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 277.602,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 183,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 553.242,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 184,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 173.003,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 185,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 631.309,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 186,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 210.171,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 187,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 257.798,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 188,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 393.858,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 189,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 364.348,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 190,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 559.336,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 191,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 381.185,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 192,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 221.139,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 193,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 104.098,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 194,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 1051.466,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 195,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 180.048,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 196,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 144.018,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 197,
+          "consensus": 0,
+          "all_up": false,
+          "sweeps_to_consensus": 663.578,
+          "final_magnetization": -1.0,
+          "capped": false
+        },
+        {
+          "seed": 198,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1366.92,
+          "final_magnetization": 1.0,
+          "capped": false
+        },
+        {
+          "seed": 199,
+          "consensus": 1,
+          "all_up": true,
+          "sweeps_to_consensus": 1261.823,
+          "final_magnetization": 1.0,
+          "capped": false
+        }
+      ]
+    }
+  ],
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 every run reaches absorbing consensus (consensus rate = 1.0 at every u)",
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 P(all-up) within +/-0.07 of u for every u in [0.2, 0.5, 0.8]",
+      "salient_number": [
+        0.04,
+        0.07
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 mean final magnetization within +/-0.1 of 2u-1 for every u",
+      "salient_number": [
+        0.08,
+        0.1
+      ],
+      "reasons": []
+    }
+  ]
+}

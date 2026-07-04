@@ -1,0 +1,71 @@
+{
+  "boundary_note": "This terrain bridge manifest is not a 3D renderer and not a physical simulation certificate.",
+  "boundary_rules": {
+    "no_3d_renderer_claim": "The manifest records a heightfield exchange contract and does not render a scene.",
+    "no_physical_solver_claim": "The manifest does not run hydrology, collision, erosion, or other physical terrain solvers.",
+    "no_real_world_accuracy_claim": "The committed fixture is synthetic and does not claim real-world terrain accuracy.",
+    "vertical_units_declared": "Vertical units and datum must be explicit before any 3D or physical consumer uses the artifact."
+  },
+  "consumers": [
+    {
+      "boundary_note": "GISABM may treat this as a heightfield contract, not as a new GIS runtime.",
+      "domain": "gisabm",
+      "id": "gisabm",
+      "role": "terrain-aware spatial ABM consumer"
+    },
+    {
+      "boundary_note": "A future renderer may consume the contract, but this phase renders nothing.",
+      "domain": "future_3d_renderer",
+      "id": "future-3d-renderer",
+      "role": "future visual terrain consumer"
+    },
+    {
+      "boundary_note": "Physical-process models may consume declared units later; this phase runs no solver.",
+      "domain": "physical_process",
+      "id": "future-physical-process",
+      "role": "future physical terrain consumer"
+    },
+    {
+      "boundary_note": "Evidence Foundry validates artifact health only.",
+      "domain": "evidence",
+      "id": "evidence-foundry",
+      "role": "artifact health gate consumer"
+    }
+  ],
+  "coordinate_frame": {
+    "crs": "EPSG:3857",
+    "grid_shape": [
+      3,
+      3
+    ],
+    "extent": [
+      0.0,
+      0.0,
+      3.0,
+      3.0
+    ],
+    "horizontal_units": "metre",
+    "vertical_datum": "synthetic-local",
+    "vertical_units": "metre"
+  },
+  "manifest_id": "terrain-bridge-seed",
+  "schema": "abm-auto/terrain-bridge-manifest/v1",
+  "terrain_source": {
+    "kind": "ascii_heightfield",
+    "path": "docs/reproduce/terrain-bridge/example-heightfield.asc",
+    "provenance": "Synthetic 3x3 monotone heightfield fixture for bridge-contract testing.",
+    "sha256": "ed78625776c31b4d1f1bc403fbd033f8eccbdf4f1b03d1054166070960c9c405",
+    "synthetic": true
+  },
+  "title": "MyMoMo Terrain Bridge Seed Manifest",
+  "verification": {
+    "expected_result": "PASS",
+    "gate_command": ".venv/bin/python -m abm_auto.terrain_bridge gate docs/reproduce/terrain-bridge/example-manifest.json --repo .",
+    "non_claims": [
+      "does not render 3D scenes",
+      "does not build meshes",
+      "does not run physical terrain solvers",
+      "does not claim real-world terrain accuracy"
+    ]
+  }
+}

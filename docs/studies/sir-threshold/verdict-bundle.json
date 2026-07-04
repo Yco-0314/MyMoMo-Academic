@@ -1,0 +1,110 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "A contribution to the mathematical theory of epidemics",
+    "authors": [
+      "W. O. Kermack",
+      "A. G. McKendrick"
+    ],
+    "year": 1927,
+    "journal": "Proc. R. Soc. Lond. A 115(772):700-721",
+    "doi": "10.1098/rspa.1927.0118"
+  },
+  "headline": "SIR threshold (agent-based): 3/3 locked clauses REPRO; attack(R0=0.8)=0.0061, attack(R0=2.0)=0.7952 (analytic 0.7968)",
+  "code_commit": "7a10ecc7437ab5558be2e113fa9df201d6a89215",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 epidemic threshold at R0=1 (attack<0.05 at R0=0.8 AND >0.30 at R0=2.0)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.7952,
+        0.3
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 final size at R0=2.0 within +/-10% of analytic ln(S0/Sinf)=R0(1-Sinf/N)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0021,
+        0.1
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 attack rate monotone non-decreasing in R0; <0.05 at R0=0.8",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0061,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/sir-threshold/results.json",
+      "sha256": "472827c2576eaef4db8fd7b19122c3f35a2f75e08faf8d55683bd97517e4ecd2",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/sir-threshold/PREDICTIONS-locked.md",
+      "sha256": "93ddf0d2fb4b0cf9a41c8cee3b3c9b52be1f6ae20921ac2ae39ac029a9b8ce51",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/sir-threshold/FINDINGS.md",
+      "sha256": "7f6e07f1e5ad8d4006833f7f3af0e364a8474fa6e8eaa26275fbeb384b268686",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch3-design.md",
+      "sha256": "8c4ee1eccc914e5f17e9edaee1db1b5ec58a58d7493562a3dec8cd63764c3a25",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "sir-epidemic-threshold",
+    "n": 10000,
+    "gamma": 0.1,
+    "i0": 10,
+    "r0_grid": [
+      0.8,
+      1.0,
+      1.5,
+      2.0,
+      3.0
+    ],
+    "n_seeds": 20,
+    "metric": "final attack rate (1 - S_final/N)",
+    "scope": "faithful reproduction of a published synthetic model (well-mixed mass-action SIR); no real-world data; the contribution is whether the harness + discipline reproduce the epidemic threshold + final-size result and would catch an artifact"
+  },
+  "citations": [
+    "Kermack, W.O. & McKendrick, A.G. (1927). A contribution to the mathematical theory of epidemics. Proc. R. Soc. Lond. A 115(772):700-721. doi:10.1098/rspa.1927.0118.",
+    "Brauer, F. (2008). Compartmental models in epidemiology. In Mathematical Epidemiology, Lecture Notes in Mathematics 1945, pp. 19-79. Springer. (final-size relation ln(S0/Sinf)=R0(1-Sinf/N))."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction validated against the analytic final-size relation"
+  }
+}

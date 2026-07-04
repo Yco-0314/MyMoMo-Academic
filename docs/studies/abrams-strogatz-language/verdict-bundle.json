@@ -1,0 +1,97 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Modelling the dynamics of language death",
+    "authors": [
+      "Daniel M. Abrams",
+      "Steven H. Strogatz"
+    ],
+    "year": 2003,
+    "journal": "Nature 424:900",
+    "doi": "10.1038/424900a"
+  },
+  "headline": "Abrams-Strogatz language competition: 3/3 locked clauses REPRO; interior fraction=0.000, boundary error=0.02323581692135157, equal-status symmetry error=0.037",
+  "code_commit": "53843352a554ee72966dd0e56a03b9c4eefc4299",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 unequal status: late interior fraction <= 0.15",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0,
+        0.15
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 measured basin boundary within +/-0.08 of mean-field boundary",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0232,
+        0.08
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 equal status: A-win fraction within +/-0.1 of 0.5",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0375,
+        0.1
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/abrams-strogatz-language/results.json",
+      "sha256": "186fa907c45709dc886f5b64e5517e679857a2a4494092402f31eb004fa0ce6c",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/abrams-strogatz-language/PREDICTIONS-locked.md",
+      "sha256": "d7ef6b65da692906c42286b6acd7780e809ae370abb9e50c3d791ed61ff50db2",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/abrams-strogatz-language/FINDINGS.md",
+      "sha256": "428eb51757c81c9209ec898ace11cdeaa2b236ae028d7ba3b0a63ddc1c40f9ae",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-batch7-design.md",
+      "sha256": "38e5c736701fcc2618fa92f6cceeb79d4a4e70ad6b5969b50f515f28396349bc",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "abrams-strogatz-language",
+    "scope": "faithful synthetic-model reproduction; no empirical language data"
+  },
+  "citations": [
+    "Abrams, D.M. & Strogatz, S.H. (2003). Modelling the dynamics of language death. Nature 424:900. doi:10.1038/424900a."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "single implementation with locked basin gates"
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Self-organized criticality in a continuous, nonconservative cellular automaton modeling earthquakes",
+    "authors": [
+      "Zeev Olami",
+      "Hans Jacob S. Feder",
+      "Kim Christensen"
+    ],
+    "year": 1992,
+    "journal": "Physical Review Letters 68(8):1244-1247",
+    "doi": "10.1103/PhysRevLett.68.1244"
+  },
+  "headline": "OFC 1992 earthquakes (driven-threshold CA / SOC): 3/3 locked clauses REPRO; alpha=0.2 size range 2.10 decades, max 125 (>=100x median); mean event size 1.73 (alpha=0.2) > 1.08 (alpha=0.1); distribution stationary + init-independent (TV <= 0.027)",
+  "code_commit": "165d2bd0957c0776e438e843bb853c105b1481cb",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 heavy-tailed event sizes (alpha=0.2): >=2 decades AND max >= 100x median nonzero",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        2.097,
+        2.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 more conservative alpha gives a heavier tail: mean event size at alpha=0.2 > at alpha=0.1",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.7257,
+        1.0791
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 stationary + init-independent critical state: two-halves AND two-seed distributions match",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0274,
+        0.1
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/olami-feder-christensen/results.json",
+      "sha256": "e722c68bfb7e1590399a90071212c05fe8090bd5bf18dcd5941f3537d7024ca2",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/olami-feder-christensen/PREDICTIONS-locked.md",
+      "sha256": "0b223f2af193eb73446c27ad8a2ae94a179f21cb85705b5c2a8095b83787e902",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/olami-feder-christensen/FINDINGS.md",
+      "sha256": "85b56e2df9a7a16ac0de987aa0b95db41faa1fb79ec1af6764c8f175030c611c",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveB-design.md",
+      "sha256": "b3423f48dd7bff7441742d3bb61c4e4c44f973b3f562cc0b1a7e03856bd6e277",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "olami-feder-christensen-1992-earthquakes",
+    "framing": "driven-threshold cellular automaton (SOC), not autonomous-agent-stepping",
+    "L": 50,
+    "alpha_main": 0.2,
+    "alpha_low": 0.1,
+    "f_th": 1.0,
+    "n_events": 10000,
+    "transient": 5000,
+    "seed_main": 0,
+    "seed_alt": 123,
+    "main_mean_event_size": 1.7257,
+    "low_mean_event_size": 1.0791,
+    "main_decades_spanned": 2.0969100130080562,
+    "main_max_event_size": 125,
+    "main_max_over_median": 125.0,
+    "p3_tv_halves": 0.009199999999999982,
+    "p3_tv_seeds": 0.027400000000000046,
+    "scope": "faithful reproduction of a published synthetic SOC model; no real-world data; the contribution is whether the harness + discipline reproduce self-organized criticality (a heavy-tailed, alpha-dependent, stationary + init-independent avalanche-size distribution) and would catch an artifact"
+  },
+  "citations": [
+    "Olami, Z., Feder, H.J.S. & Christensen, K. (1992). Self-organized criticality in a continuous, nonconservative cellular automaton modeling earthquakes. Phys. Rev. Lett. 68(8):1244-1247. doi:10.1103/PhysRevLett.68.1244."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the avalanche (event-size) distribution: decades spanned, max/median ratio, alpha dependence, and stationarity + init-independence"
+  }
+}

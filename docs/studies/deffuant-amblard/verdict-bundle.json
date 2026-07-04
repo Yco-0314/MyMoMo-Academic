@@ -1,0 +1,131 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "How can extremism prevail? A study based on the relative agreement interaction model",
+    "authors": [
+      "Guillaume Deffuant",
+      "Frederic Amblard",
+      "Gerard Weisbuch",
+      "Thierry Faure"
+    ],
+    "year": 2002,
+    "journal": "Journal of Artificial Societies and Social Simulation 5(4):1",
+    "url": "https://www.jasss.org/5/4/1.html"
+  },
+  "headline": "Deffuant-Amblard 2002 relative-agreement w/ extremists (agent-based): 1/3 locked clauses REPRO; P1 capture=0.408 (bar<0.15), P2 y=0.506 (double-extreme), P3 single-pole frac=0.00 (bar>=0.60)",
+  "code_commit": "2f16a14343e2f6dc45c16f63a2a216c64484293f",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 central convergence (U=0.4, delta=0): y<0.1 AND moderate-capture<0.15 AND central|x|<0.3",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.4078,
+        0.15
+      ],
+      "reasons": [
+        "moderate-capture fraction = 0.4078 (per-seed range [0.306, 0.500]); need < 0.15"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P2 double-extreme (U=1.2, delta=0): y in [0.35,0.65] AND moderate-capture>0.6 AND |mean x|<0.2",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.5064,
+        0.65
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 single-extreme (U=1.4, delta=0.1): >=60% of seeds one pole >0.9 & opposite <0.1, captured pole = + majority in >=80% of those",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.0,
+        0.6
+      ],
+      "reasons": [
+        "single-pole fraction = 0.000 (0/20 seeds with one pole >0.9 and the opposite <0.1); need >= 0.6",
+        "among single-pole seeds, + pole won in 0.000 (0/0); need >= 0.8 (vacuously unmet when no seed is single-pole)"
+      ],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/deffuant-amblard/results.json",
+      "sha256": "94c6ab970d0f8c8069f67957a17545d917df5b659b6bcfb6290dbd81b63dec03",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/deffuant-amblard/PREDICTIONS-locked.md",
+      "sha256": "a8951b2af85fe6acc5efbfd8e3a394f15135c2a2820196f7b2c81325a80364a6",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/deffuant-amblard/FINDINGS.md",
+      "sha256": "4a9e5b9a041db1fe5a93348169e9170928ae9bebfcb7571aa8b0a0c548f002de",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "deffuant-amblard-2002-relative-agreement-with-extremists",
+    "n": 200,
+    "mu": 0.5,
+    "p_e": 0.2,
+    "u_e": 0.1,
+    "n_seeds": 20,
+    "n_sweeps": 400,
+    "P1": {
+      "U": 0.4,
+      "delta": 0.0,
+      "mean_y": 0.087904296875,
+      "mean_capture": 0.4078125,
+      "mean_central_abs_x": 0.22108611285439878
+    },
+    "P2": {
+      "U": 1.2,
+      "delta": 0.0,
+      "mean_y": 0.5063886718750001,
+      "mean_capture": 0.9978124999999999,
+      "mean_abs_mean_x": 0.10614610666872785
+    },
+    "P3": {
+      "U": 1.4,
+      "delta": 0.1,
+      "frac_single_pole": 0.0,
+      "frac_plus_among_single": 0.0,
+      "mean_y": 0.512900390625
+    },
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce central/double/single-extreme regimes of the relative-agreement model and would catch an artifact"
+  },
+  "citations": [
+    "Deffuant, G., Amblard, F., Weisbuch, G., Faure, T. (2002). How can extremism prevail? A study based on the relative agreement interaction model. Journal of Artificial Societies and Social Simulation 5(4):1. https://www.jasss.org/5/4/1.html"
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the locked polarization metric y = p'_+^2 + p'_-^2 over the initially-moderate agents"
+  }
+}

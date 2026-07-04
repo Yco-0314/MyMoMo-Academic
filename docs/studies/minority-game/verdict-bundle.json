@@ -1,0 +1,144 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Emergence of cooperation and organization in an evolutionary game",
+    "authors": [
+      "Damien Challet",
+      "Yi-Cheng Zhang"
+    ],
+    "year": 1997,
+    "journal": "Physica A 246(3-4):407-418",
+    "doi": "10.1016/S0378-4371(97)00419-6"
+  },
+  "headline": "Minority Game (Challet & Zhang 1997, agent-based): 2/3 locked clauses REPRO; sigma^2/N minimum 0.236 at alpha=0.425 (canonical alpha_c~=0.337)",
+  "code_commit": "af9b07d8c426a3935f60201a54a8b9e8a3148f2c",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 volatility U-shaped in alpha; argmin alpha in [0.1, 0.6] (near alpha_c~0.34)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.4252,
+        0.6
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 small alpha (<=0.1): sigma^2/N > 1 (worse than random; crowding)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        18.0378,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 large alpha (>=2): sigma^2/N in [0.7, 1.5] (random-like)",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.6989,
+        1.5
+      ],
+      "reasons": [
+        "at largest alpha=4.0635, sigma^2/N=0.6989 (need a point with alpha>=2 and sigma^2/N in [0.7, 1.5])"
+      ],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/minority-game/results.json",
+      "sha256": "00987179c2be443c6acdf5d94e8033cb78ce15bda1409623938d1d780dfa0155",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/minority-game/PREDICTIONS-locked.md",
+      "sha256": "2189bd42cb427f64102b2e8c1b6f12da493a1cfbe543b5c63b47f8ab29ee0493",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/minority-game/FINDINGS.md",
+      "sha256": "157288f3bce5df94d7d4625c5071540934b9749634e78dfcdba49ef31678fb55",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave2-design.md",
+      "sha256": "a0fee69f835bb4a97addff28f12cc4b0f21192456b67a21a77255b9314086435",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "challet-zhang-1997-minority-game",
+    "n": 301,
+    "s": 2,
+    "n_seeds_per_point": 10,
+    "rounds": 10000,
+    "transient": 1000,
+    "grid_points": [
+      [
+        301,
+        2
+      ],
+      [
+        301,
+        3
+      ],
+      [
+        301,
+        4
+      ],
+      [
+        301,
+        5
+      ],
+      [
+        301,
+        6
+      ],
+      [
+        301,
+        7
+      ],
+      [
+        301,
+        8
+      ],
+      [
+        63,
+        8
+      ]
+    ],
+    "alpha_definition": "2**m / N",
+    "argmin": {
+      "alpha": 0.42524916943521596,
+      "volatility": 0.23571138439867423
+    },
+    "canonical_alpha_c": 0.337,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the volatility-vs-alpha curve (minimum near alpha_c) and would catch an artifact"
+  },
+  "citations": [
+    "Challet, D., Zhang, Y.-C. (1997). Emergence of cooperation and organization in an evolutionary game. Physica A 246(3-4):407-418. doi:10.1016/S0378-4371(97)00419-6. arXiv:adap-org/9708006."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction. The coin-flip random benchmark sigma^2/N=1 is the analytic control the curve is read against."
+  }
+}

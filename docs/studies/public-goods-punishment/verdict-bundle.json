@@ -1,0 +1,124 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Cooperation and Punishment in Public Goods Experiments; Altruistic punishment in humans",
+    "authors": [
+      "Ernst Fehr",
+      "Simon G\u00e4chter"
+    ],
+    "year": 2002,
+    "journal": "American Economic Review 90(4):980-994 (2000); Nature 415:137-140 (2002)",
+    "doi": "10.1257/aer.90.4.980; 10.1038/415137a"
+  },
+  "headline": "Fehr & G\u00e4chter PGG + punishment (agent-based): 3/3 locked clauses REPRO; no-punishment steady cooperation = 0.001 (collapse) vs with-punishment = 1.000 (sustained); difference = 0.999",
+  "code_commit": "af9b07d8c426a3935f60201a54a8b9e8a3148f2c",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 no-punishment cooperation collapses (steady mean cooperation < 0.20)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.001,
+        0.2
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 with-punishment cooperation sustained (steady mean cooperation > 0.50)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.5
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 punishment makes the difference (with - without cooperation >= 0.30)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.999,
+        0.3
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/public-goods-punishment/results.json",
+      "sha256": "2a6df8ddc33bd09e641660b33eff2dc70d1ca43891a24b93b3729514679b10a7",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/public-goods-punishment/PREDICTIONS-locked.md",
+      "sha256": "fc9c4f97bd5fa5d2543f1a33345bc5cfc9a0c316fe866281764805a4ec0b184b",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/public-goods-punishment/FINDINGS.md",
+      "sha256": "9d43313c46bf108a70ac3b7fe64f758cf3d1d3b51584545d752eb78930384a34",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave2-design.md",
+      "sha256": "a0fee69f835bb4a97addff28f12cc4b0f21192456b67a21a77255b9314086435",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "fehr-gachter-public-goods-punishment",
+    "n": 1000,
+    "group_size": 5,
+    "pgg_params": {
+      "c": 1.0,
+      "r": 3.0,
+      "beta": 1.0,
+      "gamma": 3.0
+    },
+    "update_rule": "payoff-proportional pairwise imitation",
+    "n_rounds": 300,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "steady_state_window_last": 50,
+    "no_punishment_mean_steady_state": 0.0009900000000000006,
+    "with_punishment_mean_steady_state": 1.0,
+    "difference": 0.99901,
+    "scope": "faithful evolutionary reproduction of a published cooperation result; no real-world data; the contribution is whether the harness + discipline reproduce the punishment-sustains-cooperation result and would catch an artifact"
+  },
+  "citations": [
+    "Fehr, E. & G\u00e4chter, S. (2000). Cooperation and Punishment in Public Goods Experiments. American Economic Review 90(4):980-994. doi:10.1257/aer.90.4.980.",
+    "Fehr, E. & G\u00e4chter, S. (2002). Altruistic punishment in humans. Nature 415:137-140. doi:10.1038/415137a."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

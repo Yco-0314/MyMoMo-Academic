@@ -1,0 +1,389 @@
+{
+  "model": "kauffman-nk-landscape (agent-based adaptive walkers on a tunably-rugged fitness landscape)",
+  "config": {
+    "n": 15,
+    "k_grid": [
+      0,
+      2,
+      4,
+      8,
+      14
+    ],
+    "n_landscapes_per_k": 5,
+    "n_walks_per_landscape": 200,
+    "landscape_seed_base": 0,
+    "walk_seed_base": 0,
+    "enumeration": "all 2^15 = 32768 genotypes enumerated per landscape",
+    "construction": "N binary loci; each locus i's contribution f_i depends on its own allele + K OTHER loci (chosen at random per locus, fixed per landscape seed); f_i ~ U[0,1] keyed deterministically on (seed, locus, the K+1 relevant bits); fitness(genotype) = mean of the N contributions",
+    "local_optimum": "a genotype whose fitness is >= all N single-bit-flip (Hamming-1) neighbours",
+    "adaptive_walk": "greedy steepest-ascent: from a random start, repeatedly move to the FITTEST strictly-fitter 1-flip neighbour until none exists (a local optimum); length = #accepted moves",
+    "metrics": "(1) #local optima (enumerated); (2) mean greedy-walk length; both averaged over the random landscapes per K",
+    "analytic_anchor": "random-landscape (K=N-1) #optima expectation 2^N/(N+1) = 2048.0; never fed into the dynamics"
+  },
+  "optima_monotone_increasing_in_k": true,
+  "walk_monotone_decreasing_in_k": true,
+  "mean_n_optima_by_k": {
+    "0": 1.0,
+    "2": 23.0,
+    "4": 91.2,
+    "8": 511.4,
+    "14": 2043.0
+  },
+  "mean_walk_length_by_k": {
+    "0": 7.429,
+    "2": 5.148,
+    "4": 4.076,
+    "8": 2.601,
+    "14": 1.577
+  },
+  "random_expectation": 2048.0,
+  "per_k": [
+    {
+      "k": 0,
+      "n_landscapes": 5,
+      "n_walks_per_landscape": 200,
+      "mean_n_optima": 1.0,
+      "std_n_optima": 0.0,
+      "min_n_optima": 1,
+      "max_n_optima": 1,
+      "mean_walk_length": 7.429,
+      "random_expectation": 2048.0,
+      "per_landscape": [
+        {
+          "seed": 0,
+          "n_optima": 1,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 7.225,
+          "std_walk_length": 1.7590835682252282,
+          "min_walk_length": 3,
+          "max_walk_length": 12,
+          "mean_end_fitness": 0.5813317991634191
+        },
+        {
+          "seed": 1,
+          "n_optima": 1,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 7.535,
+          "std_walk_length": 1.943907147988298,
+          "min_walk_length": 2,
+          "max_walk_length": 13,
+          "mean_end_fitness": 0.8411597618450323
+        },
+        {
+          "seed": 2,
+          "n_optima": 1,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 7.225,
+          "std_walk_length": 1.9142557300423584,
+          "min_walk_length": 1,
+          "max_walk_length": 12,
+          "mean_end_fitness": 0.7153827747094083
+        },
+        {
+          "seed": 3,
+          "n_optima": 1,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 7.615,
+          "std_walk_length": 2.0215773544438016,
+          "min_walk_length": 2,
+          "max_walk_length": 13,
+          "mean_end_fitness": 0.6390165244590805
+        },
+        {
+          "seed": 4,
+          "n_optima": 1,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 7.545,
+          "std_walk_length": 2.058634256005665,
+          "min_walk_length": 3,
+          "max_walk_length": 13,
+          "mean_end_fitness": 0.6757230999477187
+        }
+      ]
+    },
+    {
+      "k": 2,
+      "n_landscapes": 5,
+      "n_walks_per_landscape": 200,
+      "mean_n_optima": 23.0,
+      "std_n_optima": 10.353743284435827,
+      "min_n_optima": 11,
+      "max_n_optima": 41,
+      "mean_walk_length": 5.148,
+      "random_expectation": 2048.0,
+      "per_landscape": [
+        {
+          "seed": 0,
+          "n_optima": 23,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 5.235,
+          "std_walk_length": 1.5905266423420887,
+          "min_walk_length": 1,
+          "max_walk_length": 10,
+          "mean_end_fitness": 0.7336831999784108
+        },
+        {
+          "seed": 1,
+          "n_optima": 11,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 5.575,
+          "std_walk_length": 1.8205425015637509,
+          "min_walk_length": 1,
+          "max_walk_length": 10,
+          "mean_end_fitness": 0.7539137184233816
+        },
+        {
+          "seed": 2,
+          "n_optima": 25,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 5.1,
+          "std_walk_length": 1.717556403731767,
+          "min_walk_length": 1,
+          "max_walk_length": 11,
+          "mean_end_fitness": 0.6775333694022074
+        },
+        {
+          "seed": 3,
+          "n_optima": 41,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 4.435,
+          "std_walk_length": 1.4511288709139525,
+          "min_walk_length": 1,
+          "max_walk_length": 9,
+          "mean_end_fitness": 0.7014312273446075
+        },
+        {
+          "seed": 4,
+          "n_optima": 15,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 5.395,
+          "std_walk_length": 1.9258699333028695,
+          "min_walk_length": 1,
+          "max_walk_length": 10,
+          "mean_end_fitness": 0.723543461188618
+        }
+      ]
+    },
+    {
+      "k": 4,
+      "n_landscapes": 5,
+      "n_walks_per_landscape": 200,
+      "mean_n_optima": 91.2,
+      "std_n_optima": 11.513470371699404,
+      "min_n_optima": 79,
+      "max_n_optima": 110,
+      "mean_walk_length": 4.076,
+      "random_expectation": 2048.0,
+      "per_landscape": [
+        {
+          "seed": 0,
+          "n_optima": 98,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 3.86,
+          "std_walk_length": 1.5001333274079356,
+          "min_walk_length": 0,
+          "max_walk_length": 10,
+          "mean_end_fitness": 0.7091189972207091
+        },
+        {
+          "seed": 1,
+          "n_optima": 88,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 4.14,
+          "std_walk_length": 1.6341358572652398,
+          "min_walk_length": 1,
+          "max_walk_length": 10,
+          "mean_end_fitness": 0.703662041190787
+        },
+        {
+          "seed": 2,
+          "n_optima": 110,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 3.985,
+          "std_walk_length": 1.7477914635333363,
+          "min_walk_length": 1,
+          "max_walk_length": 11,
+          "mean_end_fitness": 0.7310551232337988
+        },
+        {
+          "seed": 3,
+          "n_optima": 79,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 4.22,
+          "std_walk_length": 1.7180221186003417,
+          "min_walk_length": 1,
+          "max_walk_length": 10,
+          "mean_end_fitness": 0.725040424835781
+        },
+        {
+          "seed": 4,
+          "n_optima": 81,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 4.175,
+          "std_walk_length": 1.557040461902001,
+          "min_walk_length": 1,
+          "max_walk_length": 11,
+          "mean_end_fitness": 0.746613137203405
+        }
+      ]
+    },
+    {
+      "k": 8,
+      "n_landscapes": 5,
+      "n_walks_per_landscape": 200,
+      "mean_n_optima": 511.4,
+      "std_n_optima": 27.397810131468535,
+      "min_n_optima": 482,
+      "max_n_optima": 557,
+      "mean_walk_length": 2.601,
+      "random_expectation": 2048.0,
+      "per_landscape": [
+        {
+          "seed": 0,
+          "n_optima": 490,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 2.62,
+          "std_walk_length": 1.2023310692151312,
+          "min_walk_length": 0,
+          "max_walk_length": 6,
+          "mean_end_fitness": 0.6889740071803451
+        },
+        {
+          "seed": 1,
+          "n_optima": 482,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 2.535,
+          "std_walk_length": 1.2242446650894587,
+          "min_walk_length": 0,
+          "max_walk_length": 7,
+          "mean_end_fitness": 0.6979517008462288
+        },
+        {
+          "seed": 2,
+          "n_optima": 557,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 2.405,
+          "std_walk_length": 1.1004430925768052,
+          "min_walk_length": 0,
+          "max_walk_length": 6,
+          "mean_end_fitness": 0.6847332282965746
+        },
+        {
+          "seed": 3,
+          "n_optima": 501,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 2.645,
+          "std_walk_length": 1.2763130493730759,
+          "min_walk_length": 0,
+          "max_walk_length": 7,
+          "mean_end_fitness": 0.6970188295191864
+        },
+        {
+          "seed": 4,
+          "n_optima": 527,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 2.8,
+          "std_walk_length": 1.2569805089976527,
+          "min_walk_length": 1,
+          "max_walk_length": 7,
+          "mean_end_fitness": 0.6869008426821462
+        }
+      ]
+    },
+    {
+      "k": 14,
+      "n_landscapes": 5,
+      "n_walks_per_landscape": 200,
+      "mean_n_optima": 2043.0,
+      "std_n_optima": 25.93838853899756,
+      "min_n_optima": 2019,
+      "max_n_optima": 2092,
+      "mean_walk_length": 1.577,
+      "random_expectation": 2048.0,
+      "per_landscape": [
+        {
+          "seed": 0,
+          "n_optima": 2092,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 1.53,
+          "std_walk_length": 0.8994998610338977,
+          "min_walk_length": 0,
+          "max_walk_length": 4,
+          "mean_end_fitness": 0.6520558934839906
+        },
+        {
+          "seed": 1,
+          "n_optima": 2042,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 1.55,
+          "std_walk_length": 0.8231038816577161,
+          "min_walk_length": 0,
+          "max_walk_length": 4,
+          "mean_end_fitness": 0.6574447385132985
+        },
+        {
+          "seed": 2,
+          "n_optima": 2019,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 1.59,
+          "std_walk_length": 0.9390953093270131,
+          "min_walk_length": 0,
+          "max_walk_length": 5,
+          "mean_end_fitness": 0.6552852408593172
+        },
+        {
+          "seed": 3,
+          "n_optima": 2038,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 1.5,
+          "std_walk_length": 0.9327379053088815,
+          "min_walk_length": 0,
+          "max_walk_length": 5,
+          "mean_end_fitness": 0.6565566802515498
+        },
+        {
+          "seed": 4,
+          "n_optima": 2024,
+          "random_expectation": 2048.0,
+          "mean_walk_length": 1.715,
+          "std_walk_length": 0.8566066775364287,
+          "min_walk_length": 0,
+          "max_walk_length": 4,
+          "mean_end_fitness": 0.6589488454764088
+        }
+      ]
+    }
+  ],
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 mean #local optima increases monotonically with K",
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 K=0 -> exactly 1 local optimum (single-peaked Mt-Fuji landscape)",
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 mean greedy adaptive-walk length decreases monotonically with K",
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": []
+    }
+  ]
+}

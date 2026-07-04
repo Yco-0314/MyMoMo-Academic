@@ -1,0 +1,2539 @@
+{
+  "boundary_note": "Study corpus doctor checks committed artifact health only; it is not a scientific truth certificate.",
+  "entries": [
+    {
+      "bundle": "docs/studies/abelian-directed-sandpile/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/abelian-directed-sandpile/FINDINGS.md",
+      "headline": "Directed abelian sandpile 1989 (CA): 2/3 locked clauses REPRO; discrete-MLE tau=1.391 (exact 4/3), avalanche anisotropy longitudinal/transverse=2.00x, sizes span 4.9 decades with max/median=15740x",
+      "id": "abelian-directed-sandpile",
+      "paper": {
+        "authors": [
+          "Deepak Dhar",
+          "Ramakrishna Ramaswamy"
+        ],
+        "doi": "10.1103/PhysRevLett.63.1659",
+        "journal": "Physical Review Letters 63(16):1659-1662",
+        "title": "Exactly solved model of self-organized critical phenomena",
+        "year": 1989
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/abelian-directed-sandpile/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/abelian-directed-sandpile",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/abrams-strogatz-language/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-batch7-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/abrams-strogatz-language/FINDINGS.md",
+      "headline": "Abrams-Strogatz language competition: 3/3 locked clauses REPRO; interior fraction=0.000, boundary error=0.02323581692135157, equal-status symmetry error=0.037",
+      "id": "abrams-strogatz-language",
+      "paper": {
+        "authors": [
+          "Daniel M. Abrams",
+          "Steven H. Strogatz"
+        ],
+        "doi": "10.1038/424900a",
+        "journal": "Nature 424:900",
+        "title": "Modelling the dynamics of language death",
+        "year": 2003
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/abrams-strogatz-language/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/abrams-strogatz-language",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/ant-foraging/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveA-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/ant-foraging/FINDINGS.md",
+      "headline": "Deneubourg/Goss 1989 ant double-bridge (agent-based): 3/3 locked clauses REPRO; asymmetric short-path fraction 0.99 (5/5 seeds >0.8); symmetric symmetry-breaking 5/5 (winners short/long 2/3)",
+      "id": "ant-foraging",
+      "paper": {
+        "authors": [
+          "Simon Goss",
+          "Serge Aron",
+          "Jean-Louis Deneubourg",
+          "Jacques M. Pasteels"
+        ],
+        "doi": "10.1007/BF00462870",
+        "journal": "Naturwissenschaften 76:579-581",
+        "title": "Self-organized shortcuts in the Argentine ant",
+        "year": 1989
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/ant-foraging/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/ant-foraging",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/ant-trail-bidirectional/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/ant-trail-bidirectional/FINDINGS.md",
+      "headline": "Ant-trail flow CA 2002 (CA, disclosed): 2/3 locked clauses REPRO; small f=0.005 rho*=0.55 (band var 0.34) vs large f=0.95 rho*=0.50 (band var 0.35) \u2014 pheromone coupling right-shifts the flow peak and evaporation recovers NaSch",
+      "id": "ant-trail-bidirectional",
+      "paper": {
+        "authors": [
+          "Debashish Chowdhury",
+          "Vishwesha Guttal",
+          "Katsuhiro Nishinari",
+          "Andreas Schadschneider"
+        ],
+        "doi": "10.1088/0305-4470/35/41/103",
+        "journal": "Journal of Physics A: Mathematical and General 35(41):L573-L577",
+        "title": "A cellular-automata model of flow in ant trails: non-monotonic variation of speed with density",
+        "year": 2002
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/ant-trail-bidirectional/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/ant-trail-bidirectional",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/axelrod-culture/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch2-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/axelrod-culture/FINDINGS.md",
+      "headline": "Axelrod 1997 (agent-based): 3/3 locked clauses REPRO; #regions rises from 1.0 (q=5) to 17.5 (q=15) at F=5 \u2014 more traits -> more global polarization",
+      "id": "axelrod-culture",
+      "paper": {
+        "authors": [
+          "Robert Axelrod"
+        ],
+        "doi": "10.1177/0022002797041002001",
+        "journal": "Journal of Conflict Resolution 41(2):203-226",
+        "title": "The Dissemination of Culture: A Model with Local Convergence and Global Polarization",
+        "year": 1997
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/axelrod-culture/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/axelrod-culture",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/axelrod-ipd-tournament/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch3-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/axelrod-ipd-tournament/FINDINGS.md",
+      "headline": "Axelrod 1984 (agent-based): 3/3 locked clauses REPRO; winner=TitForTwoTats, TitForTat rank=2 (gap-to-top 0.24% < 1%); AllD rank=7",
+      "id": "axelrod-ipd-tournament",
+      "paper": {
+        "authors": [
+          "Robert Axelrod"
+        ],
+        "doi": null,
+        "journal": "Basic Books (IPD computer tournament)",
+        "title": "The Evolution of Cooperation",
+        "year": 1984
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/axelrod-ipd-tournament/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/axelrod-ipd-tournament",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/axelrod-norms/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveB-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/axelrod-norms/FINDINGS.md",
+      "headline": "Axelrod 1986 Norms/Metanorms (agent-based): 2/3 locked clauses REPRO; metanorm seed-mean V=5.942 vs no-metanorm V=2.877; metanorm B=0.139 vs no-metanorm B=0.880",
+      "id": "axelrod-norms",
+      "paper": {
+        "authors": [
+          "Robert Axelrod"
+        ],
+        "doi": "10.2307/1960858",
+        "journal": "American Political Science Review 80(4):1095-1111",
+        "title": "An Evolutionary Approach to Norms",
+        "year": 1986
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/axelrod-norms/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/axelrod-norms",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/axtell-firms/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 2,
+      "findings": "docs/studies/axtell-firms/FINDINGS.md",
+      "headline": "Axtell 1999/2001 Model of Firms (agent-based): 1/3 locked clauses REPRO; Zipf rank-size slope=-1.277 (base mu~1.28), firm-size Gini=0.474, log-growth excess kurtosis=0.590 with sigma-vs-size slope=-0.078",
+      "id": "axtell-firms",
+      "paper": {
+        "authors": [
+          "Robert L. Axtell"
+        ],
+        "doi": "",
+        "journal": "CSED Working Paper No. 3, Brookings Institution / Santa Fe Institute; see also Axtell (2001), Science 293:1818",
+        "title": "The Emergence of Firms in a Population of Agents: Local Increasing Returns, Unstable Nash Equilibria, and Power Law Size Distributions",
+        "year": 1999
+      },
+      "passed_verdict_count": 1,
+      "predictions": "docs/studies/axtell-firms/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/axtell-firms",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/bak-sneppen/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveA-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/bak-sneppen/FINDINGS.md",
+      "headline": "Bak-Sneppen 1993 (extremal dynamics / SOC, disclosed not agent-stepping): 3/3 locked clauses REPRO; stationary cutoff f_c=0.648 (canonical ~0.667), avalanches span 5.0 decades, 193 punctuating dips below f_c",
+      "id": "bak-sneppen",
+      "paper": {
+        "authors": [
+          "Per Bak",
+          "Kim Sneppen"
+        ],
+        "doi": "10.1103/PhysRevLett.71.4083",
+        "journal": "Physical Review Letters 71(24):4083-4086",
+        "title": "Punctuated equilibrium and criticality in a simple model of evolution",
+        "year": 1993
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/bak-sneppen/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/bak-sneppen",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/barabasi-albert/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 2,
+      "findings": "docs/studies/barabasi-albert/FINDINGS.md",
+      "headline": "Barabasi-Albert 1999 (mildly agent-based): 1/3 locked clauses REPRO; gamma_mle(m=3)=2.681 (kmin=m+1, discrete MLE); BA/ER max-degree ratio=17.7x",
+      "id": "barabasi-albert",
+      "paper": {
+        "authors": [
+          "Albert-Laszlo Barabasi",
+          "Reka Albert"
+        ],
+        "doi": "10.1126/science.286.5439.509",
+        "journal": "Science 286(5439):509-512",
+        "title": "Emergence of scaling in random networks",
+        "year": 1999
+      },
+      "passed_verdict_count": 1,
+      "predictions": "docs/studies/barabasi-albert/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/barabasi-albert",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/bass-diffusion/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch2-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/bass-diffusion/FINDINGS.md",
+      "headline": "Bass 1969 (agent-based): 2/3 locked clauses REPRO; measured discrete peak tick = 8 vs continuous t* = 6.19 (offset +29%), final adoption 0.993",
+      "id": "bass-diffusion",
+      "paper": {
+        "authors": [
+          "Frank M. Bass"
+        ],
+        "doi": "10.1287/mnsc.15.5.215",
+        "journal": "Management Science 15(5):215-227",
+        "title": "A New Product Growth for Model Consumer Durables",
+        "year": 1969
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/bass-diffusion/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/bass-diffusion",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/bianconi-barabasi/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/bianconi-barabasi/FINDINGS.md",
+      "headline": "Bianconi-Barabasi 2001 (fitness network): 2/3 locked clauses REPRO; fit-get-richer aged-Spearman=0.532, condensation f_max=0.145 (uniform 0.024), gamma=2.587",
+      "id": "bianconi-barabasi",
+      "paper": {
+        "authors": [
+          "Ginestra Bianconi",
+          "Albert-Laszlo Barabasi"
+        ],
+        "doi": "10.1103/PhysRevLett.86.5632",
+        "journal": "Physical Review Letters 86:5632-5635",
+        "title": "Bose-Einstein condensation in complex networks",
+        "year": 2001
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/bianconi-barabasi/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/bianconi-barabasi",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/biham-middleton-levine/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/biham-middleton-levine/FINDINGS.md",
+      "headline": "Biham-Middleton-Levine 1992 traffic (two-species CA): 3/3 locked clauses REPRO; free-flow->gridlock transition at rho_c=0.365 (v crosses 0.5), near-step width=0.089 (v: 0.9->0.1) on an L=128 grid",
+      "id": "biham-middleton-levine",
+      "paper": {
+        "authors": [
+          "Ofer Biham",
+          "A. Alan Middleton",
+          "Dov Levine"
+        ],
+        "doi": "10.1103/PhysRevA.46.R6124",
+        "journal": "Physical Review A 46(10):R6124-R6127",
+        "title": "Self-organization and a dynamical transition in traffic-flow models",
+        "year": 1992
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/biham-middleton-levine/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/biham-middleton-levine",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/boids/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveA-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/boids/FINDINGS.md",
+      "headline": "Reynolds 1987 Boids (agent-based): 2/3 locked clauses REPRO; full phi=0.671 vs alignment-OFF phi=0.051; mean-NN 0.73 (uniform-spacing 3.54)",
+      "id": "boids",
+      "paper": {
+        "authors": [
+          "Craig W. Reynolds"
+        ],
+        "doi": "10.1145/37402.37406",
+        "journal": "Computer Graphics (SIGGRAPH '87 Proceedings) 21(4):25-34",
+        "title": "Flocks, herds and schools: A distributed behavioral model",
+        "year": 1987
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/boids/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/boids",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/bouchaud-mezard/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/bouchaud-mezard/FINDINGS.md",
+      "headline": "Bouchaud-M\u00e9zard 2000 (agent-based mean-field): 3/3 locked clauses REPRO; Gini mu=1.4/2/3/5 = 0.66/0.50/0.37/0.27; mu=2 tail slope=-1.89, max/mean=47, Hill mu-hat=1.78",
+      "id": "bouchaud-mezard",
+      "paper": {
+        "authors": [
+          "Jean-Philippe Bouchaud",
+          "Marc M\u00e9zard"
+        ],
+        "doi": "10.1016/S0378-4371(00)00205-3",
+        "journal": "Physica A 282:536-545",
+        "title": "Wealth condensation in a simple model of economy",
+        "year": 2000
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/bouchaud-mezard/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/bouchaud-mezard",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/btw-sandpile/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave3-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/btw-sandpile/FINDINGS.md",
+      "headline": "BTW sandpile (cellular automaton / SOC): 3/3 locked clauses REPRO; fitted tau=1.261 (kmin=1), nonzero sizes span 4.0 decades (max/median=414x), stationary mean height=2.098",
+      "id": "btw-sandpile",
+      "paper": {
+        "authors": [
+          "Per Bak",
+          "Chao Tang",
+          "Kurt Wiesenfeld"
+        ],
+        "doi": "10.1103/PhysRevLett.59.381",
+        "journal": "Phys. Rev. Lett. 59:381-384",
+        "title": "Self-organized criticality: An explanation of the 1/f noise",
+        "year": 1987
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/btw-sandpile/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/btw-sandpile",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/buhl-locust/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/buhl-locust/FINDINGS.md",
+      "headline": "Buhl et al. 2006 marching locusts (Czirok 1D SPP, genuine-agent): 3/3 locked clauses REPRO; density crossover mean|<v>| 0.24@rho=0.10 -> 0.88@rho=1.00; near-critical (rho=0.20) switches 4/6 seeds vs high-density (rho=1.50) median 0 flips",
+      "id": "buhl-locust",
+      "paper": {
+        "authors": [
+          "Jerome Buhl",
+          "David J. T. Sumpter",
+          "Iain D. Couzin",
+          "Joe J. Hale",
+          "Emma Despland",
+          "Edgar R. Miller",
+          "Stephen J. Simpson"
+        ],
+        "doi": "10.1126/science.1125142",
+        "journal": "Science 312(5778):1402-1406",
+        "title": "From disorder to order in marching locusts",
+        "year": 2006
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/buhl-locust/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/buhl-locust",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/burridge-knopoff/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/burridge-knopoff/FINDINGS.md",
+      "headline": "Burridge-Knopoff / Carlson-Langer 1989 (mechanical spring-block chain): 3/3 locked clauses REPRO; primary ell=3.0 MLE moment exponent=1.72, spans 3.8 decades (max/median=6103); mean moment decreases with stiffness (1.63 > 1.25 > 0.60 over ell=[2.0, 3.0, 4.0])",
+      "id": "burridge-knopoff",
+      "paper": {
+        "authors": [
+          "J. M. Carlson",
+          "J. S. Langer"
+        ],
+        "doi": "10.1103/PhysRevLett.62.2632",
+        "journal": "Physical Review Letters 62(22):2632-2635",
+        "title": "Properties of earthquakes generated by fault dynamics",
+        "year": 1989
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/burridge-knopoff/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/burridge-knopoff",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/coda-continuous-opinions/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-batch7-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/coda-continuous-opinions/FINDINGS.md",
+      "headline": "Martins 2008 CODA (agent-based): 3/3 locked clauses REPRO; hidden beliefs extremize to max|l|/nu~1756 (still doubling), final extremist-dominated, same-action clusters collapse ~337->8 (bar 250); distinctness signature: discrete-action Bayesian updating DIVERGES to certainty, inverting bounded-confidence averaging",
+      "id": "coda-continuous-opinions",
+      "paper": {
+        "authors": [
+          "Andre C. R. Martins"
+        ],
+        "doi": "10.1142/S0129183108012339",
+        "journal": "Int. J. Mod. Phys. C 19(4):617-624",
+        "title": "Continuous opinions and discrete actions in opinion dynamics problems",
+        "year": 2008
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/coda-continuous-opinions/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/coda-continuous-opinions",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/coevolving-network-pd/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 2,
+      "findings": "docs/studies/coevolving-network-pd/FINDINGS.md",
+      "headline": "Santos-Pacheco-Lenaerts 2006 coevolving-network PD (agent-based): 1/3 locked clauses REPRO; b/c=2 static graph collapses (coop=0.000 at W=0) while adaptive rewiring rescues cooperation (coop=0.630 at W=16)",
+      "id": "coevolving-network-pd",
+      "paper": {
+        "authors": [
+          "Francisco C. Santos",
+          "Jorge M. Pacheco",
+          "Tom Lenaerts"
+        ],
+        "doi": "10.1371/journal.pcbi.0020140",
+        "journal": "PLoS Computational Biology 2(10):e140",
+        "title": "Cooperation prevails when individuals adjust their social ties",
+        "year": 2006
+      },
+      "passed_verdict_count": 1,
+      "predictions": "docs/studies/coevolving-network-pd/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/coevolving-network-pd",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/complex-contagion/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-network-abm-reproductions-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/complex-contagion/FINDINGS.md",
+      "headline": "agent-based reproduction: 3/3 locked clauses REPRO; R=1 adoption(p=1)=1.000 vs (p=0)=1.000; R=2 adoption(p=0)=1.000 vs (p=1)=0.006; crossover present",
+      "id": "complex-contagion",
+      "paper": {
+        "authors": [
+          "Damon Centola",
+          "Michael Macy"
+        ],
+        "doi": "10.1086/521848",
+        "journal": "American Journal of Sociology 113(3):702-734",
+        "title": "Complex Contagions and the Weakness of Long Ties",
+        "year": 2007
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/complex-contagion/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/complex-contagion",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/cont-bouchaud/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/cont-bouchaud/FINDINGS.md",
+      "headline": "Cont-Bouchaud 2000 percolation market: 3/3 locked clauses REPRO; c=1,a=0.05 excess kurtosis=3.56 vs high-a control -0.23; P(|r|>3s)=0.0208 (Gaussian 0.0027); tail exponent 3.36",
+      "id": "cont-bouchaud",
+      "paper": {
+        "authors": [
+          "Rama Cont",
+          "Jean-Philippe Bouchaud"
+        ],
+        "doi": "10.1017/S1365100500015029",
+        "journal": "Macroeconomic Dynamics 4:170-196",
+        "title": "Herd behavior and aggregate fluctuations in financial markets",
+        "year": 2000
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/cont-bouchaud/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/cont-bouchaud",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/coord-response/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-28-coord-response-abm-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 2,
+      "findings": "docs/studies/coord-response/FINDINGS.md",
+      "headline": "2/4 testable predictions REPRO (P4 reported-only); null-gate PASSED (not refuted)",
+      "id": "coord-response",
+      "paper": {
+        "authors": [
+          "\u5510\u6bc5",
+          "\u9ec4\u8273\u79cb"
+        ],
+        "doi": null,
+        "journal": "\u5e94\u6025\u7ba1\u7406\u5927\u5b66 (methodological / mechanism study)",
+        "title": "\u534f\u540c\u54cd\u5e94\u9a8c\u8bc1 ABM\uff08DOC A \u9759\u6001\u5168\u5c40\u6548\u7387\u4f18\u5316 \u00d7 \u6a21\u62df\u6d2a\u6d9d\u54cd\u5e94\u8fc7\u7a0b\uff09",
+        "year": 2026
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/coord-response/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/coord-response",
+      "verdict_count": 5
+    },
+    {
+      "bundle": "docs/studies/couzin-informed-leadership/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/couzin-informed-leadership/FINDINGS.md",
+      "headline": "Couzin 2005 informed leadership (zonal SPP): 2/3 locked clauses REPRO; N=100 reaches accuracy 0.9 at fraction 0.10 (P1); fraction-vs-N N=30->0.03 vs N=200->0.30 (P2); subgroup |offset| 15deg@40deg -> 85deg@150deg (P3)",
+      "id": "couzin-informed-leadership",
+      "paper": {
+        "authors": [
+          "Iain D. Couzin",
+          "Jens Krause",
+          "Nigel R. Franks",
+          "Simon A. Levin"
+        ],
+        "doi": "10.1038/nature03236",
+        "journal": "Nature 433:513-516",
+        "title": "Effective leadership and decision-making in animal groups on the move",
+        "year": 2005
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/couzin-informed-leadership/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/couzin-informed-leadership",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/couzin-zonal/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/couzin-zonal/FINDINGS.md",
+      "headline": "Couzin et al. 2002 zonal collective motion (3-zone SPP): 2/3 locked clauses REPRO; wide Dzoo=12.0 parallel flock p=1.00 m=0.02; narrow Dzoo=4.0 low-p rotating state p=0.20 m=0.49 (mill m ceilings below locked 0.65); hysteresis gap=1.8 length-units",
+      "id": "couzin-zonal",
+      "paper": {
+        "authors": [
+          "Iain D. Couzin",
+          "Jens Krause",
+          "Richard James",
+          "Graeme D. Ruxton",
+          "Nigel R. Franks"
+        ],
+        "doi": "10.1006/jtbi.2002.3065",
+        "journal": "Journal of Theoretical Biology 218(1):1-11",
+        "title": "Collective Memory and Spatial Sorting in Animal Groups",
+        "year": 2002
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/couzin-zonal/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/couzin-zonal",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/cyclic-ca/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/cyclic-ca/FINDINGS.md",
+      "headline": "Cyclic CA (Fisch-Gravner-Griffeath 1991): 2/3 locked clauses REPRO; n=8 spiral plateau change-fraction=1.00 with colour-return period=8.0=n; n=16 does NOT fixate (final change=1.00) \u2014 Moore range-1 threshold-1 n_c is above 16",
+      "id": "cyclic-ca",
+      "paper": {
+        "authors": [
+          "Robert Fisch",
+          "Janko Gravner",
+          "David Griffeath"
+        ],
+        "doi": "10.1007/BF01890834",
+        "journal": "Statistics and Computing 1(1):23-39",
+        "title": "Threshold-range scaling of excitable cellular automata",
+        "year": 1991
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/cyclic-ca/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/cyclic-ca",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/daisyworld/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveA-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/daisyworld/FINDINGS.md",
+      "headline": "Watson-Lovelock Daisyworld (agent-based): 2/3 locked clauses REPRO; WITH-daisy temp range 45.3 C over the full locked grid (within the populated window only 6.9 C) vs bare-control 45.3 C; daisy mix shifts black->white as L_sol rises",
+      "id": "daisyworld",
+      "paper": {
+        "authors": [
+          "Andrew J. Watson",
+          "James E. Lovelock"
+        ],
+        "doi": "10.1111/j.1600-0889.1983.tb00031.x",
+        "journal": "Tellus B 35(4):284-289",
+        "title": "Biological homeostasis of the global environment: the parable of Daisyworld",
+        "year": 1983
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/daisyworld/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/daisyworld",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/deffuant-amblard/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 2,
+      "findings": "docs/studies/deffuant-amblard/FINDINGS.md",
+      "headline": "Deffuant-Amblard 2002 relative-agreement w/ extremists (agent-based): 1/3 locked clauses REPRO; P1 capture=0.408 (bar<0.15), P2 y=0.506 (double-extreme), P3 single-pole frac=0.00 (bar>=0.60)",
+      "id": "deffuant-amblard",
+      "paper": {
+        "authors": [
+          "Guillaume Deffuant",
+          "Frederic Amblard",
+          "Gerard Weisbuch",
+          "Thierry Faure"
+        ],
+        "journal": "Journal of Artificial Societies and Social Simulation 5(4):1",
+        "title": "How can extremism prevail? A study based on the relative agreement interaction model",
+        "url": "https://www.jasss.org/5/4/1.html",
+        "year": 2002
+      },
+      "passed_verdict_count": 1,
+      "predictions": "docs/studies/deffuant-amblard/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/deffuant-amblard",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/deffuant-bounded-confidence/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch2-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/deffuant-bounded-confidence/FINDINGS.md",
+      "headline": "Deffuant 2000 (agent-based): 2/3 locked clauses REPRO; major #clusters track floor(1/(2eps)); mu sets convergence time not #clusters",
+      "id": "deffuant-bounded-confidence",
+      "paper": {
+        "authors": [
+          "Guillaume Deffuant",
+          "David Neau",
+          "Frederic Amblard",
+          "Gerard Weisbuch"
+        ],
+        "journal": "Advances in Complex Systems 3:87-98",
+        "title": "Mixing beliefs among interacting agents",
+        "year": 2000
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/deffuant-bounded-confidence/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/deffuant-bounded-confidence",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/dla-witten-sander/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/dla-witten-sander/FINDINGS.md",
+      "headline": "Witten-Sander 1981 DLA (on-lattice): 2/3 locked clauses REPRO; mean fractal dimension D=1.660 (band [1.55,1.90]), outer-shell attachment 0.10",
+      "id": "dla-witten-sander",
+      "paper": {
+        "authors": [
+          "T. A. Witten",
+          "L. M. Sander"
+        ],
+        "doi": "10.1103/PhysRevLett.47.1400",
+        "journal": "Phys. Rev. Lett. 47(19):1400-1403",
+        "title": "Diffusion-limited aggregation, a kinetic critical phenomenon",
+        "year": 1981
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/dla-witten-sander/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/dla-witten-sander",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/dragulescu-yakovenko/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/dragulescu-yakovenko/FINDINGS.md",
+      "headline": "Dragulescu-Yakovenko 2000 (agent-based): 3/3 locked clauses REPRO; stationary P(m) exponential (loglin R^2=1.000, fitted T=100.1 vs <m>=100); Gini=0.500, CV=1.000 (exponential fixed point); money conserved to |dM|/M=4.7e-16",
+      "id": "dragulescu-yakovenko",
+      "paper": {
+        "authors": [
+          "Adrian Dragulescu",
+          "Victor M. Yakovenko"
+        ],
+        "doi": "10.1007/s100510070114",
+        "journal": "European Physical Journal B 17:723-729",
+        "title": "Statistical mechanics of money",
+        "year": 2000
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/dragulescu-yakovenko/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/dragulescu-yakovenko",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/eden-growth/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/eden-growth/FINDINGS.md",
+      "headline": "Eden 1961 growth (KPZ interface): 3/3 locked clauses REPRO; compact bulk D=1.97, KPZ beta=0.346 (1/3), alpha=0.549 (1/2)",
+      "id": "eden-growth",
+      "paper": {
+        "authors": [
+          "Murray Eden"
+        ],
+        "doi": "",
+        "journal": "Proc. 4th Berkeley Symp. Math. Statist. Prob. 4:223-239",
+        "title": "A two-dimensional growth process",
+        "year": 1961
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/eden-growth/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/eden-growth",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/el-farol/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveB-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/el-farol/FINDINGS.md",
+      "headline": "El Farol (Arthur 1994, agent-based): 3/3 locked clauses REPRO; cross-seed mean attendance = 56.8 (capacity 60; Arthur ~56.0-60.0)",
+      "id": "el-farol",
+      "paper": {
+        "authors": [
+          "W. Brian Arthur"
+        ],
+        "doi": null,
+        "journal": "American Economic Review 84(2):406-411",
+        "title": "Inductive Reasoning and Bounded Rationality (The El Farol Bar problem)",
+        "year": 1994
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/el-farol/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/el-farol",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/epstein-civil-violence/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch3-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/epstein-civil-violence/FINDINGS.md",
+      "headline": "Epstein 2002 civil violence (agent-based, Model I): 3/3 locked clauses REPRO; L=0.9 mean active 0.000, L=0.5 mean active 0.108 / burstiness 6.40, cop-sweep 0.375->0.108->0.059",
+      "id": "epstein-civil-violence",
+      "paper": {
+        "authors": [
+          "Joshua M. Epstein"
+        ],
+        "doi": "10.1073/pnas.092080199",
+        "journal": "PNAS 99(suppl 3):7243-7250",
+        "title": "Modeling civil violence: An agent-based computational approach",
+        "year": 2002
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/epstein-civil-violence/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/epstein-civil-violence",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/erdos-renyi-giant-component/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/erdos-renyi-giant-component/FINDINGS.md",
+      "headline": "Erdos-Renyi giant component (network generation): 3/3 locked clauses REPRO; frac(z=0.5)=0.0018, frac(z=2.0)=0.7991; matches S=1-e^(-zS) within 0.05 at z in [1.5, 2.0, 3.0]",
+      "id": "erdos-renyi-giant-component",
+      "paper": {
+        "authors": [
+          "Paul Erdos",
+          "Alfred Renyi"
+        ],
+        "journal": "Publ. Math. Inst. Hungar. Acad. Sci. 5:17-61",
+        "title": "On the evolution of random graphs",
+        "year": 1960
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/erdos-renyi-giant-component/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/erdos-renyi-giant-component",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/ethnocentrism/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveB-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/ethnocentrism/FINDINGS.md",
+      "headline": "Hammond-Axelrod 2006 (agent-based): 3/3 locked clauses REPRO; ethnocentric share 0.69 (most common, humanitarian 2nd at 0.18); in-group coop 0.88 vs out-group 0.24",
+      "id": "ethnocentrism",
+      "paper": {
+        "authors": [
+          "Ross A. Hammond",
+          "Robert Axelrod"
+        ],
+        "doi": "10.1177/0022002706293470",
+        "journal": "Journal of Conflict Resolution 50(6):926-936",
+        "title": "The Evolution of Ethnocentrism",
+        "year": 2006
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/ethnocentrism/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/ethnocentrism",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/fermi-spatial-pd/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 2,
+      "findings": "docs/studies/fermi-spatial-pd/FINDINGS.md",
+      "headline": "Szab\u00f3-T\u0151ke 1998 Fermi spatial PD (agent-based): 1/3 locked clauses REPRO; c(b=1.4,K=0.1)=0.541 & c(b=1.9)~0.0004; K=0.5 transition beta=1.344 (b_c2~1.74); P3 b_cr rise(K0.32-0.05)=0.078 peak K=0.32",
+      "id": "fermi-spatial-pd",
+      "paper": {
+        "authors": [
+          "Gy\u00f6rgy Szab\u00f3",
+          "Csaba T\u0151ke"
+        ],
+        "doi": "10.1103/PhysRevE.58.69",
+        "journal": "Physical Review E 58:69-73",
+        "title": "Evolutionary prisoner's dilemma game on a square lattice",
+        "year": 1998
+      },
+      "passed_verdict_count": 1,
+      "predictions": "docs/studies/fermi-spatial-pd/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/fermi-spatial-pd",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/forest-fire/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveA-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/forest-fire/FINDINGS.md",
+      "headline": "Drossel-Schwabl forest fire (cellular automaton / SOC): 3/3 locked clauses REPRO; fitted tau=1.199 (kmin=1), nonzero fire sizes span 4.2 decades (max/median=363x), stationary tree density 0.349/0.337 (empty/trees inits)",
+      "id": "forest-fire",
+      "paper": {
+        "authors": [
+          "Barbara Drossel",
+          "Franz Schwabl"
+        ],
+        "doi": "10.1103/PhysRevLett.69.1629",
+        "journal": "Phys. Rev. Lett. 69:1629-1632",
+        "title": "Self-organized critical forest-fire model",
+        "year": 1992
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/forest-fire/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/forest-fire",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/galam-majority/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave2-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/galam-majority/FINDINGS.md",
+      "headline": "Galam majority rule (agent-based): 3/3 locked clauses REPRO; g=3 tipping at p_c=0.5 (Galam 0.5); g=4 ties->up tipping at p_c=0.24 < 0.5 (minority spreading; Galam ~0.23)",
+      "id": "galam-majority",
+      "paper": {
+        "authors": [
+          "Serge Galam"
+        ],
+        "doi": "10.1140/epjb/e20020045",
+        "journal": "European Physical Journal B 25:403-406",
+        "title": "Minority opinion spreading in random geometry (Galam majority-rule model)",
+        "year": 2002
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/galam-majority/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/galam-majority",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/game-of-life/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveA-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/game-of-life/FINDINGS.md",
+      "headline": "Conway Game of Life (deterministic cellular automaton): 2/3 locked clauses REPRO; glider period=4 translation=[1, 1], blinker/beacon period 2, block still life (period 1)",
+      "id": "game-of-life",
+      "paper": {
+        "authors": [
+          "Martin Gardner",
+          "John H. Conway"
+        ],
+        "doi": "10.1038/scientificamerican1070-120",
+        "journal": "Scientific American 223(4):120-123",
+        "title": "Mathematical Games: The fantastic combinations of John Conway's new solitaire game 'life'",
+        "year": 1970
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/game-of-life/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/game-of-life",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/granovetter-threshold/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-network-abm-reproductions-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/granovetter-threshold/FINDINGS.md",
+      "headline": "Granovetter 1978 (agent-based, fully-mixed): 3/3 locked predictions REPRO; uniform eq=100 vs perturbed eq=1 (~100x swing) at near-identical means (49.5 vs 49.51, \u0394=0.01) \u2014 collective behavior is a property of the distribution, not its mean",
+      "id": "granovetter-threshold",
+      "paper": {
+        "authors": [
+          "Mark Granovetter"
+        ],
+        "doi": "10.1086/226707",
+        "journal": "American Journal of Sociology",
+        "title": "Threshold Models of Collective Behavior",
+        "year": 1978
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/granovetter-threshold/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/granovetter-threshold",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/gray-scott/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/gray-scott/FINDINGS.md",
+      "headline": "Gray-Scott 1993 (reaction-diffusion): 3/3 locked clauses REPRO; spots n_comp=112, stripes max_aspect=7.6, replicating peak_spots=320, homogeneous std_V=0.0000",
+      "id": "gray-scott",
+      "paper": {
+        "authors": [
+          "John E. Pearson"
+        ],
+        "doi": "10.1126/science.261.5118.189",
+        "journal": "Science 261(5118):189-192",
+        "title": "Complex patterns in a simple system",
+        "year": 1993
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/gray-scott/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/gray-scott",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/greenberg-hastings/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/greenberg-hastings/FINDINGS.md",
+      "headline": "Greenberg-Hastings 1978 excitable-media CA: 3/3 locked clauses REPRO; broken front -> spiral rotating at period 6 (T=5) over 37 rotations; head-on fronts annihilate in 4 steps with no pass-through; finite critical size increasing with r (r=4:L_c=4, r=8:L_c=8, r=12:L_c=12)",
+      "id": "greenberg-hastings",
+      "paper": {
+        "authors": [
+          "James M. Greenberg",
+          "Stuart P. Hastings"
+        ],
+        "doi": "10.1137/0134040",
+        "journal": "SIAM Journal on Applied Mathematics 34(3):515-523",
+        "title": "Spatial patterns for discrete models of diffusion in excitable media",
+        "year": 1978
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/greenberg-hastings/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/greenberg-hastings",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/hawk-dove-ess/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave2-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/hawk-dove-ess/FINDINGS.md",
+      "headline": "Hawk-Dove ESS (agent-based): 3/3 locked clauses REPRO; steady hawk fraction -> p*=V/C from both x0=0.1 and x0=0.9 (V=2,C=4 -> ~0.50; V=1,C=4 -> ~0.25)",
+      "id": "hawk-dove-ess",
+      "paper": {
+        "authors": [
+          "John Maynard Smith",
+          "George R. Price"
+        ],
+        "doi": "10.1038/246015a0",
+        "journal": "Nature 246:15-18",
+        "title": "The logic of animal conflict",
+        "year": 1973
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/hawk-dove-ess/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/hawk-dove-ess",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/hegselmann-krause/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave2-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/hegselmann-krause/FINDINGS.md",
+      "headline": "Hegselmann-Krause 2002 (agent-based): 3/3 locked clauses REPRO; consensus fraction at eps=0.3 = 1.00, mean #clusters at eps=0.05 = 8.25",
+      "id": "hegselmann-krause",
+      "paper": {
+        "authors": [
+          "Rainer Hegselmann",
+          "Ulrich Krause"
+        ],
+        "doi": null,
+        "journal": "Journal of Artificial Societies and Social Simulation (JASSS) 5(3)",
+        "title": "Opinion dynamics and bounded confidence: models, analysis and simulation",
+        "year": 2002
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/hegselmann-krause/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/hegselmann-krause",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/heider-balance/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveB-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/heider-balance/FINDINGS.md",
+      "headline": "AKR 2005 CTD / Heider balance (signed-network dynamics): 3/3 locked clauses REPRO; 10/10 seeds reach balance (0 paradise, 10 two-faction); frustration monotone non-increasing",
+      "id": "heider-balance",
+      "paper": {
+        "authors": [
+          "Tibor Antal",
+          "Pavel L. Krapivsky",
+          "Sidney Redner"
+        ],
+        "doi": "10.1103/PhysRevE.72.036121",
+        "journal": "Physical Review E 72(3):036121",
+        "title": "Dynamics of social balance on networks",
+        "year": 2005
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/heider-balance/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/heider-balance",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/holme-kim/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/holme-kim/FINDINGS.md",
+      "headline": "Holme-Kim 2002: 2/3 locked clauses REPRO; average C(p=1)=0.617, gamma stable, but P3 misses because L(p=1,N=1000)=4.154 exceeds the locked <=4.0 bar",
+      "id": "holme-kim",
+      "paper": {
+        "authors": [
+          "Petter Holme",
+          "Beom Jun Kim"
+        ],
+        "doi": "10.1103/PhysRevE.65.026107",
+        "journal": "Physical Review E 65:026107",
+        "title": "Growing scale-free networks with tunable clustering",
+        "year": 2002
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/holme-kim/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/holme-kim",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/huth-wissel-fish/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 2,
+      "findings": "docs/studies/huth-wissel-fish/FINDINGS.md",
+      "headline": "Huth-Wissel 1992 fish schooling (zonal SPP fish): 1/3 locked clauses REPRO; averaging p=0.91 vs decision p=0.18 (gap +0.73); CV(NND) avg=0.60 vs dec=0.48",
+      "id": "huth-wissel-fish",
+      "paper": {
+        "authors": [
+          "Andreas Huth",
+          "Christian Wissel"
+        ],
+        "doi": "10.1016/S0022-5193(05)80681-2",
+        "journal": "Journal of Theoretical Biology 156(3):365-385",
+        "title": "The simulation of the movement of fish schools",
+        "year": 1992
+      },
+      "passed_verdict_count": 1,
+      "predictions": "docs/studies/huth-wissel-fish/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/huth-wissel-fish",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/image-scoring/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 2,
+      "findings": "docs/studies/image-scoring/FINDINGS.md",
+      "headline": "Nowak-Sigmund 1998 image scoring (agent-based): 1/3 locked clauses REPRO; P2 information threshold q>c/b REPRO (collapse<1% acts for q<=0.05, sustained 1.00 at q=1); P1 and P3 honest MISSes \u2014 the faithful mutation-free model drifts among cooperative strategies (k<=0) instead of fixing on exactly k=0, and under m=10n the group-size decay of cooperation does not appear",
+      "id": "image-scoring",
+      "paper": {
+        "authors": [
+          "Martin A. Nowak",
+          "Karl Sigmund"
+        ],
+        "doi": "10.1038/31225",
+        "journal": "Nature 393:573-577",
+        "title": "Evolution of indirect reciprocity by image scoring",
+        "year": 1998
+      },
+      "passed_verdict_count": 1,
+      "predictions": "docs/studies/image-scoring/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/image-scoring",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/independent-cascade/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/independent-cascade/FINDINGS.md",
+      "headline": "KKT 2003 IC + influence-max (hybrid): 3/3 locked clauses REPRO; P1 crossing lambda=1.12 (sub=0.000, super=0.577); P2 submodular 1.000; P3 greedy/OPT=0.996, greedy>7.4 random",
+      "id": "independent-cascade",
+      "paper": {
+        "authors": [
+          "David Kempe",
+          "Jon Kleinberg",
+          "Eva Tardos"
+        ],
+        "doi": "10.1145/956750.956769",
+        "journal": "Proc. 9th ACM SIGKDD (KDD '03):137-146",
+        "title": "Maximizing the spread of influence through a social network",
+        "year": 2003
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/independent-cascade/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/independent-cascade",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/information-cascade/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/information-cascade/FINDINGS.md",
+      "headline": "BHW 1992 informational cascade (agent-based): 3/3 locked clauses REPRO; at p=0.7 formation-by-20=0.9998, P(incorrect|cascade)=0.1540 (closed form 0.1552), E[agents before]=3.456 (closed form 3.448)",
+      "id": "information-cascade",
+      "paper": {
+        "authors": [
+          "Sushil Bikhchandani",
+          "David Hirshleifer",
+          "Ivo Welch"
+        ],
+        "doi": "10.1086/261849",
+        "journal": "Journal of Political Economy 100(5):992-1026",
+        "title": "A Theory of Fads, Fashion, Custom, and Cultural Change as Informational Cascades",
+        "year": 1992
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/information-cascade/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/information-cascade",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/ising-2d/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveA-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/ising-2d/FINDINGS.md",
+      "headline": "Ising 2D Glauber (agent-based): 3/3 locked clauses REPRO; measured |m|=0.5 crossing at T=2.335 (Onsager T_c\u22482.269)",
+      "id": "ising-2d",
+      "paper": {
+        "authors": [
+          "Lars Onsager"
+        ],
+        "doi": "10.1103/PhysRev.65.117",
+        "journal": "Physical Review 65:117-149",
+        "title": "Crystal Statistics. I. A Two-Dimensional Model with an Order-Disorder Transition",
+        "year": 1944
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/ising-2d/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/ising-2d",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/keller-segel/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/keller-segel/FINDINGS.md",
+      "headline": "Keller-Segel 1970 chemotaxis (grid PDE): 3/3 locked clauses REPRO; super-critical S=5.0 peak=869x CV grows 2406x (low-q grows 5/5) vs sub-critical S=0.3 peak=1.00x uniform (low-q grows 0/5)",
+      "id": "keller-segel",
+      "paper": {
+        "authors": [
+          "Evelyn F. Keller",
+          "Lee A. Segel"
+        ],
+        "doi": "10.1016/0022-5193(70)90092-5",
+        "journal": "Journal of Theoretical Biology 26(3):399-415",
+        "title": "Initiation of slime mold aggregation viewed as an instability",
+        "year": 1970
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/keller-segel/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/keller-segel",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/kuramoto/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveA-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/kuramoto/FINDINGS.md",
+      "headline": "Kuramoto 1975 (agent-based): 3/3 locked clauses REPRO; synchronization onset at K=2.0 (canonical mean-field K_c~1.60); r(0.5)=0.053 -> r(3.0)=0.928",
+      "id": "kuramoto",
+      "paper": {
+        "authors": [
+          "Yoshiki Kuramoto"
+        ],
+        "doi": "10.1007/BFb0013365",
+        "journal": "International Symposium on Mathematical Problems in Theoretical Physics, Lecture Notes in Physics 39, Springer, pp. 420-422",
+        "title": "Self-entrainment of a population of coupled non-linear oscillators",
+        "year": 1975
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/kuramoto/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/kuramoto",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/lotka-volterra/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveB-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/lotka-volterra/FINDINGS.md",
+      "headline": "Agent Lotka-Volterra (wolf-sheep-grass): 3/3 locked clauses REPRO; survival 100% (10/10 seeds), predator lags prey (median cross-corr lag = +119 ticks)",
+      "id": "lotka-volterra",
+      "paper": {
+        "authors": [
+          "Alfred J. Lotka",
+          "Vito Volterra"
+        ],
+        "doi": "10.1038/118558a0",
+        "journal": "Lotka 1925, Elements of Physical Biology; Volterra 1926, Nature 118:558-560",
+        "title": "Lotka-Volterra predator-prey dynamics (agent-based; NetLogo wolf-sheep-grass realisation)",
+        "year": 1926
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/lotka-volterra/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/lotka-volterra",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/majority-vote/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveA-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/majority-vote/FINDINGS.md",
+      "headline": "de Oliveira 1992 (agent-based): 3/3 locked clauses REPRO; measured |m|=0.5 half-crossing q_c = 0.0803 (canonical ~0.075)",
+      "id": "majority-vote",
+      "paper": {
+        "authors": [
+          "M.J. de Oliveira"
+        ],
+        "doi": "10.1007/BF01060069",
+        "journal": "Journal of Statistical Physics 66(1/2):273-281",
+        "title": "Isotropic majority-vote model on a square lattice",
+        "year": 1992
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/majority-vote/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/majority-vote",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/maki-thompson-rumor/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/maki-thompson-rumor/FINDINGS.md",
+      "headline": "Maki-Thompson rumor (well-mixed CTMC): 3/3 locked clauses REPRO; mean i_inf=0.2020 (analytic 0.2032), peak spreader=0.3106 (analytic 0.3069), rate-independence max|delta|=0.0000",
+      "id": "maki-thompson-rumor",
+      "paper": {
+        "authors": [
+          "D. P. Maki",
+          "M. Thompson"
+        ],
+        "doi": null,
+        "journal": "Prentice-Hall (rumor-spread chapter; cf. Daley & Kendall, Nature 1964)",
+        "title": "Mathematical Models and Applications, With Emphasis on the Social, Life, and Management Sciences",
+        "year": 1973
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/maki-thompson-rumor/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/maki-thompson-rumor",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/manna-sandpile/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/manna-sandpile/FINDINGS.md",
+      "headline": "Manna stochastic sandpile 1991 (CA / SOC, disclosed): 3/3 locked clauses REPRO; fitted tau=1.262 (s_min=1), nonzero sizes span 4.6 decades (max/median=1945x), stationary mean occupancy=0.699",
+      "id": "manna-sandpile",
+      "paper": {
+        "authors": [
+          "S. S. Manna"
+        ],
+        "doi": "10.1088/0305-4470/24/7/009",
+        "journal": "J. Phys. A: Math. Gen. 24:L363-L369",
+        "title": "Two-state model of self-organized criticality",
+        "year": 1991
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/manna-sandpile/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/manna-sandpile",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/minority-game/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave2-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/minority-game/FINDINGS.md",
+      "headline": "Minority Game (Challet & Zhang 1997, agent-based): 2/3 locked clauses REPRO; sigma^2/N minimum 0.236 at alpha=0.425 (canonical alpha_c~=0.337)",
+      "id": "minority-game",
+      "paper": {
+        "authors": [
+          "Damien Challet",
+          "Yi-Cheng Zhang"
+        ],
+        "doi": "10.1016/S0378-4371(97)00419-6",
+        "journal": "Physica A 246(3-4):407-418",
+        "title": "Emergence of cooperation and organization in an evolutionary game",
+        "year": 1997
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/minority-game/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/minority-game",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/mirollo-strogatz-fireflies/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/mirollo-strogatz-fireflies/FINDINGS.md",
+      "headline": "Mirollo-Strogatz 1990 pulse-coupled oscillators (genuine-agent): 3/3 locked clauses REPRO; concave N=100 eps=0.1 syncs 100% of seeds (median 17.0 cycles), stronger coupling faster (median 8.0 @ eps=0.2 vs 31.5 @ eps=0.05), LINEAR curve syncs 0% (concavity necessary)",
+      "id": "mirollo-strogatz-fireflies",
+      "paper": {
+        "authors": [
+          "Renato E. Mirollo",
+          "Steven H. Strogatz"
+        ],
+        "doi": "10.1137/0150098",
+        "journal": "SIAM Journal on Applied Mathematics 50(6):1645-1662",
+        "title": "Synchronization of pulse-coupled biological oscillators",
+        "year": 1990
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/mirollo-strogatz-fireflies/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/mirollo-strogatz-fireflies",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/moran-process/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveB-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/moran-process/FINDINGS.md",
+      "headline": "Moran process with selection (agent-based): 3/3 locked clauses REPRO; measured fixation -> exact Moran rho=(1-1/r)/(1-1/r**N) (neutral r=1 -> ~1/N=0.01; monotone in r)",
+      "id": "moran-process",
+      "paper": {
+        "authors": [
+          "Patrick A. P. Moran"
+        ],
+        "doi": "10.1017/S0305004100033193",
+        "journal": "Mathematical Proceedings of the Cambridge Philosophical Society 54(1):60-71",
+        "title": "Random processes in genetics",
+        "year": 1958
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/moran-process/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/moran-process",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/nagel-schreckenberg/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave3-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/nagel-schreckenberg/FINDINGS.md",
+      "headline": "Nagel-Schreckenberg 1992 (agent-based): 3/3 locked clauses REPRO; fundamental-diagram flow peaks at rho=0.1 (interior; canonical rho_c~0.1)",
+      "id": "nagel-schreckenberg",
+      "paper": {
+        "authors": [
+          "Kai Nagel",
+          "Michael Schreckenberg"
+        ],
+        "doi": "10.1051/jp1:1992277",
+        "journal": "Journal de Physique I 2(12):2221-2229",
+        "title": "A cellular automaton model for freeway traffic",
+        "year": 1992
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/nagel-schreckenberg/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/nagel-schreckenberg",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/naming-game/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave3-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/naming-game/FINDINGS.md",
+      "headline": "Naming Game minimal (agent-based): 3/3 locked clauses REPRO; global consensus in 10/10 runs, mean 48958 interactions; peak total words ~10551 (N=1000) collapses to N",
+      "id": "naming-game",
+      "paper": {
+        "authors": [
+          "Andrea Baronchelli",
+          "Maddalena Felici",
+          "Vittorio Loreto",
+          "Emanuele Caglioti",
+          "Luc Steels"
+        ],
+        "doi": "10.1088/1742-5468/2006/06/P06014",
+        "journal": "J. Stat. Mech. (2006) P06014",
+        "title": "Sharp transition towards shared vocabularies in multi-agent systems",
+        "year": 2006
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/naming-game/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/naming-game",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/newman-network-sir/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/newman-network-sir/FINDINGS.md",
+      "headline": "Newman 2002 SIR-on-networks (bond percolation): 3/3 locked clauses REPRO; T_c(hom)=0.251 (formula) vs emp-onset 0.223; heterogeneity collapses T_c to 0.038 (SF); GF final-size tracks simulation within 0.001 at T in {0.3,0.4,0.6}",
+      "id": "newman-network-sir",
+      "paper": {
+        "authors": [
+          "M. E. J. Newman"
+        ],
+        "doi": "10.1103/PhysRevE.66.016128",
+        "journal": "Physical Review E 66:016128",
+        "title": "Spread of epidemic disease on networks",
+        "year": 2002
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/newman-network-sir/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/newman-network-sir",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/nk-landscape/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveA-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/nk-landscape/FINDINGS.md",
+      "headline": "Kauffman NK landscape (agent-based): 3/3 locked clauses REPRO; #local optima rises 1 -> 2043 as K goes 0 -> 14 (random expectation 2048); greedy-walk length falls 7.43 -> 1.58",
+      "id": "nk-landscape",
+      "paper": {
+        "authors": [
+          "Stuart A. Kauffman",
+          "Simon Levin"
+        ],
+        "doi": "10.1016/S0022-5193(87)80029-2",
+        "journal": "Journal of Theoretical Biology 128(1):11-45",
+        "title": "Towards a general theory of adaptive walks on rugged fitness landscapes",
+        "year": 1987
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/nk-landscape/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/nk-landscape",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/noisy-voter-kirman/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-batch7-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 2,
+      "findings": "docs/studies/noisy-voter-kirman/FINDINGS.md",
+      "headline": "Noisy voter / Kirman stationary regimes: 1/3 locked clauses REPRO; weak edge-centre=-0.131, strong centre-edge=0.483, matched ratio diff=4.718",
+      "id": "noisy-voter-kirman",
+      "paper": {
+        "authors": [
+          "Alan Kirman",
+          "Claudio Castellano",
+          "Maxi San Miguel"
+        ],
+        "journal": "Synthetic complete-graph noisy voter benchmark",
+        "title": "Noisy voter model / Kirman herding model",
+        "year": 2016
+      },
+      "passed_verdict_count": 1,
+      "predictions": "docs/studies/noisy-voter-kirman/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/noisy-voter-kirman",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/nowak-may-spatial-pd/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch2-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 2,
+      "findings": "docs/studies/nowak-may-spatial-pd/FINDINGS.md",
+      "headline": "Nowak & May 1992 (agent-based): 1/3 locked clauses REPRO; spatial steady-state cooperator fraction = 0.317 (canonical ~0.31) vs well-mixed = 0.08342 (collapse) at b=1.85",
+      "id": "nowak-may-spatial-pd",
+      "paper": {
+        "authors": [
+          "Martin A. Nowak",
+          "Robert M. May"
+        ],
+        "doi": "10.1038/359826a0",
+        "journal": "Nature 359:826-829",
+        "title": "Evolutionary games and spatial chaos",
+        "year": 1992
+      },
+      "passed_verdict_count": 1,
+      "predictions": "docs/studies/nowak-may-spatial-pd/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/nowak-may-spatial-pd",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/olami-feder-christensen/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveB-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/olami-feder-christensen/FINDINGS.md",
+      "headline": "OFC 1992 earthquakes (driven-threshold CA / SOC): 3/3 locked clauses REPRO; alpha=0.2 size range 2.10 decades, max 125 (>=100x median); mean event size 1.73 (alpha=0.2) > 1.08 (alpha=0.1); distribution stationary + init-independent (TV <= 0.027)",
+      "id": "olami-feder-christensen",
+      "paper": {
+        "authors": [
+          "Zeev Olami",
+          "Hans Jacob S. Feder",
+          "Kim Christensen"
+        ],
+        "doi": "10.1103/PhysRevLett.68.1244",
+        "journal": "Physical Review Letters 68(8):1244-1247",
+        "title": "Self-organized criticality in a continuous, nonconservative cellular automaton modeling earthquakes",
+        "year": 1992
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/olami-feder-christensen/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/olami-feder-christensen",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/optional-public-goods/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/optional-public-goods/FINDINGS.md",
+      "headline": "Hauert 2002 Optional Public Goods (agent-based): 3/3 locked clauses REPRO; voluntary r=3 time-avg (C,D,L)=(0.29,0.35,0.36) vs compulsory coop=0.00; loner-dominated at r=1.8 (loner=1.00)",
+      "id": "optional-public-goods",
+      "paper": {
+        "authors": [
+          "Christoph Hauert",
+          "Silvia De Monte",
+          "Josef Hofbauer",
+          "Karl Sigmund"
+        ],
+        "doi": "10.1126/science.1070582",
+        "journal": "Science 296:1129-1132",
+        "title": "Volunteering as Red Queen mechanism for cooperation in public goods games",
+        "year": 2002
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/optional-public-goods/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/optional-public-goods",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/oslo-ricepile/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/oslo-ricepile/FINDINGS.md",
+      "headline": "Oslo rice-pile 1996 (1D stochastic SOC CA): 3/3 locked clauses REPRO; L=256 tau=1.444 in [1.4,1.7], heavy-tailed (5.4 decades, max/median=76675x), <s> grows 32->256 over L=32->256",
+      "id": "oslo-ricepile",
+      "paper": {
+        "authors": [
+          "Kim Christensen",
+          "Alvaro Corral",
+          "Vidar Frette",
+          "Jens Feder",
+          "Torstein Jossang"
+        ],
+        "doi": "10.1103/PhysRevLett.77.107",
+        "journal": "Physical Review Letters 77(1):107-110",
+        "title": "Tracer Dispersion in a Self-Organized Critical System (the Oslo rice-pile model)",
+        "year": 1996
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/oslo-ricepile/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/oslo-ricepile",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/pastor-satorras-vespignani/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/pastor-satorras-vespignani/FINDINGS.md",
+      "headline": "Pastor-Satorras-Vespignani 2001 SIS on scale-free networks: 2/3 locked clauses REPRO; BA lambda_c 0.074(1e3)->0.061(1e5) vs ER finite lambda_c=0.153; rho_BA(0.05)/rho_ER(0.05)=243; stretched-exp C=0.316 (R^2=0.988)",
+      "id": "pastor-satorras-vespignani",
+      "paper": {
+        "authors": [
+          "Romualdo Pastor-Satorras",
+          "Alessandro Vespignani"
+        ],
+        "doi": "10.1103/PhysRevLett.86.3200",
+        "journal": "Physical Review Letters 86:3200-3203",
+        "title": "Epidemic spreading in scale-free networks",
+        "year": 2001
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/pastor-satorras-vespignani/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/pastor-satorras-vespignani",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/pavlov-wsls/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/pavlov-wsls/FINDINGS.md",
+      "headline": "Nowak-Sigmund 1993 WSLS/Pavlov (noisy IPD, agent-based): 2/3 locked clauses REPRO; WSLS self-play=2.95 vs TFT self-play=2.25 under noise; WSLS-vs-ALLC=3.96; co-evolving cooperative-regime late WSLS freq=0.98 (> TFT 0.02); ALLC dies under WSLS (0.00) but takes over under TFT (1.00)",
+      "id": "pavlov-wsls",
+      "paper": {
+        "authors": [
+          "Martin Nowak",
+          "Karl Sigmund"
+        ],
+        "doi": "10.1038/364056a0",
+        "journal": "Nature 364:56-58",
+        "title": "A strategy of win-stay, lose-shift that outperforms tit-for-tat in the Prisoner's Dilemma game",
+        "year": 1993
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/pavlov-wsls/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/pavlov-wsls",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/price-citation/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/price-citation/FINDINGS.md",
+      "headline": "Price 1976 cumulative-advantage citation model (agent-based): 2/3 locked clauses REPRO; never-cited p0=0.571 (analytic 0.571), tail gamma-hat=2.21 vs m=1 contrast 2.73; constant out-degree m=3, k_max~2734",
+      "id": "price-citation",
+      "paper": {
+        "authors": [
+          "Derek J. de Solla Price"
+        ],
+        "doi": "10.1002/asi.4630270505",
+        "journal": "Journal of the American Society for Information Science 27(5):292-306",
+        "title": "A general theory of bibliometric and other cumulative advantage processes",
+        "year": 1976
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/price-citation/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/price-citation",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/public-goods-punishment/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave2-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/public-goods-punishment/FINDINGS.md",
+      "headline": "Fehr & G\u00e4chter PGG + punishment (agent-based): 3/3 locked clauses REPRO; no-punishment steady cooperation = 0.001 (collapse) vs with-punishment = 1.000 (sustained); difference = 0.999",
+      "id": "public-goods-punishment",
+      "paper": {
+        "authors": [
+          "Ernst Fehr",
+          "Simon G\u00e4chter"
+        ],
+        "doi": "10.1257/aer.90.4.980; 10.1038/415137a",
+        "journal": "American Economic Review 90(4):980-994 (2000); Nature 415:137-140 (2002)",
+        "title": "Cooperation and Punishment in Public Goods Experiments; Altruistic punishment in humans",
+        "year": 2002
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/public-goods-punishment/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/public-goods-punishment",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/q-voter/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-batch7-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 2,
+      "findings": "docs/studies/q-voter/FINDINGS.md",
+      "headline": "q-voter nonlinear opinion dynamics: 1/3 locked clauses REPRO; q=1 worst offset=0.092, q=4 max nonlinear deviation=0.300, noise P(all-up) drop=0.000",
+      "id": "q-voter",
+      "paper": {
+        "authors": [
+          "Claudio Castellano",
+          "Miguel A. Munoz",
+          "Romualdo Pastor-Satorras"
+        ],
+        "doi": "10.1103/PhysRevE.80.041129",
+        "journal": "Physical Review E 80, 041129",
+        "title": "Nonlinear q-voter model",
+        "year": 2009
+      },
+      "passed_verdict_count": 1,
+      "predictions": "docs/studies/q-voter/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/q-voter",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/random-geometric-graph/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/random-geometric-graph/FINDINGS.md",
+      "headline": "Random Geometric Graph (Gilbert disk, 2D): 3/3 locked clauses REPRO; C(<k>=8)=0.599 (vs ER ~0.005), giant-component S(<k>=8)=0.998, mean-degree relation corr=0.9999",
+      "id": "random-geometric-graph",
+      "paper": {
+        "authors": [
+          "Jesper Dall",
+          "Michael Christensen"
+        ],
+        "doi": "10.1103/PhysRevE.66.016121",
+        "journal": "Physical Review E 66:016121",
+        "title": "Random geometric graphs",
+        "year": 2002
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/random-geometric-graph/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/random-geometric-graph",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/rock-paper-scissors/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveB-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/rock-paper-scissors/FINDINGS.md",
+      "headline": "Spatial rock-paper-scissors (agent-based): 3/3 locked clauses REPRO; spatial #surviving=3.0 (coexist 100%) vs well-mixed #surviving=1.0 (biodiversity lost)",
+      "id": "rock-paper-scissors",
+      "paper": {
+        "authors": [
+          "Tobias Reichenbach",
+          "Mauro Mobilia",
+          "Erwin Frey"
+        ],
+        "doi": "10.1038/nature06095",
+        "journal": "Nature 448:1046-1049",
+        "title": "Mobility promotes and jeopardizes biodiversity in rock-paper-scissors games",
+        "year": 2007
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/rock-paper-scissors/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/rock-paper-scissors",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/schelling-segregation/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch2-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/schelling-segregation/FINDINGS.md",
+      "headline": "Schelling 1971 (agent-based): 3/3 locked clauses REPRO; mild F=1/3 preference -> segregation index 0.50 (random) -> 0.73 (stable)",
+      "id": "schelling-segregation",
+      "paper": {
+        "authors": [
+          "Thomas C. Schelling"
+        ],
+        "doi": "10.1080/0022250X.1971.9989794",
+        "journal": "Journal of Mathematical Sociology 1:143-186",
+        "title": "Dynamic Models of Segregation",
+        "year": 1971
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/schelling-segregation/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/schelling-segregation",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/seceder/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveB-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/seceder/FINDINGS.md",
+      "headline": "Seceder model (Dittrich et al. 2000, agent-based): 3/3 locked clauses REPRO; steady clusters ~5.6 (>= 2), variance ~353 = 8820x the mutation floor; honest caveat: measured cluster count (~5-6) exceeds the canonical ~3 because group centres diffuse apart at the locked small sigma_mut",
+      "id": "seceder",
+      "paper": {
+        "authors": [
+          "Peter Dittrich",
+          "Fredrik Liljeros",
+          "Arne Soulier",
+          "Wolfgang Banzhaf"
+        ],
+        "doi": "10.1103/PhysRevLett.84.3205",
+        "journal": "Physical Review Letters 84(14):3205-3208",
+        "title": "Spontaneous group formation in the Seceder model",
+        "year": 2000
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/seceder/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/seceder",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/sir-threshold/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch3-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/sir-threshold/FINDINGS.md",
+      "headline": "SIR threshold (agent-based): 3/3 locked clauses REPRO; attack(R0=0.8)=0.0061, attack(R0=2.0)=0.7952 (analytic 0.7968)",
+      "id": "sir-threshold",
+      "paper": {
+        "authors": [
+          "W. O. Kermack",
+          "A. G. McKendrick"
+        ],
+        "doi": "10.1098/rspa.1927.0118",
+        "journal": "Proc. R. Soc. Lond. A 115(772):700-721",
+        "title": "A contribution to the mathematical theory of epidemics",
+        "year": 1927
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/sir-threshold/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/sir-threshold",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/sis-endemic/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/sis-endemic/FINDINGS.md",
+      "headline": "SIS endemic threshold (agent-based): 3/3 locked clauses REPRO; prevalence(R0=0.8)=0.0000, prevalence(R0=2.0)=0.4761 (i*=0.5)",
+      "id": "sis-endemic",
+      "paper": {
+        "authors": [
+          "W. O. Kermack",
+          "A. G. McKendrick"
+        ],
+        "doi": "10.1098/rspa.1927.0118",
+        "journal": "Proc. R. Soc. Lond. A 115(772):700-721",
+        "title": "A contribution to the mathematical theory of epidemics (SIS variant; endemic threshold)",
+        "year": 1927
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/sis-endemic/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/sis-endemic",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/sneppen-depinning/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/sneppen-depinning/FINDINGS.md",
+      "headline": "Sneppen 1992 interface depinning (model A, CA disclosed): 2/3 locked clauses REPRO; chi=0.65 (in [0.5,0.75]), avalanches span 5.0 decades (max/median 30968x), adjacent-slope corr=+0.26",
+      "id": "sneppen-depinning",
+      "paper": {
+        "authors": [
+          "Kim Sneppen"
+        ],
+        "doi": "10.1103/PhysRevLett.69.3539",
+        "journal": "Physical Review Letters 69(24):3539-3542",
+        "title": "Self-organized pinning and interface growth in a random medium",
+        "year": 1992
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/sneppen-depinning/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/sneppen-depinning",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/snowdrift-game/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/snowdrift-game/FINDINGS.md",
+      "headline": "Hauert-Doebeli 2004 spatial snowdrift (agent-based): 3/3 locked clauses REPRO; worst inhibition gap 0.173 at r*=0.7 (replicator) vs best-takes-over gap 0.001; replicator f_lat(0.8)=0.000 (extinct) vs best-takes-over 0.334",
+      "id": "snowdrift-game",
+      "paper": {
+        "authors": [
+          "Christoph Hauert",
+          "Michael Doebeli"
+        ],
+        "doi": "10.1038/nature02360",
+        "journal": "Nature 428:643-646",
+        "title": "Spatial structure often inhibits the evolution of cooperation in the snowdrift game",
+        "year": 2004
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/snowdrift-game/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/snowdrift-game",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/social-impact-theory/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-batch7-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 2,
+      "findings": "docs/studies/social-impact-theory/FINDINGS.md",
+      "headline": "Nowak-Szamrej-Latane 1990 Social Impact (agent-based): 1/3 locked clauses REPRO; mean minority fraction 0.045 (band [0.08,0.45]), bond 0.998, minority survival 0.10",
+      "id": "social-impact-theory",
+      "paper": {
+        "authors": [
+          "Andrzej Nowak",
+          "Jacek Szamrej",
+          "Bibb Latane"
+        ],
+        "doi": "10.1037/0033-295X.97.3.362",
+        "journal": "Psychological Review 97(3):362-376",
+        "title": "From private attitudes to public opinion: A dynamic theory of social impact",
+        "year": 1990
+      },
+      "passed_verdict_count": 1,
+      "predictions": "docs/studies/social-impact-theory/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/social-impact-theory",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/stag-hunt/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/stag-hunt/FINDINGS.md",
+      "headline": "Stag Hunt (agent-based): 3/3 locked clauses REPRO; canonical x*_emp=0.675 (analytic 0.667); risk-dominant Hare basin P=0.692 > Stag P=0.308; threshold tracks payoff formula (worst |err|=0.025)",
+      "id": "stag-hunt",
+      "paper": {
+        "authors": [
+          "Brian Skyrms"
+        ],
+        "doi": "10.1017/CBO9781139165228",
+        "journal": "Cambridge University Press",
+        "title": "The Stag Hunt and the Evolution of Social Structure",
+        "year": 2004
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/stag-hunt/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/stag-hunt",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/standing-ovation/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveB-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/standing-ovation/FINDINGS.md",
+      "headline": "Miller-Page 2004 Standing Ovation (agent-based): 3/3 locked clauses REPRO; s=0.8 final=1.000, s=0.2 final=0.000, s=0.5 init=0.500->final=1.000 (conformity amplifies the balanced case)",
+      "id": "standing-ovation",
+      "paper": {
+        "authors": [
+          "John H. Miller",
+          "Scott E. Page"
+        ],
+        "doi": "10.1002/cplx.20033",
+        "journal": "Complexity 9(5):8-16",
+        "title": "The standing ovation problem",
+        "year": 2004
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/standing-ovation/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/standing-ovation",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/stochastic-block-model/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/stochastic-block-model/FINDINGS.md",
+      "headline": "SBM detectability: 3/3 locked clauses REPRO; Q(0.10)=0.759, Q(0.50)=0.024, matched ER near zero",
+      "id": "stochastic-block-model",
+      "paper": {
+        "authors": [
+          "Aurelien Decelle",
+          "Florent Krzakala",
+          "Cristopher Moore",
+          "Lenka Zdeborova"
+        ],
+        "doi": "10.1103/PhysRevE.84.066106",
+        "journal": "Physical Review E 84:066106",
+        "title": "Asymptotic analysis of the stochastic block model for modular networks and its algorithmic applications",
+        "year": 2011
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/stochastic-block-model/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/stochastic-block-model",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/sugarscape-inequality/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch3-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/sugarscape-inequality/FINDINGS.md",
+      "headline": "Sugarscape (agent-based): 2/3 locked clauses REPRO; Gini rises 0.23 -> 0.48 from a near-uniform start (inequality emerges); P3 top-decile share 0.27 < 0.3 MISS without agent replacement",
+      "id": "sugarscape-inequality",
+      "paper": {
+        "authors": [
+          "Joshua M. Epstein",
+          "Robert Axtell"
+        ],
+        "isbn": "9780262550253",
+        "publisher": "Brookings Institution Press / MIT Press",
+        "title": "Growing Artificial Societies: Social Science from the Bottom Up",
+        "year": 1996
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/sugarscape-inequality/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/sugarscape-inequality",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/sznajd-opinion/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch3-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/sznajd-opinion/FINDINGS.md",
+      "headline": "Sznajd 2000 (agent-based, 2D): 3/3 locked clauses REPRO; complete consensus from d=0.5 in 100% of runs; phase transition at d=1/2 (P(all-UP): 0.00 for d<=0.4 -> 1.00 for d>=0.6)",
+      "id": "sznajd-opinion",
+      "paper": {
+        "authors": [
+          "Katarzyna Sznajd-Weron",
+          "Jozef Sznajd"
+        ],
+        "doi": "10.1142/S0129183100000936",
+        "journal": "International Journal of Modern Physics C 11(6):1157-1165",
+        "title": "Opinion evolution in closed community",
+        "year": 2000
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/sznajd-opinion/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/sznajd-opinion",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/tag-cooperation/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/tag-cooperation/FINDINGS.md",
+      "headline": "Riolo-Cohen-Axelrod 2001 tag-cooperation (agent-based): 3/3 locked clauses REPRO; donation rate=0.613 (band [0.55,0.85]), cluster share=0.910, CV=0.323, crash-recover 10/10 seeds",
+      "id": "tag-cooperation",
+      "paper": {
+        "authors": [
+          "Rick L. Riolo",
+          "Michael D. Cohen",
+          "Robert Axelrod"
+        ],
+        "doi": "10.1038/35106555",
+        "journal": "Nature 414:441-443",
+        "title": "Evolution of cooperation without reciprocity",
+        "year": 2001
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/tag-cooperation/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/tag-cooperation",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/tasep-open-boundary/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/tasep-open-boundary/FINDINGS.md",
+      "headline": "TASEP open boundaries (DEHP 1993, CA): 3/3 locked clauses REPRO; maximal-current plateau J=0.251~0.25 (worst |J-0.25|=0.001), low-density J=0.210~a(1-a) rho=0.301~a, coexistence density jump 0.36 on crossing",
+      "id": "tasep-open-boundary",
+      "paper": {
+        "authors": [
+          "B. Derrida",
+          "M. R. Evans",
+          "V. Hakim",
+          "V. Pasquier"
+        ],
+        "doi": "10.1088/0305-4470/26/7/011",
+        "journal": "Journal of Physics A: Mathematical and General 26(7):1493-1517",
+        "title": "Exact solution of a 1D asymmetric exclusion model using a matrix formulation",
+        "year": 1993
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/tasep-open-boundary/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/tasep-open-boundary",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/turing-pattern/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/turing-pattern/FINDINGS.md",
+      "headline": "Turing 1952 diffusion-driven instability (Gierer-Meinhardt, grid-PDE): 3/3 locked clauses REPRO; control CoV=0.0002 vs Turing CoV=1.060; k_meas=0.867 vs linear-theory q*=0.829",
+      "id": "turing-pattern",
+      "paper": {
+        "authors": [
+          "Alan M. Turing"
+        ],
+        "doi": "10.1098/rstb.1952.0012",
+        "journal": "Philosophical Transactions of the Royal Society of London B 237(641):37-72",
+        "title": "The chemical basis of morphogenesis",
+        "year": 1952
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/turing-pattern/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/turing-pattern",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/ultimatum-fairness/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/ultimatum-fairness/FINDINGS.md",
+      "headline": "Nowak-Page-Sigmund 2000 ultimatum game (agent-based): 3/3 locked clauses REPRO; anonymous (w=0) q\u0304=0.064, p\u0304=0.190 (rational collapse) vs full reputation (w=1.0) q\u0304=0.967, p\u0304=0.570 (fair); q\u0304 rises monotonically with w",
+      "id": "ultimatum-fairness",
+      "paper": {
+        "authors": [
+          "Martin A. Nowak",
+          "Karen M. Page",
+          "Karl Sigmund"
+        ],
+        "doi": "10.1126/science.289.5485.1773",
+        "journal": "Science 289(5485):1773-1775",
+        "title": "Fairness versus reason in the ultimatum game",
+        "year": 2000
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/ultimatum-fairness/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/ultimatum-fairness",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/vicsek-flocking/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave3-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/vicsek-flocking/FINDINGS.md",
+      "headline": "Vicsek 1995 (agent-based): 3/3 locked clauses REPRO; noise-driven order-disorder transition phi: 1.00(eta=0.1) -> 0.98(0.5) -> 0.06(eta=5.0)",
+      "id": "vicsek-flocking",
+      "paper": {
+        "authors": [
+          "Tamas Vicsek",
+          "Andras Czirok",
+          "Eshel Ben-Jacob",
+          "Inon Cohen",
+          "Ofer Shochet"
+        ],
+        "doi": "10.1103/PhysRevLett.75.1226",
+        "journal": "Physical Review Letters 75:1226-1229",
+        "title": "Novel type of phase transition in a system of self-driven particles",
+        "year": 1995
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/vicsek-flocking/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/vicsek-flocking",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/voter-model/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/voter-model/FINDINGS.md",
+      "headline": "Voter fixation (agent-based): 3/3 locked clauses REPRO; P(all-up) tracks u [u=0.2:P=0.200, u=0.5:P=0.460, u=0.8:P=0.790]; consensus rate 1.000",
+      "id": "voter-model",
+      "paper": {
+        "authors": [
+          "Peter Clifford",
+          "Aidan Sudbury"
+        ],
+        "doi": "10.1093/biomet/60.3.581",
+        "journal": "Biometrika 60(3):581-588",
+        "title": "A model for spatial conflict (the voter model)",
+        "year": 1973
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/voter-model/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/voter-model",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/watts-cascades/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-network-abm-reproductions-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/watts-cascades/FINDINGS.md",
+      "headline": "Watts 2002 (agent-based): 4/4 locked clauses REPRO; measured cascade window z in [1.0, 6.0] (canonical ~[1.0, 5.8])",
+      "id": "watts-cascades",
+      "paper": {
+        "authors": [
+          "Duncan J. Watts"
+        ],
+        "doi": "10.1073/pnas.082090499",
+        "journal": "PNAS 99(9):5766-5771",
+        "title": "A simple model of global cascades on random networks",
+        "year": 2002
+      },
+      "passed_verdict_count": 4,
+      "predictions": "docs/studies/watts-cascades/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/watts-cascades",
+      "verdict_count": 4
+    },
+    {
+      "bundle": "docs/studies/watts-strogatz-smallworld/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/watts-strogatz-smallworld/FINDINGS.md",
+      "headline": "Watts-Strogatz 1998 (network-generation): 3/3 locked clauses REPRO; small-world window at p in [0.003, 0.01, 0.03, 0.1] (L/L0<0.5 while C/C0>0.5)",
+      "id": "watts-strogatz-smallworld",
+      "paper": {
+        "authors": [
+          "Duncan J. Watts",
+          "Steven H. Strogatz"
+        ],
+        "doi": "10.1038/30918",
+        "journal": "Nature 393:440-442",
+        "title": "Collective dynamics of 'small-world' networks",
+        "year": 1998
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/watts-strogatz-smallworld/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/watts-strogatz-smallworld",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/wright-fisher/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveA-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/wright-fisher/FINDINGS.md",
+      "headline": "Wright-Fisher neutral drift (agent-based): 3/3 locked clauses REPRO; fixation prob = p0 (worst |err|=0.009); per-gen mean-H decay ~0.9899 vs 1-1/N=0.9900",
+      "id": "wright-fisher",
+      "paper": {
+        "authors": [
+          "Sewall Wright",
+          "Ronald A. Fisher"
+        ],
+        "doi": "10.1093/genetics/16.2.97",
+        "journal": "Genetics 16:97-159 (Wright 1931); Oxford (Fisher 1930)",
+        "title": "Evolution in Mendelian populations (neutral drift) / The Genetical Theory of Natural Selection",
+        "year": 1931
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/wright-fisher/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/wright-fisher",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/yard-sale/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 1,
+      "findings": "docs/studies/yard-sale/FINDINGS.md",
+      "headline": "Chakraborti 2002 Yard-Sale (agent-based): 2/3 locked clauses REPRO; final Gini=0.993 (>>DY 0.5) with bottom-50% ~4e-46, but richest-agent share 0.27 < 0.90 at 2e4 sweeps (oligarchy, not yet single-winner) -> P2 MISS",
+      "id": "yard-sale",
+      "paper": {
+        "authors": [
+          "Anirban Chakraborti"
+        ],
+        "doi": "10.1142/S0129183102003905",
+        "journal": "International Journal of Modern Physics C 13(10):1315-1321",
+        "title": "Distributions of money in model markets of economy",
+        "year": 2002
+      },
+      "passed_verdict_count": 2,
+      "predictions": "docs/studies/yard-sale/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/yard-sale",
+      "verdict_count": 3
+    },
+    {
+      "bundle": "docs/studies/zero-intelligence-traders/verdict-bundle.json",
+      "data_fingerprint_count": 1,
+      "design_spec": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave3-design.md",
+      "doc_fingerprint_count": 3,
+      "failed_verdict_count": 0,
+      "findings": "docs/studies/zero-intelligence-traders/FINDINGS.md",
+      "headline": "Gode-Sunder 1993 (agent-based CDA): 3/3 locked clauses REPRO; ZI-C efficiency 0.971 vs ZI-U -0.115 (gap 1.087) \u2014 the institution, not rationality, drives efficiency",
+      "id": "zero-intelligence-traders",
+      "paper": {
+        "authors": [
+          "Dhananjay K. Gode",
+          "Shyam Sunder"
+        ],
+        "doi": "10.1086/261868",
+        "journal": "Journal of Political Economy 101(1):119-137",
+        "title": "Allocative Efficiency of Markets with Zero-Intelligence Traders: Market as a Partial Substitute for Individual Rationality",
+        "year": 1993
+      },
+      "passed_verdict_count": 3,
+      "predictions": "docs/studies/zero-intelligence-traders/PREDICTIONS-locked.md",
+      "status": "complete",
+      "study_dir": "docs/studies/zero-intelligence-traders",
+      "verdict_count": 3
+    }
+  ],
+  "schema": "abm-auto/study-corpus-registry/v1",
+  "study_root": "docs/studies",
+  "summary": {
+    "complete_count": 100,
+    "entry_count": 100,
+    "failed_verdict_count": 45,
+    "pending_count": 0,
+    "status_counts": {
+      "complete": 100,
+      "pending_bundle": 0
+    },
+    "total_verdict_count": 303
+  },
+  "title": "MyMoMo Study Corpus Registry"
+}

@@ -1,0 +1,113 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "A Theory of Fads, Fashion, Custom, and Cultural Change as Informational Cascades",
+    "authors": [
+      "Sushil Bikhchandani",
+      "David Hirshleifer",
+      "Ivo Welch"
+    ],
+    "year": 1992,
+    "journal": "Journal of Political Economy 100(5):992-1026",
+    "doi": "10.1086/261849"
+  },
+  "headline": "BHW 1992 informational cascade (agent-based): 3/3 locked clauses REPRO; at p=0.7 formation-by-20=0.9998, P(incorrect|cascade)=0.1540 (closed form 0.1552), E[agents before]=3.456 (closed form 3.448)",
+  "code_commit": "537bf43e2b5cae1445c20e79cb107cebbe9e4773",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 cascade forms almost surely: formation-by-agent-20 fraction >= 0.999 for all p>=0.6",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9993,
+        0.999
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 cascades can be WRONG: |P(incorrect|cascade) - (1-p)^2/(p^2+(1-p)^2)| <= 0.005 at p in {0.6,0.7,0.8}",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.15403,
+        0.15517
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 early onset + impaired social learning: E[agents before cascade] ~ 2/(p^2+(1-p)^2)=3.45@p=0.7, and social gain <= 0.16",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        3.4555,
+        3.4483
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/information-cascade/results.json",
+      "sha256": "8bf9ce37efcbc1e3114176242af90d6784beef854cf7f59d6cd3d488347c5326",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/information-cascade/PREDICTIONS-locked.md",
+      "sha256": "2387ab3e747e89f36cfb97c51bc831740e5b1d49c07ea0f5199160457c66cdf8",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/information-cascade/FINDINGS.md",
+      "sha256": "011f8a8528b80c180b77c02ef6e93fd1a069b4c3f496a03bd89c44eb7e9d66c6",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "bikhchandani-hirshleifer-welch-1992-informational-cascade",
+    "n": 30,
+    "prior_high": 0.5,
+    "precision_grid": [
+      0.7,
+      0.6,
+      0.8,
+      0.9
+    ],
+    "canonical_p": 0.7,
+    "n_queues": 200000,
+    "canonical_form_by_20": 0.99984,
+    "canonical_p_incorrect": 0.15403,
+    "canonical_cf_p_incorrect": 0.1551724137931035,
+    "canonical_mean_before": 3.45554,
+    "canonical_cf_mean_before": 3.4482758620689657,
+    "scope": "faithful reproduction of a published theoretical model; no real-world data; the contribution is whether the harness + discipline recover the model's closed-form cascade statistics from a genuine sequential Bayesian agent-based simulation, and would catch an artifact (wrong barrier, tie-break, or precision)"
+  },
+  "citations": [
+    "Bikhchandani, S., Hirshleifer, D. & Welch, I. (1992). A Theory of Fads, Fashion, Custom, and Cultural Change as Informational Cascades. Journal of Political Economy 100(5):992-1026. doi:10.1086/261849."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the paper's closed forms (1-p)^2/(p^2+(1-p)^2) and 2/(p^2+(1-p)^2)"
+  }
+}

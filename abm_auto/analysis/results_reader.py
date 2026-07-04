@@ -75,6 +75,28 @@ def select_environment_csv(csvs: list[Path]) -> Path | None:
     return ordered[0]
 
 
+def final_metrics(csvs: list[Path]) -> dict[str, float]:
+    """Final-step value of every numeric metric in a run's canonical CSV.
+
+    Picks the environment/aggregated CSV (select_environment_csv), reads it, and
+    returns {metric: last-row value} over numeric_metrics(). Returns {} for an
+    empty / unreadable / column-less run. The single definition of "a run's
+    final-step metric vector", shared by analyze_runs() and the memory-ingest
+    phase — which previously diverged on which CSV defines the metrics (the env
+    CSV vs csvs[0])."""
+    target = select_environment_csv(csvs)
+    if target is None:
+        return {}
+    try:
+        df = pd.read_csv(target)
+    except Exception as exc:
+        logger.warning("skipping unreadable CSV %s: %s", target, exc)
+        return {}
+    if df.empty:
+        return {}
+    return {col: float(df[col].iloc[-1]) for col in numeric_metrics(df)}
+
+
 def describe(workspace: Workspace, run_id: int) -> str:
     """Return a text description of all CSVs for *run_id*, suitable for LLM prompts.
 

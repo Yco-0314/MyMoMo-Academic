@@ -1,0 +1,123 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Maximizing the spread of influence through a social network",
+    "authors": [
+      "David Kempe",
+      "Jon Kleinberg",
+      "Eva Tardos"
+    ],
+    "year": 2003,
+    "journal": "Proc. 9th ACM SIGKDD (KDD '03):137-146",
+    "doi": "10.1145/956750.956769"
+  },
+  "headline": "KKT 2003 IC + influence-max (hybrid): 3/3 locked clauses REPRO; P1 crossing lambda=1.12 (sub=0.000, super=0.577); P2 submodular 1.000; P3 greedy/OPT=0.996, greedy>7.4 random",
+  "code_commit": "88ff9ddbb05ae5172f8cfb601d46c85b0d6b9c62",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 percolation transition: mean reached < 0.05 @ lambda=0.5, > 0.40 @ lambda=2.0, crossing in [0.8,1.3]",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.1218,
+        1.3
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 influence spread is submodular: marginal gain(A) >= marginal gain(B) for nested A subset B in >=95% of pairs",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.95
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 greedy attains 1-1/e: sigma(greedy) >= 0.632*sigma(OPT) for k=3 AND greedy > random",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.9964,
+        0.632
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/independent-cascade/results.json",
+      "sha256": "db4012bd6353993a069f9a2dd107ce195bc039fd54fe6e1e5f39c0fac187451d",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/independent-cascade/PREDICTIONS-locked.md",
+      "sha256": "c7f22ee6902d0c54d9103bd23ea2f9593919773a66a2ca10b6497046e1da33dd",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/independent-cascade/FINDINGS.md",
+      "sha256": "e9035cad316e16c78344d2847c08b138252dd98a57ae26bbe1a8de0d1ec45253",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "f6fe89919ff8c28afd132b6c7ca70e9ded0f67e912ebe5a98ee31441f006ea60",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "kempe-kleinberg-tardos-2003-ic-im",
+    "framing": "HYBRID (disclosed): agent activation state on abm_auto._platform + edge-probability single-shot cascade + combinatorial optimization gate (greedy/CELF/brute-force OPT)",
+    "p1": {
+      "n": 10000,
+      "z": 8.0,
+      "sub": 0.0002075,
+      "super": 0.5771325,
+      "crossing": 1.12177734375
+    },
+    "p2": {
+      "n": 2000,
+      "z": 8.0,
+      "p": 0.1,
+      "n_pairs": 200,
+      "n_sims": 10000,
+      "hold_fraction": 1.0
+    },
+    "p3": {
+      "n": 60,
+      "k": 3,
+      "ratio": 0.9963623902786198,
+      "greedy": 12.138,
+      "mean_random": 7.411625
+    },
+    "scope": "faithful reproduction of a published synthetic model (no real-world data); the contribution is whether the harness + lock-first discipline reproduce the IC percolation transition, the exact submodularity of the influence function, and the greedy 1-1/e guarantee \u2014 and would catch an artifact. The submodularity gate is the discriminating property that separates IC from the node-threshold cascade models already built (watts/granovetter/complex-contagion), which lack it."
+  },
+  "citations": [
+    "Kempe, D., Kleinberg, J. & Tardos, E. (2003). Maximizing the spread of influence through a social network. Proc. 9th ACM SIGKDD (KDD '03):137-146. doi:10.1145/956750.956769.",
+    "Goldenberg, J., Libai, B. & Muller, E. (2001). Talk of the network: A complex systems look at the underlying process of word-of-mouth. Marketing Letters 12(3):211-223.",
+    "Leskovec, J. et al. (2007). Cost-effective outbreak detection in networks (CELF). Proc. 13th ACM SIGKDD:420-429."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the percolation transition, the submodularity fraction, and the greedy/OPT ratio"
+  }
+}

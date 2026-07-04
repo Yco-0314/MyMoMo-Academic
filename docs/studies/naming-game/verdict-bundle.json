@@ -1,0 +1,113 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Sharp transition towards shared vocabularies in multi-agent systems",
+    "authors": [
+      "Andrea Baronchelli",
+      "Maddalena Felici",
+      "Vittorio Loreto",
+      "Emanuele Caglioti",
+      "Luc Steels"
+    ],
+    "year": 2006,
+    "journal": "J. Stat. Mech. (2006) P06014",
+    "doi": "10.1088/1742-5468/2006/06/P06014"
+  },
+  "headline": "Naming Game minimal (agent-based): 3/3 locked clauses REPRO; global consensus in 10/10 runs, mean 48958 interactions; peak total words ~10551 (N=1000) collapses to N",
+  "code_commit": "7d70ec48db8c4d9e7b50ab335047d7c4c85dfa9b",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 global consensus reached in 100% of runs (one name held by all N)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 #distinct names peaks (>1) then collapses to exactly 1",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        481.0,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 total vocabulary peaks (>N) then collapses to N (each agent ends with 1)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        9661.0,
+        1000.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/naming-game/results.json",
+      "sha256": "8358e5c1a701d3f5fb3ab96119f464a5e798823258ab7fedc0156c9f4a4171f3",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/naming-game/PREDICTIONS-locked.md",
+      "sha256": "d44892e24cdcebea90df0829315a103f56b375c4485040e6b37b29a261e92187",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/naming-game/FINDINGS.md",
+      "sha256": "51ea4a6a21fe62d9f0c67e0eea5f9e8a1d9ea36e5d1a22a39fc7531b383d1491",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-wave3-design.md",
+      "sha256": "f19764e539b43f5dd824fa3ba874cf52380ae1f8bda4e2a520381a8fe25fef6a",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "naming-game-minimal",
+    "n": 1000,
+    "n_seeds": 10,
+    "step_cap_interactions": 1000000,
+    "consensus_fraction": 1.0,
+    "convergence_interactions": {
+      "mean": 48958.4,
+      "min": 31705,
+      "max": 64660,
+      "var": 95564401.24000001,
+      "n": 10
+    },
+    "peak_total_words_mean": 10550.8,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the local->global consensus result (with its vocabulary peak) and would catch an artifact"
+  },
+  "citations": [
+    "Baronchelli, A., Felici, M., Loreto, V., Caglioti, E. & Steels, L. (2006). Sharp transition towards shared vocabularies in multi-agent systems. J. Stat. Mech. (2006) P06014. doi:10.1088/1742-5468/2006/06/P06014.",
+    "Steels, L. (1995). A self-organizing spatial vocabulary. Artificial Life 2(3):319-332. doi:10.1162/artl.1995.2.3.319."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

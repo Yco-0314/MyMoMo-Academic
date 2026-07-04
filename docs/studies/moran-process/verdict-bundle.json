@@ -1,0 +1,129 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Random processes in genetics",
+    "authors": [
+      "Patrick A. P. Moran"
+    ],
+    "year": 1958,
+    "journal": "Mathematical Proceedings of the Cambridge Philosophical Society 54(1):60-71",
+    "doi": "10.1017/S0305004100033193"
+  },
+  "headline": "Moran process with selection (agent-based): 3/3 locked clauses REPRO; measured fixation -> exact Moran rho=(1-1/r)/(1-1/r**N) (neutral r=1 -> ~1/N=0.01; monotone in r)",
+  "code_commit": "47fce1ebec681a5e089dfdd05b76135b37b01b8b",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 fixation prob matches exact Moran rho=(1-1/r)/(1-1/r**N) at r in {1.05,1.1,1.2,2.0} (+-0.03)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0125,
+        0.03
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 neutral r=1.0 -> fixation prob ~= 1/N = 0.01 (+-0.01)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0005,
+        0.01
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 fixation prob monotone increasing in r across the grid",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/moran-process/results.json",
+      "sha256": "50dbb1b27b996075dadde6da0557727935e3888b2cb76f455bbb319a740c2a30",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/moran-process/PREDICTIONS-locked.md",
+      "sha256": "a3b642cdc4de6f3f73086ce6e41df6ad767d7463ac811ce2d9b06d4b1b2f070b",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/moran-process/FINDINGS.md",
+      "sha256": "155db192410531bb18375079ea75b63c3e2c284900820678319205b0f07b070b",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch5-waveB-design.md",
+      "sha256": "d9d7d5adbf6787392250b97a7543c247c4790382b9f3bf2685b59f323915a905",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "moran-process-with-selection",
+    "n": 100,
+    "r_grid": [
+      1.0,
+      1.05,
+      1.1,
+      1.2,
+      2.0
+    ],
+    "n_runs_per_r": 2000,
+    "rule": "fitness-weighted BIRTH + uniform DEATH, single initial mutant, run to fixation",
+    "measured_fixation": {
+      "1.0": 0.0095,
+      "1.05": 0.0495,
+      "1.1": 0.0885,
+      "1.2": 0.1685,
+      "2.0": 0.4875
+    },
+    "analytic_fixation": {
+      "1.0": 0.01,
+      "1.05": 0.04798394101858203,
+      "1.1": 0.09091568827109701,
+      "1.2": 0.16666666867911223,
+      "2.0": 0.5
+    },
+    "binomial_se": {
+      "1.0": 0.002169072382379159,
+      "1.05": 0.004850244839180801,
+      "1.1": 0.0063508956061330436,
+      "1.2": 0.00836981929315084,
+      "2.0": 0.011176845485198405
+    },
+    "large_N_note": "Moran large-N limit is 1-1/r ~= s, NOT Wright-Fisher 2s",
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the exact Moran fixation probability and would catch an artifact. The analytic rho is the comparison anchor, never an input."
+  },
+  "citations": [
+    "Moran, P.A.P. (1958). Random processes in genetics. Math. Proc. Camb. Phil. Soc. 54(1):60-71. doi:10.1017/S0305004100033193.",
+    "Nowak, M.A. (2006). Evolutionary Dynamics: Exploring the Equations of Life. Harvard University Press (ch. 6-7: the Moran process, rho=(1-1/r)/(1-1/r^N))."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the exact analytic Moran rho"
+  }
+}

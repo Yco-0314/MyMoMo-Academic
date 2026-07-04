@@ -1,0 +1,219 @@
+{
+  "model": "miller-page-2004-standing-ovation (agent-based)",
+  "config": {
+    "L": 40,
+    "n_seats": 1600,
+    "sigma": 0.3,
+    "T": 0.5,
+    "neighbourhood": "Moore-8, self-excluded, hard edges (edge=5, corner=3)",
+    "conformity_rule": "stand iff (# standing neighbours) >= ceil(k/2) (at least half of the k neighbours standing)",
+    "update": "synchronous, run to fixed point (no agent changes)",
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "max_iters": 200,
+    "s_high": 0.8,
+    "s_low": 0.2,
+    "s_mid_intermediate": 0.5,
+    "p1_bar": 0.8,
+    "p2_bar": 0.2,
+    "p3_margin": 0.25,
+    "p3_extreme_hi": 0.9,
+    "p3_extreme_lo": 0.1,
+    "baseline": "no-conformity baseline = the initial quality-only standing fraction (reported as initial vs final for every signal)"
+  },
+  "high_arm": {
+    "s": 0.8,
+    "mean_initial_fraction": 0.8431249999999999,
+    "mean_final_fraction": 1.0,
+    "min_final_fraction": 1.0,
+    "max_final_fraction": 1.0,
+    "std_final_fraction": 0.0,
+    "per_seed_initial": [
+      0.853125,
+      0.835625,
+      0.84375,
+      0.844375,
+      0.83875
+    ],
+    "per_seed_final": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "per_seed_iters": [
+      4,
+      3,
+      3,
+      3,
+      3
+    ],
+    "per_seed_converged": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "example_fraction_series": [
+      0.853125,
+      0.9925,
+      0.999375,
+      1.0,
+      1.0
+    ]
+  },
+  "low_arm": {
+    "s": 0.2,
+    "mean_initial_fraction": 0.15925,
+    "mean_final_fraction": 0.0,
+    "min_final_fraction": 0.0,
+    "max_final_fraction": 0.0,
+    "std_final_fraction": 0.0,
+    "per_seed_initial": [
+      0.16375,
+      0.168125,
+      0.15375,
+      0.143125,
+      0.1675
+    ],
+    "per_seed_final": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "per_seed_iters": [
+      12,
+      5,
+      4,
+      4,
+      4
+    ],
+    "per_seed_converged": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "example_fraction_series": [
+      0.16375,
+      0.02625,
+      0.009375,
+      0.008125,
+      0.005625,
+      0.005625,
+      0.004375,
+      0.004375,
+      0.003125,
+      0.0025,
+      0.000625,
+      0.0,
+      0.0
+    ]
+  },
+  "mid_arm": {
+    "s": 0.5,
+    "mean_initial_fraction": 0.49975,
+    "mean_final_fraction": 1.0,
+    "min_final_fraction": 1.0,
+    "max_final_fraction": 1.0,
+    "std_final_fraction": 0.0,
+    "per_seed_initial": [
+      0.491875,
+      0.49875,
+      0.504375,
+      0.49625,
+      0.5075
+    ],
+    "per_seed_final": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "per_seed_iters": [
+      25,
+      16,
+      15,
+      19,
+      16
+    ],
+    "per_seed_converged": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "example_fraction_series": [
+      0.491875,
+      0.610625,
+      0.71375,
+      0.79375,
+      0.855,
+      0.896875,
+      0.92375,
+      0.943125,
+      0.9525,
+      0.959375,
+      0.965,
+      0.970625,
+      0.975,
+      0.979375,
+      0.981875,
+      0.985,
+      0.9875,
+      0.990625,
+      0.991875,
+      0.99375,
+      0.995,
+      0.996875,
+      0.998125,
+      0.999375,
+      1.0,
+      1.0
+    ]
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 high quality -> ovation: s=0.8 mean final standing fraction > 0.8",
+      "salient_number": [
+        1.0,
+        0.8
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 low quality -> no ovation: s=0.2 mean final standing fraction < 0.2",
+      "salient_number": [
+        0.0,
+        0.2
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 spatial conformity amplifies: at the balanced intermediate s=0.5, conformity drives the final fraction toward an extreme (|final-initial| >= 0.25 OR final near 0/1)",
+      "salient_number": [
+        0.5002,
+        0.25
+      ],
+      "reasons": []
+    }
+  ]
+}
