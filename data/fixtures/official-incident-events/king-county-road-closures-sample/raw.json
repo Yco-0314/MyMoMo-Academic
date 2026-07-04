@@ -1,0 +1,34 @@
+{
+  "objectIdFieldName": "OBJECTID",
+  "globalIdFieldName": "globalid",
+  "geometryType": "esriGeometryPolyline",
+  "spatialReference": {
+    "wkid": 102100,
+    "latestWkid": 3857
+  },
+  "features": [
+    {
+      "attributes": {
+        "OBJECTID": 73,
+        "street": "Maple Valley Highway",
+        "reason": null,
+        "laneimpact": "Alternating One Way",
+        "accessallowed": "Local Access",
+        "description": "One lane closed due to landslide across from Riviera Apartments",
+        "starttime": 1765957282000,
+        "endtime": 1765987200000,
+        "activeincid": "No",
+        "globalid": "67da9afb-5c94-42a1-8406-659ced32b886"
+      },
+      "geometry": {
+        "paths": [
+          [
+            [-13602372.2365563, 6020903.491046],
+            [-13602067.0227263, 6020595.06442861],
+            [-13601562.6167849, 6020257.72272484]
+          ]
+        ]
+      }
+    }
+  ]
+}

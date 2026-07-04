@@ -1,0 +1,25 @@
+{
+  "schema": "abm-auto/official-incident-real-sample-repro/v1",
+  "dataset": "King County RoadClosures_public bounded closure sample",
+  "source_url": "https://services.arcgis.com/Ej0PsM5Aw677QF1W/arcgis/rest/services/RoadClosures_public_6e0ca9e8f25344ffa4c4a11b305884c3/FeatureServer/1",
+  "source_agency": "King County Emergency Management",
+  "license": "King County public road-closure service terms; bounded sample for reproducibility tests",
+  "downloaded_at": "2026-07-03",
+  "raw_arcgis_path": "raw.json",
+  "raw_arcgis_sha256": "e6d8faa8e6877459b35a06fa7dca483c26dd582dfb06c72bf140c4f040f58710",
+  "clock_manifest_path": "clock_manifest.json",
+  "intake_manifest_path": "intake_manifest.json",
+  "run": {
+    "n_steps": 12,
+    "speed_m_per_tick": 300.0,
+    "reroute": false
+  },
+  "expected": {
+    "expected_raw_features": 1,
+    "expected_timestamped_intervals": 1,
+    "expected_tick_events": 2,
+    "expected_matched_incidents": 2,
+    "expected_dynamic_changed": true
+  },
+  "boundary_note": "bounded real official road-closure sample only; not traffic-flow validity, not production map matching, not route-choice validation, not incident calibration, and not a full live feed."
+}
