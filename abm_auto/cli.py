@@ -437,7 +437,10 @@ def netlogo_behaviorspace_pack(
         console.print(f"[red]{exc}[/red]")
         raise typer.Exit(1) from exc
 
-    console.print(f"[green]✓ Wrote BehaviorSpace repro pack to {pack}[/green]")
+    console.print(
+        "[green]✓ Wrote BehaviorSpace repro pack: "
+        f"manifest.json={pack['manifest_path']} MANIFEST.md={pack['readme_path']}[/green]"
+    )
 
 
 @app.command()
