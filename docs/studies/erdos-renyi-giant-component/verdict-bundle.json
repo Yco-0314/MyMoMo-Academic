@@ -1,0 +1,110 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "On the evolution of random graphs",
+    "authors": [
+      "Paul Erdos",
+      "Alfred Renyi"
+    ],
+    "year": 1960,
+    "journal": "Publ. Math. Inst. Hungar. Acad. Sci. 5:17-61"
+  },
+  "headline": "Erdos-Renyi giant component (network generation): 3/3 locked clauses REPRO; frac(z=0.5)=0.0018, frac(z=2.0)=0.7991; matches S=1-e^(-zS) within 0.05 at z in [1.5, 2.0, 3.0]",
+  "code_commit": "1208151e491ceb48c79193076325f75c870c31cf",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 giant component absent below z=1, present above (frac(z=0.5)<0.05 AND frac(z=2.0)>0.4)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.7991,
+        0.4
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 sharp transition: fraction rises from <0.05 (z=0.5) to >0.40 (z=2.0) crossing z=1 (monotone non-decreasing)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.7973,
+        0.35000000000000003
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 measured fraction at z in {1.5,2.0,3.0} within +/-0.05 of self-consistent S=1-e^{-zS}",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0023,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/erdos-renyi-giant-component/results.json",
+      "sha256": "b4fdf1cdb0f30d0180866ea1754185293708e85ca3110ce05d2258a919eb0796",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/erdos-renyi-giant-component/PREDICTIONS-locked.md",
+      "sha256": "546cab31fb98c87238db516b3d85690765d6577d715e54aeb673622fcf757a3e",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/erdos-renyi-giant-component/FINDINGS.md",
+      "sha256": "aa7cf73198401e07c3cbc769373667730bb8f02060b680fb8a44364b2a8fc5cc",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-design.md",
+      "sha256": "574409d9b8c005bd730cc4f98b84de57e61cfaac5591f3e590128dc2b8341df0",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "erdos-renyi-giant-component",
+    "n": 10000,
+    "n_seeds_per_z": 10,
+    "z_grid": [
+      0.5,
+      0.8,
+      1.0,
+      1.2,
+      1.5,
+      2.0,
+      3.0
+    ],
+    "frac_low": 0.0018099999999999998,
+    "frac_high": 0.79912,
+    "model_class": "network-generation (NOT agent-stepping ABM): a static random graph is drawn and a structural property measured; no agents, scheduler, or ticks",
+    "scope": "faithful reproduction of a published synthetic network-science result; no real-world data; the contribution is whether the harness + discipline reproduce the giant-component phase transition and would catch an artifact"
+  },
+  "citations": [
+    "Erdos, P. & Renyi, A. (1960). On the evolution of random graphs. Publ. Math. Inst. Hungar. Acad. Sci. 5:17-61."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction. Analytic anchor S=1-e^(-zS) serves as the theoretical baseline (P3)."
+  }
+}

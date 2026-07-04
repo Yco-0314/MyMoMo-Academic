@@ -1,0 +1,106 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Dynamics of social balance on networks",
+    "authors": [
+      "Tibor Antal",
+      "Pavel L. Krapivsky",
+      "Sidney Redner"
+    ],
+    "year": 2005,
+    "journal": "Physical Review E 72(3):036121",
+    "doi": "10.1103/PhysRevE.72.036121"
+  },
+  "headline": "AKR 2005 CTD / Heider balance (signed-network dynamics): 3/3 locked clauses REPRO; 10/10 seeds reach balance (0 paradise, 10 two-faction); frustration monotone non-increasing",
+  "code_commit": "165d2bd0957c0776e438e843bb853c105b1481cb",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 reaches balance: fraction of seeds reaching a balanced absorbing state (energy 0) >= 0.90",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.9
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 valid <=2-faction balance: every final state partitions into all-positive paradise OR two factions (+ intra / - inter), verified",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 frustration non-increasing: the imbalanced-triangle count never rises under the dynamics (every seed's energy series monotone non-increasing)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/heider-balance/results.json",
+      "sha256": "cd7eaea9364269685f6eeec44adc95fece0973c686add7f92979d85cfc22fe85",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/heider-balance/PREDICTIONS-locked.md",
+      "sha256": "636a63d9995d8bb9c89dc6e29adbd8daa7fb68ffda9730403cbca6da28daccca",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/heider-balance/FINDINGS.md",
+      "sha256": "92fcf8fb832c8770c09070e54bccf5941a6ed198d72d7558805580f792a063f1",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveB-design.md",
+      "sha256": "b3423f48dd7bff7441742d3bb61c4e4c44f973b3f562cc0b1a7e03856bd6e277",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "antal-krapivsky-redner-2005-ctd / heider-balance",
+    "n": 30,
+    "n_seeds": 10,
+    "max_steps": 200000,
+    "framing": "signed-network dynamics (model-orchestrated triad/edge updates), NOT autonomous agent-stepping",
+    "frac_reached_balance": 1.0,
+    "n_paradise": 0,
+    "n_two_faction": 10,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the AKR drive to structural balance (absorbing <=2-faction state, monotone-decreasing frustration) and would catch an artifact"
+  },
+  "citations": [
+    "Antal, T., Krapivsky, P.L. & Redner, S. (2005). Dynamics of social balance on networks. Phys. Rev. E 72(3):036121. doi:10.1103/PhysRevE.72.036121.",
+    "Heider, F. (1946). Attitudes and cognitive organization. J. Psychology 21:107-112."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against reaching a balanced absorbing state, its valid <=2-faction structure, and monotone-non-increasing frustration"
+  }
+}

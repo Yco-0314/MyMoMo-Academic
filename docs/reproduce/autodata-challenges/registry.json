@@ -1,0 +1,36 @@
+{
+  "entries": [
+    {
+      "answer": "docs/reproduce/autodata-challenges/failure-pack-example/answer-codex.json",
+      "difficulty": "intro",
+      "domain": "evidence",
+      "id": "failure-pack-evidence-answering-v1",
+      "owner": "codex",
+      "pack": "docs/reproduce/autodata-challenges/failure-pack-example/challenge-pack.json",
+      "summary": "Evidence-answering challenge for the committed failure-pack seed artifact.",
+      "tags": [
+        "failure-pack",
+        "evidence-foundry",
+        "evidence-answering",
+        "handoff"
+      ]
+    },
+    {
+      "answer": "docs/reproduce/autodata-challenges/mir-v0-half-a/answer-codex.json",
+      "difficulty": "intro",
+      "domain": "architecture",
+      "id": "mir-v0-half-a-evidence-answering-v1",
+      "owner": "codex",
+      "pack": "docs/reproduce/autodata-challenges/mir-v0-half-a/challenge-pack.json",
+      "summary": "Evidence-answering challenge for MIR v0 Half A forward round-trip claims.",
+      "tags": [
+        "mir",
+        "architecture",
+        "evidence-answering",
+        "handoff"
+      ]
+    }
+  ],
+  "schema": "abm-auto/repro-challenge-registry/v1",
+  "title": "MyMoMo Evidence Foundry Curriculum"
+}

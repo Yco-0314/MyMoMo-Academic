@@ -1,0 +1,132 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Collective dynamics of 'small-world' networks",
+    "authors": [
+      "Duncan J. Watts",
+      "Steven H. Strogatz"
+    ],
+    "year": 1998,
+    "journal": "Nature 393:440-442",
+    "doi": "10.1038/30918"
+  },
+  "headline": "Watts-Strogatz 1998 (network-generation): 3/3 locked clauses REPRO; small-world window at p in [0.003, 0.01, 0.03, 0.1] (L/L0<0.5 while C/C0>0.5)",
+  "code_commit": "1208151e491ceb48c79193076325f75c870c31cf",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 endpoints: L(0)>>L(1) AND C(0)>>C(1) (each ratio >= 5x)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        15.4382,
+        5.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 small-world window: exists p in [0.001,0.1] with L/L0<0.5 AND C/C0>0.5",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        4.0,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 L collapses faster than C (p where L/L0<0.5 is < p where C/C0<0.5)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.003,
+        0.3
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/watts-strogatz-smallworld/results.json",
+      "sha256": "880953e59abc1201dba727860a54c2efbb1c8ab4423862cd9a9d0e588dce1ad1",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/watts-strogatz-smallworld/PREDICTIONS-locked.md",
+      "sha256": "32c52eb67f9f5309543ce429dff298b145304d2b5fd500d7c77d93bdbf403c8f",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/watts-strogatz-smallworld/FINDINGS.md",
+      "sha256": "f5cad6c735bc45290b2158f818e99ae16d963d7b3aa5d7597797e9a8966c35ff",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch4-design.md",
+      "sha256": "574409d9b8c005bd730cc4f98b84de57e61cfaac5591f3e590128dc2b8341df0",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "watts-strogatz-1998-small-world",
+    "n": 1000,
+    "k": 10,
+    "p_grid": [
+      0.0,
+      0.001,
+      0.003,
+      0.01,
+      0.03,
+      0.1,
+      0.3,
+      1.0
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "small_world_window_ps": [
+      0.003,
+      0.01,
+      0.03,
+      0.1
+    ],
+    "endpoint_ratios": {
+      "L0_over_L1": 15.43818343061431,
+      "C0_over_C1": 76.46187854325115
+    },
+    "model_type": "NETWORK-GENERATION (not agent-stepping); faithful structural reproduction of a published synthetic network model",
+    "scope": "faithful reproduction of a published synthetic network-science result; no real-world data; the contribution is whether the harness + lock-first discipline reproduce the small-world window and would catch an artifact"
+  },
+  "citations": [
+    "Watts, D.J. & Strogatz, S.H. (1998). Collective dynamics of 'small-world' networks. Nature 393:440-442. doi:10.1038/30918."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction using networkx watts_strogatz_graph as the canonical WS generator"
+  }
+}

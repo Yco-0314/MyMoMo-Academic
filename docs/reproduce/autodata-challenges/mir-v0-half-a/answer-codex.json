@@ -1,0 +1,40 @@
+{
+  "citations": {
+    "P1-field-identity": [
+      "findings",
+      "predictions_locked"
+    ],
+    "P3-byte-identical-render": [
+      "findings",
+      "predictions_locked"
+    ],
+    "P5-extensions-seam": [
+      "findings",
+      "predictions_locked"
+    ],
+    "P7-zero-change": [
+      "findings",
+      "predictions_locked"
+    ]
+  },
+  "claims": [
+    {
+      "id": "P1-field-identity",
+      "verdict": "PASS"
+    },
+    {
+      "id": "P3-byte-identical-render",
+      "verdict": "PASS"
+    },
+    {
+      "id": "P5-extensions-seam",
+      "verdict": "PASS"
+    },
+    {
+      "id": "P7-zero-change",
+      "verdict": "PASS"
+    }
+  ],
+  "schema": "abm-auto/repro-challenge-answer/v1",
+  "task_id": "mir-half-a-verdict-summary"
+}

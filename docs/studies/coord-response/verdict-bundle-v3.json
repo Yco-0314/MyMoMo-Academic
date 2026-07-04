@@ -1,0 +1,198 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "\u534f\u540c\u54cd\u5e94\u9a8c\u8bc1 ABM v3\uff08DOC A \u9759\u6001\u5168\u5c40\u6548\u7387\u4f18\u5316 \u00d7 \u667a\u80fd\u4f53\u534f\u540c\u54cd\u5e94\u8fc7\u7a0b\uff09",
+    "authors": [
+      "\u5510\u6bc5",
+      "\u9ec4\u8273\u79cb"
+    ],
+    "year": 2026,
+    "journal": "\u5e94\u6025\u7ba1\u7406\u5927\u5b66 (methodological / mechanism study)",
+    "doi": null
+  },
+  "headline": "v3 (agent-based): 4/4 testable predictions REPRO (P4 reported-only); null-gate PASSED (not refuted); load edge-responsive (varies on 17/30 nets)",
+  "code_commit": "2693420cc36beb497dce65b43a88c9d1339bf227",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 optimized beats original makespan in >=60% of ensemble",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.8667,
+        0.6
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 null-gate: optimized beats original AND random-edge null (makespan)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.57,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 consistency: 0<corr<0.9 AND >=1 counterexample (static up, makespan up)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.222,
+        0.9
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P4 phase ranking REPORTED (single combined DAG; not pass/fail)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0,
+        0.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P5 CEI: top-CEI removal degrades makespan more than median-CEI removal",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        154.167,
+        0.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "ensemble_results": {
+      "kind": "file",
+      "path": "docs/studies/coord-response/results-v3.json",
+      "sha256": "d26f4f3e52161e961d9e3ccbd6772f0a7d4c2439941d5107117141ec118bf73d",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/coord-response/PREDICTIONS-locked-v3.md",
+      "sha256": "5681fa7bb263ab7f882c69b239504c2b793982022167294c003837d9c4520213",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/coord-response/FINDINGS-v3.md",
+      "sha256": "7e7d4dbbfaf4734bf1fde23a924e482fd2577bda836e2da6d1e91e84196a17fc",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-28-coord-response-abm-v3-agentbased-design.md",
+      "sha256": "b10a9911972a89fc11aa92b495d87299acc3b42d7b6e8d832c19424a21cec230",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "version": "v3-agentbased",
+    "n_networks": 30,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "budget": 4,
+    "null_margin": 1.0,
+    "p1_fraction": 0.6,
+    "coord_window": 2,
+    "mechanism": {
+      "peak_overload_min": 1.25,
+      "peak_overload_mean": 1.3958,
+      "peak_overload_max": 1.875,
+      "frac_runs_overloaded": 1.0,
+      "original_baseline_nondone_tasks": 0,
+      "networks_load_varies_by_treatment": 17,
+      "networks_optimized_gt_original": 15,
+      "n_networks": 30
+    },
+    "coord_window_sweep": {
+      "W=1": {
+        "p1_fraction": 0.9,
+        "P1": true,
+        "P2_null_gate": true,
+        "corr": 0.2294,
+        "n_counterexamples": 1,
+        "P3": true,
+        "P5": true
+      },
+      "W=2": {
+        "p1_fraction": 0.867,
+        "P1": true,
+        "P2_null_gate": true,
+        "corr": 0.222,
+        "n_counterexamples": 1,
+        "P3": true,
+        "P5": true
+      },
+      "W=3": {
+        "p1_fraction": 0.867,
+        "P1": true,
+        "P2_null_gate": true,
+        "corr": 0.2508,
+        "n_counterexamples": 0,
+        "P3": false,
+        "P5": true
+      },
+      "W=4": {
+        "p1_fraction": 0.867,
+        "P1": true,
+        "P2_null_gate": true,
+        "corr": 0.2454,
+        "n_counterexamples": 1,
+        "P3": true,
+        "P5": true
+      },
+      "W=5": {
+        "p1_fraction": 0.9,
+        "P1": true,
+        "P2_null_gate": true,
+        "corr": 0.258,
+        "n_counterexamples": 1,
+        "P3": true,
+        "P5": true
+      },
+      "W=6": {
+        "p1_fraction": 0.9,
+        "P1": true,
+        "P2_null_gate": true,
+        "corr": 0.2642,
+        "n_counterexamples": 0,
+        "P3": false,
+        "P5": true
+      }
+    },
+    "scope": "synthetic representative ensemble; uncalibrated params; agent-based; method-mechanism validity, not real-world prediction"
+  },
+  "citations": [
+    "DOC A \u2014 \u5510\u6bc5, \u9ec4\u8273\u79cb. \u7701\u7ea7\u6d2a\u6d9d\u9884\u6848\u90e8\u95e8\u534f\u540c\u7f51\u7edc\u9759\u6001\u5168\u5c40\u6548\u7387\u4f18\u5316 (CEI \u7ea6\u675f\u7684\u9884\u7b97\u5316\u52a0\u8fb9). \u5e94\u6025\u7ba1\u7406\u5927\u5b66, 2026.",
+    "DOC B \u2014 \u5510\u6bc5, \u9ec4\u8273\u79cb. \u6587\u672c\u5408\u89c4\u2192\u9884\u6848\u6709\u6548\uff1a\u57fa\u4e8e ABM \u7684\u534f\u540c\u54cd\u5e94\u8fc7\u7a0b\u9a8c\u8bc1\u8bbe\u60f3. \u5e94\u6025\u7ba1\u7406\u5927\u5b66, 2026."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no real cross-tool baseline; synthetic-ensemble methodological study"
+  }
+}

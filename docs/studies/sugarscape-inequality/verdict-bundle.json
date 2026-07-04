@@ -1,0 +1,116 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Growing Artificial Societies: Social Science from the Bottom Up",
+    "authors": [
+      "Joshua M. Epstein",
+      "Robert Axtell"
+    ],
+    "year": 1996,
+    "publisher": "Brookings Institution Press / MIT Press",
+    "isbn": "9780262550253"
+  },
+  "headline": "Sugarscape (agent-based): 2/3 locked clauses REPRO; Gini rises 0.23 -> 0.48 from a near-uniform start (inequality emerges); P3 top-decile share 0.27 < 0.3 MISS without agent replacement",
+  "code_commit": "c1a01ecbb3ae578ae2536317787d5510d43bced1",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 final mean Gini of wealth >= 0.40 (strong inequality emerges)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.4752,
+        0.4
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 final Gini - initial Gini >= 0.15 (inequality rises from uniform start)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.2462,
+        0.15
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 right-skewed wealth: mean > median AND top-decile share >= 0.30",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.2696,
+        0.3
+      ],
+      "reasons": [
+        "mean wealth 169.98 vs median 162.25 (mean>median in 9/10 seeds); top-decile share = 0.2696 (>= 0.3 in 1/10 seeds); locked clause needs BOTH"
+      ],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/sugarscape-inequality/results.json",
+      "sha256": "8d73d47216ae27f12df1fd878cffd7e753940c956e80bd211ee6f2d1127964b1",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/sugarscape-inequality/PREDICTIONS-locked.md",
+      "sha256": "ecdb635a0e2462f41b1e138805c906542dba0d229bf201a7deeb6466635ab01a",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/sugarscape-inequality/FINDINGS.md",
+      "sha256": "9f175a505e5e870c45054e8d0b2bd5b215f2bfb145a75741e8592f9ef8f4fd75",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch3-design.md",
+      "sha256": "8c4ee1eccc914e5f17e9edaee1db1b5ec58a58d7493562a3dec8cd63764c3a25",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "sugarscape-epstein-axtell-1996",
+    "grid": "50x50 toroidal",
+    "n_agents": 250,
+    "regrow_rule": "G_infinity (instant regrow to capacity)",
+    "n_steps": 150,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "locked_metric": "Gini of agent wealth",
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the emergent-inequality result and would catch an artifact. Basic rule M only (no agent replacement rule R), which is why the top-decile concentration is moderate."
+  },
+  "citations": [
+    "Epstein, J.M. & Axtell, R. (1996). Growing Artificial Societies: Social Science from the Bottom Up. Brookings Institution Press / MIT Press. ISBN 9780262550253. (Sugarscape: emergent wealth inequality, Chapter II.)"
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

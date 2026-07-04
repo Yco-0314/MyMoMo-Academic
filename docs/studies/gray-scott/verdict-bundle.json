@@ -1,0 +1,99 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Complex patterns in a simple system",
+    "authors": [
+      "John E. Pearson"
+    ],
+    "year": 1993,
+    "journal": "Science 261(5118):189-192",
+    "doi": "10.1126/science.261.5118.189"
+  },
+  "headline": "Gray-Scott 1993 (reaction-diffusion): 3/3 locked clauses REPRO; spots n_comp=112, stripes max_aspect=7.6, replicating peak_spots=320, homogeneous std_V=0.0000",
+  "code_commit": "829f2c5e256431c8db09a0d043960fa7118533fc",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 pattern selection by (F,k): spots (>=8 compact blobs) vs stripes (elongated)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        112,
+        8
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 self-replication: peak spot count >= 4 (spots divide)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        320,
+        4
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 homogeneous regime: final spatial std(V) < 0.02 (no pattern)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0,
+        0.02
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/gray-scott/results.json",
+      "sha256": "6c09ce98101ca0a8c1b5f3c5619fa8865218232ef03ac6d8bf2e23d36d1296ed",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/gray-scott/PREDICTIONS-locked.md",
+      "sha256": "d413d16f8a064d904419be65f813028b57a79c48b7b149f33b49e47350031c02",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/gray-scott/FINDINGS.md",
+      "sha256": "2f9578e0aaa9091f0a775f8a0fb1e2b2c8ca8b60861b2275742afc6374d01edb",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "gray-scott-1993",
+    "grid": 256,
+    "n_steps": 15000,
+    "framing": "reaction-diffusion PDE on a grid (CA), not agent-stepping",
+    "scope": "faithful reproduction of Pearson's (F,k) pattern-selection phase diagram"
+  },
+  "citations": [
+    "Pearson, J.E. (1993). Complex patterns in a simple system. Science 261(5118):189-192. doi:10.1126/science.261.5118.189."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against Pearson's morphology regimes"
+  }
+}

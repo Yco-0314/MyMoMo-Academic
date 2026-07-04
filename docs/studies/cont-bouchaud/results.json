@@ -1,0 +1,127 @@
+{
+  "model": "cont-bouchaud-2000 percolation market (percolation + trading)",
+  "config": {
+    "n": 10000,
+    "c_crit": 1.0,
+    "c_sub": 0.2,
+    "a_herd": 0.05,
+    "a_high": 0.49,
+    "a_grid": [
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.49
+    ],
+    "n_steps": 10000,
+    "n_seeds": 5,
+    "seed_base": 0,
+    "p1_kurt_abs": 3.0,
+    "p1_ratio": 5.0,
+    "p2_p3_abs": 0.008,
+    "p2_p3_gauss_mult": 3.0,
+    "p2_p5_gauss_mult": 10.0,
+    "p2_alpha_band": [
+      1.5,
+      4.0
+    ],
+    "p3_ratio": 3.0,
+    "gaussian_p_gt_3sigma": 0.0026997960632601913,
+    "gaussian_p_gt_5sigma": 5.73303143758389e-07,
+    "control": "near-Gaussian controls differ ONLY by regime (high a, or c<<1)"
+  },
+  "critical_arm": {
+    "pooled_excess_kurtosis": 3.5631551957136383,
+    "mean_excess_kurtosis": 3.563155195712482,
+    "std_excess_kurtosis": 2.3254966522669442,
+    "per_seed_excess_kurtosis": [
+      1.789368971465624,
+      3.1805609615056163,
+      2.4889504861555993,
+      8.125880684741096,
+      2.2310148746944733
+    ],
+    "pooled_p_gt_3sigma": 0.02084,
+    "pooled_p_gt_5sigma": 0.00038,
+    "pooled_tail_exponent": 3.3565034284089452,
+    "mean_largest_cluster_fraction": 0.030520000000000002,
+    "mean_n_clusters": 4935.4,
+    "total_samples": 50000
+  },
+  "control_high_activity": {
+    "a": 0.49,
+    "pooled_excess_kurtosis": -0.23246295446483822,
+    "pooled_p_gt_3sigma": 0.00124,
+    "pooled_p_gt_5sigma": 0.0
+  },
+  "control_below_threshold": {
+    "c": 0.2,
+    "pooled_excess_kurtosis": 0.032848676535177646,
+    "pooled_p_gt_3sigma": 0.00284,
+    "mean_largest_cluster_fraction": 0.0006799999999999999
+  },
+  "activity_sweep": [
+    {
+      "a": 0.05,
+      "pooled_excess_kurtosis": 3.5631551957136383,
+      "pooled_p_gt_3sigma": 0.02084,
+      "mean_largest_cluster_fraction": 0.030520000000000002
+    },
+    {
+      "a": 0.1,
+      "pooled_excess_kurtosis": 1.4765110468853315,
+      "pooled_p_gt_3sigma": 0.01072,
+      "mean_largest_cluster_fraction": 0.030520000000000002
+    },
+    {
+      "a": 0.2,
+      "pooled_excess_kurtosis": 0.43484782128476285,
+      "pooled_p_gt_3sigma": 0.00434,
+      "mean_largest_cluster_fraction": 0.030520000000000002
+    },
+    {
+      "a": 0.3,
+      "pooled_excess_kurtosis": 0.10164157651788219,
+      "pooled_p_gt_3sigma": 0.00252,
+      "mean_largest_cluster_fraction": 0.030520000000000002
+    },
+    {
+      "a": 0.49,
+      "pooled_excess_kurtosis": -0.23246295446483822,
+      "pooled_p_gt_3sigma": 0.00124,
+      "mean_largest_cluster_fraction": 0.030520000000000002
+    }
+  ],
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 fat tails at criticality: pooled excess kurtosis > 3 and > 5x near-Gaussian control",
+      "salient_number": [
+        3.5632,
+        3.0
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 heavy tails vs Gaussian: P(|r|>3s)>=0.008 & >=3x Gaussian, P(|r|>5s)>=10x Gaussian, exponent in [1.5,4]",
+      "salient_number": [
+        0.02084,
+        0.008
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 activity crossover to Gaussian: kurtosis(a=0.05) >= 3x kurtosis(a=0.49) and monotone decrease",
+      "salient_number": [
+        3.5632,
+        0.0
+      ],
+      "reasons": []
+    }
+  ]
+}

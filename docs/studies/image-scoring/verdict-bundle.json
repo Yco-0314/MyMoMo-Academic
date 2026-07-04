@@ -1,0 +1,116 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Evolution of indirect reciprocity by image scoring",
+    "authors": [
+      "Martin A. Nowak",
+      "Karl Sigmund"
+    ],
+    "year": 1998,
+    "journal": "Nature 393:573-577",
+    "doi": "10.1038/31225"
+  },
+  "headline": "Nowak-Sigmund 1998 image scoring (agent-based): 1/3 locked clauses REPRO; P2 information threshold q>c/b REPRO (collapse<1% acts for q<=0.05, sustained 1.00 at q=1); P1 and P3 honest MISSes \u2014 the faithful mutation-free model drifts among cooperative strategies (k<=0) instead of fixing on exactly k=0, and under m=10n the group-size decay of cooperation does not appear",
+  "code_commit": "0a4851529ed7e7b8e84fd074d8f89d5cd875daea",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 no-mutation full-info fixation to stern discriminator k=0 (freq_k0>0.95, |mean k|<0.5, k=0 modal in >=90% of seeds)",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.2,
+        0.95
+      ],
+      "reasons": [
+        "k=0 frequency = 0.2000 (need > 0.95); |mean k| = 2.4000 (need < 0.5); k=0 modal in 20% of 20 seeds (need >= 90%). Cooperation IS established (coop-act fraction = 1.000) but the population drifts among cooperative strategies (k<=0) rather than fixing on exactly k=0 \u2014 the known neutral drift of plain image scoring without mutation (all k<=0 strategies are payoff-equivalent once images saturate)."
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P2 information threshold q>c/b sustains cooperation (collapse <1% acts for q<=0.05; coop-strategy>0.6 at q=1.0; crossover near q~c/b=0.1)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.6
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 group-size effect (with mutation): coop-strategy fraction decreases monotonically with n (~0.90/0.47/0.18 at n=20/50/100)",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.9987,
+        0.18
+      ],
+      "reasons": [
+        "coop-strategy fraction by n: n=20:0.887(target 0.9+/-0.1), n=50:0.999(target 0.47+/-0.12), n=100:0.999(target 0.18+/-0.1); monotone decreasing = False; all in target band = False. Under the locked m=10n interactions/generation the per-capita information an individual's image is built from is CONSTANT in n (each agent is a donor ~10 times regardless of n), so cooperation does not decay with group size in this faithful formulation \u2014 the published decrease requires a fixed total round count so larger groups dilute reputation, which m=10n does not impose."
+      ],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/image-scoring/results.json",
+      "sha256": "3595631f01e7e2a11e49219c406a14543aa36c800dfa8fe08f3ea5307ec9d131",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/image-scoring/PREDICTIONS-locked.md",
+      "sha256": "01e69dc4176563ad2076b55da22d7d5911bcdfb8b0790d58aa020685feb33a0b",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/image-scoring/FINDINGS.md",
+      "sha256": "fa38cc26059399680129e9623acd92f887ff5b07cbc2b992cf979eadd0768c16",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "nowak-sigmund-1998-image-scoring",
+    "b": 1.0,
+    "c": 0.1,
+    "interactions_per_agent": 10,
+    "n_seeds": 20,
+    "n_generations": 500,
+    "p1_freq_k0": 0.2,
+    "p1_abs_mean_k": 2.4,
+    "p1_modal_frac_k0": 0.2,
+    "p2_sustain_q1": 1.0,
+    "p2_collapse_q005": 0.0,
+    "p3_coop_strategy": {
+      "20": 0.8872750000000001,
+      "50": 0.9988400000000001,
+      "100": 0.9987350000000002
+    },
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + locked-prediction discipline reproduce the indirect-reciprocity information threshold and would honestly report the plain-image-scoring drift + group-size null as MISSes rather than tune them"
+  },
+  "citations": [
+    "Nowak, M.A. & Sigmund, K. (1998). Evolution of indirect reciprocity by image scoring. Nature 393:573-577. doi:10.1038/31225."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the cooperative-act fraction, cooperative-strategy fraction, and the k=0 stern-discriminator frequency"
+  }
+}

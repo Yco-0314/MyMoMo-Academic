@@ -1,0 +1,116 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "The standing ovation problem",
+    "authors": [
+      "John H. Miller",
+      "Scott E. Page"
+    ],
+    "year": 2004,
+    "journal": "Complexity 9(5):8-16",
+    "doi": "10.1002/cplx.20033"
+  },
+  "headline": "Miller-Page 2004 Standing Ovation (agent-based): 3/3 locked clauses REPRO; s=0.8 final=1.000, s=0.2 final=0.000, s=0.5 init=0.500->final=1.000 (conformity amplifies the balanced case)",
+  "code_commit": "165d2bd0957c0776e438e843bb853c105b1481cb",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 high quality -> ovation: s=0.8 mean final standing fraction > 0.8",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.8
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 low quality -> no ovation: s=0.2 mean final standing fraction < 0.2",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0,
+        0.2
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 spatial conformity amplifies: at the balanced intermediate s=0.5, conformity drives the final fraction toward an extreme (|final-initial| >= 0.25 OR final near 0/1)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.5002,
+        0.25
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/standing-ovation/results.json",
+      "sha256": "a1ed8cb74889671333bb2d75cd96ac0b5fac6faf551557977e7c3b10a582c1a9",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/standing-ovation/PREDICTIONS-locked.md",
+      "sha256": "537ed077f582961b9b2945f8d356c5ea9fbde78676361653c24b153e5ac5514c",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/standing-ovation/FINDINGS.md",
+      "sha256": "4258d6fdc2517d637fb40116450ed902c71f72e146f2ed86dbf6fc1f6754372c",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveB-design.md",
+      "sha256": "b3423f48dd7bff7441742d3bb61c4e4c44f973b3f562cc0b1a7e03856bd6e277",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "miller-page-2004-standing-ovation",
+    "L": 40,
+    "sigma": 0.3,
+    "T": 0.5,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "max_iters": 200,
+    "s_high": 0.8,
+    "s_low": 0.2,
+    "s_mid": 0.5,
+    "high_mean_final": 1.0,
+    "low_mean_final": 0.0,
+    "mid_mean_initial": 0.49975,
+    "mid_mean_final": 1.0,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce a conformity-driven standing ovation (high quality stands, low quality flops, and local conformity amplifies a balanced performance), and would catch an artifact"
+  },
+  "citations": [
+    "Miller, J.H. & Page, S.E. (2004). The standing ovation problem. Complexity 9(5):8-16. doi:10.1002/cplx.20033.",
+    "Miller, J.H. & Page, S.E. (2007). Complex Adaptive Systems: An Introduction to Computational Models of Social Life. Princeton University Press, Ch. 9."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the final standing fraction vs the no-conformity (quality-only) initial fraction"
+  }
+}

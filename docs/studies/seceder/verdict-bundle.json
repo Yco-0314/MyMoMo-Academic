@@ -1,0 +1,111 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Spontaneous group formation in the Seceder model",
+    "authors": [
+      "Peter Dittrich",
+      "Fredrik Liljeros",
+      "Arne Soulier",
+      "Wolfgang Banzhaf"
+    ],
+    "year": 2000,
+    "journal": "Physical Review Letters 84(14):3205-3208",
+    "doi": "10.1103/PhysRevLett.84.3205"
+  },
+  "headline": "Seceder model (Dittrich et al. 2000, agent-based): 3/3 locked clauses REPRO; steady clusters ~5.6 (>= 2), variance ~353 = 8820x the mutation floor; honest caveat: measured cluster count (~5-6) exceeds the canonical ~3 because group centres diffuse apart at the locked small sigma_mut",
+  "code_commit": "165d2bd0957c0776e438e843bb853c105b1481cb",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 spontaneous multi-cluster formation: steady cluster count >= 2 (every seed)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        5.0,
+        2.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 diversity persists: min steady variance >= 10x the mutation floor (no collapse to a point)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        5270.92,
+        10.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 cluster structure stable: persistent multi-cluster + approximately-constant count over the late run (not a transient)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.281,
+        0.5
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/seceder/results.json",
+      "sha256": "2ade1f32f87517eb8cae63cec018f6ba3af26f3ec4979ba385e54cf432d0bbaa",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/seceder/PREDICTIONS-locked.md",
+      "sha256": "778acd86822f80cdf0b84f37f0ac131dc665edb974ea4a70eeb626720b3e890f",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/seceder/FINDINGS.md",
+      "sha256": "508d13cd88ad7e46bfd0be6210a1694ac7f8f90f6b78d254b7cbd9068ea2a942",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-30-classic-abm-reproductions-batch6-waveB-design.md",
+      "sha256": "b3423f48dd7bff7441742d3bb61c4e4c44f973b3f562cc0b1a7e03856bd6e277",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "seceder-dittrich-2000",
+    "n": 200,
+    "sigma_mut": 0.2,
+    "init_sigma": 1.0,
+    "gap_factor": 3.0,
+    "min_occupancy": 5,
+    "n_seeds": 5,
+    "generations": 400,
+    "measure_last": 100,
+    "mean_steady_clusters": 5.6,
+    "mean_steady_variance": 352.7853142526498,
+    "mean_variance_over_floor": 8819.632856316244,
+    "mutation_floor": 0.04000000000000001,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce spontaneous multi-group formation from a single 'reproduce the outlier' rule and would catch an artifact"
+  },
+  "citations": [
+    "Dittrich, P., Liljeros, F., Soulier, A. & Banzhaf, W. (2000). Spontaneous group formation in the Seceder model. Phys. Rev. Lett. 84(14):3205-3208. doi:10.1103/PhysRevLett.84.3205."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the locked cluster-count rule (gap-cut + minimum occupancy) + population variance"
+  }
+}

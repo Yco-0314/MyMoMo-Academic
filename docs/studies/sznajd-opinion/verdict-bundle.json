@@ -1,0 +1,113 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Opinion evolution in closed community",
+    "authors": [
+      "Katarzyna Sznajd-Weron",
+      "Jozef Sznajd"
+    ],
+    "year": 2000,
+    "journal": "International Journal of Modern Physics C 11(6):1157-1165",
+    "doi": "10.1142/S0129183100000936"
+  },
+  "headline": "Sznajd 2000 (agent-based, 2D): 3/3 locked clauses REPRO; complete consensus from d=0.5 in 100% of runs; phase transition at d=1/2 (P(all-UP): 0.00 for d<=0.4 -> 1.00 for d>=0.6)",
+  "code_commit": "7a10ecc7437ab5558be2e113fa9df201d6a89215",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 complete consensus from d=0.5 (|m|>=0.95 in >=80% of runs)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.8
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 phase transition at d=1/2 (P(all-UP)<= 0.05 for d<=0.4, >= 0.95 for d>=0.6)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 majority opinion wins (P(all-UP|d=0.7)>0.8 AND P(all-UP|d=0.3)<0.2)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/sznajd-opinion/results.json",
+      "sha256": "32ed00e9f05689d403a7ae81b395a633bd2a4fe39a41e0e692f7d74b11ef2974",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/sznajd-opinion/PREDICTIONS-locked.md",
+      "sha256": "18e40eb656e41f910acb7ed4c43a8ece79bfbd52861f8c77cee91148f7f15f41",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/sznajd-opinion/FINDINGS.md",
+      "sha256": "f82fe78e8020b19fad82d4cbb04f6c4daa756a4014f2d82b55ba05319214243d",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-29-classic-abm-reproductions-batch3-design.md",
+      "sha256": "8c4ee1eccc914e5f17e9edaee1db1b5ec58a58d7493562a3dec8cd63764c3a25",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "sznajd-2000-opinion",
+    "L": 40,
+    "n_seeds_per_d": 20,
+    "d_grid": [
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8
+    ],
+    "max_sweeps": 1000,
+    "consensus_tol": 0.95,
+    "locked_metric": "final magnetization / P(all-up)",
+    "rule_variant": "2D Sznajd 'united we stand': unanimous 2x2 plaquette persuades its 8 edge-adjacent neighbours (Stauffer 2000 generalisation); periodic lattice; frozen-sweep stop",
+    "scope": "faithful reproduction of a published synthetic opinion-dynamics model; no real-world data; the contribution is whether the harness + discipline reproduce consensus + the d=1/2 transition and would catch an artifact"
+  },
+  "citations": [
+    "Sznajd-Weron, K. & Sznajd, J. (2000). Opinion evolution in closed community. Int. J. Mod. Phys. C 11(6):1157-1165. doi:10.1142/S0129183100000936.",
+    "Stauffer, D., Sousa, A.O. & Moss de Oliveira, S. (2000). Generalization to square lattice of Sznajd sociophysics model. Int. J. Mod. Phys. C 11(6):1239-1245."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction"
+  }
+}

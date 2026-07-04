@@ -1,0 +1,111 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Exact solution of a 1D asymmetric exclusion model using a matrix formulation",
+    "authors": [
+      "B. Derrida",
+      "M. R. Evans",
+      "V. Hakim",
+      "V. Pasquier"
+    ],
+    "year": 1993,
+    "journal": "Journal of Physics A: Mathematical and General 26(7):1493-1517",
+    "doi": "10.1088/0305-4470/26/7/011"
+  },
+  "headline": "TASEP open boundaries (DEHP 1993, CA): 3/3 locked clauses REPRO; maximal-current plateau J=0.251~0.25 (worst |J-0.25|=0.001), low-density J=0.210~a(1-a) rho=0.301~a, coexistence density jump 0.36 on crossing",
+  "code_commit": "7a0d7566d48fd3f6fa883e7c91ab91de8fc0fd7e",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 maximal-current plateau: |J - 0.25| <= 0.02 at every (alpha,beta) with alpha,beta > 0.5 (J independent of alpha,beta)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0011,
+        0.02
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 low-density phase (alpha=0.3<beta=0.8): J ~= alpha(1-alpha) AND rho ~= alpha, each within +/-0.03",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0009,
+        0.03
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 coexistence: alpha=beta=0.3 profile roughly linear (R^2 >= 0.85) AND lowering beta to 0.15 flips bulk rho by a jump >= 0.20 (toward 1-beta)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.3551,
+        0.2
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/tasep-open-boundary/results.json",
+      "sha256": "33b9992e83ffa54f9965370a0f8a098e24e284c0a4f5836e36ec773f11c22a27",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/tasep-open-boundary/PREDICTIONS-locked.md",
+      "sha256": "8ee31942568722c1186f7960d35695957b0398be7eb26651a66085f45e9eb2a0",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/tasep-open-boundary/FINDINGS.md",
+      "sha256": "aebb2a55fc843d6bd03bc6ecb5a9befac83428004bea8fa3212a5fa5c361acf2",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "tasep-open-boundary-1993",
+    "L": 200,
+    "warmup": 2000,
+    "measure": 8000,
+    "n_seeds": 4,
+    "framing": "CA (disclosed)",
+    "framing_detail": "totally asymmetric simple exclusion process (TASEP) \u2014 an interacting-particle / cellular-automaton stochastic hopping-exclusion rule on a 1D open lattice under random-sequential update, NOT an agent-stepping ABM (no perceive/decide/act agents, no scheduler over a roster)",
+    "p1_worst_abs_dev": 0.0010624999999999662,
+    "p1_plateau_spread": 0.0006562499999999138,
+    "p2_current": 0.20965625,
+    "p2_density": 0.3009305037313437,
+    "p3_density_jump": 0.3551077425372846,
+    "p3_line_r2": 0.9364030789454995,
+    "scope": "faithful reproduction of a published analytically-exact model; no real-world data; the contribution is whether the harness + discipline reproduce the boundary-induced three-phase diagram of the open TASEP (the exactly-known maximal current J = 1/4, the alpha-controlled low-density current/plateau, and the coexistence-line density jump) and would catch an artifact"
+  },
+  "citations": [
+    "Derrida, B., Evans, M.R., Hakim, V. & Pasquier, V. (1993). Exact solution of a 1D asymmetric exclusion model using a matrix formulation. Journal of Physics A: Mathematical and General 26(7):1493-1517. doi:10.1088/0305-4470/26/7/011."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the exactly-known open-TASEP phase diagram (maximal current J=1/4, low-density J=alpha(1-alpha) & rho=alpha, coexistence-line density jump)"
+  }
+}

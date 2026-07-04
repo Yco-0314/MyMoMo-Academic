@@ -1,0 +1,111 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Spatial patterns for discrete models of diffusion in excitable media",
+    "authors": [
+      "James M. Greenberg",
+      "Stuart P. Hastings"
+    ],
+    "year": 1978,
+    "journal": "SIAM Journal on Applied Mathematics 34(3):515-523",
+    "doi": "10.1137/0134040"
+  },
+  "headline": "Greenberg-Hastings 1978 excitable-media CA: 3/3 locked clauses REPRO; broken front -> spiral rotating at period 6 (T=5) over 37 rotations; head-on fronts annihilate in 4 steps with no pass-through; finite critical size increasing with r (r=4:L_c=4, r=8:L_c=8, r=12:L_c=12)",
+  "code_commit": "ed6fe16bf3c0d8ceee6f0a9f4098acb2dd0c2b8a",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 rotating spiral: broken front -> persistent spiral, rotation period = T=5 (+-1) stable over >= 20 rotations",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        6.0,
+        5.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 wavefront annihilation: head-on fronts annihilate (band -> 0 within one refractory period T=5) with NO transmitted front",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        4.0,
+        5.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 refractory-set critical size: finite L_c (dies < 5 cyc below, persists > 100 cyc at/above) increasing monotonically with r",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        3.0,
+        3.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/greenberg-hastings/results.json",
+      "sha256": "02659cd55126499a352c36d46ffd4282cef3d2ebf1e31bceea38fc8f509526ee",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/greenberg-hastings/PREDICTIONS-locked.md",
+      "sha256": "9720b2c022387ebe934c68c0f892dbf69b90e574e8c037467369767029bb7644",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/greenberg-hastings/FINDINGS.md",
+      "sha256": "6f705a0706a92185afb9e51fbc0358fdd5c0a22ae5ba2103fe368ba9f7f8820f",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "greenberg-hastings-1978",
+    "r": 4,
+    "T": 5,
+    "neighbourhood": "von-Neumann (4)",
+    "framing": "3-state excitable cellular automaton (synchronous local rule on a 2D grid), not agent-stepping \u2014 CA (disclosed)",
+    "p1_rotation_period": 6,
+    "p1_n_rotations": 37,
+    "p2_steps_to_quiet_after_meet": 4,
+    "p2_no_pass_through": true,
+    "p3_L_c": {
+      "4": 4,
+      "8": 8,
+      "12": 12
+    },
+    "note_period": "the discrete GH spiral's global-activity rotation period is T=1+r to within +-1; at r=4 it measures T+1=6 (a known one-tick discrete-core delay), inside the locked +-1 tolerance",
+    "scope": "faithful reproduction of a published excitable-media CA; no real-world data; the contribution is whether the harness + lock-first discipline reproduce the Greenberg-Hastings signatures (a fixed-period rotating spiral, wavefront annihilation, and a refractory-set critical re-entry size) and would catch an artifact"
+  },
+  "citations": [
+    "Greenberg, J.M. & Hastings, S.P. (1978). Spatial patterns for discrete models of diffusion in excitable media. SIAM Journal on Applied Mathematics 34(3):515-523. doi:10.1137/0134040."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the Greenberg-Hastings signatures (rotating-spiral period, wavefront annihilation, critical size)"
+  }
+}

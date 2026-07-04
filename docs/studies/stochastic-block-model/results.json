@@ -1,0 +1,228 @@
+{
+  "model": "two-block-stochastic-block-model-detectability",
+  "framing": "network-generation plus community-inference reproduction",
+  "config": {
+    "n": 5000,
+    "c": 3.0,
+    "epsilon_threshold": 0.2679491924311227,
+    "epsilon_grid": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.35,
+      0.5
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "detector": "Bethe Hessian spectral detector, no planted labels provided",
+    "overlap": "(accuracy after optimal two-label permutation - 0.5) / 0.5"
+  },
+  "sweep": [
+    {
+      "epsilon": 0.05,
+      "overlap_per_seed": [
+        0.8400000000000001,
+        0.9096,
+        0.9159999999999999,
+        0.8368,
+        0.9064000000000001
+      ],
+      "mean_overlap": 0.8817599999999999,
+      "std_overlap": 0.03555241763931109,
+      "matched_er_overlap_per_seed": [
+        0.016000000000000014,
+        0.02079999999999993,
+        0.01200000000000001,
+        0.01200000000000001,
+        0.0032000000000000917
+      ],
+      "matched_er_mean_overlap": 0.012800000000000011,
+      "mean_degree_per_seed": [
+        3.0296,
+        2.972,
+        2.9836,
+        2.9824,
+        3.0424
+      ],
+      "mean_degree": 3.002
+    },
+    {
+      "epsilon": 0.1,
+      "overlap_per_seed": [
+        0.7256,
+        0.7776000000000001,
+        0.7727999999999999,
+        0.74,
+        0.7791999999999999
+      ],
+      "mean_overlap": 0.7590399999999999,
+      "std_overlap": 0.0220045086289151,
+      "matched_er_overlap_per_seed": [
+        0.006399999999999961,
+        0.005600000000000049,
+        0.011200000000000099,
+        0.008000000000000007,
+        0.01200000000000001
+      ],
+      "matched_er_mean_overlap": 0.008640000000000026,
+      "mean_degree_per_seed": [
+        3.036,
+        2.978,
+        3.0032,
+        2.9744,
+        3.0216
+      ],
+      "mean_degree": 3.0026400000000004
+    },
+    {
+      "epsilon": 0.15,
+      "overlap_per_seed": [
+        0.6288,
+        0.6024,
+        0.5895999999999999,
+        0.5912,
+        0.6759999999999999
+      ],
+      "mean_overlap": 0.6176,
+      "std_overlap": 0.032397530770106535,
+      "matched_er_overlap_per_seed": [
+        0.007200000000000095,
+        0.0,
+        0.02079999999999993,
+        0.0016000000000000458,
+        0.04239999999999999
+      ],
+      "matched_er_mean_overlap": 0.014400000000000013,
+      "mean_degree_per_seed": [
+        3.0348,
+        2.9708,
+        3.0056,
+        2.9904,
+        3.0148
+      ],
+      "mean_degree": 3.00328
+    },
+    {
+      "epsilon": 0.2,
+      "overlap_per_seed": [
+        0.4767999999999999,
+        0.41999999999999993,
+        0.4776,
+        0.4832000000000001,
+        0.45920000000000005
+      ],
+      "mean_overlap": 0.46335999999999994,
+      "std_overlap": 0.02312761120392682,
+      "matched_er_overlap_per_seed": [
+        0.008799999999999919,
+        0.011200000000000099,
+        0.0016000000000000458,
+        0.0032000000000000917,
+        0.02639999999999998
+      ],
+      "matched_er_mean_overlap": 0.010240000000000027,
+      "mean_degree_per_seed": [
+        3.026,
+        2.9756,
+        2.992,
+        3.0024,
+        3.0164
+      ],
+      "mean_degree": 3.00248
+    },
+    {
+      "epsilon": 0.35,
+      "overlap_per_seed": [
+        0.03839999999999999,
+        0.024799999999999933,
+        0.0047999999999999154,
+        0.0040000000000000036,
+        0.01200000000000001
+      ],
+      "mean_overlap": 0.01679999999999997,
+      "std_overlap": 0.013125852353275961,
+      "matched_er_overlap_per_seed": [
+        0.007200000000000095,
+        0.0007999999999999119,
+        0.012799999999999923,
+        0.008000000000000007,
+        0.0016000000000000458
+      ],
+      "matched_er_mean_overlap": 0.006079999999999997,
+      "mean_degree_per_seed": [
+        3.0288,
+        2.9956,
+        2.9888,
+        2.9996,
+        2.9976
+      ],
+      "mean_degree": 3.00208
+    },
+    {
+      "epsilon": 0.5,
+      "overlap_per_seed": [
+        0.04720000000000013,
+        0.01200000000000001,
+        0.015200000000000102,
+        0.02159999999999984,
+        0.02639999999999998
+      ],
+      "mean_overlap": 0.024480000000000012,
+      "std_overlap": 0.012410060434985838,
+      "matched_er_overlap_per_seed": [
+        0.017599999999999838,
+        0.005600000000000049,
+        0.013600000000000056,
+        0.0007999999999999119,
+        0.0
+      ],
+      "matched_er_mean_overlap": 0.007519999999999971,
+      "mean_degree_per_seed": [
+        3.0488,
+        3.0032,
+        2.9924,
+        3.0056,
+        3.0088
+      ],
+      "mean_degree": 3.0117599999999998
+    }
+  ],
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 deep-detectable recovery: mean overlap Q(eps=0.1)>=0.5 and matched ER control Q<=0.1",
+      "salient_number": [
+        0.759,
+        0.5
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 deep-undetectable failure: mean overlap Q(eps=0.5)<=0.15 and within 0.05 of matched ER control",
+      "salient_number": [
+        0.0245,
+        0.15
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 monotone detectability sweep: Q(0.05)-Q(0.50)>=0.4, Q<=0.10 eps values >=0.5, Q(0.50)<=0.15",
+      "salient_number": [
+        0.8573,
+        0.4
+      ],
+      "reasons": []
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "From disorder to order in marching locusts",
+    "authors": [
+      "Jerome Buhl",
+      "David J. T. Sumpter",
+      "Iain D. Couzin",
+      "Joe J. Hale",
+      "Emma Despland",
+      "Edgar R. Miller",
+      "Stephen J. Simpson"
+    ],
+    "year": 2006,
+    "journal": "Science 312(5778):1402-1406",
+    "doi": "10.1126/science.1125142"
+  },
+  "headline": "Buhl et al. 2006 marching locusts (Czirok 1D SPP, genuine-agent): 3/3 locked clauses REPRO; density crossover mean|<v>| 0.24@rho=0.10 -> 0.88@rho=1.00; near-critical (rho=0.20) switches 4/6 seeds vs high-density (rho=1.50) median 0 flips",
+  "code_commit": "78e9afde8e80a408cee8a4ee33cc34a5a59fc926",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 density crossover: mean |<v>| < 0.3 at lowest density AND > 0.7 at highest density",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.642,
+        0.4
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 intermittent switching: near-critical density reverses (rate>0, >=1 seed) while the high-density median run never reverses (rate~=0)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        4,
+        1
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 monotone ordering: mean |<v>| non-decreasing in density (tol 0.05)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.08,
+        -0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/buhl-locust/results.json",
+      "sha256": "144d03d1ae093f259e6f722e11bbf8b91155087a2297f85085ec0bc2bef595ab",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/buhl-locust/PREDICTIONS-locked.md",
+      "sha256": "dcc290f2e24a88adf5dec5cb3d3f06dde5631aea44c0595b3365a055211dd6c0",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/buhl-locust/FINDINGS.md",
+      "sha256": "2223ce6b90401ecdba4eba469fdbc99774d51377296c530f1faf03ff43fd66c6",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "buhl-locust-2006",
+    "N": 60,
+    "R": 1.0,
+    "eta": 2.0,
+    "beta": 2.0,
+    "speed": 0.1,
+    "n_steps": 6000,
+    "measure_last": 4000,
+    "n_seeds": 6,
+    "densities": [
+      0.1,
+      0.2,
+      0.3,
+      0.5,
+      1.0
+    ],
+    "framing": "genuine-agent (self-propelled particles, 1D ring, disclosed)",
+    "dynamics": "Czirok 1D self-propelled-particle update: per-agent local neighbour average over the real ring geometry, tanh(beta*u) alignment response + uniform heading noise, sign update, fixed-speed move with periodic wrap; synchronous tick; density = N/Lr swept via ring length at fixed N",
+    "low_density_phi": 0.2383277777777788,
+    "high_density_phi": 0.8807666666666963,
+    "nearcrit_switch_rate": 0.00175,
+    "high_switch_rate": 0.0,
+    "scope": "faithful reproduction of a published self-propelled-particle model; no real-world data; the contribution is whether the harness + discipline reproduce the Buhl-et-al. density-driven order/disorder transition with near-critical intermittent direction reversals (the 1D ring signature) and would catch an artifact"
+  },
+  "citations": [
+    "Buhl, J., Sumpter, D.J.T., Couzin, I.D., Hale, J.J., Despland, E., Miller, E.R. & Simpson, S.J. (2006). From disorder to order in marching locusts. Science 312(5778):1402-1406. doi:10.1126/science.1125142.",
+    "Czirok, A., Barabasi, A.-L. & Vicsek, T. (1999). Collective motion of self-propelled particles: kinetic phase transition in one dimension. Physical Review Letters 82:209-212. doi:10.1103/PhysRevLett.82.209."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the Buhl-et-al. density-driven order/disorder transition (order-parameter crossover, near-critical intermittent switching, monotone ordering)"
+  }
+}

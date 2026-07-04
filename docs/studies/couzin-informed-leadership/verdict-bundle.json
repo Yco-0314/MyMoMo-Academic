@@ -1,0 +1,113 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Effective leadership and decision-making in animal groups on the move",
+    "authors": [
+      "Iain D. Couzin",
+      "Jens Krause",
+      "Nigel R. Franks",
+      "Simon A. Levin"
+    ],
+    "year": 2005,
+    "journal": "Nature 433:513-516",
+    "doi": "10.1038/nature03236"
+  },
+  "headline": "Couzin 2005 informed leadership (zonal SPP): 2/3 locked clauses REPRO; N=100 reaches accuracy 0.9 at fraction 0.10 (P1); fraction-vs-N N=30->0.03 vs N=200->0.30 (P2); subgroup |offset| 15deg@40deg -> 85deg@150deg (P3)",
+  "code_commit": "cdd7bbccaa651d7b8ea39ced73c69bb6dfb5fd2b",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 few leaders suffice: at N=100, mean accuracy > 0.9 with informed fraction <= 0.1",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.92,
+        0.9
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 leader economy: fraction to reach accuracy 0.9 is strictly smaller for N=200 than N=30",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.3,
+        0.033
+      ],
+      "reasons": [
+        "fraction to reach 0.9: N=30 -> 0.033; N=200 -> 0.300; need N=200 STRICTLY smaller than N=30 (observed: larger group needs a LARGER fraction \u2014 fixed zone radii do not scale with N, so the big group is sparser and less cohesive)"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P3 averaging->commitment: heading offset from bisector <= 30deg at theta=40deg (averaged) AND >= 60deg at theta=150deg (committed)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        84.8,
+        60.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/couzin-informed-leadership/results.json",
+      "sha256": "9c0195b59b55a68428cc71bc32f82554762d9b4b791d39685e663b76b732b94d",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/couzin-informed-leadership/PREDICTIONS-locked.md",
+      "sha256": "7e59f286c86aec9fdf98cd39641332ee270af6a9585aa926f5b3d10139add1a9",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/couzin-informed-leadership/FINDINGS.md",
+      "sha256": "5ffcdcf7e20e09344bb1987bc75083c1fb247ed9e8f74d43d4ba2ddeb502e3f5",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "couzin-informed-leadership-2005",
+    "framing": "genuine-agent (zonal SPP with informed minorities, disclosed)",
+    "omega": 0.5,
+    "zor": 1.0,
+    "dzoo": 6.0,
+    "zoa_width": 8.0,
+    "theta_max": 0.35,
+    "sigma": 0.05,
+    "n_steps": 800,
+    "n_seeds": 6,
+    "metric": "group directional accuracy = cos(angle(group mean heading, informed goal)); two-subgroup test graded by heading offset from the bisector",
+    "distinctness": "informed-leadership fraction-vs-accuracy curve and a majority-vs-averaging heading transition from CONTINUOUS spatial motion \u2014 NOT the milling/hysteresis phase portrait of couzin_zonal, and NOT discrete spin/vote flips like galam_majority / majority_vote",
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + lock-first discipline reproduce the informed-leadership phenomena (a small informed minority steers the group; averaging vs commitment when leaders disagree) and would catch an artifact \u2014 an honest MISS on a mis-calibrated locked bar is a valid outcome, not tuned away"
+  },
+  "citations": [
+    "Couzin, I.D., Krause, J., Franks, N.R. & Levin, S.A. (2005). Effective leadership and decision-making in animal groups on the move. Nature 433:513-516. doi:10.1038/nature03236.",
+    "Couzin, I.D., Krause, J., James, R., Ruxton, G.D. & Franks, N.R. (2002). Collective memory and spatial sorting in animal groups. Journal of Theoretical Biology 218(1):1-11. doi:10.1006/jtbi.2002.3065."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the Couzin 2005 informed-leadership claims (leader economy + averaging/commitment transition)"
+  }
+}

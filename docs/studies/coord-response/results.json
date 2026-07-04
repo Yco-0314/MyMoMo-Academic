@@ -1,0 +1,299 @@
+{
+  "config": {
+    "n_networks": 30,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "budget": 4,
+    "null_margin": 1.0,
+    "p1_fraction": 0.6
+  },
+  "process_effectiveness": {
+    "n_networks": 30,
+    "n_improved": 24,
+    "mean_orig": 112.56,
+    "mean_opt": 15.4
+  },
+  "mean_null": 84.94666666666667,
+  "consistency": {
+    "static_vs_makespan_corr": 0.4382196872685025
+  },
+  "counterexamples": [],
+  "cei": {
+    "mean_top_cei_delta": -12.560000000000004,
+    "mean_median_cei_delta": 3.126666666666666
+  },
+  "phase_contribution": {
+    "监测预警": 4.45,
+    "处置救援": 11.05,
+    "事后恢复": 15.4
+  },
+  "sensitivity": {
+    "cap-50%": {
+      "p1_fraction": 0.8,
+      "p1_holds": true,
+      "null_gate_passed": true
+    },
+    "cap+50%": {
+      "p1_fraction": 0.8,
+      "p1_holds": true,
+      "null_gate_passed": true
+    },
+    "fail-50%": {
+      "p1_fraction": 0.8,
+      "p1_holds": true,
+      "null_gate_passed": true
+    },
+    "fail+50%": {
+      "p1_fraction": 0.8,
+      "p1_holds": true,
+      "null_gate_passed": true
+    }
+  },
+  "per_network": [
+    {
+      "network": 0,
+      "orig": 211.8,
+      "opt": 15.4,
+      "null": 211.8,
+      "makespan_gain": 196.4,
+      "static_gain": 0.6115059088374485
+    },
+    {
+      "network": 1,
+      "orig": 103.2,
+      "opt": 15.4,
+      "null": 103.2,
+      "makespan_gain": 87.8,
+      "static_gain": 0.5931727852352174
+    },
+    {
+      "network": 2,
+      "orig": 103.2,
+      "opt": 15.4,
+      "null": 103.2,
+      "makespan_gain": 87.8,
+      "static_gain": 0.3700853501105472
+    },
+    {
+      "network": 3,
+      "orig": 113.4,
+      "opt": 15.4,
+      "null": 15.4,
+      "makespan_gain": 98.0,
+      "static_gain": 0.73768440429459
+    },
+    {
+      "network": 4,
+      "orig": 103.2,
+      "opt": 15.4,
+      "null": 15.4,
+      "makespan_gain": 87.8,
+      "static_gain": 0.5263696788221497
+    },
+    {
+      "network": 5,
+      "orig": 309.6,
+      "opt": 15.4,
+      "null": 309.6,
+      "makespan_gain": 294.20000000000005,
+      "static_gain": 0.6684576333725171
+    },
+    {
+      "network": 6,
+      "orig": 103.2,
+      "opt": 15.4,
+      "null": 103.2,
+      "makespan_gain": 87.8,
+      "static_gain": 0.6283728631329126
+    },
+    {
+      "network": 7,
+      "orig": 209.6,
+      "opt": 15.4,
+      "null": 110.6,
+      "makespan_gain": 194.2,
+      "static_gain": 0.5869052625139053
+    },
+    {
+      "network": 8,
+      "orig": 103.2,
+      "opt": 15.4,
+      "null": 103.2,
+      "makespan_gain": 87.8,
+      "static_gain": 0.5653228055145372
+    },
+    {
+      "network": 9,
+      "orig": 15.4,
+      "opt": 15.4,
+      "null": 15.4,
+      "makespan_gain": 0.0,
+      "static_gain": 0.5330786117770994
+    },
+    {
+      "network": 10,
+      "orig": 211.8,
+      "opt": 15.4,
+      "null": 211.8,
+      "makespan_gain": 196.4,
+      "static_gain": 0.6051137696675466
+    },
+    {
+      "network": 11,
+      "orig": 15.4,
+      "opt": 15.4,
+      "null": 15.4,
+      "makespan_gain": 0.0,
+      "static_gain": 0.5639167066146556
+    },
+    {
+      "network": 12,
+      "orig": 105.2,
+      "opt": 15.4,
+      "null": 113.8,
+      "makespan_gain": 89.8,
+      "static_gain": 0.5190980536077885
+    },
+    {
+      "network": 13,
+      "orig": 105.2,
+      "opt": 15.4,
+      "null": 105.2,
+      "makespan_gain": 89.8,
+      "static_gain": 0.4356570994583577
+    },
+    {
+      "network": 14,
+      "orig": 113.8,
+      "opt": 15.4,
+      "null": 113.8,
+      "makespan_gain": 98.39999999999999,
+      "static_gain": 0.4638887281383235
+    },
+    {
+      "network": 15,
+      "orig": 15.4,
+      "opt": 15.4,
+      "null": 15.4,
+      "makespan_gain": 0.0,
+      "static_gain": 0.41401872905617504
+    },
+    {
+      "network": 16,
+      "orig": 113.4,
+      "opt": 15.4,
+      "null": 113.4,
+      "makespan_gain": 98.0,
+      "static_gain": 0.5550666182529761
+    },
+    {
+      "network": 17,
+      "orig": 113.8,
+      "opt": 15.4,
+      "null": 15.4,
+      "makespan_gain": 98.39999999999999,
+      "static_gain": 0.49237360346781434
+    },
+    {
+      "network": 18,
+      "orig": 103.2,
+      "opt": 15.4,
+      "null": 15.4,
+      "makespan_gain": 87.8,
+      "static_gain": 0.7580730380719323
+    },
+    {
+      "network": 19,
+      "orig": 103.2,
+      "opt": 15.4,
+      "null": 103.2,
+      "makespan_gain": 87.8,
+      "static_gain": 0.6297669492296575
+    },
+    {
+      "network": 20,
+      "orig": 15.4,
+      "opt": 15.4,
+      "null": 15.4,
+      "makespan_gain": 0.0,
+      "static_gain": 0.3504859411378115
+    },
+    {
+      "network": 21,
+      "orig": 103.2,
+      "opt": 15.4,
+      "null": 15.4,
+      "makespan_gain": 87.8,
+      "static_gain": 0.4628557849901403
+    },
+    {
+      "network": 22,
+      "orig": 211.8,
+      "opt": 15.4,
+      "null": 211.8,
+      "makespan_gain": 196.4,
+      "static_gain": 0.4333790813717592
+    },
+    {
+      "network": 23,
+      "orig": 15.4,
+      "opt": 15.4,
+      "null": 15.4,
+      "makespan_gain": 0.0,
+      "static_gain": 0.3959665817559825
+    },
+    {
+      "network": 24,
+      "orig": 211.8,
+      "opt": 15.4,
+      "null": 211.8,
+      "makespan_gain": 196.4,
+      "static_gain": 0.6219715986729195
+    },
+    {
+      "network": 25,
+      "orig": 110.6,
+      "opt": 15.4,
+      "null": 15.4,
+      "makespan_gain": 95.19999999999999,
+      "static_gain": 0.49106624994325154
+    },
+    {
+      "network": 26,
+      "orig": 103.2,
+      "opt": 15.4,
+      "null": 103.2,
+      "makespan_gain": 87.8,
+      "static_gain": 0.6393508111189872
+    },
+    {
+      "network": 27,
+      "orig": 15.4,
+      "opt": 15.4,
+      "null": 15.4,
+      "makespan_gain": 0.0,
+      "static_gain": 0.38132401796051923
+    },
+    {
+      "network": 28,
+      "orig": 103.2,
+      "opt": 15.4,
+      "null": 15.4,
+      "makespan_gain": 87.8,
+      "static_gain": 0.4732522243608968
+    },
+    {
+      "network": 29,
+      "orig": 110.6,
+      "opt": 15.4,
+      "null": 15.4,
+      "makespan_gain": 95.19999999999999,
+      "static_gain": 0.6860445290287748
+    }
+  ]
+}

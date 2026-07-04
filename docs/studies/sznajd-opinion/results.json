@@ -1,0 +1,1601 @@
+{
+  "model": "sznajd-2000-opinion (agent-based, 2D 'united we stand')",
+  "config": {
+    "L": 40,
+    "lattice": "periodic (toroidal)",
+    "n_seeds_per_d": 20,
+    "d_grid": [
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8
+    ],
+    "max_sweeps": 1000,
+    "seed_base": 0,
+    "consensus_tol": 0.95,
+    "rule": "pick random 2x2 plaquette; if all four agree, set the 8 edge-adjacent outer neighbours to that opinion; else no change. one tick = L*L plaquette picks; stop at a frozen sweep",
+    "p1_consensus_fraction_threshold": 0.8,
+    "p2_low_max": 0.05,
+    "p2_high_min": 0.95,
+    "p3_hi_min": 0.8,
+    "p3_lo_max": 0.2
+  },
+  "locked_metric": "final magnetization (mean opinion) and P(all-UP)",
+  "p_all_up_vs_d": {
+    "0.2": 0.0,
+    "0.3": 0.0,
+    "0.4": 0.0,
+    "0.5": 0.5,
+    "0.6": 1.0,
+    "0.7": 1.0,
+    "0.8": 1.0
+  },
+  "d_half": {
+    "consensus_fraction": 1.0,
+    "p_full_consensus": 1.0,
+    "mean_abs_magnetization": 1.0
+  },
+  "per_d": [
+    {
+      "d": 0.2,
+      "p_all_up": 0.0,
+      "p_all_down": 1.0,
+      "consensus_fraction": 1.0,
+      "p_full_consensus": 1.0,
+      "frozen_fraction": 1.0,
+      "mean_magnetization": -1.0,
+      "var_magnetization": 0.0,
+      "mean_abs_magnetization": 1.0,
+      "var_abs_magnetization": 0.0,
+      "n_all_up": 0,
+      "n_all_down": 20,
+      "n_full_consensus": 20,
+      "n_seeds": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 1,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 2,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 3,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 6
+        },
+        {
+          "seed": 4,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 5,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 6,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 4
+        },
+        {
+          "seed": 7,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 2
+        },
+        {
+          "seed": 8,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 9,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 2
+        },
+        {
+          "seed": 10,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 4
+        },
+        {
+          "seed": 11,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 12,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 13,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 14,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 2
+        },
+        {
+          "seed": 15,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 2
+        },
+        {
+          "seed": 16,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 17,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 18,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 2
+        },
+        {
+          "seed": 19,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 4
+        }
+      ]
+    },
+    {
+      "d": 0.3,
+      "p_all_up": 0.0,
+      "p_all_down": 1.0,
+      "consensus_fraction": 1.0,
+      "p_full_consensus": 1.0,
+      "frozen_fraction": 1.0,
+      "mean_magnetization": -1.0,
+      "var_magnetization": 0.0,
+      "mean_abs_magnetization": 1.0,
+      "var_abs_magnetization": 0.0,
+      "n_all_up": 0,
+      "n_all_down": 20,
+      "n_full_consensus": 20,
+      "n_seeds": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 1,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 2,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 5
+        },
+        {
+          "seed": 3,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 6
+        },
+        {
+          "seed": 4,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 5,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 6,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 6
+        },
+        {
+          "seed": 7,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 6
+        },
+        {
+          "seed": 8,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 9,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 6
+        },
+        {
+          "seed": 10,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 4
+        },
+        {
+          "seed": 11,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 12,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 4
+        },
+        {
+          "seed": 13,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 5
+        },
+        {
+          "seed": 14,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 5
+        },
+        {
+          "seed": 15,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 4
+        },
+        {
+          "seed": 16,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 4
+        },
+        {
+          "seed": 17,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 6
+        },
+        {
+          "seed": 18,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 19,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 4
+        }
+      ]
+    },
+    {
+      "d": 0.4,
+      "p_all_up": 0.0,
+      "p_all_down": 1.0,
+      "consensus_fraction": 1.0,
+      "p_full_consensus": 1.0,
+      "frozen_fraction": 1.0,
+      "mean_magnetization": -1.0,
+      "var_magnetization": 0.0,
+      "mean_abs_magnetization": 1.0,
+      "var_abs_magnetization": 0.0,
+      "n_all_up": 0,
+      "n_all_down": 20,
+      "n_full_consensus": 20,
+      "n_seeds": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 9
+        },
+        {
+          "seed": 1,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 11
+        },
+        {
+          "seed": 2,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 21
+        },
+        {
+          "seed": 3,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 10
+        },
+        {
+          "seed": 4,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 11
+        },
+        {
+          "seed": 5,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 12
+        },
+        {
+          "seed": 6,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 19
+        },
+        {
+          "seed": 7,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 7
+        },
+        {
+          "seed": 8,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 7
+        },
+        {
+          "seed": 9,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 20
+        },
+        {
+          "seed": 10,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 8
+        },
+        {
+          "seed": 11,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 12
+        },
+        {
+          "seed": 12,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 13
+        },
+        {
+          "seed": 13,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 10
+        },
+        {
+          "seed": 14,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 20
+        },
+        {
+          "seed": 15,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 6
+        },
+        {
+          "seed": 16,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 8
+        },
+        {
+          "seed": 17,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 11
+        },
+        {
+          "seed": 18,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 9
+        },
+        {
+          "seed": 19,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 7
+        }
+      ]
+    },
+    {
+      "d": 0.5,
+      "p_all_up": 0.5,
+      "p_all_down": 0.5,
+      "consensus_fraction": 1.0,
+      "p_full_consensus": 1.0,
+      "frozen_fraction": 1.0,
+      "mean_magnetization": 0.0,
+      "var_magnetization": 1.0,
+      "mean_abs_magnetization": 1.0,
+      "var_abs_magnetization": 0.0,
+      "n_all_up": 10,
+      "n_all_down": 10,
+      "n_full_consensus": 20,
+      "n_seeds": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 34
+        },
+        {
+          "seed": 1,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 115
+        },
+        {
+          "seed": 2,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 38
+        },
+        {
+          "seed": 3,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 57
+        },
+        {
+          "seed": 4,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 63
+        },
+        {
+          "seed": 5,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 28
+        },
+        {
+          "seed": 6,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 47
+        },
+        {
+          "seed": 7,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 61
+        },
+        {
+          "seed": 8,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 60
+        },
+        {
+          "seed": 9,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 42
+        },
+        {
+          "seed": 10,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 73
+        },
+        {
+          "seed": 11,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 38
+        },
+        {
+          "seed": 12,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 42
+        },
+        {
+          "seed": 13,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 23
+        },
+        {
+          "seed": 14,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 60
+        },
+        {
+          "seed": 15,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 52
+        },
+        {
+          "seed": 16,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 175
+        },
+        {
+          "seed": 17,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 247
+        },
+        {
+          "seed": 18,
+          "magnetization": -1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 0.0,
+          "consensus": -1,
+          "all_up": false,
+          "frozen": true,
+          "sweeps": 45
+        },
+        {
+          "seed": 19,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 33
+        }
+      ]
+    },
+    {
+      "d": 0.6,
+      "p_all_up": 1.0,
+      "p_all_down": 0.0,
+      "consensus_fraction": 1.0,
+      "p_full_consensus": 1.0,
+      "frozen_fraction": 1.0,
+      "mean_magnetization": 1.0,
+      "var_magnetization": 0.0,
+      "mean_abs_magnetization": 1.0,
+      "var_abs_magnetization": 0.0,
+      "n_all_up": 20,
+      "n_all_down": 0,
+      "n_full_consensus": 20,
+      "n_seeds": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 6
+        },
+        {
+          "seed": 1,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 9
+        },
+        {
+          "seed": 2,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 4
+        },
+        {
+          "seed": 3,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 11
+        },
+        {
+          "seed": 4,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 8
+        },
+        {
+          "seed": 5,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 13
+        },
+        {
+          "seed": 6,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 11
+        },
+        {
+          "seed": 7,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 11
+        },
+        {
+          "seed": 8,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 8
+        },
+        {
+          "seed": 9,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 8
+        },
+        {
+          "seed": 10,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 10
+        },
+        {
+          "seed": 11,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 20
+        },
+        {
+          "seed": 12,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 11
+        },
+        {
+          "seed": 13,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 9
+        },
+        {
+          "seed": 14,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 8
+        },
+        {
+          "seed": 15,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 15
+        },
+        {
+          "seed": 16,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 11
+        },
+        {
+          "seed": 17,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 16
+        },
+        {
+          "seed": 18,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 33
+        },
+        {
+          "seed": 19,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        }
+      ]
+    },
+    {
+      "d": 0.7,
+      "p_all_up": 1.0,
+      "p_all_down": 0.0,
+      "consensus_fraction": 1.0,
+      "p_full_consensus": 1.0,
+      "frozen_fraction": 1.0,
+      "mean_magnetization": 1.0,
+      "var_magnetization": 0.0,
+      "mean_abs_magnetization": 1.0,
+      "var_abs_magnetization": 0.0,
+      "n_all_up": 20,
+      "n_all_down": 0,
+      "n_full_consensus": 20,
+      "n_seeds": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 4
+        },
+        {
+          "seed": 1,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 5
+        },
+        {
+          "seed": 2,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 3,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 4
+        },
+        {
+          "seed": 4,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 6
+        },
+        {
+          "seed": 5,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 5
+        },
+        {
+          "seed": 6,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 10
+        },
+        {
+          "seed": 7,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 8,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 9,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 10,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 5
+        },
+        {
+          "seed": 11,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 9
+        },
+        {
+          "seed": 12,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 5
+        },
+        {
+          "seed": 13,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 5
+        },
+        {
+          "seed": 14,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 15,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 4
+        },
+        {
+          "seed": 16,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 4
+        },
+        {
+          "seed": 17,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 18,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 4
+        },
+        {
+          "seed": 19,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        }
+      ]
+    },
+    {
+      "d": 0.8,
+      "p_all_up": 1.0,
+      "p_all_down": 0.0,
+      "consensus_fraction": 1.0,
+      "p_full_consensus": 1.0,
+      "frozen_fraction": 1.0,
+      "mean_magnetization": 1.0,
+      "var_magnetization": 0.0,
+      "mean_abs_magnetization": 1.0,
+      "var_abs_magnetization": 0.0,
+      "n_all_up": 20,
+      "n_all_down": 0,
+      "n_full_consensus": 20,
+      "n_seeds": 20,
+      "per_seed": [
+        {
+          "seed": 0,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 1,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 2,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 3,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 4,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 5,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 6,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 10
+        },
+        {
+          "seed": 7,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 8,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 9,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 10,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 2
+        },
+        {
+          "seed": 11,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 12,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 13,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 14,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 15,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 4
+        },
+        {
+          "seed": 16,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 2
+        },
+        {
+          "seed": 17,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 3
+        },
+        {
+          "seed": 18,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 2
+        },
+        {
+          "seed": 19,
+          "magnetization": 1.0,
+          "abs_magnetization": 1.0,
+          "up_fraction": 1.0,
+          "consensus": 1,
+          "all_up": true,
+          "frozen": true,
+          "sweeps": 2
+        }
+      ]
+    }
+  ],
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 complete consensus from d=0.5 (|m|>=0.95 in >=80% of runs)",
+      "salient_number": [
+        1.0,
+        0.8
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 phase transition at d=1/2 (P(all-UP)<= 0.05 for d<=0.4, >= 0.95 for d>=0.6)",
+      "salient_number": [
+        0.0,
+        1.0
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 majority opinion wins (P(all-UP|d=0.7)>0.8 AND P(all-UP|d=0.3)<0.2)",
+      "salient_number": [
+        1.0,
+        0.0
+      ],
+      "reasons": []
+    }
+  ]
+}

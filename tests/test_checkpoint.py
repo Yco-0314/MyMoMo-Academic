@@ -133,6 +133,40 @@ def test_run_phases_halted_phase_writes_no_checkpoint(tmp_path):
     assert phases[2].ran is False
 
 
+def test_finalizers_run_even_after_halt(tmp_path):
+    # A finalizer is an always-run trailing phase: it must execute whether the
+    # main loop completed OR broke on pipeline_halted (the trust report's whole
+    # value is being present exactly when a run halted/FAILED).
+    store = CheckpointStore(tmp_path)
+    phases = [FakePhase("A"), FakePhase("B", halt=True), FakePhase("C")]
+    fin = FakePhase("Final")
+    run_phases(phases, _ctx(), store=store, finalizers=[fin])
+    assert phases[2].ran is False   # C still skipped by the halt
+    assert fin.ran is True          # but the finalizer ran anyway
+    # finalizers are NOT checkpointed
+    assert [r.phase_name for r in store.load_all()] == ["A"]
+
+
+def test_finalizers_run_on_clean_completion(tmp_path):
+    store = CheckpointStore(tmp_path)
+    phases = [FakePhase("A"), FakePhase("B")]
+    fin = FakePhase("Final")
+    run_phases(phases, _ctx(), store=store, finalizers=[fin])
+    assert all(p.ran for p in phases)
+    assert fin.ran is True
+    assert [r.phase_name for r in store.load_all()] == ["A", "B"]
+
+
+def test_finalizer_should_run_false_is_skipped(tmp_path):
+    class _SkipPhase(FakePhase):
+        def should_run(self, ctx):
+            return False
+
+    fin = _SkipPhase("Final")
+    run_phases([FakePhase("A")], _ctx(), finalizers=[fin])
+    assert fin.ran is False
+
+
 # --- 5. plan_skips / resume ----------------------------------------------
 
 def test_resume_skips_valid_prefix(tmp_path):

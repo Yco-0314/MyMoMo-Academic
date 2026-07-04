@@ -1,0 +1,108 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Two-state model of self-organized criticality",
+    "authors": [
+      "S. S. Manna"
+    ],
+    "year": 1991,
+    "journal": "J. Phys. A: Math. Gen. 24:L363-L369",
+    "doi": "10.1088/0305-4470/24/7/009"
+  },
+  "headline": "Manna stochastic sandpile 1991 (CA / SOC, disclosed): 3/3 locked clauses REPRO; fitted tau=1.262 (s_min=1), nonzero sizes span 4.6 decades (max/median=1945x), stationary mean occupancy=0.699",
+  "code_commit": "78e9afde8e80a408cee8a4ee33cc34a5a59fc926",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 discrete-MLE tail exponent tau in [1.2, 1.4] (Manna-class avalanche exponent, Manna 2D tau~1.27)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.262,
+        1.4
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 heavy-tailed: nonzero sizes span >= 2.0 decades AND max >= 100.0x median nonzero",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        4.5677,
+        2.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 stationary mean occupancy in [0.6, 0.95] (finite active density: a genuine critical steady state)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.6994,
+        0.95
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "manna_results": {
+      "kind": "file",
+      "path": "docs/studies/manna-sandpile/results.json",
+      "sha256": "ca1157e6b75d809c25271c69df201f938ee4d5464f1fee95e8293d18af54a9c2",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/manna-sandpile/PREDICTIONS-locked.md",
+      "sha256": "39c1e0f5c78837e7e2d9102ddea94a19a6fef55fa8883bff79ae1deaae141e88",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/manna-sandpile/FINDINGS.md",
+      "sha256": "f0010904c45e4cbf052040225196f108e57ddb286cc43c62a44a38f09f2a6ef3",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "manna-sandpile",
+    "L": 64,
+    "transient": 102400,
+    "n_avalanches": 40000,
+    "seed": 0,
+    "fit_method": "exact discrete power-law MLE (Hurwitz-zeta likelihood; Clauset, Shalizi & Newman 2009) solved by Brent root-find on the score, lower cutoff s_min=1",
+    "s_min": 1,
+    "tau": 1.2619751937444446,
+    "stationary_mean_occupancy": 0.699367431640625,
+    "framing": "CA (disclosed)",
+    "model_class": "stochastic cellular automaton / self-organized criticality (NOT agent-stepping ABM): a STOCHASTIC toppling rule is applied to a grid of integer heights; there are no agents, no scheduler, no per-agent decisions",
+    "distinctness": "the RANDOM two-grain redistribution (each toppling scatters its 2 grains to two INDEPENDENTLY-random von-Neumann neighbours) puts this in the Manna (conserved directed-percolation) universality class, distinct from the deterministic BTW sandpile (fixed 4 neighbours, threshold 4) and from the non-conservative OFC earthquake model",
+    "scope": "faithful reproduction of a published synthetic CA/SOC result; no real-world data; the contribution is whether the harness + discipline reproduce the Manna SOC power-law (tau~1.27) and would catch an artifact (e.g. a non-power-law, a wrong exponent, or a frozen/drained lattice)"
+  },
+  "citations": [
+    "Manna, S. S. (1991). Two-state model of self-organized criticality. J. Phys. A: Math. Gen. 24:L363-L369. doi:10.1088/0305-4470/24/7/009.",
+    "Clauset, A., Shalizi, C.R. & Newman, M.E.J. (2009). Power-law distributions in empirical data. SIAM Review 51(4):661-703 (discrete-MLE estimator)."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction. The canonical 2D Manna exponent tau~1.27 serves as the literature anchor (P1)."
+  }
+}

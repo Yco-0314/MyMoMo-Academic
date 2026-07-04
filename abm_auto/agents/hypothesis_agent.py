@@ -32,6 +32,7 @@ from __future__ import annotations
 
 from rich.console import Console
 
+from abm_auto.agents import _hypothesis
 from abm_auto.agents.base import BaseAgent
 
 console = Console()
@@ -86,7 +87,7 @@ class HypothesisAgent(BaseAgent):
         # Audit: record which hypothesis was recommended (paired with
         # DesignAgent's audit log, makes hypothesis-design drift visible).
         try:
-            recommended_h = self._extract_recommended_number(hypothesis_md)
+            recommended_h = _hypothesis.recommended_hypothesis(hypothesis_md).number
             self.workspace.audit.info(
                 phase="Phase 0.5",
                 text=(
@@ -104,32 +105,6 @@ class HypothesisAgent(BaseAgent):
             pass
 
         return hypothesis_md
-
-    @staticmethod
-    def _extract_recommended_number(hypothesis_md: str) -> str | None:
-        """Find the recommended H number in hypothesis.md (bilingual)."""
-        import re
-
-        # Look in the Recommendation / 推荐 section
-        lines = hypothesis_md.splitlines()
-        rec_re = re.compile(
-            r"^##\s*(Recommendation|推荐|推荐方案|建议)(?![A-Za-z])",
-            re.IGNORECASE,
-        )
-        in_rec = False
-        rec_text = []
-        for line in lines:
-            if rec_re.match(line):
-                in_rec = True
-                continue
-            if in_rec:
-                if line.startswith("## "):
-                    break
-                rec_text.append(line)
-        joined = "\n".join(rec_text)
-        m = re.search(r"(?:Build|构建|推荐|选择|采用)\s*H\s*[:：]?\s*(\d+)", joined, re.I) \
-            or re.search(r"H\s*(\d+)", joined)
-        return m.group(1) if m else None
 
     # ── LLM ─────────────────────────────────────────────────────────────────
 

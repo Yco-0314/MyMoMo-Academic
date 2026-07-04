@@ -1,0 +1,99 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Asymptotic analysis of the stochastic block model for modular networks and its algorithmic applications",
+    "authors": [
+      "Aurelien Decelle",
+      "Florent Krzakala",
+      "Cristopher Moore",
+      "Lenka Zdeborova"
+    ],
+    "year": 2011,
+    "journal": "Physical Review E 84:066106",
+    "doi": "10.1103/PhysRevE.84.066106"
+  },
+  "headline": "SBM detectability: 3/3 locked clauses REPRO; Q(0.10)=0.759, Q(0.50)=0.024, matched ER near zero",
+  "code_commit": "fe696d97bd6b518a6ae68fe50982ddcf64cc05ca",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 deep-detectable recovery: mean overlap Q(eps=0.1)>=0.5 and matched ER control Q<=0.1",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.759,
+        0.5
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 deep-undetectable failure: mean overlap Q(eps=0.5)<=0.15 and within 0.05 of matched ER control",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0245,
+        0.15
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 monotone detectability sweep: Q(0.05)-Q(0.50)>=0.4, Q<=0.10 eps values >=0.5, Q(0.50)<=0.15",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.8573,
+        0.4
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/stochastic-block-model/results.json",
+      "sha256": "5a6158ecb2c2c53c0d4d6a38191ba27846f19d28b42d63689da0914f6a794c11",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/stochastic-block-model/PREDICTIONS-locked.md",
+      "sha256": "71871b4afe7be4f709e5fbf695da114afdf97d9bbe84dff32f4277887a96c312",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/stochastic-block-model/FINDINGS.md",
+      "sha256": "9e4bb928d5c1a0d01777524f7bf973ff73b35d6456fd12128c2d0548c55bff01",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "two-block-stochastic-block-model-detectability",
+    "scope": "synthetic network-generation plus community-inference reproduction; detector receives adjacency only, not planted labels"
+  },
+  "citations": [
+    "Decelle, A., Krzakala, F., Moore, C. & Zdeborova, L. (2011). Asymptotic analysis of the stochastic block model for modular networks and its algorithmic applications. Physical Review E 84:066106. doi:10.1103/PhysRevE.84.066106."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "matched Erd\u0151s-R\u00e9nyi control at the same realized mean degree provides the no-community baseline"
+  }
+}

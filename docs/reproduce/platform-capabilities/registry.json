@@ -1,0 +1,246 @@
+{
+  "entries": [
+    {
+      "boundary_note": "Native semantic pressure does not imply GAML compatibility or a GAMA parser.",
+      "concept": "GAMA species",
+      "disposition": "native",
+      "domain": "gama",
+      "evidence_level": "E0",
+      "key": "gama_species",
+      "next_action": "reuse as semantic pressure in MIR and platform lifecycle docs",
+      "source": "docs/reproduce/gama-semantic-coverage/STATUS.md"
+    },
+    {
+      "boundary_note": "Native GIS import remains narrower than GAMA's integrated GIS workflow.",
+      "concept": "GAMA GIS import",
+      "disposition": "native",
+      "domain": "gama",
+      "evidence_level": "E2",
+      "key": "gama_gis_import",
+      "next_action": "continue manifest-backed GIS real-data bridges",
+      "source": "docs/reproduce/gama-semantic-coverage/STATUS.md"
+    },
+    {
+      "boundary_note": "MyMoMo open GIS currently makes no 3D visualization support claim.",
+      "concept": "GAMA 3D visualization",
+      "disposition": "out_of_scope",
+      "domain": "gama",
+      "evidence_level": "E0",
+      "key": "gama_3d_visualization",
+      "next_action": "defer to unified 3D platform strategy",
+      "source": "docs/reproduce/gama-semantic-coverage/STATUS.md"
+    },
+    {
+      "boundary_note": "Current dynamic congestion and flood models do not prove traffic-flow validity.",
+      "concept": "SUMO/MATSim bridge",
+      "disposition": "bridge",
+      "domain": "transport",
+      "evidence_level": "E1",
+      "key": "transport_sumo_matsim_bridge",
+      "next_action": "use docs/reproduce/transport-bridge/synthetic-evacuation/bridge-manifest.json as the seed bridge contract before deeper traffic claims",
+      "source": "docs/superpowers/specs/2026-06-29-abm-platform-comparative-architecture-map.md"
+    },
+    {
+      "boundary_note": "A manifest does not validate synthetic people as human substitutes.",
+      "concept": "Synthetic population manifest",
+      "disposition": "native",
+      "domain": "llm_society",
+      "evidence_level": "E0",
+      "key": "llm_synthetic_population_manifest",
+      "next_action": "use docs/reproduce/synthetic-population/example-panel/manifest.json as the seed provenance contract before LLM-agent simulation",
+      "source": "docs/superpowers/specs/2026-06-29-llm-agent-social-simulation-map.md"
+    },
+    {
+      "boundary_note": "Replay events make LLM-agent traces inspectable but do not validate behavior as social science evidence.",
+      "concept": "LLM-agent replay package",
+      "disposition": "native",
+      "domain": "llm_society",
+      "evidence_level": "E0",
+      "key": "llm_agent_replay_package",
+      "next_action": "use docs/reproduce/llm-agent-replay/fake-agent/events.jsonl as the seed append-only replay trace",
+      "source": "docs/superpowers/specs/2026-07-01-llm-agent-replay-package-phase1-design.md"
+    },
+    {
+      "boundary_note": "This gate compares fixed survey distributions and does not validate synthetic people as human substitutes.",
+      "concept": "Synthetic survey gate",
+      "disposition": "native",
+      "domain": "llm_society",
+      "evidence_level": "E0",
+      "key": "synthetic_survey_gate",
+      "next_action": "use docs/reproduce/synthetic-survey-gate/example-panel/ as the seed survey-distribution fixture",
+      "source": "docs/superpowers/specs/2026-07-01-synthetic-survey-gate-phase1-design.md"
+    },
+    {
+      "boundary_note": "This seam proves exposure-rule effects in a deterministic fixture, not real social-media validity.",
+      "concept": "Social-platform environment seam",
+      "disposition": "native",
+      "domain": "llm_society",
+      "evidence_level": "E0",
+      "key": "social_platform_environment_seam",
+      "next_action": "use docs/reproduce/social-platform-environment/example-feed/scenario.json as the seed exposure fixture",
+      "source": "docs/superpowers/specs/2026-07-01-social-platform-environment-seam-phase1-design.md"
+    },
+    {
+      "boundary_note": "Closed extension backends stay outside the open runtime and connect through artifacts.",
+      "concept": "Closed extension backend manifest",
+      "disposition": "bridge",
+      "domain": "closed_extension",
+      "evidence_level": "E0",
+      "key": "closed_extension_backend_manifest",
+      "next_action": "connect closed-extension outputs through claim contracts and evidence packs after the private backend line stabilizes",
+      "source": "docs/superpowers/specs/2026-07-01-mymomo-evidence-foundry-architecture.md"
+    },
+    {
+      "boundary_note": "Challenge grading checks answer/evidence alignment, not scientific truth.",
+      "concept": "Evidence Foundry challenge pack",
+      "disposition": "native",
+      "domain": "evidence",
+      "evidence_level": "E0",
+      "key": "evidence_foundry_challenge_pack",
+      "next_action": "reuse for cross-agent handoff and registry reports",
+      "source": "docs/superpowers/specs/2026-07-01-mymomo-evidence-foundry-architecture.md"
+    },
+    {
+      "boundary_note": "Challenge manifests validate claim/data/gate/verdict contracts; they do not run reproductions or certify scientific truth.",
+      "concept": "Evidence Foundry challenge manifest",
+      "disposition": "native",
+      "domain": "evidence",
+      "evidence_level": "E0",
+      "key": "evidence_foundry_challenge_manifest",
+      "next_action": "use docs/reproduce/evidence-foundry/challenge-manifest-example/challenge-manifest.json as the seed contract fixture",
+      "source": "docs/superpowers/specs/2026-07-03-evidence-foundry-challenge-manifest-phase2-design.md"
+    },
+    {
+      "boundary_note": "Answer templates create blank handoff manifests; they do not generate or validate scientific answers.",
+      "concept": "Evidence Foundry answer template",
+      "disposition": "native",
+      "domain": "evidence",
+      "evidence_level": "E0",
+      "key": "evidence_foundry_answer_template",
+      "next_action": "use docs/reproduce/evidence-foundry/ANSWER-TEMPLATE-STATUS.md as the closure note for cross-agent answer handoff",
+      "source": "docs/superpowers/specs/2026-07-01-evidence-foundry-answer-template-closure-design.md"
+    },
+    {
+      "boundary_note": "Challenge producers render declared evidence packs; they do not infer claims or certify scientific truth.",
+      "concept": "Evidence Foundry challenge producer",
+      "disposition": "native",
+      "domain": "evidence",
+      "evidence_level": "E0",
+      "key": "evidence_foundry_challenge_producer",
+      "next_action": "use docs/reproduce/evidence-foundry/PRODUCER-STATUS.md as the closure note for producer-spec based challenge authoring",
+      "source": "docs/superpowers/specs/2026-07-01-evidence-foundry-producer-closure-design.md"
+    },
+    {
+      "boundary_note": "Registry discovery checks committed producer-spec coverage; it does not mutate registries or certify scientific truth.",
+      "concept": "Evidence Foundry registry discovery",
+      "disposition": "native",
+      "domain": "evidence",
+      "evidence_level": "E0",
+      "key": "evidence_foundry_registry_discovery",
+      "next_action": "use docs/reproduce/evidence-foundry/REGISTRY-DISCOVERY-STATUS.md as the closure note for producer-spec discovery and audit",
+      "source": "docs/superpowers/specs/2026-07-01-evidence-foundry-registry-discovery-closure-design.md"
+    },
+    {
+      "boundary_note": "Failure packs structure MISS/PARTIAL evidence; they do not convert failures into passes.",
+      "concept": "Evidence Foundry failure pack",
+      "disposition": "native",
+      "domain": "evidence",
+      "evidence_level": "E0",
+      "key": "failure_pack",
+      "next_action": "use docs/reproduce/evidence-foundry/failure-pack-example/failure-pack.json as the seed failure artifact",
+      "source": "docs/superpowers/specs/2026-07-01-failure-pack-phase1-design.md"
+    },
+    {
+      "boundary_note": "Counterfactual challenges compare recorded candidate metrics; they do not prove causality.",
+      "concept": "Evidence Foundry counterfactual challenge",
+      "disposition": "native",
+      "domain": "evidence",
+      "evidence_level": "E0",
+      "key": "counterfactual_challenge",
+      "next_action": "use docs/reproduce/evidence-foundry/counterfactual-example/challenge.json as the seed mechanism-discrimination fixture",
+      "source": "docs/superpowers/specs/2026-07-01-counterfactual-challenge-phase1-design.md"
+    },
+    {
+      "boundary_note": "Mechanism challenges check declared signatures; they do not prove mechanism truth or causality.",
+      "concept": "Evidence Foundry mechanism challenge",
+      "disposition": "native",
+      "domain": "evidence",
+      "evidence_level": "E0",
+      "key": "mechanism_challenge",
+      "next_action": "use docs/reproduce/evidence-foundry/mechanism-example/challenge.json as the seed mechanism-signature fixture",
+      "source": "docs/superpowers/specs/2026-07-01-mechanism-challenge-phase1-design.md"
+    },
+    {
+      "boundary_note": "Batch gates check committed artifact health; they do not certify scientific truth.",
+      "concept": "Evidence Foundry batch gate",
+      "disposition": "native",
+      "domain": "evidence",
+      "evidence_level": "E0",
+      "key": "evidence_foundry_batch_gate",
+      "next_action": "use docs/reproduce/evidence-foundry/batch-registry.json as the seed unified evidence gate",
+      "source": "docs/superpowers/specs/2026-07-01-evidence-foundry-batch-gate-phase1-design.md"
+    },
+    {
+      "boundary_note": "Registry reports summarize batch gate output; JSON remains the automation source of truth.",
+      "concept": "Evidence Foundry registry report",
+      "disposition": "native",
+      "domain": "evidence",
+      "evidence_level": "E0",
+      "key": "evidence_foundry_registry_report",
+      "next_action": "use docs/reproduce/evidence-foundry/BATCH-REPORT.md as the seed human-readable report",
+      "source": "docs/superpowers/specs/2026-07-01-evidence-foundry-registry-report-phase1-design.md"
+    },
+    {
+      "boundary_note": "Doctor checks workspace artifact health and handoff readiness; it does not repair artifacts or certify scientific truth.",
+      "concept": "Evidence Foundry doctor",
+      "disposition": "native",
+      "domain": "evidence",
+      "evidence_level": "E0",
+      "key": "evidence_foundry_doctor",
+      "next_action": "run the doctor command before cross-agent handoff or landing Evidence Foundry changes",
+      "source": "docs/superpowers/specs/2026-07-01-evidence-foundry-doctor-phase1-design.md"
+    },
+    {
+      "boundary_note": "The gate checks handoff note completeness, not whether recorded command results are true.",
+      "concept": "Agent handoff gate",
+      "disposition": "native",
+      "domain": "evidence",
+      "evidence_level": "E0",
+      "key": "agent_handoff_gate",
+      "next_action": "use abm_auto.agent_handoff before cross-agent limit stops, context compaction recovery, or branch handoff",
+      "source": "docs/superpowers/specs/2026-07-02-agent-handoff-gate-phase1-design.md"
+    },
+    {
+      "boundary_note": "This is an artifact exchange contract, not a unified simulator or scientific truth certificate.",
+      "concept": "Unified ABM bridge contract",
+      "disposition": "bridge",
+      "domain": "platform",
+      "evidence_level": "E0",
+      "key": "unified_abm_bridge_contract",
+      "next_action": "use docs/reproduce/unified-abm-bridge/example-contract.json before adding private or cross-runtime platform claims",
+      "source": "docs/superpowers/specs/2026-07-03-unified-abm-bridge-contract-phase1-design.md"
+    },
+    {
+      "boundary_note": "This records terrain exchange readiness; it is not a 3D engine, renderer, physical terrain model, or real DEM validity claim.",
+      "concept": "Terrain bridge manifest",
+      "disposition": "bridge",
+      "domain": "platform",
+      "evidence_level": "E0",
+      "key": "terrain_bridge_manifest",
+      "next_action": "use docs/reproduce/terrain-bridge/example-manifest.json before adding renderer, mesh, or terrain-physics claims",
+      "source": "docs/superpowers/specs/2026-07-04-terrain-bridge-manifest-phase1-design.md"
+    },
+    {
+      "boundary_note": "No event engine is added until a locked reproduction or bridge spec triggers it.",
+      "concept": "Event/resource seam trigger criteria",
+      "disposition": "audit_baseline",
+      "domain": "platform",
+      "evidence_level": "E0",
+      "key": "event_resource_seam_trigger_criteria",
+      "next_action": "use docs/superpowers/specs/2026-07-01-event-resource-seam-trigger-criteria.md before proposing native event queues",
+      "source": "docs/superpowers/specs/2026-07-01-event-resource-seam-trigger-criteria.md"
+    }
+  ],
+  "schema": "abm-auto/platform-capability-registry/v1",
+  "title": "MyMoMo Platform Capability Disposition Registry"
+}

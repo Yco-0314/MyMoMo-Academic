@@ -1,0 +1,121 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "The chemical basis of morphogenesis",
+    "authors": [
+      "Alan M. Turing"
+    ],
+    "year": 1952,
+    "journal": "Philosophical Transactions of the Royal Society of London B 237(641):37-72",
+    "doi": "10.1098/rstb.1952.0012"
+  },
+  "headline": "Turing 1952 diffusion-driven instability (Gierer-Meinhardt, grid-PDE): 3/3 locked clauses REPRO; control CoV=0.0002 vs Turing CoV=1.060; k_meas=0.867 vs linear-theory q*=0.829",
+  "code_commit": "61c4921caccea54ee8d7df046f1b3bf2e57363e9",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 diffusion-driven instability: control d=1 stays homogeneous (CoV<0.05) AND Turing d=1.5 d_c forms a finite-amplitude pattern (CoV>>0.05)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0597,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 wavelength matches linear dispersion: k_meas in the unstable band AND |k_meas - q*|/q* <= 0.35 (q* derived from the GM Jacobian)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0462,
+        0.35
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 stationary non-oscillatory pattern: last-20% amplitude flat (< 5% relative change per 1000 steps) for every seed",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.0005,
+        0.05
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/turing-pattern/results.json",
+      "sha256": "bf1a3da1548cefe1b249abef4ff6f7d83b2bdebfcb17002a13bff5b8687ad46c",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/turing-pattern/PREDICTIONS-locked.md",
+      "sha256": "5f8ca4aab3d9054a69b170b6df035f327d981fa4e1a162c223ed4fe0505ebfdb",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/turing-pattern/FINDINGS.md",
+      "sha256": "68931a4f1474c2d0b68bba93916f7db9bcd69a3569d829cce1569613e8ece0cb",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "turing-1952-gierer-meinhardt",
+    "framing": "grid-PDE (disclosed)",
+    "rho": 1.0,
+    "Du": 0.5,
+    "Dv_control": 0.5,
+    "Dv_turing": 4.371320343559642,
+    "critical_ratio_dc": 5.82842712474619,
+    "n": 128,
+    "dx": 1.0,
+    "dt": 0.005,
+    "noise": 0.01,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "n_steps": 30000,
+    "control_mean_cov": 0.00023036501449625644,
+    "turing_mean_cov": 1.0597064868181578,
+    "qstar": 0.8288847935215696,
+    "unstable_band": [
+      0.5603347222585823,
+      1.2071764580434265
+    ],
+    "turing_mean_k_meas": 0.8672104720846825,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce Turing's diffusion-driven instability (homogeneous without differential diffusion, patterned with it, at the dispersion-relation wavelength) and would catch an artifact"
+  },
+  "citations": [
+    "Turing, A.M. (1952). The chemical basis of morphogenesis. Philosophical Transactions of the Royal Society of London B 237(641):37-72. doi:10.1098/rstb.1952.0012.",
+    "Gierer, A. & Meinhardt, H. (1972). A theory of biological pattern formation. Kybernetik 12(1):30-39. doi:10.1007/BF00289234."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the spatial CoV, the dispersion-relation wavenumber, and amplitude stationarity"
+  }
+}

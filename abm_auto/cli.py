@@ -25,6 +25,43 @@ except ImportError:
     pass
 
 
+def _require_api_key() -> None:
+    """Friendly preflight: exit early with guidance if no LLM API key is set."""
+    if not config.get_api_key():
+        key_var = "DEEPSEEK_API_KEY" if config.LLM_PROVIDER == "deepseek" else "ANTHROPIC_API_KEY"
+        console.print(
+            f"[red]No API key found.[/red] Set {key_var} in your environment "
+            "or a local .env file (run [bold]abm-auto quickstart[/bold] for a starter)."
+        )
+        raise typer.Exit(1)
+
+
+@app.command()
+def quickstart(
+    directory: Path = typer.Argument(Path("."), help="Target directory for starter files (default: current dir)"),
+):
+    """Scaffold a starter .env and example story.md so you can run abm-auto right away."""
+    assets = config.QUICKSTART_DIR
+    directory.mkdir(parents=True, exist_ok=True)
+    written: list[str] = []
+    skipped: list[str] = []
+    for src_name, dst_name in (("env.template", ".env"), ("story.md", "story.md")):
+        dst = directory / dst_name
+        if dst.exists():
+            skipped.append(dst_name)
+            continue
+        dst.write_text((assets / src_name).read_text(encoding="utf-8"), encoding="utf-8")
+        written.append(dst_name)
+    for name in written:
+        console.print(f"[green]created[/green] {directory / name}")
+    for name in skipped:
+        console.print(f"[yellow]skipped (exists)[/yellow] {directory / name}")
+    console.print(
+        "\nNext: put your key in [bold].env[/bold] (ANTHROPIC_API_KEY=...), "
+        "then run [bold]abm-auto run story.md[/bold]."
+    )
+
+
 @app.command()
 def run(
     story: Path = typer.Argument(..., help="Path to STORY.md", exists=True),
@@ -65,6 +102,7 @@ def run(
         abm-auto run story.md --seed 42  # Reproducible run\n
         abm-auto run story.md --iterations 10 --sa-samples 100 --fetch-citations --baseline data/original_results.csv  # Publication mode
     """
+    _require_api_key()
     from abm_auto.pipeline import Pipeline
 
     # --intent supersedes the legacy --mode; warn if both were given so the
@@ -319,6 +357,20 @@ def memory(
 
 
 @app.command()
+def trust(
+    workspace: Path = typer.Argument(..., help="Path to an existing workspace directory", exists=True),
+):
+    """Show the per-run trust report: cleanliness (CLEAN/CAVEATED/FAILED) and
+    open/resolved/acknowledged issues for phases that recorded audit signals.
+    Ledger-centric: absence of a phase is not proof it was checked."""
+    from abm_auto.trust import build_trust_report
+
+    report = build_trust_report(workspace)
+    (workspace / "trust_report.md").write_text(report.render_markdown(), encoding="utf-8")
+    console.print(report.render_console())
+
+
+@app.command()
 def review(
     workspace: Path = typer.Argument(..., help="Path to an existing workspace to review"),
     mode: str = typer.Option("panel", "--mode", "-m", help="Review mode: panel (5 reviewers + editor) or quick (single pass)"),
@@ -445,6 +497,25 @@ def batch(
         dry_run=dry_run,
         batch_label=label,
     )
+
+
+@app.command()
+def chat(
+    model: Optional[str] = typer.Option(None, "--model", help="LLM model (default: provider default)."),
+):
+    """Interactive session: describe a study in natural language and abm-auto
+    proposes a command, runs it on your confirm, and loops with the result in context."""
+    from abm_auto import config
+    from abm_auto.chat import repl
+    from abm_auto.llm import make_client
+
+    key = config.get_api_key()
+    if not key:
+        raise typer.BadParameter(
+            f"{config.LLM_PROVIDER.upper()}_API_KEY is empty — set it in .env to use chat."
+        )
+    client = make_client(provider=config.LLM_PROVIDER, api_key=key, base_url=config.get_base_url())
+    repl(client, model or config.DEFAULT_MODEL)
 
 
 if __name__ == "__main__":

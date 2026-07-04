@@ -1,16 +1,26 @@
 from __future__ import annotations
 import os
 from pathlib import Path
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
-# Paths
-PROJECT_ROOT = Path(__file__).parent.parent
+# --- Path roots -----------------------------------------------------------
+# Package-data root: the installed ``abm_auto/`` directory. Bundled data
+# (prompts, knowledge, runtime templates, quickstart assets) resolves from here
+# so it works identically in a dev tree and an installed wheel.
+_PKG_DIR = Path(__file__).resolve().parent
+PROMPTS_DIR = _PKG_DIR / "prompts"
+KNOWLEDGE_DIR = _PKG_DIR / "mymomo_knowledge"
+TEMPLATES_DIR = _PKG_DIR / "runtime_templates"
+QUICKSTART_DIR = _PKG_DIR / "quickstart_assets"
 
-load_dotenv(PROJECT_ROOT / ".env", override=True)
-TEMPLATES_DIR = PROJECT_ROOT / "runtime_templates"
-PROMPTS_DIR = PROJECT_ROOT / "abm_auto" / "prompts"
-KNOWLEDGE_DIR = PROJECT_ROOT / "abm_auto" / "mymomo_knowledge"
-WORKSPACE_DIR = PROJECT_ROOT / "workspace"
+# Kept ONLY so executor.py can put the import root on a subprocess PYTHONPATH
+# (so generated model code can ``import abm_auto``). Same value as before:
+# repo root in a dev tree, site-packages in an installed wheel — both correct.
+PROJECT_ROOT = _PKG_DIR.parent
+
+# User/runtime paths resolve from the working directory, never site-packages.
+load_dotenv(find_dotenv(usecwd=True), override=True)  # find user's .env from CWD up
+WORKSPACE_DIR = Path(os.getenv("ABM_WORKSPACE_DIR", str(Path.cwd() / "workspace")))
 
 # LLM provider selection — controls which SDK + API key is used.
 # Set in .env:  LLM_PROVIDER=anthropic  (default)  OR  LLM_PROVIDER=deepseek

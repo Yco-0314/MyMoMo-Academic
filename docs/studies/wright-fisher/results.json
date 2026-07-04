@@ -1,0 +1,137 @@
+{
+  "model": "wright-fisher-neutral-drift (agent-based, generational)",
+  "config": {
+    "N": 100,
+    "p0_grid": [
+      0.2,
+      0.5,
+      0.8
+    ],
+    "n_runs_per_p0": 2000,
+    "seed_base": 0,
+    "p1_tol": 0.05,
+    "p2_band": [
+      0.98,
+      0.9975
+    ],
+    "p3_delta_tol": 0.005,
+    "p3_ensemble_tol": 0.05,
+    "haploid_decay_law_1_minus_1_over_N": 0.99,
+    "dynamics": "each generation: sample N parents uniformly WITH replacement from the current generation; offspring inherits the sampled parent's allele; run to fixation"
+  },
+  "per_p0": [
+    {
+      "p0": 0.2,
+      "fixation_probability": 0.2005,
+      "binomial_se": 0.008952646256833787,
+      "analytic_fixation": 0.2,
+      "abs_error": 0.0005000000000000004,
+      "fixations": 401,
+      "n_runs": 2000,
+      "all_absorbed": true,
+      "measured_decay_factor": 0.9900098799413999,
+      "analytic_decay_factor": 0.99,
+      "n_decay_ratios": 100,
+      "mean_delta_p": 5.2386191000076686e-06,
+      "ensemble_mean_p_early": 0.19779000000000027,
+      "ensemble_gen": 5,
+      "mean_pre_absorption_fraction_conditioned": 0.353817381738159,
+      "n_pre_absorption_generations": 190890,
+      "mean_generations": 95.445,
+      "max_generations_observed": 740
+    },
+    {
+      "p0": 0.5,
+      "fixation_probability": 0.498,
+      "binomial_se": 0.011180250444422075,
+      "analytic_fixation": 0.5,
+      "abs_error": 0.0020000000000000018,
+      "fixations": 996,
+      "n_runs": 2000,
+      "all_absorbed": true,
+      "measured_decay_factor": 0.9899270451535931,
+      "analytic_decay_factor": 0.99,
+      "n_decay_ratios": 100,
+      "mean_delta_p": -1.4907795286154814e-05,
+      "ensemble_mean_p_early": 0.49625499999999967,
+      "ensemble_gen": 5,
+      "mean_pre_absorption_fraction_conditioned": 0.4945111733925562,
+      "n_pre_absorption_generations": 268316,
+      "mean_generations": 134.158,
+      "max_generations_observed": 740
+    },
+    {
+      "p0": 0.8,
+      "fixation_probability": 0.791,
+      "binomial_se": 0.009091727008660124,
+      "analytic_fixation": 0.8,
+      "abs_error": 0.009000000000000008,
+      "fixations": 1582,
+      "n_runs": 2000,
+      "all_absorbed": true,
+      "measured_decay_factor": 0.9900955790910165,
+      "analytic_decay_factor": 0.99,
+      "n_decay_ratios": 100,
+      "mean_delta_p": -9.003106071594478e-05,
+      "ensemble_mean_p_early": 0.7987799999999975,
+      "ensemble_gen": 5,
+      "mean_pre_absorption_fraction_conditioned": 0.6362580090131408,
+      "n_pre_absorption_generations": 199931,
+      "mean_generations": 99.9655,
+      "max_generations_observed": 726
+    }
+  ],
+  "summary": {
+    "worst_p1_fixation_error": 0.009000000000000008,
+    "decay_factor_by_p0": {
+      "0.2": 0.9900098799413999,
+      "0.5": 0.9899270451535931,
+      "0.8": 0.9900955790910165
+    },
+    "worst_p2_out_of_band": 0.0,
+    "delta_p_by_p0": {
+      "0.2": 5.2386191000076686e-06,
+      "0.5": -1.4907795286154814e-05,
+      "0.8": -9.003106071594478e-05
+    },
+    "worst_abs_delta_p": 9.003106071594478e-05,
+    "ensemble_mean_p_by_p0": {
+      "0.2": 0.19779000000000027,
+      "0.5": 0.49625499999999967,
+      "0.8": 0.7987799999999975
+    },
+    "worst_ensemble_p_error": 0.0037450000000003314
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 neutral fixation prob of A equals initial frequency p0 (within +-0.05)",
+      "salient_number": [
+        0.009,
+        0.05
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 per-gen mean-heterozygosity decay factor in [0.9800, 0.9975] (brackets 1-1/N=0.9900)",
+      "salient_number": [
+        0.98993,
+        0.98
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 neutral drift: E[Delta p]~=0 (per-step martingale) and ensemble mean p(t)~=p0 (no selection bias)",
+      "salient_number": [
+        9e-05,
+        0.005
+      ],
+      "reasons": []
+    }
+  ]
+}

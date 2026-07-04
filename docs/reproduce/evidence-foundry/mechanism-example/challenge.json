@@ -1,0 +1,24 @@
+{
+  "boundary_note": "Signature presence is mechanism evidence only; it does not prove scientific truth.",
+  "candidate": {
+    "evidence_refs": [
+      "docs/reproduce/social-platform-environment/example-feed/scenario.json",
+      "docs/reproduce/evidence-foundry/counterfactual-example/challenge.json"
+    ],
+    "id": "social-contact-candidate",
+    "present_signatures": [
+      "social_graph",
+      "neighbor_exposure",
+      "contact_lift",
+      "survey_distribution_gate"
+    ]
+  },
+  "challenge_id": "social-contact-mechanism-signatures-v1",
+  "mechanism_family": "social_contact_lift",
+  "required_signatures": [
+    "social_graph",
+    "neighbor_exposure",
+    "contact_lift"
+  ],
+  "schema": "abm-auto/mechanism-challenge/v1"
+}

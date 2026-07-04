@@ -1,0 +1,121 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Self-organized pinning and interface growth in a random medium",
+    "authors": [
+      "Kim Sneppen"
+    ],
+    "year": 1992,
+    "journal": "Physical Review Letters 69(24):3539-3542",
+    "doi": "10.1103/PhysRevLett.69.3539"
+  },
+  "headline": "Sneppen 1992 interface depinning (model A, CA disclosed): 2/3 locked clauses REPRO; chi=0.65 (in [0.5,0.75]), avalanches span 5.0 decades (max/median 30968x), adjacent-slope corr=+0.26",
+  "code_commit": "7a0d7566d48fd3f6fa883e7c91ab91de8fc0fd7e",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 self-affine: W_sat(L)~L^chi with chi in [0.5,0.75] AND W_sat monotone in L",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.654,
+        0.75
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 scale-free avalanches: span >= 2.0 decades AND max >= 100.0x median nonzero",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        4.968,
+        2.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 anticorrelated growth: adjacent interface-slope correlation < 0",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.2603,
+        0.0
+      ],
+      "reasons": [
+        "adjacent-slope correlation = +0.2603 (need < 0; a self-affine Sneppen interface has POSITIVELY correlated adjacent slopes \u2014 a rising region keeps rising \u2014 so this clause is falsified); random-deposition baseline = -0.4709"
+      ],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/sneppen-depinning/results.json",
+      "sha256": "84db5a6db4858be273a7afe2c3c06c9e4426a7382a89fc99688a76c1003874e8",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/sneppen-depinning/PREDICTIONS-locked.md",
+      "sha256": "19851187286fe5806166e3926db96d1fd6060b0b05c31c09637aca37f829df86",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/sneppen-depinning/FINDINGS.md",
+      "sha256": "567286a2a9e5761415b494a5d36a15527af51104ee9b25c0de6f1a57cd1185fb",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "sneppen-depinning-1992",
+    "Ls": [
+      32,
+      64,
+      128,
+      256
+    ],
+    "advances_per_L": 600,
+    "n_seeds": 4,
+    "avalanche_L": 256,
+    "framing": "CA (disclosed)",
+    "framing_detail": "extremal-dynamics SOC model \u2014 one advance selects the GLOBAL minimum-pinning column and raises it, then enforces a bounded-slope constraint on its neighbours; centralized / model-orchestrated, not agent-stepping (no scheduler over an agent roster, no per-agent perceive/decide/act), disclosed exactly as the BTW-sandpile and Bak-Sneppen reproductions are",
+    "chi": 0.6539575577524277,
+    "chi_r2": 0.9997015192649435,
+    "w_sat": {
+      "32": 2.111378339906376,
+      "64": 3.3954899962551996,
+      "128": 5.299927284866759,
+      "256": 8.247323801361233
+    },
+    "avalanche_decades": 4.96802973834681,
+    "avalanche_max_over_median": 30967.666666666668,
+    "adjacent_slope_correlation": 0.2602663486857526,
+    "baseline_random_deposition_slope_correlation": -0.4708741234829516,
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + lock-first discipline reproduce the Sneppen self-affine roughening (roughness exponent chi), scale-free extremal-avalanche activity, and the interface geometry, and would catch an artifact"
+  },
+  "citations": [
+    "Sneppen, K. (1992). Self-organized pinning and interface growth in a random medium. Physical Review Letters 69(24):3539-3542. doi:10.1103/PhysRevLett.69.3539."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the Sneppen depinning signatures (roughness exponent chi, scale-free avalanche tail, adjacent-slope correlation), with a random-deposition slope-correlation baseline reported as an internal contrast"
+  }
+}

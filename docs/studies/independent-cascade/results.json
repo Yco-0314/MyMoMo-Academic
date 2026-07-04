@@ -1,0 +1,337 @@
+{
+  "model": "kempe-kleinberg-tardos-2003 independent-cascade + influence-max (hybrid: agent activation + edge-probability cascade + combinatorial-optimization gate)",
+  "config": {
+    "p1": {
+      "n": 10000,
+      "z": 8.0,
+      "n_graphs": 40,
+      "lambdas": [
+        0.5,
+        0.8,
+        0.9,
+        1.0,
+        1.1,
+        1.2,
+        1.3,
+        1.5,
+        2.0
+      ],
+      "subcrit_max": 0.05,
+      "supercrit_min": 0.4,
+      "crossing_fraction": 0.05,
+      "crossing_window": [
+        0.8,
+        1.3
+      ]
+    },
+    "p2": {
+      "n": 2000,
+      "z": 8.0,
+      "p": 0.1,
+      "n_pairs": 200,
+      "n_sims": 10000,
+      "max_set": 10,
+      "hold_min": 0.95
+    },
+    "p3": {
+      "n": 60,
+      "z": 5.0,
+      "p": 0.2,
+      "k": 3,
+      "n_sims": 2000,
+      "ratio_min": 0.632,
+      "rand_n": 200,
+      "rand_z": 6.0,
+      "rand_p": 0.1,
+      "rand_n_sims": 1000,
+      "rand_trials": 8
+    },
+    "seed_base": 0
+  },
+  "p1_percolation": {
+    "sweep": [
+      {
+        "lambda": 0.5,
+        "p": 0.0625,
+        "mean_reached_fraction": 0.0002075
+      },
+      {
+        "lambda": 0.8,
+        "p": 0.1,
+        "mean_reached_fraction": 0.0005299999999999999
+      },
+      {
+        "lambda": 0.9,
+        "p": 0.1125,
+        "mean_reached_fraction": 0.0006899999999999997
+      },
+      {
+        "lambda": 1.0,
+        "p": 0.125,
+        "mean_reached_fraction": 0.0032175000000000007
+      },
+      {
+        "lambda": 1.1,
+        "p": 0.1375,
+        "mean_reached_fraction": 0.03327499999999999
+      },
+      {
+        "lambda": 1.2,
+        "p": 0.15,
+        "mean_reached_fraction": 0.11007500000000006
+      },
+      {
+        "lambda": 1.3,
+        "p": 0.1625,
+        "mean_reached_fraction": 0.16789500000000004
+      },
+      {
+        "lambda": 1.5,
+        "p": 0.1875,
+        "mean_reached_fraction": 0.29152249999999996
+      },
+      {
+        "lambda": 2.0,
+        "p": 0.25,
+        "mean_reached_fraction": 0.5771325
+      }
+    ],
+    "sub_lambda05": 0.0002075,
+    "super_lambda20": 0.5771325,
+    "crossing_lambda": 1.12177734375
+  },
+  "p2_submodularity": {
+    "n_pairs": 200,
+    "n_hold": 200,
+    "hold_fraction": 1.0,
+    "n_sims": 10000,
+    "example_records": [
+      {
+        "size_A": 1,
+        "size_B": 4,
+        "gain_A": 5.8416,
+        "gain_B": 5.643900000000002,
+        "holds": true,
+        "diff": 0.19769999999999754
+      },
+      {
+        "size_A": 1,
+        "size_B": 9,
+        "gain_A": 4.5495,
+        "gain_B": 4.2952999999999975,
+        "holds": true,
+        "diff": 0.25420000000000265
+      },
+      {
+        "size_A": 1,
+        "size_B": 2,
+        "gain_A": 4.182300000000001,
+        "gain_B": 4.155800000000001,
+        "holds": true,
+        "diff": 0.026499999999999524
+      },
+      {
+        "size_A": 1,
+        "size_B": 3,
+        "gain_A": 5.8408999999999995,
+        "gain_B": 5.7125,
+        "holds": true,
+        "diff": 0.12839999999999918
+      },
+      {
+        "size_A": 9,
+        "size_B": 10,
+        "gain_A": 5.772199999999998,
+        "gain_B": 5.719300000000004,
+        "holds": true,
+        "diff": 0.05289999999999395
+      },
+      {
+        "size_A": 2,
+        "size_B": 9,
+        "gain_A": 6.958300000000001,
+        "gain_B": 6.220199999999998,
+        "holds": true,
+        "diff": 0.7381000000000029
+      },
+      {
+        "size_A": 4,
+        "size_B": 7,
+        "gain_A": 5.449099999999998,
+        "gain_B": 5.2459000000000024,
+        "holds": true,
+        "diff": 0.20319999999999538
+      },
+      {
+        "size_A": 7,
+        "size_B": 9,
+        "gain_A": 2.1554,
+        "gain_B": 2.1270999999999987,
+        "holds": true,
+        "diff": 0.028300000000001546
+      },
+      {
+        "size_A": 8,
+        "size_B": 10,
+        "gain_A": 2.4990999999999985,
+        "gain_B": 2.464800000000004,
+        "holds": true,
+        "diff": 0.03429999999999467
+      },
+      {
+        "size_A": 4,
+        "size_B": 5,
+        "gain_A": 4.483799999999999,
+        "gain_B": 4.447600000000001,
+        "holds": true,
+        "diff": 0.036199999999997345
+      },
+      {
+        "size_A": 4,
+        "size_B": 6,
+        "gain_A": 5.3741,
+        "gain_B": 5.3339,
+        "holds": true,
+        "diff": 0.04020000000000046
+      },
+      {
+        "size_A": 9,
+        "size_B": 10,
+        "gain_A": 4.583499999999994,
+        "gain_B": 4.558300000000003,
+        "holds": true,
+        "diff": 0.025199999999991007
+      },
+      {
+        "size_A": 1,
+        "size_B": 5,
+        "gain_A": 4.216800000000001,
+        "gain_B": 3.9741999999999997,
+        "holds": true,
+        "diff": 0.24260000000000126
+      },
+      {
+        "size_A": 1,
+        "size_B": 6,
+        "gain_A": 5.530899999999999,
+        "gain_B": 5.306100000000001,
+        "holds": true,
+        "diff": 0.22479999999999833
+      },
+      {
+        "size_A": 3,
+        "size_B": 6,
+        "gain_A": 5.447399999999998,
+        "gain_B": 5.277499999999996,
+        "holds": true,
+        "diff": 0.16990000000000194
+      },
+      {
+        "size_A": 3,
+        "size_B": 6,
+        "gain_A": 4.271000000000001,
+        "gain_B": 4.139400000000002,
+        "holds": true,
+        "diff": 0.13159999999999883
+      },
+      {
+        "size_A": 2,
+        "size_B": 3,
+        "gain_A": 4.727399999999999,
+        "gain_B": 4.693200000000001,
+        "holds": true,
+        "diff": 0.034199999999998454
+      },
+      {
+        "size_A": 1,
+        "size_B": 3,
+        "gain_A": 5.2605,
+        "gain_B": 5.212,
+        "holds": true,
+        "diff": 0.048500000000000654
+      },
+      {
+        "size_A": 1,
+        "size_B": 2,
+        "gain_A": 3.2374,
+        "gain_B": 3.2286,
+        "holds": true,
+        "diff": 0.008799999999999919
+      },
+      {
+        "size_A": 2,
+        "size_B": 4,
+        "gain_A": 4.3042,
+        "gain_B": 4.2429999999999986,
+        "holds": true,
+        "diff": 0.06120000000000125
+      }
+    ]
+  },
+  "p3_influence_max": {
+    "greedy_set": [
+      42,
+      27,
+      41
+    ],
+    "sig_greedy": 18.8995,
+    "opt_set": [
+      6,
+      27,
+      29
+    ],
+    "sig_opt": 18.9685,
+    "ratio": 0.9963623902786198,
+    "n_sigma_evals": 131,
+    "greedy_r_set": [
+      25,
+      23,
+      148
+    ],
+    "sig_greedy_r": 12.138,
+    "random_sigmas": [
+      6.195,
+      6.547,
+      6.69,
+      7.036,
+      8.011,
+      7.359,
+      9.455,
+      8.0
+    ],
+    "mean_random": 7.411625
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 percolation transition: mean reached < 0.05 @ lambda=0.5, > 0.40 @ lambda=2.0, crossing in [0.8,1.3]",
+      "salient_number": [
+        1.1218,
+        1.3
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 influence spread is submodular: marginal gain(A) >= marginal gain(B) for nested A subset B in >=95% of pairs",
+      "salient_number": [
+        1.0,
+        0.95
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 greedy attains 1-1/e: sigma(greedy) >= 0.632*sigma(OPT) for k=3 AND greedy > random",
+      "salient_number": [
+        0.9964,
+        0.632
+      ],
+      "reasons": []
+    }
+  ],
+  "elapsed_seconds": 2845.4
+}

@@ -1,0 +1,106 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Self-organization and a dynamical transition in traffic-flow models",
+    "authors": [
+      "Ofer Biham",
+      "A. Alan Middleton",
+      "Dov Levine"
+    ],
+    "year": 1992,
+    "journal": "Physical Review A 46(10):R6124-R6127",
+    "doi": "10.1103/PhysRevA.46.R6124"
+  },
+  "headline": "Biham-Middleton-Levine 1992 traffic (two-species CA): 3/3 locked clauses REPRO; free-flow->gridlock transition at rho_c=0.365 (v crosses 0.5), near-step width=0.089 (v: 0.9->0.1) on an L=128 grid",
+  "code_commit": "ed6fe16bf3c0d8ceee6f0a9f4098acb2dd0c2b8a",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 free-flow->gridlock transition: rho_c (v crosses 0.5) in [0.3, 0.4], v~1 low-rho, v~0 high-rho",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.365,
+        0.4
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 two-phase order: v(rho=0.2) >= 0.95 (free flow) AND v(rho=0.55) <= 0.05 (gridlock)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.0,
+        0.95
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 near-step: density width where v drops 0.9 -> 0.1 is <= 0.15",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        0.089,
+        0.15
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/biham-middleton-levine/results.json",
+      "sha256": "06922b7dfbe2c8529db0fae093a5e104c06a163e06f413bf68ccb2d6d5215403",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/biham-middleton-levine/PREDICTIONS-locked.md",
+      "sha256": "70ca838183dfbe7053eea1f302fec7c7daf5e6c525b8a6cabe71e64f3b018217",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/biham-middleton-levine/FINDINGS.md",
+      "sha256": "309a799ec63776f098a3110eb8dee0654b4fffa3c7e931826c03175bdddeaaee",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "biham-middleton-levine-1992",
+    "L": 128,
+    "n_seeds": 4,
+    "warmup": 12000,
+    "measure": 3000,
+    "rho_c": 0.36495143947873415,
+    "transition_width": 0.08888419209009363,
+    "framing": "two-species traffic CELLULAR AUTOMATON (CA, disclosed) on a periodic grid: red moves east / blue north on alternating ticks; a car moves iff its target is empty in the frozen grid; the only randomness is the seeded initial placement, the update is a deterministic synchronous rule \u2014 NOT agent-stepping",
+    "metastability": "finite-size metastability is expected near the transition (long-lived partially-jammed states, bimodal seeds); L=128, long warm-up and tail+seed averaging are used and residual smearing is reported honestly, not hidden",
+    "scope": "faithful reproduction of a published synthetic model; no real-world data; the contribution is whether the harness + discipline reproduce the BML self-organizing jamming PHASE TRANSITION (velocity 1->0 near-step at rho_c in [0.30,0.40]) and would catch an artifact"
+  },
+  "citations": [
+    "Biham, O., Middleton, A.A. & Levine, D. (1992). Self-organization and a dynamical transition in traffic-flow models. Physical Review A 46(10):R6124-R6127. doi:10.1103/PhysRevA.46.R6124."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the BML jamming transition (rho_c, free/jam limits, near-step width)"
+  }
+}

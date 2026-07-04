@@ -1,0 +1,114 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "The Emergence of Firms in a Population of Agents: Local Increasing Returns, Unstable Nash Equilibria, and Power Law Size Distributions",
+    "authors": [
+      "Robert L. Axtell"
+    ],
+    "year": 1999,
+    "journal": "CSED Working Paper No. 3, Brookings Institution / Santa Fe Institute; see also Axtell (2001), Science 293:1818",
+    "doi": ""
+  },
+  "headline": "Axtell 1999/2001 Model of Firms (agent-based): 1/3 locked clauses REPRO; Zipf rank-size slope=-1.277 (base mu~1.28), firm-size Gini=0.474, log-growth excess kurtosis=0.590 with sigma-vs-size slope=-0.078",
+  "code_commit": "2f54d5d125747fd78d2b8043fccc6f020ddc26e1",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 Zipf firm sizes: rank-size log-log OLS slope in [-1.5, -0.7]",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        -1.2766,
+        -0.7
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 extreme inequality: firm-size Gini >= 0.60 (strongly right-skewed)",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.4743,
+        0.6
+      ],
+      "reasons": [
+        "mean firm-size Gini = 0.4743 over 4 seeds (range [0.458, 0.488]); need >= 0.6. The distribution IS strongly right-skewed (mean firm size 2.67, max 83, 1872 firms), but this faithful base case (A=5000, nu=2, equal shares) concentrates less than the empirical ~0.89"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "P3 tent-shaped log-growth: pooled excess kurtosis > 1.5 AND sigma falls with size",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        0.5895,
+        1.5
+      ],
+      "reasons": [
+        "mean growth excess kurtosis = 0.5895 over 4 seeds (range [0.471, 0.697]); need > 1.5. Sign IS correct (leptokurtic, heavier-than-Gaussian tails) and sigma-vs-size slope = -0.0781 < 0 (Stanley scaling holds directionally), but the peak is not Laplace-strength (~3) in this base case"
+      ],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "sweep_results": {
+      "kind": "file",
+      "path": "docs/studies/axtell-firms/results.json",
+      "sha256": "2db27692d4ac1b27c8d66ac5342846ce102d1e6a688ff9e697d62967e81617f1",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/axtell-firms/PREDICTIONS-locked.md",
+      "sha256": "178d22c0c52e0fb44e744201dd864c83daaeb48038152980bdb18d74a4d13b48",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/axtell-firms/FINDINGS.md",
+      "sha256": "502ebf5de920115f656bad39d729835b0a7f5ec2abba1d01c70612e7b4b0074c",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "axtell-1999-firms",
+    "A": 5000,
+    "a": 1.0,
+    "b": 1.0,
+    "nu": 2,
+    "n_seeds": 4,
+    "n_periods": 600,
+    "burn_in": 200,
+    "sample_gap": 5,
+    "mean_rank_size_slope": -1.2766135793079165,
+    "mean_gini": 0.4742508073040671,
+    "mean_growth_kurtosis": 0.589544968903967,
+    "mean_growth_std_slope": -0.07812244112306707,
+    "scope": "faithful reproduction of a published synthetic agent-based model; no real-world data; the contribution is whether the harness + locked-prediction discipline reproduce the Zipf firm-size power law, extreme size inequality, and tent-shaped growth from endogenous firm formation, and would catch an artifact"
+  },
+  "citations": [
+    "Axtell, R. (1999). The Emergence of Firms in a Population of Agents: Local Increasing Returns, Unstable Nash Equilibria, and Power Law Size Distributions. CSED Working Paper No. 3, Brookings Institution / SFI.",
+    "Axtell, R. (2001). Zipf Distribution of U.S. Firm Sizes. Science 293:1818. doi:10.1126/science.1062081.",
+    "Stanley, M.H.R. et al. (1996). Scaling behaviour in the growth of companies. Nature 379:804-806. doi:10.1038/379804a0."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the Zipf rank-size slope, the firm-size Gini, and the log-growth excess kurtosis + sigma-vs-size (Stanley) slope"
+  }
+}

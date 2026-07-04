@@ -1,0 +1,50 @@
+{
+  "agents": [
+    {
+      "id": "alice",
+      "interest": "evacuation"
+    },
+    {
+      "id": "bob",
+      "interest": "sports"
+    },
+    {
+      "id": "city",
+      "interest": "evacuation"
+    }
+  ],
+  "boundary_note": "Deterministic fixture only; not real social-media validity.",
+  "follows": [
+    {
+      "followee": "bob",
+      "follower": "alice"
+    },
+    {
+      "followee": "city",
+      "follower": "bob"
+    }
+  ],
+  "posts": [
+    {
+      "action": "evacuate",
+      "author": "city",
+      "id": "p_city",
+      "topic": "evacuation"
+    },
+    {
+      "action": "ignore",
+      "author": "bob",
+      "id": "p_bob",
+      "topic": "sports"
+    }
+  ],
+  "recommendation_rules": {
+    "boost_topic": {
+      "topic": "evacuation"
+    },
+    "follows_only": {}
+  },
+  "scenario_id": "example-feed-v1",
+  "schema": "abm-auto/social-platform-scenario/v1",
+  "target_action": "evacuate"
+}

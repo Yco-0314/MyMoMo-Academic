@@ -1,0 +1,656 @@
+{
+  "model": "biham-middleton-levine-1992 traffic (two-species CA, disclosed)",
+  "config": {
+    "L": 128,
+    "n_seeds": 4,
+    "seed_base": 0,
+    "warmup": 12000,
+    "measure": 3000,
+    "rhos": [
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.31,
+      0.32,
+      0.33,
+      0.34,
+      0.35,
+      0.36,
+      0.37,
+      0.38,
+      0.39,
+      0.4,
+      0.41,
+      0.42,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.7
+    ],
+    "p1_rho_c_lo": 0.3,
+    "p1_rho_c_hi": 0.4,
+    "p1_free_flow_min": 0.95,
+    "p1_jam_max": 0.05,
+    "p2_low_rho": 0.2,
+    "p2_low_v_min": 0.95,
+    "p2_high_rho": 0.55,
+    "p2_high_v_max": 0.05,
+    "p3_max_width": 0.15,
+    "update": "classic simultaneous BML: red moves east on even ticks, blue north on odd ticks; a car moves iff its target cell is EMPTY in the current (frozen) grid"
+  },
+  "rho_c": 0.36495143947873415,
+  "transition_width_0p9_to_0p1": 0.08888419209009363,
+  "curve": [
+    {
+      "rho": 0.05,
+      "mean_velocity": 1.0,
+      "std_velocity": 0.0,
+      "min_velocity": 1.0,
+      "max_velocity": 1.0,
+      "per_seed_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "per_seed_red_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "per_seed_blue_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "rho": 0.1,
+      "mean_velocity": 1.0,
+      "std_velocity": 0.0,
+      "min_velocity": 1.0,
+      "max_velocity": 1.0,
+      "per_seed_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "per_seed_red_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "per_seed_blue_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "rho": 0.15,
+      "mean_velocity": 1.0,
+      "std_velocity": 0.0,
+      "min_velocity": 1.0,
+      "max_velocity": 1.0,
+      "per_seed_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "per_seed_red_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "per_seed_blue_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "rho": 0.2,
+      "mean_velocity": 1.0,
+      "std_velocity": 0.0,
+      "min_velocity": 1.0,
+      "max_velocity": 1.0,
+      "per_seed_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "per_seed_red_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "per_seed_blue_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "rho": 0.25,
+      "mean_velocity": 1.0,
+      "std_velocity": 0.0,
+      "min_velocity": 1.0,
+      "max_velocity": 1.0,
+      "per_seed_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "per_seed_red_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "per_seed_blue_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "rho": 0.3,
+      "mean_velocity": 1.0,
+      "std_velocity": 0.0,
+      "min_velocity": 1.0,
+      "max_velocity": 1.0,
+      "per_seed_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "per_seed_red_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "per_seed_blue_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "rho": 0.31,
+      "mean_velocity": 1.0,
+      "std_velocity": 0.0,
+      "min_velocity": 1.0,
+      "max_velocity": 1.0,
+      "per_seed_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "per_seed_red_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "per_seed_blue_velocity": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "rho": 0.32,
+      "mean_velocity": 0.9680225317006249,
+      "std_velocity": 0.052976006928489965,
+      "min_velocity": 0.8763140190231398,
+      "max_velocity": 1.0,
+      "per_seed_velocity": [
+        0.8763140190231398,
+        1.0,
+        0.99577610777936,
+        1.0
+      ],
+      "per_seed_red_velocity": [
+        0.8819122807017544,
+        1.0,
+        0.9956430205949657,
+        1.0
+      ],
+      "per_seed_blue_velocity": [
+        0.870715757344525,
+        1.0,
+        0.9959091949637544,
+        1.0
+      ]
+    },
+    {
+      "rho": 0.33,
+      "mean_velocity": 0.8201047125869532,
+      "std_velocity": 0.1135959405058419,
+      "min_velocity": 0.6860893167592294,
+      "max_velocity": 1.0,
+      "per_seed_velocity": [
+        0.6860893167592294,
+        0.7861823303751183,
+        1.0,
+        0.8081472032134651
+      ],
+      "per_seed_red_velocity": [
+        0.6798202662721894,
+        0.7883219921104537,
+        1.0,
+        0.8015527613412229
+      ],
+      "per_seed_blue_velocity": [
+        0.6923583672462696,
+        0.7840426686397829,
+        1.0,
+        0.8147416450857072
+      ]
+    },
+    {
+      "rho": 0.34,
+      "mean_velocity": 0.7568022643245294,
+      "std_velocity": 0.024880971942259737,
+      "min_velocity": 0.7149727118966639,
+      "max_velocity": 0.7794954319344006,
+      "per_seed_velocity": [
+        0.7794954319344006,
+        0.7701426666116767,
+        0.7149727118966639,
+        0.7625982468553762
+      ],
+      "per_seed_red_velocity": [
+        0.786444125388849,
+        0.7666803062933717,
+        0.7119947355826752,
+        0.7590983488872934
+      ],
+      "per_seed_blue_velocity": [
+        0.7725467384799521,
+        0.7736050269299821,
+        0.7179506882106522,
+        0.766098144823459
+      ]
+    },
+    {
+      "rho": 0.35,
+      "mean_velocity": 0.6732320951052204,
+      "std_velocity": 0.011498101378480468,
+      "min_velocity": 0.6544881990466225,
+      "max_velocity": 0.6851726543425184,
+      "per_seed_velocity": [
+        0.6544881990466225,
+        0.6790598767585164,
+        0.674207650273224,
+        0.6851726543425184
+      ],
+      "per_seed_red_velocity": [
+        0.6566550401116149,
+        0.6807164283222881,
+        0.664234391349843,
+        0.6755161027787467
+      ],
+      "per_seed_blue_velocity": [
+        0.65232135798163,
+        0.6774033251947448,
+        0.6841809091966051,
+        0.6948292059062899
+      ]
+    },
+    {
+      "rho": 0.36,
+      "mean_velocity": 0.6691608172261783,
+      "std_velocity": 0.010020146509637567,
+      "min_velocity": 0.6544116649711766,
+      "max_velocity": 0.6790439697072453,
+      "per_seed_velocity": [
+        0.6654880750536906,
+        0.6544116649711766,
+        0.6790439697072453,
+        0.6776995591726008
+      ],
+      "per_seed_red_velocity": [
+        0.6669528653780943,
+        0.6593299423533401,
+        0.6651868429976263,
+        0.6791348479710636
+      ],
+      "per_seed_blue_velocity": [
+        0.6640232847292867,
+        0.6494933875890132,
+        0.6929010964168645,
+        0.6762642703741382
+      ]
+    },
+    {
+      "rho": 0.37,
+      "mean_velocity": 0.32752114263719345,
+      "std_velocity": 0.32755973713395564,
+      "min_velocity": 0.0,
+      "max_velocity": 0.662153194765204,
+      "per_seed_velocity": [
+        0.0,
+        0.6479313757835699,
+        0.0,
+        0.662153194765204
+      ],
+      "per_seed_red_velocity": [
+        0.0,
+        0.6354375893544485,
+        0.0,
+        0.6619586495106126
+      ],
+      "per_seed_blue_velocity": [
+        0.0,
+        0.6604251622126911,
+        0.0,
+        0.6623477400197955
+      ]
+    },
+    {
+      "rho": 0.38,
+      "mean_velocity": 0.6429458721490524,
+      "std_velocity": 0.028585846397421052,
+      "min_velocity": 0.5971751793553914,
+      "max_velocity": 0.6746513545347468,
+      "per_seed_velocity": [
+        0.5971751793553914,
+        0.6746513545347468,
+        0.6558731127529714,
+        0.6440838419531
+      ],
+      "per_seed_red_velocity": [
+        0.5879631652211157,
+        0.6752592354641825,
+        0.6786927936609916,
+        0.6257877717100332
+      ],
+      "per_seed_blue_velocity": [
+        0.606387193489667,
+        0.6740434736053111,
+        0.6330534318449512,
+        0.6623799121961665
+      ]
+    },
+    {
+      "rho": 0.39,
+      "mean_velocity": 0.34323518518518514,
+      "std_velocity": 0.3436630842144346,
+      "min_velocity": 0.0,
+      "max_velocity": 0.7107159102764735,
+      "per_seed_velocity": [
+        0.7107159102764735,
+        0.0,
+        0.6622248304642672,
+        0.0
+      ],
+      "per_seed_red_velocity": [
+        0.7142718831507564,
+        0.0,
+        0.6686520605112155,
+        0.0
+      ],
+      "per_seed_blue_velocity": [
+        0.7071599374021909,
+        0.0,
+        0.6557976004173187,
+        0.0
+      ]
+    },
+    {
+      "rho": 0.4,
+      "mean_velocity": 0.1596882056759231,
+      "std_velocity": 0.2765880856002076,
+      "min_velocity": 0.0,
+      "max_velocity": 0.6387528227036924,
+      "per_seed_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.6387528227036924
+      ],
+      "per_seed_red_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.6406973858203642
+      ],
+      "per_seed_blue_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.6368082595870206
+      ]
+    },
+    {
+      "rho": 0.41,
+      "mean_velocity": 0.15344160221653602,
+      "std_velocity": 0.26576865103381364,
+      "min_velocity": 0.0,
+      "max_velocity": 0.6137664088661441,
+      "per_seed_velocity": [
+        0.0,
+        0.6137664088661441,
+        0.0,
+        0.0
+      ],
+      "per_seed_red_velocity": [
+        0.0,
+        0.6341313883100129,
+        0.0,
+        0.0
+      ],
+      "per_seed_blue_velocity": [
+        0.0,
+        0.5934014294222753,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "rho": 0.42,
+      "mean_velocity": 0.0,
+      "std_velocity": 0.0,
+      "min_velocity": 0.0,
+      "max_velocity": 0.0,
+      "per_seed_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "per_seed_red_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "per_seed_blue_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "rho": 0.45,
+      "mean_velocity": 0.0,
+      "std_velocity": 0.0,
+      "min_velocity": 0.0,
+      "max_velocity": 0.0,
+      "per_seed_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "per_seed_red_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "per_seed_blue_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "rho": 0.5,
+      "mean_velocity": 0.0,
+      "std_velocity": 0.0,
+      "min_velocity": 0.0,
+      "max_velocity": 0.0,
+      "per_seed_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "per_seed_red_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "per_seed_blue_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "rho": 0.55,
+      "mean_velocity": 0.0,
+      "std_velocity": 0.0,
+      "min_velocity": 0.0,
+      "max_velocity": 0.0,
+      "per_seed_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "per_seed_red_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "per_seed_blue_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "rho": 0.6,
+      "mean_velocity": 0.0,
+      "std_velocity": 0.0,
+      "min_velocity": 0.0,
+      "max_velocity": 0.0,
+      "per_seed_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "per_seed_red_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "per_seed_blue_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "rho": 0.7,
+      "mean_velocity": 0.0,
+      "std_velocity": 0.0,
+      "min_velocity": 0.0,
+      "max_velocity": 0.0,
+      "per_seed_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "per_seed_red_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "per_seed_blue_velocity": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 free-flow->gridlock transition: rho_c (v crosses 0.5) in [0.3, 0.4], v~1 low-rho, v~0 high-rho",
+      "salient_number": [
+        0.365,
+        0.4
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 two-phase order: v(rho=0.2) >= 0.95 (free flow) AND v(rho=0.55) <= 0.05 (gridlock)",
+      "salient_number": [
+        1.0,
+        0.95
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 near-step: density width where v drops 0.9 -> 0.1 is <= 0.15",
+      "salient_number": [
+        0.089,
+        0.15
+      ],
+      "reasons": []
+    }
+  ]
+}

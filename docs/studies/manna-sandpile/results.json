@@ -1,0 +1,258 @@
+{
+  "model": "manna-sandpile (stochastic cellular automaton / SOC, disclosed; NOT agent-stepping)",
+  "config": {
+    "L": 64,
+    "threshold": 2,
+    "neighbourhood": "von Neumann (4)",
+    "redistribution": "stochastic: 2 grains each to an independently-random neighbour",
+    "boundary": "open (grains leaving the grid are lost)",
+    "transient_grains": 102400,
+    "n_avalanches": 40000,
+    "seed": 0,
+    "occupancy_samples": 1000,
+    "fit_method": "exact discrete power-law MLE (Hurwitz-zeta likelihood; Clauset, Shalizi & Newman 2009) solved by Brent root-find on the score, lower cutoff s_min=1",
+    "s_min": 1,
+    "s_min_sweep": [
+      1,
+      2,
+      4,
+      8,
+      16
+    ],
+    "metric": "tail exponent tau (discrete MLE) + size distribution + mean occupancy",
+    "p1_tau_range": [
+      1.2,
+      1.4
+    ],
+    "p2_min_decades": 2.0,
+    "p2_min_max_over_median": 100.0,
+    "p3_mean_occupancy_range": [
+      0.6,
+      0.95
+    ]
+  },
+  "results": {
+    "tau": 1.2619751937444446,
+    "tau_stderr": 0.0015618128530274333,
+    "n_tail": 28136,
+    "s_min": 1,
+    "tau_s_min_sweep": [
+      {
+        "s_min": 1,
+        "tau": 1.2619751937444446,
+        "stderr": 0.0015618128530274333,
+        "n_tail": 28136
+      },
+      {
+        "s_min": 2,
+        "tau": 1.3191541389873414,
+        "stderr": 0.0019822856079517405,
+        "n_tail": 25922
+      },
+      {
+        "s_min": 4,
+        "tau": 1.3588983055342938,
+        "stderr": 0.0024161799909199447,
+        "n_tail": 22064
+      },
+      {
+        "s_min": 8,
+        "tau": 1.3964774410207914,
+        "stderr": 0.0029298051221461636,
+        "n_tail": 18313
+      },
+      {
+        "s_min": 16,
+        "tau": 1.4352929316150544,
+        "stderr": 0.00356809471475147,
+        "n_tail": 14883
+      }
+    ],
+    "stationary_mean_occupancy": 0.699367431640625,
+    "final_mean_occupancy": 0.710205078125,
+    "n_avalanches": 40000,
+    "n_zero_avalanches": 11864,
+    "heavy_tail": {
+      "n_nonzero": 28136,
+      "max": 36961.0,
+      "min_nonzero": 1.0,
+      "median_nonzero": 19.0,
+      "decades": 4.5677437127809375,
+      "max_over_median": 1945.3157894736842
+    },
+    "size_histogram_log_binned": [
+      {
+        "lo": 1.0,
+        "hi": 2.0,
+        "count": 2214
+      },
+      {
+        "lo": 2.0,
+        "hi": 4.0,
+        "count": 3858
+      },
+      {
+        "lo": 4.0,
+        "hi": 5.0,
+        "count": 1312
+      },
+      {
+        "lo": 5.0,
+        "hi": 8.0,
+        "count": 2439
+      },
+      {
+        "lo": 8.0,
+        "hi": 11.0,
+        "count": 1659
+      },
+      {
+        "lo": 11.0,
+        "hi": 16.0,
+        "count": 1771
+      },
+      {
+        "lo": 16.0,
+        "hi": 23.0,
+        "count": 1625
+      },
+      {
+        "lo": 23.0,
+        "hi": 33.0,
+        "count": 1536
+      },
+      {
+        "lo": 33.0,
+        "hi": 47.0,
+        "count": 1444
+      },
+      {
+        "lo": 47.0,
+        "hi": 67.0,
+        "count": 1304
+      },
+      {
+        "lo": 67.0,
+        "hi": 95.0,
+        "count": 1151
+      },
+      {
+        "lo": 95.0,
+        "hi": 135.0,
+        "count": 1060
+      },
+      {
+        "lo": 135.0,
+        "hi": 192.0,
+        "count": 980
+      },
+      {
+        "lo": 192.0,
+        "hi": 272.0,
+        "count": 844
+      },
+      {
+        "lo": 272.0,
+        "hi": 387.0,
+        "count": 794
+      },
+      {
+        "lo": 387.0,
+        "hi": 550.0,
+        "count": 665
+      },
+      {
+        "lo": 550.0,
+        "hi": 781.0,
+        "count": 642
+      },
+      {
+        "lo": 781.0,
+        "hi": 1109.0,
+        "count": 528
+      },
+      {
+        "lo": 1109.0,
+        "hi": 1575.0,
+        "count": 478
+      },
+      {
+        "lo": 1575.0,
+        "hi": 2237.0,
+        "count": 418
+      },
+      {
+        "lo": 2237.0,
+        "hi": 3176.0,
+        "count": 383
+      },
+      {
+        "lo": 3176.0,
+        "hi": 4510.0,
+        "count": 319
+      },
+      {
+        "lo": 4510.0,
+        "hi": 6404.0,
+        "count": 264
+      },
+      {
+        "lo": 6404.0,
+        "hi": 9093.0,
+        "count": 203
+      },
+      {
+        "lo": 9093.0,
+        "hi": 12911.0,
+        "count": 148
+      },
+      {
+        "lo": 12911.0,
+        "hi": 18332.0,
+        "count": 69
+      },
+      {
+        "lo": 18332.0,
+        "hi": 26030.0,
+        "count": 25
+      },
+      {
+        "lo": 26030.0,
+        "hi": 36961.0,
+        "count": 3
+      }
+    ]
+  },
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 discrete-MLE tail exponent tau in [1.2, 1.4] (Manna-class avalanche exponent, Manna 2D tau~1.27)",
+      "salient_number": [
+        1.262,
+        1.4
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 heavy-tailed: nonzero sizes span >= 2.0 decades AND max >= 100.0x median nonzero",
+      "salient_number": [
+        4.5677,
+        2.0
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 stationary mean occupancy in [0.6, 0.95] (finite active density: a genuine critical steady state)",
+      "salient_number": [
+        0.6994,
+        0.95
+      ],
+      "reasons": []
+    }
+  ]
+}

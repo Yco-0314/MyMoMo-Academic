@@ -1,0 +1,169 @@
+{
+  "model": "kuramoto-1975-synchronization (agent-based)",
+  "config": {
+    "n": 500,
+    "omega_dist": "N(0,1)",
+    "dt": 0.05,
+    "n_steps": 2000,
+    "measure_last": 1000,
+    "transient_steps": 1000,
+    "n_seeds_per_K": 5,
+    "k_grid": [
+      0.0,
+      0.5,
+      1.0,
+      1.6,
+      2.0,
+      3.0,
+      4.0
+    ],
+    "coupling": "all-to-all (mean field)",
+    "metric": "order parameter r = |(1/N) sum_j e^{i theta_j}|, mean over the trailing measure_last window",
+    "onset_threshold_r": 0.3,
+    "p2_window": [
+      1.0,
+      2.2
+    ]
+  },
+  "critical_coupling_meanfield": 1.5957691216057308,
+  "measured_onset_K": 2.0,
+  "per_K": [
+    {
+      "K": 0.0,
+      "mean_steady_r": 0.041469792509345495,
+      "std_steady_r": 0.0028299569758914915,
+      "var_steady_r": 8.008656485396916e-06,
+      "min_steady_r": 0.03750692200842347,
+      "max_steady_r": 0.04554985295087863,
+      "per_seed_steady_r": [
+        0.041963677200163065,
+        0.043069697192608204,
+        0.03925881319465412,
+        0.04554985295087863,
+        0.03750692200842347
+      ]
+    },
+    {
+      "K": 0.5,
+      "mean_steady_r": 0.05257169102930144,
+      "std_steady_r": 0.003850395948149396,
+      "var_steady_r": 1.4825548957525287e-05,
+      "min_steady_r": 0.046609084058573995,
+      "max_steady_r": 0.057537560517973006,
+      "per_seed_steady_r": [
+        0.05575394221730522,
+        0.05231566753252442,
+        0.05064220082013056,
+        0.057537560517973006,
+        0.046609084058573995
+      ]
+    },
+    {
+      "K": 1.0,
+      "mean_steady_r": 0.0763444782606399,
+      "std_steady_r": 0.017968997344351843,
+      "var_steady_r": 0.0003228848655613235,
+      "min_steady_r": 0.05897645465611817,
+      "max_steady_r": 0.10979176410186384,
+      "per_seed_steady_r": [
+        0.10979176410186384,
+        0.05897645465611817,
+        0.07143171498394069,
+        0.07809521000539271,
+        0.06342724755588415
+      ]
+    },
+    {
+      "K": 1.6,
+      "mean_steady_r": 0.27959866696047664,
+      "std_steady_r": 0.11471857953056132,
+      "var_steady_r": 0.013160352489509721,
+      "min_steady_r": 0.17491227463469802,
+      "max_steady_r": 0.5019302417647687,
+      "per_seed_steady_r": [
+        0.5019302417647687,
+        0.2364447823068395,
+        0.17491227463469802,
+        0.22267488211131156,
+        0.2620311539847654
+      ]
+    },
+    {
+      "K": 2.0,
+      "mean_steady_r": 0.7121343369035802,
+      "std_steady_r": 0.04711853335125442,
+      "var_steady_r": 0.002220156185173275,
+      "min_steady_r": 0.6282783638092908,
+      "max_steady_r": 0.7609430631279506,
+      "per_seed_steady_r": [
+        0.7609430631279506,
+        0.6282783638092908,
+        0.7210603998494617,
+        0.7503527529181688,
+        0.7000371048130296
+      ]
+    },
+    {
+      "K": 3.0,
+      "mean_steady_r": 0.9282945376084226,
+      "std_steady_r": 0.004123319002842808,
+      "var_steady_r": 1.700175959920461e-05,
+      "min_steady_r": 0.9226514302513666,
+      "max_steady_r": 0.9337788850670895,
+      "per_seed_steady_r": [
+        0.9322698229362856,
+        0.9226514302513666,
+        0.9263973132482781,
+        0.9337788850670895,
+        0.926375236539093
+      ]
+    },
+    {
+      "K": 4.0,
+      "mean_steady_r": 0.9652827618628541,
+      "std_steady_r": 0.0017264272294778159,
+      "var_steady_r": 2.9805509786824474e-06,
+      "min_steady_r": 0.9630566384878423,
+      "max_steady_r": 0.9673566154782596,
+      "per_seed_steady_r": [
+        0.9672503219637997,
+        0.9630566384878423,
+        0.9646274344798997,
+        0.9673566154782596,
+        0.9641227989044692
+      ]
+    }
+  ],
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 incoherent at K=0.5 (r<0.3) AND synchronized at K=3.0 (r>0.6)",
+      "salient_number": [
+        0.9283,
+        0.6
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 synchronization onset in [1.0, 2.2] (first K with r>0.3; canonical K_c~1.6)",
+      "salient_number": [
+        2.0,
+        2.2
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 order parameter r monotone non-decreasing in K",
+      "salient_number": [
+        -0.0111,
+        0.02
+      ],
+      "reasons": []
+    }
+  ]
+}

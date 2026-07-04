@@ -1,0 +1,126 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "Tracer Dispersion in a Self-Organized Critical System (the Oslo rice-pile model)",
+    "authors": [
+      "Kim Christensen",
+      "Alvaro Corral",
+      "Vidar Frette",
+      "Jens Feder",
+      "Torstein Jossang"
+    ],
+    "year": 1996,
+    "journal": "Physical Review Letters 77(1):107-110",
+    "doi": "10.1103/PhysRevLett.77.107"
+  },
+  "headline": "Oslo rice-pile 1996 (1D stochastic SOC CA): 3/3 locked clauses REPRO; L=256 tau=1.444 in [1.4,1.7], heavy-tailed (5.4 decades, max/median=76675x), <s> grows 32->256 over L=32->256",
+  "code_commit": "7a0d7566d48fd3f6fa883e7c91ab91de8fc0fd7e",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "P1 Oslo exponent: discrete-MLE tau in [1.4, 1.7] at L=256 (kmin=1)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.4442,
+        1.4
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P2 genuinely critical in 1D at L=256: sizes span >= 2.0 decades AND max >= 100.0x median-nonzero",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        5.362,
+        2.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "P3 cutoff scales with L: mean avalanche size <s> grows monotonically across L in {32,64,128,256}",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        1.9971,
+        1.0
+      ],
+      "reasons": [],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "results": {
+      "kind": "file",
+      "path": "docs/studies/oslo-ricepile/results.json",
+      "sha256": "a63ed36d36a4c82da5552cc420c905d77009a1b8db45fa64861c3598f8aa8388",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/studies/oslo-ricepile/PREDICTIONS-locked.md",
+      "sha256": "17dcffcc311f30d86414eed6e5ee664befa1b49d08ed7b8ea1bf0827a64e3054",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/studies/oslo-ricepile/FINDINGS.md",
+      "sha256": "82b41855d4d4e16741cacc664678b1f145281f7ffd3126928dbfe27b4d883899",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-07-01-classic-abm-reproductions-51-100-roadmap.md",
+      "sha256": "00a0a1df3fb86428d6262017e850dae4e74f234be7dd1679ae37ee66abd2e817",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "model": "oslo-ricepile-1996",
+    "L_grid": [
+      32,
+      64,
+      128,
+      256
+    ],
+    "transient_factor": 3,
+    "n_avalanches": 40000,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "kmin": 1,
+    "framing": "CA (disclosed)",
+    "mechanism": "1D stochastic slope-relaxation cellular automaton: per-site critical slope z_c in {1,2} re-drawn on each toppling; drive at site 0; grains leave at the open right boundary. The stochastic re-drawn threshold is what makes the 1D pile genuinely critical (tau ~ 1.55), unlike the trivial deterministic 1D BTW pile.",
+    "tau_measured": 1.4441708191453069,
+    "tau_stderr": 0.001612386645217236,
+    "decades": 5.361773151338425,
+    "max_over_median": 76674.66666666667,
+    "mean_sizes_by_L": {
+      "32": 32.00525,
+      "64": 63.917175,
+      "128": 128.015475,
+      "256": 256.067825
+    },
+    "scope": "faithful reproduction of a published SOC model; no real-world data; the contribution is whether the harness + lock-first discipline reproduce the Oslo 1D SOC avalanche exponent (tau ~ 1.55), its heavy-tailed criticality, and its finite-size cutoff scaling, and would catch an artifact"
+  },
+  "citations": [
+    "Christensen, K., Corral, A., Frette, V., Feder, J. & Jossang, T. (1996). Tracer Dispersion in a Self-Organized Critical System. Physical Review Letters 77(1):107-110. doi:10.1103/PhysRevLett.77.107."
+  ],
+  "benchmark": {
+    "cross_tool": null,
+    "note": "no cross-tool baseline; faithful single-implementation reproduction graded against the Oslo 1D SOC signature (avalanche exponent tau, heavy-tailed distribution, finite-size cutoff scaling of <s>)"
+  }
+}

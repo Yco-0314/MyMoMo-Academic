@@ -1,0 +1,257 @@
+{
+  "model": "oslo-ricepile-1996 (1D stochastic SOC cellular automaton, disclosed)",
+  "config": {
+    "L_grid": [
+      32,
+      64,
+      128,
+      256
+    ],
+    "transient_factor": 3,
+    "n_avalanches": 40000,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "kmin": 1,
+    "threshold_set": [
+      1,
+      2
+    ],
+    "drive": "one grain added at site 0 per driving step",
+    "boundary": "closed left wall, open right boundary (grains leave at site L-1)",
+    "p1_tau_band": [
+      1.4,
+      1.7
+    ],
+    "p2_min_decades": 2.0,
+    "p2_min_max_over_median": 100.0,
+    "knob": "nothing dialled; L is swept, all rules/windows/seeds fixed"
+  },
+  "per_L": {
+    "32": {
+      "L": 32,
+      "seed": 0,
+      "transient": 3072,
+      "n_avalanches": 40000,
+      "mean_size": 32.00525,
+      "mean_nonzero_size": 50.368257465475864,
+      "n_nonzero": 25417,
+      "max_size": 2027.0,
+      "final_top_height": 53
+    },
+    "64": {
+      "L": 64,
+      "seed": 0,
+      "transient": 12288,
+      "n_avalanches": 40000,
+      "mean_size": 63.917175,
+      "mean_nonzero_size": 101.27498514557338,
+      "n_nonzero": 25245,
+      "max_size": 11322.0,
+      "final_top_height": 110
+    },
+    "128": {
+      "L": 128,
+      "seed": 0,
+      "transient": 49152,
+      "n_avalanches": 40000,
+      "mean_size": 128.015475,
+      "mean_nonzero_size": 203.1669179495318,
+      "n_nonzero": 25204,
+      "max_size": 40025.0,
+      "final_top_height": 218
+    },
+    "256": {
+      "L": 256,
+      "seed": 0,
+      "transient": 196608,
+      "n_avalanches": 40000,
+      "mean_size": 256.067825,
+      "mean_nonzero_size": 404.3867898456315,
+      "n_nonzero": 25329,
+      "max_size": 230024.0,
+      "final_top_height": 438
+    }
+  },
+  "largest_L_pooled": {
+    "L": 256,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "n_avalanches_total": 120000,
+    "tau": 1.4441708191453069,
+    "tau_stderr": 0.001612386645217236,
+    "n_tail": 75886,
+    "kmin": 1,
+    "decades": 5.361773151338425,
+    "max": 230024.0,
+    "min_nonzero": 1.0,
+    "median_nonzero": 3.0,
+    "max_over_median": 76674.66666666667,
+    "n_nonzero": 75886,
+    "size_histogram": [
+      {
+        "lo": 1.0,
+        "hi": 2.0,
+        "count": 22297
+      },
+      {
+        "lo": 2.0,
+        "hi": 4.0,
+        "count": 16503
+      },
+      {
+        "lo": 4.0,
+        "hi": 7.0,
+        "count": 9114
+      },
+      {
+        "lo": 7.0,
+        "hi": 13.0,
+        "count": 8134
+      },
+      {
+        "lo": 13.0,
+        "hi": 21.0,
+        "count": 4583
+      },
+      {
+        "lo": 21.0,
+        "hi": 36.0,
+        "count": 3891
+      },
+      {
+        "lo": 36.0,
+        "hi": 61.0,
+        "count": 2867
+      },
+      {
+        "lo": 61.0,
+        "hi": 102.0,
+        "count": 2095
+      },
+      {
+        "lo": 102.0,
+        "hi": 171.0,
+        "count": 1627
+      },
+      {
+        "lo": 171.0,
+        "hi": 286.0,
+        "count": 1161
+      },
+      {
+        "lo": 286.0,
+        "hi": 479.0,
+        "count": 894
+      },
+      {
+        "lo": 479.0,
+        "hi": 802.0,
+        "count": 657
+      },
+      {
+        "lo": 802.0,
+        "hi": 1341.0,
+        "count": 519
+      },
+      {
+        "lo": 1341.0,
+        "hi": 2244.0,
+        "count": 378
+      },
+      {
+        "lo": 2244.0,
+        "hi": 3754.0,
+        "count": 305
+      },
+      {
+        "lo": 3754.0,
+        "hi": 6279.0,
+        "count": 208
+      },
+      {
+        "lo": 6279.0,
+        "hi": 10503.0,
+        "count": 137
+      },
+      {
+        "lo": 10503.0,
+        "hi": 17568.0,
+        "count": 93
+      },
+      {
+        "lo": 17568.0,
+        "hi": 29386.0,
+        "count": 105
+      },
+      {
+        "lo": 29386.0,
+        "hi": 49153.0,
+        "count": 126
+      },
+      {
+        "lo": 49153.0,
+        "hi": 82216.0,
+        "count": 114
+      },
+      {
+        "lo": 82216.0,
+        "hi": 137520.0,
+        "count": 63
+      },
+      {
+        "lo": 137520.0,
+        "hi": 230024.0,
+        "count": 15
+      }
+    ]
+  },
+  "p3_mean_sizes": {
+    "32": 32.00525,
+    "64": 63.917175,
+    "128": 128.015475,
+    "256": 256.067825
+  },
+  "p3_step_ratios": [
+    1.997084072144414,
+    2.0028337453900305,
+    2.0002880511125705
+  ],
+  "verdicts": [
+    {
+      "label": "P1",
+      "passed": true,
+      "gate": "P1 Oslo exponent: discrete-MLE tau in [1.4, 1.7] at L=256 (kmin=1)",
+      "salient_number": [
+        1.4442,
+        1.4
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P2",
+      "passed": true,
+      "gate": "P2 genuinely critical in 1D at L=256: sizes span >= 2.0 decades AND max >= 100.0x median-nonzero",
+      "salient_number": [
+        5.362,
+        2.0
+      ],
+      "reasons": []
+    },
+    {
+      "label": "P3",
+      "passed": true,
+      "gate": "P3 cutoff scales with L: mean avalanche size <s> grows monotonically across L in {32,64,128,256}",
+      "salient_number": [
+        1.9971,
+        1.0
+      ],
+      "reasons": []
+    }
+  ]
+}
