@@ -1,0 +1,202 @@
+{
+  "features": [
+    {
+      "attributes": {
+        "ARTDESCRIPT": "Collector Arterial",
+        "COMPKEY": 2467,
+        "OBJECTID": 9638977,
+        "ONSTREET": "17TH AVE S",
+        "SEGLENGTH": 567,
+        "SPEEDLIMIT": 25,
+        "STNAME_ORD": "17TH AVE S",
+        "Shape__Length": 567.1620616575743,
+        "UNITID": "00780"
+      },
+      "geometry": {
+        "paths": [
+          [
+            [
+              1275918.32965532,
+              218708.320148006
+            ],
+            [
+              1275914.51474331,
+              218540.663187832
+            ],
+            [
+              1275906.77023131,
+              218141.276563421
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "attributes": {
+        "ARTDESCRIPT": "Collector Arterial",
+        "COMPKEY": 11652,
+        "OBJECTID": 9645707,
+        "ONSTREET": "MARINE VIEW DR SW",
+        "SEGLENGTH": 622,
+        "SPEEDLIMIT": 25,
+        "STNAME_ORD": "MARINE VIEW DR SW",
+        "Shape__Length": 621.6086634599958,
+        "UNITID": "08430"
+      },
+      "geometry": {
+        "paths": [
+          [
+            [
+              1257175.66237213,
+              188606.718837172
+            ],
+            [
+              1257590.92253256,
+              188592.596853167
+            ],
+            [
+              1257621.96605259,
+              188590.00101316
+            ],
+            [
+              1257651.13270862,
+              188585.313525155
+            ],
+            [
+              1257687.07018065,
+              188578.02187714
+            ],
+            [
+              1257732.9883887,
+              188564.081525132
+            ],
+            [
+              1257788.57437275,
+              188539.550645113
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "attributes": {
+        "ARTDESCRIPT": "Minor Arterial",
+        "COMPKEY": 2038,
+        "OBJECTID": 9659868,
+        "ONSTREET": "15TH AVE NE",
+        "SEGLENGTH": 770,
+        "SPEEDLIMIT": 25,
+        "STNAME_ORD": "15TH AVE NE",
+        "Shape__Length": 770.3280987426517,
+        "UNITID": "00555"
+      },
+      "geometry": {
+        "paths": [
+          [
+            [
+              1276115.02264753,
+              246592.322480559
+            ],
+            [
+              1276138.41003954,
+              247362.295473337
+            ]
+          ]
+        ]
+      }
+    }
+  ],
+  "fields": [
+    {
+      "alias": "OBJECTID",
+      "defaultValue": null,
+      "domain": null,
+      "name": "OBJECTID",
+      "sqlType": "sqlTypeOther",
+      "type": "esriFieldTypeOID"
+    },
+    {
+      "alias": "COMPKEY",
+      "defaultValue": null,
+      "domain": null,
+      "name": "COMPKEY",
+      "sqlType": "sqlTypeOther",
+      "type": "esriFieldTypeInteger"
+    },
+    {
+      "alias": "UNITID",
+      "defaultValue": null,
+      "domain": null,
+      "length": 20,
+      "name": "UNITID",
+      "sqlType": "sqlTypeOther",
+      "type": "esriFieldTypeString"
+    },
+    {
+      "alias": "STNAME_ORD",
+      "defaultValue": null,
+      "domain": null,
+      "length": 40,
+      "name": "STNAME_ORD",
+      "sqlType": "sqlTypeOther",
+      "type": "esriFieldTypeString"
+    },
+    {
+      "alias": "ONSTREET",
+      "defaultValue": null,
+      "domain": null,
+      "length": 60,
+      "name": "ONSTREET",
+      "sqlType": "sqlTypeOther",
+      "type": "esriFieldTypeString"
+    },
+    {
+      "alias": "ARTDESCRIPT",
+      "defaultValue": null,
+      "domain": null,
+      "length": 60,
+      "name": "ARTDESCRIPT",
+      "sqlType": "sqlTypeOther",
+      "type": "esriFieldTypeString"
+    },
+    {
+      "alias": "SPEEDLIMIT",
+      "defaultValue": null,
+      "domain": null,
+      "name": "SPEEDLIMIT",
+      "sqlType": "sqlTypeOther",
+      "type": "esriFieldTypeInteger"
+    },
+    {
+      "alias": "SEGLENGTH",
+      "defaultValue": null,
+      "domain": null,
+      "name": "SEGLENGTH",
+      "sqlType": "sqlTypeOther",
+      "type": "esriFieldTypeDouble"
+    },
+    {
+      "alias": "Shape__Length",
+      "defaultValue": null,
+      "domain": null,
+      "name": "Shape__Length",
+      "sqlType": "sqlTypeDouble",
+      "type": "esriFieldTypeDouble"
+    }
+  ],
+  "geometryProperties": {
+    "shapeLengthFieldName": "Shape__Length",
+    "units": "esriFeet"
+  },
+  "geometryType": "esriGeometryPolyline",
+  "globalIdFieldName": "",
+  "objectIdFieldName": "OBJECTID",
+  "spatialReference": {
+    "latestWkid": 2926,
+    "wkid": 2926
+  },
+  "uniqueIdField": {
+    "isSystemMaintained": true,
+    "name": "OBJECTID"
+  }
+}

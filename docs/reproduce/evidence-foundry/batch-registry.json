@@ -26,6 +26,12 @@
       "path": "docs/reproduce/evidence-foundry/mechanism-example/challenge.json"
     },
     {
+      "boundary_note": "Validates challenge contract completeness, not scientific truth.",
+      "id": "challenge-manifest",
+      "kind": "evidence_challenge_manifest",
+      "path": "docs/reproduce/evidence-foundry/challenge-manifest-example/challenge-manifest.json"
+    },
+    {
       "boundary_note": "Validates provenance manifest only.",
       "id": "synthetic-population",
       "kind": "synthetic_population_manifest",

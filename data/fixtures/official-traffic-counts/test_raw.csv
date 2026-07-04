@@ -1,0 +1,4 @@
+raw_record_id,route,postmile,aadt,x,y
+r1,80,1.0,70,2,0.2
+r2,80,2.0,30,6,-0.3
+r3,80,3.0,40,5,9.6

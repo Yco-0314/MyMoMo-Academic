@@ -1,17 +1,18 @@
-"""The real-DEM reproduction of Anshuka et al. 2026.
+"""Candidate #10 — the real-DEM reproduction of Anshuka et al. 2026.
 
-The fidelity test-stone. It swaps ONLY the world geometry of the synthetic
-[_anshuka_2026] reproduction for a REAL Ba-catchment SRTM DEM, and runs the
-byte-identical [_anshuka_2026._simulate] mechanism on it — so any magnitude
-movement toward the paper is attributable to geometry alone.
+The fidelity test-stone (ADR-023 #10 / ADR-024 D3 step 1). It swaps ONLY the world
+geometry of the synthetic [_anshuka_2026] reproduction for a REAL Ba-catchment SRTM
+DEM, and runs the byte-identical [_anshuka_2026._simulate] mechanism on it — so any
+magnitude movement toward the paper is attributable to geometry alone. See
+``docs/reproduce/anshuka-2026-real-dem/PREDICTIONS-locked.md`` (locked before any run).
 
-Real-data codegen: the world comes through ``_io.load_raster`` from a real
-GeoTIFF, and ``assert_real_world`` HARD-FAILS a synthetic/degenerate
-elevation — so the fidelity gate verifies a REAL DEM, not np.random.
+This is also ladder step #2 (real-data codegen): the world comes through
+``_io.load_raster`` from a real GeoTIFF, and ``assert_real_world`` HARD-FAILS a
+synthetic/degenerate elevation — so the fidelity gate verifies a REAL DEM, not np.random.
 
 Note: the synthetic mechanism moves agents on the GRID (Manhattan, avoiding water); it
-does NOT route on a road graph. So the real-DEM run needs only the DEM (elevation drives
-the flood + the agent-to-shelter distances that the findings root-cause is about). OSM
+does NOT route on a road graph. So candidate #10 needs only the DEM (elevation drives the
+flood + the agent-to-shelter distances that the FINDINGS root-cause is about). OSM
 buildings/shelters are an optional v2 refinement, not required for the geometry test.
 
 Additive GIS module. Zero change to runtime/codegen/calibration/agents/pipeline.
@@ -40,7 +41,7 @@ class RealWorld:
     source: str = "unknown"                # e.g. "SRTM:S18E177" — "synthetic*" is rejected
 
 
-# ── Real-data gate (the wall must verify a REAL DEM, not np.random) ──
+# ── Real-data gate (ladder #2: the wall must verify a REAL DEM, not np.random) ──
 
 class SyntheticWorldError(ValueError):
     """Raised when a world that claims to be real is actually synthetic/degenerate."""

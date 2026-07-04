@@ -1,0 +1,25 @@
+{
+  "raster_path": "ghsl_or_worldpop_city_clip.tif",
+  "dataset": "ghsl-or-worldpop-city-clip",
+  "source_url": "https://human-settlement.emergency.copernicus.eu/download.php",
+  "source_download_page": "https://human-settlement.emergency.copernicus.eu/download.php",
+  "license": "Set the official source attribution/license text for the downloaded product.",
+  "description": "Example manifest for a local observed raster clip.",
+  "crs": "Set this to the clipped raster CRS for human review.",
+  "window": {
+    "col_off": 0,
+    "row_off": 0,
+    "width": 100,
+    "height": 100
+  },
+  "threshold": 0.5,
+  "param_grid": {
+    "row": [0.0, 2.0],
+    "col": [0.0, 3.0]
+  },
+  "expected_best_params": {
+    "row": 2.0,
+    "col": 3.0
+  },
+  "notes": "Do not claim the local test fixture is official GHSL or WorldPop data."
+}

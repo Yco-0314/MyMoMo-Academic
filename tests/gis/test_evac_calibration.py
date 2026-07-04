@@ -1,7 +1,7 @@
-"""Tests for evacuation outcome calibration + parameter recovery.
+"""Tests for ladder #5 — evacuation outcome calibration + parameter recovery.
 
 Honest scope: proves the calibration CAPABILITY works (belief recovered from outcomes via
-base ABC), NOT a tuning of the real-DEM reproduction to the paper.
+base ABC), NOT a tuning of the #10 reproduction to the paper.
 """
 from __future__ import annotations
 

@@ -1,7 +1,7 @@
 """Scoped reproduction of Anshuka et al. 2026 (IJDRS 17:439-455).
 
 Bathtub flood inundation on a synthetic grid + BDI human agents + a forecaster
-agent. Honest scope: faithful to the *mechanism*
+agent. Honest scope (see PREDICTIONS-locked.md): faithful to the *mechanism*
 and *direction* of all five levers (belief, alarm time, onset rate, mobility,
 collaboration) and the second-order sensitivity ordering — NOT to the real Ba
 catchment GIS layers.
@@ -86,7 +86,7 @@ def _bathtub_step(water: np.ndarray, elev: np.ndarray,
     and (b) its elevation <= `level` (the current water surface). Synchronous —
     neighbour wetness is read from the INPUT `water`, not the in-progress output.
     Matches the paper's Fig 3 illustration. Vectorised with a 3x3 binary dilation
-    so a real ~100x100 Ba grid runs in C, not a Python triple loop.
+    so a real ~100x100 Ba grid runs in C, not a Python triple loop (candidate #10).
     """
     from scipy.ndimage import binary_dilation
 
@@ -188,7 +188,7 @@ def _simulate(
 ) -> ScenarioResult:
     """The shared BDI-evacuation mechanism. Both ``run_scenario`` (the synthetic
     20x20 control) and ``_anshuka_real.run_scenario_real`` (the real Ba SRTM/OSM
-    world) call this with an injected world — so the mechanism is
+    world, candidate #10) call this with an injected world — so the mechanism is
     byte-identical across them and ONLY the world geometry differs. The rng is
     passed in already-seeded so each entry point controls its own world-build draws."""
     prior_experience_frac = _validate_prior_experience_frac(prior_experience_frac)
@@ -281,7 +281,7 @@ def run_scenario(
     max_steps: int = 150,
 ) -> ScenarioResult:
     """Synthetic 20x20-grid scenario (the control). Builds the synthetic world,
-    then runs the shared ``_simulate`` mechanism. The real-DEM variant
+    then runs the shared ``_simulate`` mechanism. Candidate #10
     (``abm_auto/gis/_anshuka_real.py``) injects a REAL Ba world into the same
     ``_simulate`` — only the geometry changes."""
     rng = random.Random(seed)

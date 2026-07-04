@@ -239,6 +239,23 @@ def test_preflight_classifies_dynamic_congestion_as_renderable():
     assert report["gate"] == "dynamic_congestion_reroute_gate"
 
 
+def test_preflight_classifies_dynamic_incident_as_renderable():
+    spec = GISModelSpec(
+        spatial_type="network",
+        mechanism="dynamic_incident_routing",
+        capability="dynamic_incident_routing",
+    )
+
+    report = gis_codegen_preflight(spec)
+
+    assert report["ok"] is True
+    assert report["status"] == "renderable"
+    assert report["action"] == "render"
+    assert report["temporal"] is False
+    assert report["dynamic"] is True
+    assert report["gate"] == "dynamic_incident_reroute_gate"
+
+
 def test_preflight_classifies_unknown_explicit_capability():
     spec = GISModelSpec(
         spatial_type="network",
@@ -296,17 +313,19 @@ def test_self_extension_scaffold_gate_passes_and_states_boundary():
 
     assert ok, desc
     assert "scaffold" in desc
-    assert "FIRES on a real registered gap" in desc
+    assert "FIRES on a real registered codegen-template gap" in desc
     assert "refuses renderable" in desc
     assert "generates no code" in desc
 
 
-# ── the self-extension loop, exercised on a REAL registered gap ──
+# ── ladder #4: the self-extension loop, exercised on a REAL registered gap ──
 
 def test_preflight_classifies_spatial_method_transfer_as_registered_gap():
-    """The method-transfer capability is registered in the runtime registry but
-    not renderable — a genuine standing gap, so the loop's gap path is real, not
-    vacuous."""
+    """ADR-019 layer E has a runtime gate but no codegen template yet.
+
+    It stays registered-but-not-renderable so the loop's gap path is real, not
+    vacuous.
+    """
     spec = GISModelSpec(
         spatial_type="method_transfer",
         mechanism="ricci_curvature",

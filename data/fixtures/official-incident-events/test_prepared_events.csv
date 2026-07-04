@@ -1,0 +1,3 @@
+event_id,x,y,t,closed,description,raw_id
+evt-close,150,0.2,1,closed,Incident closes bottleneck,raw-close
+evt-open,150,-0.2,3,reopened,Incident reopens bottleneck,raw-open

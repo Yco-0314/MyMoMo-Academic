@@ -1,0 +1,2 @@
+incident_id,x,y,started_at,ended_at,description
+evt-closure,150,0.2,2026-07-03T08:10:00-07:00,2026-07-03T08:30:00-07:00,Closure interval matching the tick fixture

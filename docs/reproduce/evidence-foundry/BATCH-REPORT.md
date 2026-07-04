@@ -2,7 +2,7 @@
 
 - Registry: MyMoMo Evidence Foundry Seed Batch
 - Overall gate: PASS
-- Entries: 13
+- Entries: 14
 - Failed: 0
 
 | Entry | Kind | Gate |
@@ -11,6 +11,7 @@
 | failure-pack | failure_pack | PASS |
 | counterfactual | counterfactual_challenge | PASS |
 | mechanism | mechanism_challenge | PASS |
+| challenge-manifest | evidence_challenge_manifest | PASS |
 | synthetic-population | synthetic_population_manifest | PASS |
 | llm-replay | llm_agent_replay | PASS |
 | synthetic-survey | synthetic_survey_gate | PASS |
@@ -41,6 +42,7 @@
 - `failure-pack`: failure_pack validation passed
 - `counterfactual`: Counterfactual challenge gate passed (verdict=PASS, primary_error=0.06, alternative_error=0.65); compares recorded candidate metrics, not causal proof
 - `mechanism`: Mechanism challenge gate passed (verdict=PASS, matched=3/3); signature presence is mechanism evidence only, not scientific truth
+- `challenge-manifest`: Evidence Foundry challenge manifest gate passed (challenge_id=official-incident-real-sample-evidence-contract-v1, claims=3, evidence=2, gates=1); contract completeness only, not a reproduction rerun and not a scientific truth certificate
 - `synthetic-population`: synthetic_population_manifest validation passed
 - `llm-replay`: llm_agent_replay validation passed
 - `synthetic-survey`: synthetic survey gate passed (verdict=PASS, compared_rows=4); does not validate synthetic people as human substitutes

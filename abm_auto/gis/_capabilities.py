@@ -175,6 +175,22 @@ CAPABILITIES: dict[str, GISCapability] = {
         ),
         gate="dynamic_congestion_reroute_gate",
     ),
+    "dynamic_incident_routing": GISCapability(
+        key="dynamic_incident_routing",
+        spatial_type="network",
+        mechanism="dynamic_incident_routing",
+        layers=("GeoNetwork", "moving agents", "per-tick incident events"),
+        coupling="dynamic_network_incident",
+        dynamic=True,
+        renderable=True,
+        required_tokens=(
+            "GeoNetwork",
+            "LineString",
+            "run_dynamic_incident_routing",
+            "dynamic_incident_reroute_gate",
+        ),
+        gate="dynamic_incident_reroute_gate",
+    ),
     "raster_spatial_validation": GISCapability(
         key="raster_spatial_validation",
         spatial_type="validation",
@@ -254,7 +270,7 @@ CAPABILITIES: dict[str, GISCapability] = {
         gate="apply_coverage_gate",
         wrong_space_tokens=("GeoNetwork",),
     ),
-    # ── Platform ABM: codegen emits a full GISAgent/GISModel ABM ──
+    # ── Platform ABM (ADR-020): codegen emits a full GISAgent/GISModel ABM ──
     "gis_abm_platform": GISCapability(
         key="gis_abm_platform",
         spatial_type="platform",
@@ -264,12 +280,44 @@ CAPABILITIES: dict[str, GISCapability] = {
         required_tokens=("GISAgent", "GISModel", "DataCollector", "step"),
         gate="(inline)",
     ),
-    # ── method-transfer on the model's intermediate spatial
-    #    state (TDA / Ricci curvature / hot-spot). A GENUINE standing gap — the
-    #    runtime cell does NOT exist yet, so it is REGISTERED but NOT renderable.
-    #    This is what makes the self-extension loop's gap/scaffold path real
-    #    rather than vacuous: the platform DETECTS it deterministically and HALTS
-    #    to a human (auto-fill is generate-then-verify, never generate-then-trust).
+    # ── Terrain bridge consumers: runtime/gate exists, no codegen template yet ──
+    "terrain_network_cost": GISCapability(
+        key="terrain_network_cost",
+        spatial_type="terrain",
+        mechanism="terrain_network_cost",
+        layers=("terrain bridge heightfield", "GeoNetwork"),
+        coupling="terrain_network",
+        renderable=True,
+        required_tokens=(
+            "GeoNetwork",
+            "LineString",
+            "terrain_cost_per_edge",
+            "terrain_network_coupling_gate",
+        ),
+        gate="terrain_network_coupling_gate",
+    ),
+    "terrain_aware_routing": GISCapability(
+        key="terrain_aware_routing",
+        spatial_type="terrain",
+        mechanism="terrain_aware_routing",
+        layers=("terrain bridge heightfield", "GeoNetwork"),
+        coupling="terrain_network_routing",
+        renderable=True,
+        required_tokens=(
+            "GeoNetwork",
+            "LineString",
+            "terrain_aware_shortest_path",
+            "terrain_aware_routing_gate",
+        ),
+        gate="terrain_aware_routing_gate",
+    ),
+    # ── ADR-019 layer E: method-transfer on the model's intermediate spatial
+    #    state (TDA / Ricci curvature / hot-spot). The runtime/gate cell exists,
+    #    but no runnable codegen template exists yet, so it remains REGISTERED
+    #    but NOT renderable. This keeps the self-extension loop's gap/scaffold
+    #    path real rather than vacuous: the platform DETECTS it deterministically
+    #    and HALTS to a human (auto-fill is generate-then-verify, never
+    #    generate-then-trust).
     "spatial_method_transfer": GISCapability(
         key="spatial_method_transfer",
         spatial_type="method_transfer",
@@ -326,6 +374,10 @@ _PARAM_SCHEMAS: dict[str, tuple[ParamSpec, ...]] = {
         _p("speed_m_per_tick", float, 100.0, 0.0, None, "m/tick", "agent travel speed per tick"),
         _p("congestion_alpha", float, 3.0, 0.0, None, "", "congestion cost sensitivity"),
     ),
+    "dynamic_incident_routing": (
+        _p("n_steps", int, 6, 1, None, "ticks", "number of routing steps"),
+        _p("speed_m_per_tick", float, 100.0, 0.0, None, "m/tick", "agent travel speed per tick"),
+    ),
     "raster_focal": (
         _p("rows", int, 15, 1, None, "cells", "raster row count"),
         _p("cols", int, 15, 1, None, "cells", "raster column count"),
@@ -335,6 +387,15 @@ _PARAM_SCHEMAS: dict[str, tuple[ParamSpec, ...]] = {
         _p("cols", int, 4, 1, None, "cells", "raster column count"),
     ),
     "gis_abm_platform": (_p("n", int, 12, 1, None, "agents", "number of agents"),),
+    "terrain_network_cost": (
+        _p("grade_weight", float, 1.0, 0.0, None, "", "terrain grade cost sensitivity"),
+        _p("n_samples", int, 5, 2, None, "samples", "terrain samples per edge"),
+        _p("threshold", float, 0.01, 0.0, None, "", "minimum grade proxy required by the gate"),
+    ),
+    "terrain_aware_routing": (
+        _p("grade_weight", float, 0.25, 0.0, None, "", "terrain grade cost sensitivity"),
+        _p("n_samples", int, 5, 2, None, "samples", "terrain samples per edge"),
+    ),
     "network_routing_load": (
         _p("crs", str, "EPSG:27700", None, None, "", "coordinate reference system code"),
         _p("n_trips", int, 300, 1, None, "trips", "number of trips to simulate"),

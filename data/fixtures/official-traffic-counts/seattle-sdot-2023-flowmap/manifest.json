@@ -1,0 +1,38 @@
+{
+  "schema": "abm-auto/official-traffic-count-intake/v1",
+  "dataset": "Seattle SDOT Traffic Study Flow Counts 2023 FLOWMAP sample",
+  "source_url": "https://data-seattlecitygis.opendata.arcgis.com/api/search/v1/collections/dataset/items/0f8fcff4d1e04ae7abbda101b6013a52",
+  "source_agency": "Seattle Department of Transportation",
+  "license": "City of Seattle open data terms; official item states no representation or warranty as to accuracy",
+  "downloaded_at": "2026-07-02",
+  "raw_local_path": "raw_source.json",
+  "raw_sha256": "8aa0e60203a09dd511f3b7f05aabf44c7ff84a330c03bcc7e2d6e42464a13fbe",
+  "prepared_csv_path": "prepared_counts.csv",
+  "prepared_sha256": "d9fcba4d5db8d7af5d928b30d3b8357b56a6b90867890990d137c9e81b39f998",
+  "preparation_steps": [
+    "Queried the official Seattle SDOT Traffic Study Flow Counts Feature Service for three 2023 records with FLOWMAP = 'Y'.",
+    "Preserved official EPSG:2926 point coordinates from the ArcGIS response.",
+    "Mapped STUDY_ID into station_id, STUDY_ADT into count, and retained source record fields in the prepared CSV.",
+    "Matched the prepared points against deterministic fixture edges that pass through the official point coordinates."
+  ],
+  "crs": "EPSG:2926",
+  "columns": {
+    "id": "station_id",
+    "x": "x",
+    "y": "y",
+    "count": "count"
+  },
+  "count_metric": "STUDY_ADT",
+  "year": 2023,
+  "geographic_scope": "Seattle SDOT 2023 FLOWMAP three-record public sample",
+  "max_distance_m": 100.0,
+  "aggregation": "sum",
+  "expected_min_coverage": 1.0,
+  "expected_max_match_distance_m": 0.01,
+  "expected_edge_values": {
+    "(1276127, 246900)|(1276127, 247050)": 5497.0,
+    "(1275850, 218425)|(1276000, 218425)": 1164.0,
+    "(1257400, 188596)|(1257600, 188596)": 1047.0
+  },
+  "boundary_note": "Official traffic-count intake and edge-match quality on a bounded public Seattle SDOT sample only; not traffic-flow validity, congestion calibration, or production map matching."
+}

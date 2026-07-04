@@ -20,6 +20,7 @@ _SCAFFOLD_FILES = (
     "tests/gis/test_codegen_gate.py",
     "tests/gis/test_extractor.py",
     "tests/gis/test_self_extension.py",
+    "docs/reproduce/coupled-seam/STATUS.md",
 )
 
 _SCAFFOLD_TEST_TARGETS = (
@@ -162,8 +163,9 @@ def gis_self_extension_gap_gate() -> tuple[bool, str]:
             mechanism="contagion",
             capability="mechanism_contagion",
         )),
-        # A REAL registered gap: runtime cell not built yet, so
-        # registered-but-not-renderable. The loop must DETECT it and halt to human.
+        # A REAL registered gap (ADR-019 layer E): runtime/gate exists, but the
+        # runnable codegen template is not built yet. The loop must DETECT it and
+        # halt to human instead of pretending it can render.
         "registered_gap": gis_codegen_preflight(GISModelSpec(
             spatial_type="method_transfer",
             mechanism="ricci_curvature",
@@ -197,15 +199,17 @@ def gis_self_extension_gap_gate() -> tuple[bool, str]:
     return (
         True,
         "deterministic gap/halt reporting distinguishes renderable, registered-gap, "
-        "unknown, and invalid GIS codegen requests; a REAL registered gap "
-        "(spatial_method_transfer) is detected and halts to human — "
-        "the loop is exercised, and this is not self-generating GIS capabilities",
+        "unknown, and invalid GIS codegen requests; a REAL codegen-template gap "
+        "(spatial_method_transfer, ADR-019 layer E) is detected and halts to human "
+        "even though its runtime gate exists — the loop is exercised, and this is "
+        "not self-generating GIS capabilities",
     )
 
 
 def gis_self_extension_scaffold_gate() -> tuple[bool, str]:
     """Gate for bounded scaffold reporting, not code generation."""
-    # The scaffold path FIRES on a real registered gap.
+    # The scaffold path FIRES on a real registered codegen-template gap
+    # (ADR-019 layer E).
     gap = gis_codegen_scaffold(GISModelSpec(
         spatial_type="method_transfer",
         mechanism="ricci_curvature",
@@ -252,7 +256,7 @@ def gis_self_extension_scaffold_gate() -> tuple[bool, str]:
 
     return (
         True,
-        "self-extension scaffold FIRES on a real registered gap "
+        "self-extension scaffold FIRES on a real registered codegen-template gap "
         "(spatial_method_transfer): a bounded work-surface that requires human review "
         "and generates no code; it still refuses renderable capabilities and halts "
         "unknown requests",

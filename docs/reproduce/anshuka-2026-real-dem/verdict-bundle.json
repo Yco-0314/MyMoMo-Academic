@@ -1,0 +1,120 @@
+{
+  "schema": "abm-auto/repro-bundle/v1",
+  "paper": {
+    "title": "A Holistic Approach to Early Warning Systems Using an Agent-Based Model",
+    "authors": "Anshuka et al.",
+    "year": 2026,
+    "journal": "IJDRS 17:439-455",
+    "doi": "10.1007/s13753-026-00729-7"
+  },
+  "headline": "EARNED",
+  "code_commit": "46299fd2c8ac171bd5852347bf4fb27b44b1006a",
+  "env": {
+    "python": "3.11.14",
+    "platform": "macOS-26.6-arm64-arm-64bit",
+    "numpy": "2.4.2",
+    "scipy": "1.17.1",
+    "rasterio": "1.4.4",
+    "pyproj": "3.7.2"
+  },
+  "verdicts": [
+    {
+      "gate": "H1 P1 magnitude converges (low-belief evac)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        15.2,
+        35.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "H2 P2 recovery (DECISIVE: high-belief earlier-alarm)",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        24.4,
+        10.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "H3 P3 rapid-onset magnitude widens",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        18.0,
+        20.0
+      ],
+      "reasons": [
+        "high rapid incap=75.0 (>=30 ok); \u0394=18.0 < 20"
+      ],
+      "evidence": null
+    },
+    {
+      "gate": "H4 P4 mobility-gap magnitude widens",
+      "tier": "refutation",
+      "passed": true,
+      "salient_number": [
+        10.4,
+        6.0
+      ],
+      "reasons": [],
+      "evidence": null
+    },
+    {
+      "gate": "H5 P5 low-belief deviation persists (predicted mechanism)",
+      "tier": "refutation",
+      "passed": false,
+      "salient_number": [
+        1.8,
+        5.0
+      ],
+      "reasons": [
+        "FALSIFIED: \u0394evac(low)=1.8 did NOT persist; deviation relocated to mid/high (med 7.2, high 7.5) \u2014 P5 partly geometric; ladder #5 target"
+      ],
+      "evidence": null
+    }
+  ],
+  "data": {
+    "ba_dem_utm": {
+      "kind": "file",
+      "path": "data/anshuka_ba/ba_dem_utm.tif",
+      "sha256": "aa1ad28c17ba0ec2dc9f95773b04eee4f61515776c06cb19a6b666bc97539c5e",
+      "replay": "strong"
+    }
+  },
+  "docs": {
+    "predictions_locked": {
+      "kind": "file",
+      "path": "docs/reproduce/anshuka-2026-real-dem/PREDICTIONS-locked.md",
+      "sha256": "9b06abc812a1d85419eab52acf90a0bfd7f03e7f01272217b602c0ef6f6b762e",
+      "replay": "strong"
+    },
+    "findings": {
+      "kind": "file",
+      "path": "docs/reproduce/anshuka-2026-real-dem/FINDINGS.md",
+      "sha256": "b2e25533544315a953e04a275f65c13f73796c2d5bbb0c1946f783da2e28c99e",
+      "replay": "strong"
+    },
+    "design_spec": {
+      "kind": "file",
+      "path": "docs/superpowers/specs/2026-06-24-anshuka-real-dem-design.md",
+      "sha256": "87a44d7eead909ea938ef0622d31c104bd0a306d2138a1524b3556b9a02a623c",
+      "replay": "strong"
+    }
+  },
+  "extra": {
+    "grid_size": 100,
+    "n_iter": 10,
+    "data_source": "Copernicus DEM GLO-30 tile S18E177 (public domain), clipped to Ba floodplain, UTM 60S",
+    "world": {
+      "home_cells": 60,
+      "shelters": 4,
+      "initial_water_cells": 310
+    },
+    "fetch": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S18_00_E177_00_DEM/Copernicus_DSM_COG_10_S18_00_E177_00_DEM.tif"
+  }
+}

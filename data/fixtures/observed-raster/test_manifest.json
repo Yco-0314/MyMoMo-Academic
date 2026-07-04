@@ -1,0 +1,18 @@
+{
+  "raster_path": "test_observed.tif",
+  "dataset": "local-test-observed-raster",
+  "source_url": "local://data/fixtures/observed-raster/test_observed.tif",
+  "license": "local test fixture; not official GHSL or WorldPop data",
+  "description": "Tiny local GeoTIFF used to test observed-raster manifest plumbing.",
+  "crs": "EPSG:3857",
+  "threshold": 0.5,
+  "param_grid": {
+    "row": [0.0, 2.0],
+    "col": [0.0, 3.0]
+  },
+  "expected_best_params": {
+    "row": 2.0,
+    "col": 3.0
+  },
+  "notes": "Generated deterministically for tests; not official GHSL or WorldPop pixels."
+}

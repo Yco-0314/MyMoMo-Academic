@@ -1,9 +1,9 @@
-"""Offline tests for the real-DEM Anshuka reproduction.
+"""Candidate #10 — offline tests for the real-DEM Anshuka reproduction.
 
 These run WITHOUT the real Ba data: a small synthetic GeoTIFF fixture exercises the
 loader/world-builder, and the mechanism-parity test proves the real path runs the
-byte-identical _simulate mechanism. The real-data verdict needs the actual SRTM/OSM
-download.
+byte-identical _simulate mechanism. The real-data VERDICT (FINDINGS vs PREDICTIONS-locked)
+needs the actual SRTM/OSM download — see docs/reproduce/anshuka-2026-real-dem/.
 """
 from __future__ import annotations
 

@@ -1,3 +1,4 @@
+import json
 import os
 import subprocess
 import sys
@@ -9,6 +10,7 @@ from abm_auto.gis._model_spec import GISModelSpec
 from abm_auto.gis._templates import render
 
 _REPO_ROOT = str(Path(__file__).resolve().parents[2])
+_OBSERVED_RASTER_MANIFEST = Path("data/fixtures/observed-raster/test_manifest.json")
 
 
 # ── B1: spec validation ─────────────────────────────────────────────────────
@@ -126,6 +128,106 @@ def test_explicit_dynamic_congestion_spec_validates_without_data_path():
         mechanism="dynamic_congestion_routing",
         capability="dynamic_congestion_routing",
     ).validate()
+
+
+def test_explicit_dynamic_incident_spec_validates_without_data_path():
+    GISModelSpec(
+        spatial_type="network",
+        mechanism="dynamic_incident_routing",
+        capability="dynamic_incident_routing",
+    ).validate()
+
+
+def test_explicit_terrain_network_cost_spec_validates_without_data_path():
+    GISModelSpec(
+        spatial_type="terrain",
+        mechanism="terrain_network_cost",
+        capability="terrain_network_cost",
+    ).validate()
+
+
+def test_explicit_terrain_aware_routing_spec_validates_without_data_path():
+    GISModelSpec(
+        spatial_type="terrain",
+        mechanism="terrain_aware_routing",
+        capability="terrain_aware_routing",
+    ).validate()
+
+
+def test_render_terrain_network_cost_emits_structure():
+    spec = GISModelSpec(
+        spatial_type="terrain",
+        mechanism="terrain_network_cost",
+        capability="terrain_network_cost",
+    )
+    code = render(spec)["main.py"]
+
+    assert "GeoNetwork" in code
+    assert "LineString" in code
+    assert "terrain_cost_per_edge" in code
+    assert "terrain_network_coupling_gate" in code
+    assert "terrain_aware_routing_gate" not in code
+
+
+def test_render_terrain_network_cost_generates_runnable_model_that_passes_gate(tmp_path):
+    spec = GISModelSpec(
+        spatial_type="terrain",
+        mechanism="terrain_network_cost",
+        capability="terrain_network_cost",
+        params={"grade_weight": 1.0, "n_samples": 5, "threshold": 0.01},
+    )
+    main = tmp_path / "main.py"
+    main.write_text(render(spec)["main.py"])
+    env = {**os.environ, "PYTHONPATH": _REPO_ROOT}
+    out = subprocess.run(
+        [sys.executable, str(main)],
+        capture_output=True,
+        text=True,
+        timeout=120,
+        env=env,
+    )
+
+    assert out.returncode == 0, out.stderr
+    assert out.stdout.startswith("PASS"), out.stdout
+    assert "terrain changes network edge cost" in out.stdout
+
+
+def test_render_terrain_aware_routing_emits_structure():
+    spec = GISModelSpec(
+        spatial_type="terrain",
+        mechanism="terrain_aware_routing",
+        capability="terrain_aware_routing",
+    )
+    code = render(spec)["main.py"]
+
+    assert "GeoNetwork" in code
+    assert "LineString" in code
+    assert "terrain_aware_shortest_path" in code
+    assert "terrain_aware_routing_gate" in code
+    assert "terrain_network_coupling_gate" not in code
+
+
+def test_render_terrain_aware_routing_generates_runnable_model_that_passes_gate(tmp_path):
+    spec = GISModelSpec(
+        spatial_type="terrain",
+        mechanism="terrain_aware_routing",
+        capability="terrain_aware_routing",
+        params={"grade_weight": 0.25, "n_samples": 5},
+    )
+    main = tmp_path / "main.py"
+    main.write_text(render(spec)["main.py"])
+    env = {**os.environ, "PYTHONPATH": _REPO_ROOT}
+    out = subprocess.run(
+        [sys.executable, str(main)],
+        capture_output=True,
+        text=True,
+        timeout=120,
+        env=env,
+    )
+
+    assert out.returncode == 0, out.stderr
+    assert out.stdout.startswith("PASS"), out.stdout
+    assert "terrain changes shortest-path routing" in out.stdout
 
 
 def test_spec_roundtrip():
@@ -323,6 +425,64 @@ def test_render_raster_spatial_calibration_generates_runnable_model_that_passes_
     assert "spatial calibration selected lower-loss" in out.stdout
 
 
+def test_render_raster_spatial_calibration_with_data_path_emits_manifest_model():
+    spec = GISModelSpec(spatial_type="calibration",
+                        mechanism="raster_spatial_calibration",
+                        capability="raster_spatial_calibration",
+                        data_path=str(_OBSERVED_RASTER_MANIFEST))
+
+    code = render(spec)["main.py"]
+
+    assert "calibrate_observed_raster_from_manifest" in code
+    assert "observed_raster_repro_gate" in code
+    assert str(_OBSERVED_RASTER_MANIFEST) in code
+    assert "raster_spatial_calibration_gate" not in code
+    assert "observed = _cluster" not in code
+
+
+def test_render_raster_spatial_calibration_with_data_path_runs_manifest_gate(tmp_path):
+    spec = GISModelSpec(spatial_type="calibration",
+                        mechanism="raster_spatial_calibration",
+                        capability="raster_spatial_calibration",
+                        data_path=str(_OBSERVED_RASTER_MANIFEST))
+    main = tmp_path / "main.py"
+    main.write_text(render(spec)["main.py"])
+
+    env = {**os.environ, "PYTHONPATH": _REPO_ROOT}
+    out = subprocess.run([sys.executable, str(main)], capture_output=True, text=True,
+                         timeout=120, env=env)
+
+    assert out.returncode == 0, out.stderr
+    assert out.stdout.startswith("PASS"), out.stdout
+    assert "observed-raster repro pack selected expected parameters" in out.stdout
+    assert "not remote data download" in out.stdout
+
+
+def test_gis_cli_run_executes_manifest_backed_calibration_spec(tmp_path):
+    spec = GISModelSpec(spatial_type="calibration",
+                        mechanism="raster_spatial_calibration",
+                        capability="raster_spatial_calibration",
+                        data_path=str(_OBSERVED_RASTER_MANIFEST))
+    spec_path = tmp_path / "spec.json"
+    spec_path.write_text(json.dumps(spec.to_dict()), encoding="utf-8")
+    out_dir = tmp_path / "gis_out"
+
+    env = {**os.environ, "PYTHONPATH": _REPO_ROOT}
+    out = subprocess.run(
+        [sys.executable, "-m", "abm_auto", "gis", "run", str(spec_path),
+         "--out", str(out_dir)],
+        capture_output=True,
+        text=True,
+        timeout=120,
+        env=env,
+    )
+
+    assert out.returncode == 0, out.stderr
+    assert "observed-raster repro pack selected expected parameters" in out.stdout
+    generated = (out_dir / "main.py").read_text(encoding="utf-8")
+    assert "calibrate_observed_raster_from_manifest" in generated
+
+
 def test_render_mechanism_threshold_adoption_emits_mechanism_structure():
     spec = GISModelSpec(spatial_type="mechanism",
                         mechanism="threshold_adoption",
@@ -487,3 +647,49 @@ def test_render_dynamic_congestion_routing_generates_runnable_model_that_passes_
     assert out.returncode == 0, out.stderr
     assert out.stdout.startswith("PASS"), out.stdout
     assert "moving-agent congestion rerouting" in out.stdout
+
+
+def test_render_dynamic_incident_routing_emits_dynamic_structure():
+    spec = GISModelSpec(spatial_type="network",
+                        mechanism="dynamic_incident_routing",
+                        capability="dynamic_incident_routing")
+    code = render(spec)["main.py"]
+    assert "GeoNetwork" in code
+    assert "LineString" in code
+    assert "run_dynamic_incident_routing" in code
+    assert "dynamic_incident_reroute_gate" in code
+    assert "RasterTimeline" not in code
+    assert "RasterSpace" not in code
+    assert "run_dynamic_flood_evacuation" not in code
+    assert "dynamic_flood_reroute_gate" not in code
+    assert "run_dynamic_congestion_routing" not in code
+    assert "dynamic_congestion_reroute_gate" not in code
+
+
+def test_render_dynamic_incident_routing_uses_spec_params():
+    spec = GISModelSpec(spatial_type="network",
+                        mechanism="dynamic_incident_routing",
+                        capability="dynamic_incident_routing",
+                        params={
+                            "n_steps": 7,
+                            "speed_m_per_tick": 80,
+                        })
+    code = render(spec)["main.py"]
+
+    assert "N_STEPS = 7" in code
+    assert "SPEED_M_PER_TICK = 80.0" in code
+
+
+def test_render_dynamic_incident_routing_generates_runnable_model_that_passes_gate(tmp_path):
+    spec = GISModelSpec(spatial_type="network",
+                        mechanism="dynamic_incident_routing",
+                        capability="dynamic_incident_routing")
+    files = render(spec)
+    main = tmp_path / "main.py"
+    main.write_text(files["main.py"])
+    env = {**os.environ, "PYTHONPATH": _REPO_ROOT}
+    out = subprocess.run([sys.executable, str(main)], capture_output=True, text=True,
+                         timeout=120, env=env)
+    assert out.returncode == 0, out.stderr
+    assert out.stdout.startswith("PASS"), out.stdout
+    assert "moving-agent incident rerouting" in out.stdout

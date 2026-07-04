@@ -1,0 +1,41 @@
+{
+  "schema": "abm-auto/official-incident-clock-map/v1",
+  "dataset": "Synthetic official-style incident timestamp clock map",
+  "source_url": "https://example.test/transport/incidents",
+  "source_agency": "Example Department of Transportation",
+  "license": "Synthetic fixture for tests; cite source in real manifests",
+  "downloaded_at": "2026-07-03",
+  "timestamped_events_path": "timestamped_events.csv",
+  "timestamped_sha256": "f7d81ca850aabc3de6296edf94026b9efda3a9f72f95fa955677ec8b0214284f",
+  "preparation_steps": [
+    "Prepared one timestamped official-style incident interval.",
+    "Mapped started_at/ended_at to integer simulation ticks using the manifest clock."
+  ],
+  "columns": {
+    "id": "incident_id",
+    "x": "x",
+    "y": "y",
+    "started_at": "started_at",
+    "ended_at": "ended_at"
+  },
+  "clock": {
+    "simulation_start": "2026-07-03T08:00:00-07:00",
+    "tick_seconds": 600,
+    "local_utc_offset": null,
+    "start_rounding": "floor",
+    "end_rounding": "ceil"
+  },
+  "expected_tick_events": {
+    "evt-closure:close": {
+      "incident_id": "evt-closure",
+      "t": 1,
+      "closed": true
+    },
+    "evt-closure:reopen": {
+      "incident_id": "evt-closure",
+      "t": 3,
+      "closed": false
+    }
+  },
+  "boundary_note": "Official incident timestamp-to-clock plumbing only; not a real official incident feed, not traffic-flow validity, not production map matching, not incident calibration, and not route-choice validation."
+}
