@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from abm_auto.repro_bundle import validate_repro_bundle_file
+from abm_auto.repro_bundle import validate_repro_bundle, validate_repro_bundle_file
 
 SCHEMA = "abm-auto/study-corpus-registry/v1"
 BOUNDARY_NOTE = (
@@ -22,6 +22,26 @@ BOUNDARY_NOTE = (
 )
 COMPLETE_STATUS = "complete"
 PENDING_STATUS = "pending_bundle"
+CONSTRUCT_VALIDITY_COUNT_FIELDS = (
+    "construct_validity_verdict_count",
+    "miss_lock_count",
+    "miss_model_count",
+    "uncertain_lock_count",
+    "unclassified_miss_count",
+)
+EVIDENCE_INTERPRETATION_COUNT_FIELDS = (
+    "evidence_interpretation_count",
+    "weak_pass_count",
+    "moderate_pass_count",
+    "strong_pass_count",
+    "trivial_pass_count",
+    "core_clause_count",
+    "scale_regime_miss_count",
+    "threshold_endpoint_miss_count",
+    "implementation_miss_count",
+    "censored_count",
+    "not_run_count",
+)
 
 
 def _repo_root(repo: Path | None) -> Path:
@@ -58,7 +78,7 @@ def _bundle_doc_path(bundle: dict, doc_name: str, fallback: str | None = None) -
     return fallback
 
 
-def _verdict_counts(bundle: dict) -> dict:
+def _verdict_counts(bundle: dict, *, repo: Path | None = None) -> dict:
     verdicts = bundle.get("verdicts")
     if not isinstance(verdicts, list):
         verdicts = []
@@ -67,11 +87,37 @@ def _verdict_counts(bundle: dict) -> dict:
         for verdict in verdicts
         if isinstance(verdict, dict) and verdict.get("passed") is False
     )
-    return {
+    counts = {
         "verdict_count": len(verdicts),
         "failed_verdict_count": failed,
         "passed_verdict_count": len(verdicts) - failed,
     }
+    docs = bundle.get("docs")
+    has_lock_review = isinstance(docs, dict) and isinstance(docs.get("lock_review"), dict)
+    classified = [
+        verdict
+        for verdict in verdicts
+        if has_lock_review and isinstance(verdict, dict)
+    ]
+    if classified:
+        validation = validate_repro_bundle(
+            bundle,
+            repo=repo,
+            check_doc_hashes=False,
+            check_data_hashes=False,
+        )
+        counts.update({
+            field: int(validation.get(field, 0))
+            for field in CONSTRUCT_VALIDITY_COUNT_FIELDS
+            if field in validation
+        })
+        if validation.get("evidence_interpretation_count", 0):
+            counts.update({
+                field: int(validation.get(field, 0))
+                for field in EVIDENCE_INTERPRETATION_COUNT_FIELDS
+                if field in validation
+            })
+    return counts
 
 
 def _status_counts(entries: list[dict]) -> dict:
@@ -184,7 +230,7 @@ def _registry_entry_from_bundle(discovered: dict, *, repo: Path) -> dict:
         "design_spec": design_spec,
         "paper": paper,
         "headline": bundle.get("headline", ""),
-        **_verdict_counts(bundle),
+        **_verdict_counts(bundle, repo=repo),
         "doc_fingerprint_count": len(docs),
         "data_fingerprint_count": len(data),
     }
@@ -216,6 +262,22 @@ def build_study_registry(studies_root: Path, *, repo: Path | None = None) -> dic
     total_verdicts = sum(int(entry.get("verdict_count", 0)) for entry in entries)
     failed_verdicts = sum(int(entry.get("failed_verdict_count", 0)) for entry in entries)
     status_counts = _status_counts(entries)
+    construct_validity_verdicts = sum(int(entry.get("construct_validity_verdict_count", 0)) for entry in entries)
+    construct_validity_summary = {}
+    if construct_validity_verdicts:
+        construct_validity_summary = {
+            field: sum(int(entry.get(field, 0)) for entry in entries)
+            for field in CONSTRUCT_VALIDITY_COUNT_FIELDS
+        }
+    evidence_interpretation_verdicts = sum(
+        int(entry.get("evidence_interpretation_count", 0)) for entry in entries
+    )
+    evidence_interpretation_summary = {}
+    if evidence_interpretation_verdicts:
+        evidence_interpretation_summary = {
+            field: sum(int(entry.get(field, 0)) for entry in entries)
+            for field in EVIDENCE_INTERPRETATION_COUNT_FIELDS
+        }
     return {
         "schema": SCHEMA,
         "title": "MyMoMo Study Corpus Registry",
@@ -228,6 +290,8 @@ def build_study_registry(studies_root: Path, *, repo: Path | None = None) -> dic
             "status_counts": status_counts,
             "total_verdict_count": total_verdicts,
             "failed_verdict_count": failed_verdicts,
+            **construct_validity_summary,
+            **evidence_interpretation_summary,
         },
         "entries": entries,
     }
@@ -353,7 +417,15 @@ def validate_study_registry(registry: dict, *, repo: Path | None = None) -> dict
         elif status == PENDING_STATUS and "bundle" in entry:
             issues.append(f"{prefix}.bundle must be absent for pending studies")
 
-        for field in ("verdict_count", "failed_verdict_count", "passed_verdict_count"):
+        for field in (
+            "verdict_count",
+            "failed_verdict_count",
+            "passed_verdict_count",
+            *CONSTRUCT_VALIDITY_COUNT_FIELDS,
+            *EVIDENCE_INTERPRETATION_COUNT_FIELDS,
+        ):
+            if field not in entry:
+                continue
             value = entry.get(field)
             if not isinstance(value, int) or isinstance(value, bool) or value < 0:
                 issues.append(f"{prefix}.{field} must be a non-negative integer")
@@ -370,6 +442,11 @@ def validate_study_registry(registry: dict, *, repo: Path | None = None) -> dict
             issues.append("summary.pending_count must match pending entries")
         if summary.get("status_counts") != status_counts:
             issues.append("summary.status_counts must match entries")
+        for field in (*CONSTRUCT_VALIDITY_COUNT_FIELDS, *EVIDENCE_INTERPRETATION_COUNT_FIELDS):
+            if field in summary:
+                expected = sum(int(entry.get(field, 0)) for entry in entries)
+                if summary.get(field) != expected:
+                    issues.append(f"summary.{field} must match entries")
 
     return {"ok": not issues, "issues": issues, "entry_count": len(entries)}
 
@@ -447,8 +524,17 @@ def diagnose_study_corpus(
             "issues": validation["issues"],
             "verdict_count": validation.get("verdict_count", 0),
             "failed_verdict_count": validation.get("failed_verdict_count", 0),
+            "miss_lock_count": validation.get("miss_lock_count", 0),
+            "miss_model_count": validation.get("miss_model_count", 0),
+            "uncertain_lock_count": validation.get("uncertain_lock_count", 0),
+            "unclassified_miss_count": validation.get("unclassified_miss_count", 0),
             "doc_hashes_checked": validation.get("doc_hashes_checked", 0),
             "data_fingerprint_count": validation.get("data_fingerprint_count", 0),
+            **{
+                field: validation.get(field, 0)
+                for field in EVIDENCE_INTERPRETATION_COUNT_FIELDS
+                if field in validation
+            },
         })
 
     failed_bundles = [result for result in bundle_results if not result["ok"]]
@@ -458,6 +544,30 @@ def diagnose_study_corpus(
         if entry["status"] == PENDING_STATUS
     ]
     ok = not registry_issues and not failed_bundles
+    summary = {
+        "complete_count": registry["summary"]["complete_count"],
+        "pending_count": registry["summary"]["pending_count"],
+        "entry_count": registry["summary"]["entry_count"],
+        "failed_bundle_count": len(failed_bundles),
+        "failed_registry_issue_count": len(registry_issues),
+        "total_verdict_count": registry["summary"]["total_verdict_count"],
+        "failed_verdict_count": registry["summary"]["failed_verdict_count"],
+        "registry_matches_committed": registry_matches_committed,
+        "index_matches_committed": index_matches_committed,
+    }
+    if registry["summary"].get("construct_validity_verdict_count", 0):
+        summary.update({
+            "construct_validity_verdict_count": registry["summary"]["construct_validity_verdict_count"],
+            "miss_lock_count": registry["summary"].get("miss_lock_count", 0),
+            "miss_model_count": registry["summary"].get("miss_model_count", 0),
+            "uncertain_lock_count": registry["summary"].get("uncertain_lock_count", 0),
+            "unclassified_miss_count": registry["summary"].get("unclassified_miss_count", 0),
+        })
+    if registry["summary"].get("evidence_interpretation_count", 0):
+        summary.update({
+            field: registry["summary"].get(field, 0)
+            for field in EVIDENCE_INTERPRETATION_COUNT_FIELDS
+        })
     return {
         "ok": ok,
         "issues": registry_issues + [
@@ -470,17 +580,7 @@ def diagnose_study_corpus(
         },
         "bundle_results": bundle_results,
         "pending_ids": pending_ids,
-        "summary": {
-            "complete_count": registry["summary"]["complete_count"],
-            "pending_count": registry["summary"]["pending_count"],
-            "entry_count": registry["summary"]["entry_count"],
-            "failed_bundle_count": len(failed_bundles),
-            "failed_registry_issue_count": len(registry_issues),
-            "total_verdict_count": registry["summary"]["total_verdict_count"],
-            "failed_verdict_count": registry["summary"]["failed_verdict_count"],
-            "registry_matches_committed": registry_matches_committed,
-            "index_matches_committed": index_matches_committed,
-        },
+        "summary": summary,
         "boundary_note": BOUNDARY_NOTE,
     }
 
@@ -504,12 +604,31 @@ def render_study_index_markdown(registry: dict) -> str:
         f"- Pending prediction locks: {summary['pending_count']}",
         f"- Total verdict clauses: {summary['total_verdict_count']}",
         f"- Failed verdict clauses: {summary['failed_verdict_count']}",
+    ]
+    if summary.get("construct_validity_verdict_count", 0):
+        lines.extend([
+            f"- Construct-validity classified clauses: {summary['construct_validity_verdict_count']}",
+            f"- MISS-lock clauses: {summary['miss_lock_count']}",
+            f"- MISS-model clauses: {summary['miss_model_count']}",
+            f"- Uncertain-lock clauses: {summary['uncertain_lock_count']}",
+            f"- Unclassified MISS clauses: {summary['unclassified_miss_count']}",
+        ])
+    if summary.get("evidence_interpretation_count", 0):
+        lines.extend([
+            f"- Evidence-interpreted clauses: {summary['evidence_interpretation_count']}",
+            f"- Weak PASS clauses: {summary['weak_pass_count']}",
+            f"- Strong PASS clauses: {summary['strong_pass_count']}",
+            f"- Not-run clauses: {summary['not_run_count']}",
+            f"- Threshold-endpoint MISS clauses: {summary['threshold_endpoint_miss_count']}",
+            f"- Scale/regime MISS clauses: {summary['scale_regime_miss_count']}",
+        ])
+    lines.extend([
         "",
         "## Studies",
         "",
         "| Study | Status | Verdicts | Failed | Headline |",
         "|---|---:|---:|---:|---|",
-    ]
+    ])
     for entry in registry["entries"]:
         lines.append(
             "| "
