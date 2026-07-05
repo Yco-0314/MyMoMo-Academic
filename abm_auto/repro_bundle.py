@@ -5,10 +5,10 @@ per-finding Verdicts (ADR-013 gate.py — tier-honest, with each hypothesis's
 (value, threshold)), content-addressed fingerprints of the input DATA + the
 locked-predictions + findings DOCS, the code commit, and the environment.
 
-Reusable across reproductions — candidate #10 (the real Ba-DEM Anshuka run) is the
-first instance. This is the L3 "a reviewer re-runs the gate" primitive: re-running the
-reproduction regenerates the bundle; a reviewer diffs the regenerated bundle against the
-committed one (fingerprints prove the inputs were the same; verdicts prove the gate agreed).
+Reusable across reproductions. This is the L3 "a reviewer re-runs the gate"
+primitive: re-running the reproduction regenerates the bundle; a reviewer diffs
+the regenerated bundle against the committed one (fingerprints prove the inputs
+were the same; verdicts prove the gate agreed).
 
 Reuses abm_auto/verification: Verdict (the uniform gate output) + fingerprint (strong
 file hashing). Additive GIS module; zero change to runtime/codegen/calibration.
