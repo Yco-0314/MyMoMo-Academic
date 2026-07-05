@@ -10,7 +10,7 @@ grade.
 This addendum applies the Lock Review v2 interpretation vocabulary to Wave-21
 P0 after the force-model runs completed.
 
-It is not a rerun, not a re-lock, and not a higher reproduction score. It is a
+It is not a rerun, not a re-lock, and not a scoring upgrade. It is a
 reader-facing explanation layer over already committed findings:
 
 ```text
@@ -105,10 +105,10 @@ after a clause misses.
 
 ## Scientific Narrative
 
-The public narrative should not be:
+The public narrative should not be that v2 improves the original scores.
 
 ```text
-Wave-21 got more reproductions after v2.
+Wave-21 has better reproduction outcomes after v2.
 ```
 
 The correct narrative is:
