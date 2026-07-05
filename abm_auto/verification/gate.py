@@ -38,6 +38,7 @@ from dataclasses import dataclass, field
 from typing import Literal, Protocol, runtime_checkable
 
 Tier = Literal["verification", "refutation"]
+ConstructValidity = Literal["sound", "mis_specified", "uncertain"]
 
 
 @dataclass
@@ -63,6 +64,10 @@ class Verdict:
     #: Gate-specific evidence the harness does NOT interpret. Renderer +
     #: provenance may unpack it by gate_name.
     evidence: object | None = None
+    #: Whether the locked metric has been reviewed as a sound proxy for the
+    #: paper claim. This is metadata from the lock-review seam, not a runtime
+    #: gate result; consumers must not turn a mis-specified MISS into a PASS.
+    construct_validity: ConstructValidity = "sound"
 
     def render(self) -> str:
         """One-line human summary. Honest about tier: a passed refutation
