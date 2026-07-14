@@ -5,10 +5,10 @@ per-finding Verdicts (ADR-013 gate.py — tier-honest, with each hypothesis's
 (value, threshold)), content-addressed fingerprints of the input DATA + the
 locked-predictions + findings DOCS, the code commit, and the environment.
 
-Reusable across reproductions — candidate #10 (the real Ba-DEM Anshuka run) is the
-first instance. This is the L3 "a reviewer re-runs the gate" primitive: re-running the
-reproduction regenerates the bundle; a reviewer diffs the regenerated bundle against the
-committed one (fingerprints prove the inputs were the same; verdicts prove the gate agreed).
+Reusable across reproductions. This is the L3 "a reviewer re-runs the gate"
+primitive: re-running the reproduction regenerates the bundle; a reviewer diffs
+the regenerated bundle against the committed one (fingerprints prove the inputs
+were the same; verdicts prove the gate agreed).
 
 Reuses abm_auto/verification: Verdict (the uniform gate output) + fingerprint (strong
 file hashing). Additive GIS module; zero change to runtime/codegen/calibration.
@@ -22,10 +22,17 @@ import subprocess
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from abm_auto.lock_review import derive_evidence_interpretation, validate_lock_review
 from abm_auto.verification.gate import Verdict
 from abm_auto.verification.provenance import fingerprint
 
 SCHEMA = "abm-auto/repro-bundle/v1"
+LOCK_PROVENANCE_KEYS = (
+    "lock_commit",
+    "lock_review_commit",
+    "implementation_commit",
+    "first_run_commit",
+)
 
 
 def _repo_root(repo: Optional[Path]) -> Path:
@@ -70,6 +77,80 @@ def _is_two_number_tuple(value: Any) -> bool:
     )
 
 
+def _is_valid_construct_validity(value: Any) -> bool:
+    return value in {"sound", "mis_specified", "uncertain"}
+
+
+def _evidence_interpretation_counts(
+    interpretations: list[dict],
+    verdicts: list[dict],
+    *,
+    construct_classification_admissible: bool,
+) -> dict:
+    counts: dict[str, Any] = {
+        "evidence_interpretation_count": len(interpretations),
+        "weak_pass_count": 0,
+        "moderate_pass_count": 0,
+        "strong_pass_count": 0,
+        "trivial_pass_count": 0,
+        "core_clause_count": 0,
+        "miss_lock_count": 0,
+        "miss_model_count": 0,
+        "uncertain_lock_count": 0,
+        "scale_regime_miss_count": 0,
+        "threshold_endpoint_miss_count": 0,
+        "implementation_miss_count": 0,
+        "censored_count": 0,
+        "not_run_count": 0,
+        "unclassified_miss_count": 0,
+    }
+    verdict_by_gate = {
+        verdict.get("gate"): verdict
+        for verdict in verdicts
+        if isinstance(verdict, dict)
+    }
+    for interpretation in interpretations:
+        gate = interpretation.get("gate")
+        verdict = verdict_by_gate.get(gate, {})
+        failure_kind = interpretation.get("failure_kind")
+        strength = interpretation.get("evidence_strength")
+        role = interpretation.get("finding_role")
+        if role == "core":
+            counts["core_clause_count"] += 1
+        if verdict.get("passed") is True:
+            if strength == "weak":
+                counts["weak_pass_count"] += 1
+            elif strength == "moderate":
+                counts["moderate_pass_count"] += 1
+            elif strength == "strong":
+                counts["strong_pass_count"] += 1
+            if strength == "weak" and role == "sanity_check":
+                counts["trivial_pass_count"] += 1
+        elif failure_kind == "lock_miss":
+            if construct_classification_admissible:
+                counts["miss_lock_count"] += 1
+            else:
+                counts["unclassified_miss_count"] += 1
+        elif failure_kind == "model_miss":
+            counts["miss_model_count"] += 1
+        elif failure_kind == "uncertain_lock":
+            if construct_classification_admissible:
+                counts["uncertain_lock_count"] += 1
+            else:
+                counts["unclassified_miss_count"] += 1
+        elif failure_kind == "scale_regime_miss":
+            counts["scale_regime_miss_count"] += 1
+        elif failure_kind == "threshold_endpoint_miss":
+            counts["threshold_endpoint_miss_count"] += 1
+        elif failure_kind == "implementation_miss":
+            counts["implementation_miss_count"] += 1
+        elif failure_kind == "censored":
+            counts["censored_count"] += 1
+        elif failure_kind == "not_run":
+            counts["not_run_count"] += 1
+    return counts
+
+
 def verdict_to_dict(v: Verdict) -> dict:
     return {
         "gate": v.gate_name,
@@ -78,6 +159,7 @@ def verdict_to_dict(v: Verdict) -> dict:
         "salient_number": list(v.salient_number) if v.salient_number else None,
         "reasons": list(v.reasons),
         "evidence": v.evidence,
+        "construct_validity": v.construct_validity,
     }
 
 
@@ -90,6 +172,108 @@ def git_commit(repo: Optional[Path] = None) -> str:
         return out.stdout.strip() or "unknown"
     except Exception:
         return "unknown"
+
+
+def _git_commit_exists(repo: Path, commit: str) -> bool:
+    result = subprocess.run(
+        ["git", "cat-file", "-e", f"{commit}^{{commit}}"],
+        cwd=repo,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    return result.returncode == 0
+
+
+def _git_is_ancestor(repo: Path, ancestor: str, descendant: str) -> bool:
+    result = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", ancestor, descendant],
+        cwd=repo,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    return result.returncode == 0
+
+
+def _lock_provenance_shape_issues(lock_provenance: Any) -> list[str]:
+    issues: list[str] = []
+    if not isinstance(lock_provenance, dict):
+        return ["lock_provenance must be an object"]
+    for key in LOCK_PROVENANCE_KEYS:
+        if key in lock_provenance:
+            value = lock_provenance[key]
+            if not isinstance(value, str) or not value.strip():
+                issues.append(f"lock_provenance.{key} must be a non-empty string")
+    return issues
+
+
+def _lock_provenance_admissibility_issues(lock_provenance: Any, repo: Path) -> list[str]:
+    issues: list[str] = []
+    if not isinstance(lock_provenance, dict):
+        return [
+            "lock_provenance is required for non-sound construct-validity classification"
+        ]
+
+    missing_keys = [key for key in LOCK_PROVENANCE_KEYS if key not in lock_provenance]
+    for key in missing_keys:
+        issues.append(
+            f"lock_provenance.{key} is required for non-sound construct-validity classification"
+        )
+    if missing_keys:
+        return issues
+
+    commits = {key: str(lock_provenance[key]).strip() for key in LOCK_PROVENANCE_KEYS}
+    unverifiable = [
+        key for key, value in commits.items()
+        if not _git_commit_exists(repo, value)
+    ]
+    if unverifiable:
+        issues.append(
+            "lock_provenance commits could not be verified: "
+            + ", ".join(sorted(unverifiable))
+        )
+        return issues
+
+    ancestry_checks = (
+        ("lock_commit", "lock_review_commit"),
+        ("lock_review_commit", "implementation_commit"),
+        ("implementation_commit", "first_run_commit"),
+    )
+    for ancestor_key, descendant_key in ancestry_checks:
+        if not _git_is_ancestor(repo, commits[ancestor_key], commits[descendant_key]):
+            issues.append(
+                f"lock_provenance.{ancestor_key} must be an ancestor of "
+                f"lock_provenance.{descendant_key}"
+            )
+    return issues
+
+
+def _construct_validity_miss_counts(
+    verdicts: list[dict],
+    *,
+    construct_classification_admissible: bool,
+) -> dict[str, int]:
+    counts = {
+        "miss_lock_count": 0,
+        "miss_model_count": 0,
+        "uncertain_lock_count": 0,
+        "unclassified_miss_count": 0,
+    }
+    for verdict in verdicts:
+        if not isinstance(verdict, dict) or verdict.get("passed") is not False:
+            continue
+        validity = verdict.get("construct_validity", "sound")
+        if validity == "sound":
+            counts["miss_model_count"] += 1
+        elif construct_classification_admissible:
+            if validity == "mis_specified":
+                counts["miss_lock_count"] += 1
+            elif validity == "uncertain":
+                counts["uncertain_lock_count"] += 1
+        else:
+            counts["unclassified_miss_count"] += 1
+    return counts
 
 
 def env_versions(packages=("numpy", "scipy", "rasterio", "pyproj")) -> dict:
@@ -114,6 +298,8 @@ def build_bundle(
     odd: Optional[Path] = None,
     citations: Optional[list] = None,
     benchmark: Optional[dict] = None,
+    lock_review: Optional[Path] = None,
+    lock_provenance: Optional[dict] = None,
 ) -> dict:
     """Assemble a replayable reproduction bundle. ``data_artifacts``/``doc_artifacts`` are
     {name: path}; each is fingerprinted (files → strong sha256). ``verdicts`` are the
@@ -130,6 +316,8 @@ def build_bundle(
     }
     if odd is not None:
         docs["odd"] = _fingerprint_with_portable_path(Path(odd), repo)
+    if lock_review is not None:
+        docs["lock_review"] = _fingerprint_with_portable_path(Path(lock_review), repo)
     bundle = {
         "schema": SCHEMA,
         "paper": paper,
@@ -149,6 +337,8 @@ def build_bundle(
         bundle["citations"] = citations
     if benchmark is not None:
         bundle["benchmark"] = benchmark
+    if lock_provenance is not None:
+        bundle["lock_provenance"] = lock_provenance
     return bundle
 
 
@@ -176,6 +366,10 @@ def validate_repro_bundle(
     doc_hashes_checked = 0
     data_hashes_checked = 0
     missing_data_files: list[str] = []
+    evidence_interpretations: list[dict] = []
+    classification_admissibility_issues: list[str] = []
+    lock_review_timing: str | None = None
+    lock_review_is_valid = False
 
     if not isinstance(bundle, dict):
         return {"ok": False, "issues": ["bundle must be a JSON object"]}
@@ -191,6 +385,8 @@ def validate_repro_bundle(
     if not isinstance(verdicts, list) or not verdicts:
         issues.append("verdicts must be a non-empty list")
         verdicts = []
+    verdict_clause_ids: list[str] = []
+    non_sound_construct_validity = False
     for idx, verdict in enumerate(verdicts):
         prefix = f"verdicts[{idx}]"
         if not isinstance(verdict, dict):
@@ -198,12 +394,22 @@ def validate_repro_bundle(
             continue
         if not verdict.get("gate"):
             issues.append(f"{prefix}.gate is required")
+        elif isinstance(verdict.get("gate"), str):
+            verdict_clause_ids.append(verdict["gate"])
         if not verdict.get("tier"):
             issues.append(f"{prefix}.tier is required")
         if not isinstance(verdict.get("passed"), bool):
             issues.append(f"{prefix}.passed must be bool")
         if not _is_two_number_tuple(verdict.get("salient_number")):
             issues.append(f"{prefix}.salient_number must be [value, threshold]")
+        if "construct_validity" in verdict:
+            construct_validity = verdict.get("construct_validity")
+            if not _is_valid_construct_validity(construct_validity):
+                issues.append(f"{prefix}.construct_validity is invalid")
+            elif construct_validity != "sound":
+                non_sound_construct_validity = True
+            if construct_validity == "mis_specified" and verdict.get("passed") is True:
+                issues.append(f"{prefix}.construct_validity='mis_specified' cannot be paired with passed=true")
 
     docs = bundle.get("docs")
     if not isinstance(docs, dict):
@@ -268,23 +474,134 @@ def validate_repro_bundle(
     if "benchmark" in bundle:
         if not isinstance(bundle["benchmark"], dict):
             issues.append("benchmark must be an object")
+    lock_review_artifact = docs.get("lock_review") if isinstance(docs, dict) else None
+    construct_validity_verdict_count = len(verdicts) if isinstance(lock_review_artifact, dict) else 0
+    if non_sound_construct_validity and not isinstance(lock_review_artifact, dict):
+        issues.append("docs.lock_review is required when any verdict construct_validity is not 'sound'")
+    if isinstance(lock_review_artifact, dict):
+        path_value = lock_review_artifact.get("path")
+        if isinstance(path_value, str) and path_value:
+            lock_review_path = _artifact_path(path_value, repo_root)
+            if lock_review_path.exists():
+                try:
+                    lock_review = json.loads(lock_review_path.read_text(encoding="utf-8"))
+                except Exception as exc:
+                    issues.append(f"lock_review could not be parsed as JSON: {exc}")
+                    lock_review = None
+                if isinstance(lock_review, dict):
+                    review_result = validate_lock_review(
+                        lock_review,
+                        expected_clause_ids=verdict_clause_ids,
+                    )
+                    if not review_result["ok"]:
+                        issues.extend(f"lock_review: {issue}" for issue in review_result["issues"])
+                    else:
+                        lock_review_is_valid = True
+                        lock_review_timing = review_result.get("timing")
+                        review_by_clause = {
+                            item.get("clause_id"): item
+                            for item in lock_review.get("items", [])
+                            if isinstance(item, dict)
+                        }
+                        for idx, verdict in enumerate(verdicts):
+                            if not isinstance(verdict, dict):
+                                continue
+                            clause_id = verdict.get("gate")
+                            review_item = review_by_clause.get(clause_id)
+                            if not isinstance(review_item, dict):
+                                continue
+                            if verdict.get("construct_validity", "sound") != review_item.get("validity"):
+                                issues.append(
+                                    f"verdicts[{idx}].construct_validity must match "
+                                    f"lock_review item {clause_id!r}"
+                                )
+                            if isinstance(review_item.get("construct_dimensions"), dict):
+                                realization = verdict.get("realization_dimensions")
+                                if realization is not None and not isinstance(realization, dict):
+                                    issues.append(f"verdicts[{idx}].realization_dimensions must be an object")
+                                    realization = None
+                                interpretation = derive_evidence_interpretation(
+                                    verdict,
+                                    review_item,
+                                    realization,
+                                )
+                                if not interpretation["ok"]:
+                                    issues.extend(
+                                        f"verdicts[{idx}].evidence_interpretation: {issue}"
+                                        for issue in interpretation["issues"]
+                                    )
+                                evidence_interpretations.append({
+                                    "gate": clause_id,
+                                    "validity": interpretation["validity"],
+                                    "evidence_strength": interpretation["evidence_strength"],
+                                    "failure_kind": interpretation["failure_kind"],
+                                    "finding_role": interpretation["finding_role"],
+                                })
+        elif non_sound_construct_validity:
+            issues.append("docs.lock_review.path is required when any verdict construct_validity is not 'sound'")
+    if "lock_provenance" in bundle:
+        issues.extend(_lock_provenance_shape_issues(bundle["lock_provenance"]))
+
+    construct_validity_classification_admissible = False
+    if non_sound_construct_validity:
+        if not lock_review_is_valid:
+            classification_admissibility_issues.append(
+                "valid lock_review is required for non-sound construct-validity classification"
+            )
+        if lock_review_timing != "prospective":
+            classification_admissibility_issues.append(
+                "lock_review.timing must be 'prospective' for non-sound construct-validity classification"
+            )
+        classification_admissibility_issues.extend(
+            _lock_provenance_admissibility_issues(
+                bundle.get("lock_provenance"),
+                repo_root,
+            )
+        )
+        construct_validity_classification_admissible = not classification_admissibility_issues
 
     failed_verdict_count = sum(
         1 for verdict in verdicts
         if isinstance(verdict, dict) and verdict.get("passed") is False
     )
-    return {
+    construct_counts = _construct_validity_miss_counts(
+        verdicts,
+        construct_classification_admissible=construct_validity_classification_admissible,
+    )
+    interpretation_counts = (
+        _evidence_interpretation_counts(
+            evidence_interpretations,
+            verdicts,
+            construct_classification_admissible=construct_validity_classification_admissible,
+        )
+        if evidence_interpretations
+        else {}
+    )
+    result = {
         "ok": not issues,
         "issues": issues,
         "schema": bundle.get("schema"),
         "headline": bundle.get("headline"),
         "verdict_count": len(verdicts),
         "failed_verdict_count": failed_verdict_count,
+        "construct_validity_verdict_count": construct_validity_verdict_count,
+        "miss_lock_count": construct_counts["miss_lock_count"],
+        "miss_model_count": construct_counts["miss_model_count"],
+        "uncertain_lock_count": construct_counts["uncertain_lock_count"],
+        "unclassified_miss_count": construct_counts["unclassified_miss_count"],
+        "construct_validity_classification_admissible": (
+            construct_validity_classification_admissible
+        ),
+        "classification_admissibility_issues": classification_admissibility_issues,
         "doc_hashes_checked": doc_hashes_checked,
         "data_hashes_checked": data_hashes_checked,
         "data_fingerprint_count": len(data),
         "missing_data_files": missing_data_files,
     }
+    if evidence_interpretations:
+        result.update(interpretation_counts)
+        result["evidence_interpretations"] = evidence_interpretations
+    return result
 
 
 def validate_repro_bundle_file(path, *, repo: Optional[Path] = None, **kwargs) -> dict:
