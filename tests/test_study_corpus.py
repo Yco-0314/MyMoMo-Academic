@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pytest
 
+from abm_auto.repro_bundle import build_bundle, write_bundle
 from abm_auto.study_corpus import (
     SCHEMA,
     build_study_registry,
@@ -16,9 +17,132 @@ from abm_auto.study_corpus import (
     render_study_index_markdown,
     validate_study_registry,
 )
+from abm_auto.verification.gate import Verdict
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 STUDIES_ROOT = REPO_ROOT / "docs/studies"
+
+
+def _lock_review_json(*, clauses=("P1", "P2")) -> str:
+    items = []
+    for clause in clauses:
+        items.append({
+            "clause_id": clause,
+            "paper_claim": f"{clause} paper claim",
+            "locked_metric": f"{clause} locked metric",
+            "validity": "mis_specified" if clause == "P1" else "sound",
+            "issue_kind": "direction_error" if clause == "P1" else None,
+            "review_rationale": f"{clause} rationale",
+            "requires_relock": clause == "P1",
+        })
+    return json.dumps({
+        "schema": "abm-auto/lock-review/v1",
+        "study_id": "construct-validity-demo",
+        "timing": "prospective",
+        "result_visibility": "no_results_seen",
+        "items": items,
+    })
+
+
+def _construct_dimensions(**overrides):
+    dimensions = {
+        "operationalization": "direct",
+        "directionality": "correct",
+        "regime_fit": "in_regime",
+        "metric_robustness": "robust",
+        "control_quality": "causal_control",
+        "mechanism_specificity": "distinctive",
+        "load_bearing_role": "core",
+        "emergence_level": "emergent",
+        "counterfactual_discrimination": "discriminating",
+    }
+    dimensions.update(overrides)
+    return dimensions
+
+
+def _v2_lock_review_json() -> str:
+    return json.dumps({
+        "schema": "abm-auto/lock-review/v2",
+        "study_id": "v2-interpretation-demo",
+        "timing": "prospective",
+        "result_visibility": "no_results_seen",
+        "items": [
+            {
+                "clause_id": "P1",
+                "paper_claim": "Demand satisfaction is checked.",
+                "locked_metric": "residual <= 0.01",
+                "validity": "uncertain",
+                "construct_dimensions": _construct_dimensions(
+                    control_quality="weak_control",
+                    mechanism_specificity="trivial_by_construction",
+                    load_bearing_role="sanity_check",
+                    emergence_level="accounting_identity",
+                    counterfactual_discrimination="non_discriminating",
+                ),
+                "issue_kinds": [],
+                "review_rationale": "The metric is true but weak by construction.",
+                "requires_relock": False,
+            },
+            {
+                "clause_id": "P2",
+                "paper_claim": "Doorway alternation appears.",
+                "locked_metric": "alternation index >= 0.6",
+                "validity": "sound",
+                "construct_dimensions": _construct_dimensions(),
+                "issue_kinds": [],
+                "review_rationale": "The metric directly measures alternation.",
+                "requires_relock": False,
+            },
+            {
+                "clause_id": "P3",
+                "paper_claim": "Speed falls at high density.",
+                "locked_metric": "v(rho=5) < 0.4",
+                "validity": "uncertain",
+                "construct_dimensions": _construct_dimensions(
+                    metric_robustness="threshold_fragile",
+                    control_quality="no_control_needed",
+                    mechanism_specificity="generic",
+                    load_bearing_role="supporting",
+                    counterfactual_discrimination="weakly_discriminating",
+                ),
+                "issue_kinds": [],
+                "review_rationale": "The relation is present but the endpoint is fragile.",
+                "requires_relock": False,
+            },
+        ],
+    })
+
+
+def _run_git(repo: Path, *args: str) -> str:
+    result = subprocess.run(
+        ["git", *args],
+        cwd=repo,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return result.stdout.strip()
+
+
+def _commit_all(repo: Path, message: str) -> str:
+    _run_git(repo, "add", ".")
+    subprocess.run(
+        [
+            "git",
+            "-c",
+            "user.name=Test User",
+            "-c",
+            "user.email=test@example.com",
+            "commit",
+            "-m",
+            message,
+        ],
+        cwd=repo,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return _run_git(repo, "rev-parse", "HEAD")
 
 
 def test_discovers_complete_bundles_and_prediction_only_pending_studies():
@@ -85,6 +209,183 @@ def test_builds_deterministic_registry_with_verdict_summary():
     assert bouchaud_mezard["status"] == "complete"
     assert bouchaud_mezard["bundle"] == "docs/studies/bouchaud-mezard/verdict-bundle.json"
     assert bouchaud_mezard["predictions"] == "docs/studies/bouchaud-mezard/PREDICTIONS-locked.md"
+
+
+def test_registry_counts_miss_lock_separately_from_model_miss(tmp_path: Path):
+    _run_git(tmp_path, "init")
+    study_dir = tmp_path / "docs/studies/construct-validity-demo"
+    study_dir.mkdir(parents=True)
+    docs = {}
+    for name in ("predictions_locked", "findings", "design_spec"):
+        path = study_dir / f"{name}.md"
+        path.write_text(f"# {name}\n", encoding="utf-8")
+        docs[name] = path
+    lock_commit = _commit_all(tmp_path, "lock predictions")
+    lock_review = study_dir / "LOCK-REVIEW.json"
+    lock_review.write_text(_lock_review_json(), encoding="utf-8")
+    lock_review_commit = _commit_all(tmp_path, "review lock")
+    data = study_dir / "results.json"
+    data.write_text("{}\n", encoding="utf-8")
+    implementation_commit = _commit_all(tmp_path, "implement model")
+    (study_dir / "run.log").write_text("first run\n", encoding="utf-8")
+    first_run_commit = _commit_all(tmp_path, "run model")
+
+    bundle = build_bundle(
+        paper={"title": "Construct validity demo", "authors": "x", "year": 2026},
+        headline="Two misses with different meanings",
+        verdicts=[
+            Verdict(
+                passed=False,
+                tier="refutation",
+                gate_name="P1",
+                salient_number=(0.87, 0.90),
+                construct_validity="mis_specified",
+            ),
+            Verdict(
+                passed=False,
+                tier="refutation",
+                gate_name="P2",
+                salient_number=(-3.1, -2.2),
+                construct_validity="sound",
+            ),
+        ],
+        data_artifacts={"results": data},
+        doc_artifacts=docs,
+        repo=tmp_path,
+        lock_review=lock_review,
+        lock_provenance={
+            "lock_commit": lock_commit,
+            "lock_review_commit": lock_review_commit,
+            "implementation_commit": implementation_commit,
+            "first_run_commit": first_run_commit,
+        },
+    )
+    write_bundle(bundle, study_dir / "verdict-bundle.json")
+    _commit_all(tmp_path, "commit bundle")
+
+    registry = build_study_registry(tmp_path / "docs/studies", repo=tmp_path)
+
+    entry = registry["entries"][0]
+    assert entry["failed_verdict_count"] == 2
+    assert entry["miss_lock_count"] == 1
+    assert entry["miss_model_count"] == 1
+    assert entry["uncertain_lock_count"] == 0
+    assert entry["unclassified_miss_count"] == 0
+    assert registry["summary"]["miss_lock_count"] == 1
+    assert registry["summary"]["miss_model_count"] == 1
+    assert registry["summary"]["unclassified_miss_count"] == 0
+
+
+def test_registry_summarizes_v2_evidence_interpretation_counts(tmp_path: Path):
+    study_dir = tmp_path / "docs/studies/v2-interpretation-demo"
+    study_dir.mkdir(parents=True)
+    docs = {}
+    for name in ("predictions_locked", "findings", "design_spec"):
+        path = study_dir / f"{name}.md"
+        path.write_text(f"# {name}\n", encoding="utf-8")
+        docs[name] = path
+    lock_review = study_dir / "LOCK-REVIEW.json"
+    lock_review.write_text(_v2_lock_review_json(), encoding="utf-8")
+    data = study_dir / "results.json"
+    data.write_text("{}\n", encoding="utf-8")
+
+    bundle = build_bundle(
+        paper={"title": "V2 interpretation demo", "authors": "x", "year": 2026},
+        headline="V2 interpretation counts",
+        verdicts=[
+            Verdict(
+                passed=True,
+                tier="refutation",
+                gate_name="P1",
+                salient_number=(0.0, 0.01),
+                construct_validity="uncertain",
+            ),
+            Verdict(
+                passed=False,
+                tier="refutation",
+                gate_name="P2",
+                salient_number=(0.0, 0.6),
+                construct_validity="sound",
+            ),
+            Verdict(
+                passed=False,
+                tier="refutation",
+                gate_name="P3",
+                salient_number=(0.461, 0.4),
+                construct_validity="uncertain",
+            ),
+        ],
+        data_artifacts={"results": data},
+        doc_artifacts=docs,
+        repo=tmp_path,
+        lock_review=lock_review,
+    )
+    bundle["verdicts"][1]["realization_dimensions"] = {
+        "test_execution_status": "not_run",
+        "mechanism_fidelity": "missing_load_bearing_terms",
+    }
+    bundle["verdicts"][2]["realization_dimensions"] = {
+        "test_execution_status": "executed",
+        "scale_fidelity": "right_sized_proxy",
+        "mechanism_fidelity": "complete",
+        "numerical_fidelity": "stable",
+        "censoring_status": "uncensored",
+        "qualitative_core_status": "qualitative_core_present",
+    }
+    write_bundle(bundle, study_dir / "verdict-bundle.json")
+
+    registry = build_study_registry(tmp_path / "docs/studies", repo=tmp_path)
+    validation = validate_study_registry(registry, repo=tmp_path)
+
+    entry = registry["entries"][0]
+    assert validation["ok"], validation["issues"]
+    assert entry["evidence_interpretation_count"] == 3
+    assert entry["weak_pass_count"] == 1
+    assert entry["strong_pass_count"] == 0
+    assert entry["not_run_count"] == 1
+    assert entry["threshold_endpoint_miss_count"] == 1
+    assert entry["miss_model_count"] == 0
+    assert registry["summary"]["weak_pass_count"] == 1
+    assert registry["summary"]["not_run_count"] == 1
+    assert registry["summary"]["threshold_endpoint_miss_count"] == 1
+
+
+def test_registry_does_not_emit_construct_validity_summary_without_lock_review(tmp_path: Path):
+    study_dir = tmp_path / "docs/studies/unreviewed-default-sound-demo"
+    study_dir.mkdir(parents=True)
+    docs = {}
+    for name in ("predictions_locked", "findings", "design_spec"):
+        path = study_dir / f"{name}.md"
+        path.write_text(f"# {name}\n", encoding="utf-8")
+        docs[name] = path
+    data = study_dir / "results.json"
+    data.write_text("{}\n", encoding="utf-8")
+
+    bundle = build_bundle(
+        paper={"title": "Unreviewed default sound demo", "authors": "x", "year": 2026},
+        headline="Default sound metadata without lock review is not a reviewed classification",
+        verdicts=[
+            Verdict(
+                passed=False,
+                tier="refutation",
+                gate_name="P1",
+                salient_number=(0.87, 0.90),
+            ),
+        ],
+        data_artifacts={"results": data},
+        doc_artifacts=docs,
+        repo=tmp_path,
+    )
+    write_bundle(bundle, study_dir / "verdict-bundle.json")
+
+    registry = build_study_registry(tmp_path / "docs/studies", repo=tmp_path)
+
+    entry = registry["entries"][0]
+    assert entry["failed_verdict_count"] == 1
+    assert "construct_validity_verdict_count" not in entry
+    assert "miss_lock_count" not in entry
+    assert "miss_model_count" not in entry
+    assert "construct_validity_verdict_count" not in registry["summary"]
 
 
 def test_registry_validator_rejects_duplicate_ids_and_absolute_paths():

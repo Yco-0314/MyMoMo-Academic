@@ -17,7 +17,8 @@ def test_verdict_to_dict_carries_value_and_threshold():
                 reasons=[], salient_number=(15.2, 35.0))
     d = verdict_to_dict(v)
     assert d == {"gate": "H1", "tier": "refutation", "passed": True,
-                 "salient_number": [15.2, 35.0], "reasons": [], "evidence": None}
+                 "salient_number": [15.2, 35.0], "reasons": [], "evidence": None,
+                 "construct_validity": "sound"}
 
 
 def test_build_bundle_fingerprints_files_strong(tmp_path):
