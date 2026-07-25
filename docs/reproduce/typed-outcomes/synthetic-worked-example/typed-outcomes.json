@@ -1,0 +1,120 @@
+{
+  "schema": "abm-auto/typed-outcome-record/v1",
+  "record_id": "synthetic-d7-independent-outcomes-v1",
+  "subject": {
+    "model_id": "synthetic-d7-example",
+    "backend_id": "synthetic-fixture",
+    "attempt_id": "d7-worked-example-001"
+  },
+  "sources": [
+    {
+      "id": "clarification-record",
+      "role": "clarification_record",
+      "path": "docs/reproduce/typed-outcomes/synthetic-worked-example/sources/clarification.md",
+      "sha256": "ac92d31898c67da59bfd2e39f7a926fecc659349667d720655009a0d88a0dd40",
+      "commit": "bbd990f29a88073fca7053c145d81d7f12dbbf7b",
+      "schema": "text/markdown"
+    },
+    {
+      "id": "capability-record",
+      "role": "capability_record",
+      "path": "docs/reproduce/typed-outcomes/synthetic-worked-example/sources/capability.md",
+      "sha256": "9696957b0099c3a884bdebe986c05eb0e60c6d8e21532b94a7b88d043feb3353",
+      "commit": "bbd990f29a88073fca7053c145d81d7f12dbbf7b",
+      "schema": "text/markdown"
+    },
+    {
+      "id": "execution-receipt",
+      "role": "execution_receipt",
+      "path": "docs/reproduce/typed-outcomes/synthetic-worked-example/sources/execution.md",
+      "sha256": "c88c7ee0a90a1b94c15c0c89c9fa77b4b6f31869570079c8d44981278324573f",
+      "commit": "bbd990f29a88073fca7053c145d81d7f12dbbf7b",
+      "schema": "text/markdown"
+    },
+    {
+      "id": "behavioral-receipt",
+      "role": "behavioral_receipt",
+      "path": "docs/reproduce/typed-outcomes/synthetic-worked-example/sources/behavioral.md",
+      "sha256": "674e928c8acc943fb9c0ace632ad37c36650f70d5ddeef9895b21875609f3c40",
+      "commit": "bbd990f29a88073fca7053c145d81d7f12dbbf7b",
+      "schema": "text/markdown"
+    },
+    {
+      "id": "validation-evidence",
+      "role": "validation_evidence",
+      "path": "docs/reproduce/typed-outcomes/synthetic-worked-example/sources/validation.md",
+      "sha256": "5787b884b3943e70572a864d3bc59a26a54dc385f5f1a9737eec40062d450d10",
+      "commit": "bbd990f29a88073fca7053c145d81d7f12dbbf7b",
+      "schema": "text/markdown"
+    },
+    {
+      "id": "prediction-lock",
+      "role": "prediction_lock",
+      "path": "docs/reproduce/typed-outcomes/synthetic-worked-example/sources/PREDICTIONS-locked.md",
+      "sha256": "059c64f072bb917d9ea712023efd93046f4595df92b49f45424af244cd3cab25",
+      "commit": "bbd990f29a88073fca7053c145d81d7f12dbbf7b",
+      "schema": "text/markdown"
+    },
+    {
+      "id": "scientific-verdict",
+      "role": "scientific_verdict",
+      "path": "docs/reproduce/typed-outcomes/synthetic-worked-example/sources/scientific-verdict.md",
+      "sha256": "eddf40b271ac1d4d270f4e13f27c4ea098736a77afbcf5cf559706ce9b5ed514",
+      "commit": "bbd990f29a88073fca7053c145d81d7f12dbbf7b",
+      "schema": "text/markdown"
+    },
+    {
+      "id": "construct-review",
+      "role": "construct_validity_review",
+      "path": "docs/reproduce/typed-outcomes/synthetic-worked-example/sources/LOCK-REVIEW.md",
+      "sha256": "bfc9e47112401a938787446edccb5cec9772e5d83631c257416541c91819c2c1",
+      "commit": "bbd990f29a88073fca7053c145d81d7f12dbbf7b",
+      "schema": "text/markdown"
+    }
+  ],
+  "statements": [
+    {
+      "kind": "clarification_halt",
+      "status": "not_required",
+      "reason": "The synthetic clarification record states that no clarification is required.",
+      "source_ids": ["clarification-record"]
+    },
+    {
+      "kind": "capability_gap",
+      "status": "supported",
+      "reason": "The synthetic capability record declares the fixture capability supported.",
+      "source_ids": ["capability-record"]
+    },
+    {
+      "kind": "execution",
+      "status": "passed",
+      "reason": "The synthetic execution receipt records bounded completion.",
+      "source_ids": ["execution-receipt"]
+    },
+    {
+      "kind": "behavioral_equivalence",
+      "status": "passed",
+      "reason": "The synthetic behavioral receipt records agreement between declared and observed traces.",
+      "source_ids": ["behavioral-receipt"]
+    },
+    {
+      "kind": "validation",
+      "status": "passed",
+      "reason": "The synthetic validation evidence records a held-out metric matching its target.",
+      "source_ids": ["validation-evidence"]
+    },
+    {
+      "kind": "scientific_claim",
+      "status": "miss",
+      "reason": "The synthetic prediction lock and verdict record a MISS state only.",
+      "source_ids": ["prediction-lock", "scientific-verdict"]
+    },
+    {
+      "kind": "construct_validity",
+      "status": "sound",
+      "reason": "The synthetic construct review records a sound fixture proxy.",
+      "source_ids": ["construct-review"]
+    }
+  ],
+  "boundary_note": "This is a synthetic schema fixture only, not evidence of real models, backend equivalence, external-runtime behavior, real-data validation, paper reproduction, or scientific results."
+}
