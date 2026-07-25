@@ -1,0 +1,1 @@
+{"base_contract_revision":"7438bfc3c3375fea9e5180eae94a9c38e57d9bfa52507911bcd8db4b64f461d2","operations":[{"op":"replace","path":"/mir/processes/0/params/threshold","value":0.6}],"rationale":"Set the threshold adoption parameter to 0.6.","schema":"abm-auto/semantic-patch/v1","source":"panel"}
