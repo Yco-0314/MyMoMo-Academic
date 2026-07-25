@@ -112,6 +112,18 @@ def _v2_item(clause_id="P1", **overrides):
     return item
 
 
+def _bar_profile(**overrides):
+    profile = {
+        "threshold_origin": "finite_system_proxy",
+        "estimator_family": "activity_band",
+        "finite_system_risks": ["finite_size", "seed_sampling"],
+        "bar_fragility": "medium",
+        "secondary_signature": "activity rises before the chaotic regime",
+    }
+    profile.update(overrides)
+    return profile
+
+
 def _v2_review(*items):
     return {
         "schema": SCHEMA_V2,
@@ -183,6 +195,25 @@ def test_validate_lock_review_v2_rejects_mis_specified_without_relock():
 
     assert result["ok"] is False
     assert "items[0].requires_relock must be true when validity is 'mis_specified'" in result["issues"]
+
+
+def test_validate_lock_review_v2_accepts_finite_system_bar_profile():
+    review = _v2_review(_v2_item(bar_profile=_bar_profile()))
+
+    result = validate_lock_review(review)
+
+    assert result["ok"] is True
+
+
+def test_validate_lock_review_v2_rejects_high_fragility_without_secondary_signature():
+    profile = _bar_profile(bar_fragility="high")
+    del profile["secondary_signature"]
+    review = _v2_review(_v2_item(bar_profile=profile))
+
+    result = validate_lock_review(review)
+
+    assert result["ok"] is False
+    assert "items[0].bar_profile.secondary_signature is required when bar_fragility is 'high'" in result["issues"]
 
 
 def test_derive_construct_validity_is_conservative_for_weak_dimensions():
@@ -288,3 +319,98 @@ def test_derive_evidence_interpretation_marks_threshold_endpoint_miss():
 
     assert interpretation["failure_kind"] == "threshold_endpoint_miss"
     assert interpretation["evidence_strength"] == "moderate"
+
+
+def test_derive_evidence_interpretation_marks_strict_bar_miss():
+    item = _v2_item(
+        validity="uncertain",
+        construct_dimensions=_construct_dimensions(metric_robustness="threshold_fragile"),
+        bar_profile=_bar_profile(
+            bar_fragility="high",
+            secondary_signature="late-time linear highway with stable displacement",
+        ),
+    )
+
+    interpretation = derive_evidence_interpretation(
+        {"passed": False},
+        item,
+        {
+            "test_execution_status": "executed",
+            "scale_fidelity": "faithful_scale",
+            "mechanism_fidelity": "complete",
+            "numerical_fidelity": "stable",
+            "censoring_status": "uncensored",
+            "qualitative_core_status": "qualitative_core_present",
+            "bar_outcome": "missed",
+            "estimator_status": "faithful",
+            "secondary_signature_status": "present",
+        },
+    )
+
+    assert interpretation["failure_kind"] == "strict_bar_miss"
+    assert interpretation["evidence_strength"] == "moderate"
+    assert interpretation["qualitative_core_status"] == "qualitative_core_present"
+
+
+def test_derive_evidence_interpretation_marks_finite_system_measurement_miss():
+    item = _v2_item(
+        validity="uncertain",
+        construct_dimensions=_construct_dimensions(metric_robustness="sample_size_sensitive"),
+        bar_profile=_bar_profile(
+            estimator_family="box_count",
+            finite_system_risks=["finite_size", "boundary_condition"],
+            bar_fragility="high",
+            secondary_signature="mass-radius dimension remains in the expected band",
+        ),
+    )
+
+    interpretation = derive_evidence_interpretation(
+        {"passed": False},
+        item,
+        {
+            "test_execution_status": "executed",
+            "scale_fidelity": "right_sized_proxy",
+            "mechanism_fidelity": "complete",
+            "numerical_fidelity": "stable",
+            "censoring_status": "uncensored",
+            "qualitative_core_status": "qualitative_core_present",
+            "bar_outcome": "missed",
+            "estimator_status": "finite_size_biased",
+            "secondary_signature_status": "present",
+        },
+    )
+
+    assert interpretation["failure_kind"] == "finite_system_measurement_miss"
+    assert interpretation["evidence_strength"] == "moderate"
+    assert interpretation["qualitative_core_status"] == "qualitative_core_present"
+
+
+def test_derive_evidence_interpretation_does_not_mark_measurement_miss_when_bar_met():
+    item = _v2_item(
+        validity="uncertain",
+        construct_dimensions=_construct_dimensions(metric_robustness="sample_size_sensitive"),
+        bar_profile=_bar_profile(
+            estimator_family="box_count",
+            finite_system_risks=["finite_size"],
+            bar_fragility="high",
+            secondary_signature="mass-radius dimension remains in the expected band",
+        ),
+    )
+
+    interpretation = derive_evidence_interpretation(
+        {"passed": False},
+        item,
+        {
+            "test_execution_status": "executed",
+            "scale_fidelity": "faithful_scale",
+            "mechanism_fidelity": "complete",
+            "numerical_fidelity": "stable",
+            "censoring_status": "uncensored",
+            "qualitative_core_status": "qualitative_core_present",
+            "bar_outcome": "met",
+            "estimator_status": "finite_size_biased",
+            "secondary_signature_status": "present",
+        },
+    )
+
+    assert interpretation["failure_kind"] == "uncertain_lock"

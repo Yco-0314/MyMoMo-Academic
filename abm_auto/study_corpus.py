@@ -13,6 +13,14 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from abm_auto._repo_paths import (
+    is_absolute_path,
+    repo_relative_path,
+    repo_root,
+    resolve_output_path,
+    resolve_repo_read_path,
+    resolve_repo_relative_path,
+)
 from abm_auto.repro_bundle import validate_repro_bundle, validate_repro_bundle_file
 
 SCHEMA = "abm-auto/study-corpus-registry/v1"
@@ -41,24 +49,26 @@ EVIDENCE_INTERPRETATION_COUNT_FIELDS = (
     "implementation_miss_count",
     "censored_count",
     "not_run_count",
+    "strict_bar_miss_count",
+    "finite_system_measurement_miss_count",
+    "qualitative_core_present_count",
 )
 
 
 def _repo_root(repo: Path | None) -> Path:
-    return Path.cwd().resolve() if repo is None else Path(repo).resolve()
+    return repo_root(repo)
 
 
-def _artifact_path(path_value: Any, repo: Path) -> Path:
-    path = Path(str(path_value))
-    return path if path.is_absolute() else repo / path
+def _artifact_path(path_value: Any, repo: Path) -> Path | None:
+    return resolve_repo_relative_path(path_value, repo)
 
 
 def _relative_path(path: Path, repo: Path) -> str:
-    resolved = path.resolve()
-    try:
-        return resolved.relative_to(repo).as_posix()
-    except ValueError:
-        return path.as_posix()
+    return repo_relative_path(path, repo) or path.as_posix()
+
+
+def _input_path(path_value: Path | str, repo: Path) -> Path | None:
+    return resolve_repo_read_path(path_value, repo)
 
 
 def _is_nonempty_string(value: Any) -> bool:
@@ -129,16 +139,24 @@ def _status_counts(entries: list[dict]) -> dict:
     return counts
 
 
-def _study_dirs(studies_root: Path) -> list[Path]:
+def _study_dirs(studies_root: Path, *, repo: Path) -> list[Path]:
     return sorted(
-        (path for path in studies_root.iterdir() if path.is_dir()),
+        (
+            resolved
+            for path in studies_root.iterdir()
+            if (resolved := resolve_repo_read_path(path, repo)) is not None
+            and resolved.is_dir()
+        ),
         key=lambda path: path.name,
     )
 
 
 def _git_tracked_paths_under(studies_root: Path, repo: Path) -> set[str] | None:
+    studies_root = resolve_repo_read_path(studies_root, repo)
+    if studies_root is None:
+        return None
     try:
-        root_rel = studies_root.resolve().relative_to(repo).as_posix()
+        root_rel = studies_root.relative_to(repo).as_posix()
     except ValueError:
         return None
 
@@ -158,6 +176,9 @@ def _git_tracked_paths_under(studies_root: Path, repo: Path) -> set[str] | None:
 
 
 def _is_committed_or_filesystem(path: Path, *, repo: Path, tracked_paths: set[str] | None) -> bool:
+    path = resolve_repo_read_path(path, repo)
+    if path is None:
+        return False
     if tracked_paths is None:
         return path.exists()
     return _relative_path(path, repo) in tracked_paths
@@ -166,7 +187,17 @@ def _is_committed_or_filesystem(path: Path, *, repo: Path, tracked_paths: set[st
 def discover_study_corpus(studies_root: Path, *, repo: Path | None = None) -> dict:
     """Discover completed and pending study directories under ``docs/studies``."""
     repo_root = _repo_root(repo)
-    root = _artifact_path(studies_root, repo_root)
+    root = _input_path(studies_root, repo_root)
+    if root is None:
+        return {
+            "ok": False,
+            "issues": ["studies root must be a canonical repository-relative path"],
+            "study_root": str(studies_root),
+            "complete": [],
+            "pending": [],
+            "complete_count": 0,
+            "pending_count": 0,
+        }
     if not root.is_dir():
         return {
             "ok": False,
@@ -181,18 +212,23 @@ def discover_study_corpus(studies_root: Path, *, repo: Path | None = None) -> di
     complete: list[dict] = []
     pending: list[dict] = []
     tracked_paths = _git_tracked_paths_under(root, repo_root)
-    for study_dir in _study_dirs(root):
+    for study_dir in _study_dirs(root, repo=repo_root):
         predictions = study_dir / "PREDICTIONS-locked.md"
         bundle = study_dir / "verdict-bundle.json"
-        if bundle.exists() and _is_committed_or_filesystem(bundle, repo=repo_root, tracked_paths=tracked_paths):
+        resolved_predictions = resolve_repo_read_path(predictions, repo_root)
+        if _is_committed_or_filesystem(bundle, repo=repo_root, tracked_paths=tracked_paths):
             complete.append({
                 "id": study_dir.name,
                 "status": COMPLETE_STATUS,
                 "study_dir": _relative_path(study_dir, repo_root),
                 "bundle": _relative_path(bundle, repo_root),
-                "predictions": _relative_path(predictions, repo_root) if predictions.exists() else None,
+                "predictions": (
+                    _relative_path(resolved_predictions, repo_root)
+                    if resolved_predictions is not None and resolved_predictions.exists()
+                    else None
+                ),
             })
-        elif predictions.exists() and _is_committed_or_filesystem(predictions, repo=repo_root, tracked_paths=tracked_paths):
+        elif _is_committed_or_filesystem(predictions, repo=repo_root, tracked_paths=tracked_paths):
             pending.append({
                 "id": study_dir.name,
                 "status": PENDING_STATUS,
@@ -212,7 +248,10 @@ def discover_study_corpus(studies_root: Path, *, repo: Path | None = None) -> di
 
 
 def _registry_entry_from_bundle(discovered: dict, *, repo: Path) -> dict:
-    bundle = _load_json(_artifact_path(discovered["bundle"], repo))
+    bundle_path = _artifact_path(discovered["bundle"], repo)
+    if bundle_path is None:
+        raise ValueError("discovered bundle must use a canonical repository-relative path")
+    bundle = _load_json(bundle_path)
     predictions_fallback = discovered.get("predictions")
     findings = _bundle_doc_path(bundle, "findings")
     design_spec = _bundle_doc_path(bundle, "design_spec")
@@ -311,11 +350,14 @@ def _validate_relative_path(
     value = entry.get(field)
     if value is None and not required:
         return
-    if not _is_nonempty_string(value) or Path(str(value)).is_absolute():
-        issues.append(f"{prefix}.{field} must be a repo-relative path")
+    full_path = _artifact_path(value, repo)
+    if full_path is None:
+        message = "must be a repo-relative path" if (
+            isinstance(value, str) and is_absolute_path(value)
+        ) else "must be a canonical repository-relative path"
+        issues.append(f"{prefix}.{field} {message}")
         return
 
-    full_path = _artifact_path(value, repo)
     if must_exist and not full_path.exists():
         issues.append(f"{prefix}.{field} does not exist")
         return
@@ -338,8 +380,8 @@ def validate_study_registry(registry: dict, *, repo: Path | None = None) -> dict
         issues.append("title must be a non-empty string")
     if not _is_nonempty_string(registry.get("boundary_note")):
         issues.append("boundary_note must be a non-empty string")
-    if not _is_nonempty_string(registry.get("study_root")) or Path(str(registry.get("study_root"))).is_absolute():
-        issues.append("study_root must be a repo-relative path")
+    if _artifact_path(registry.get("study_root"), repo_root) is None:
+        issues.append("study_root must be a canonical repository-relative path")
 
     entries = registry.get("entries")
     if not isinstance(entries, list) or not entries:
@@ -460,7 +502,22 @@ def diagnose_study_corpus(
 ) -> dict:
     """Run the standard study corpus artifact-health checks."""
     repo_root = _repo_root(repo)
-    root = _artifact_path(studies_root, repo_root)
+    root = _input_path(studies_root, repo_root)
+    if root is None:
+        return {
+            "ok": False,
+            "issues": ["studies root must be a canonical repository-relative path"],
+            "summary": {
+                "complete_count": 0,
+                "pending_count": 0,
+                "failed_bundle_count": 0,
+                "failed_registry_issue_count": 1,
+                "registry_matches_committed": False,
+                "index_matches_committed": False,
+            },
+            "pending_ids": [],
+            "bundle_results": [],
+        }
     if not root.is_dir():
         return {
             "ok": False,
@@ -484,8 +541,8 @@ def diagnose_study_corpus(
     index_matches_committed: bool | None = None
 
     if registry_path is not None:
-        full_registry_path = _artifact_path(registry_path, repo_root)
-        if not full_registry_path.exists():
+        full_registry_path = _input_path(registry_path, repo_root)
+        if full_registry_path is None or not full_registry_path.exists():
             registry_issues.append("registry path does not exist")
             registry_matches_committed = False
         else:
@@ -497,8 +554,8 @@ def diagnose_study_corpus(
                 registry_issues.append("committed registry does not match current study corpus")
 
     if index_path is not None:
-        full_index_path = _artifact_path(index_path, repo_root)
-        if not full_index_path.exists():
+        full_index_path = _input_path(index_path, repo_root)
+        if full_index_path is None or not full_index_path.exists():
             registry_issues.append("index path does not exist")
             index_matches_committed = False
         else:
@@ -511,8 +568,11 @@ def diagnose_study_corpus(
     for entry in registry["entries"]:
         if entry["status"] != COMPLETE_STATUS:
             continue
+        bundle_path = _artifact_path(entry["bundle"], repo_root)
+        if bundle_path is None:
+            continue
         validation = validate_repro_bundle_file(
-            _artifact_path(entry["bundle"], repo_root),
+            bundle_path,
             repo=repo_root,
             check_doc_hashes=True,
             check_data_hashes=False,
@@ -621,6 +681,9 @@ def render_study_index_markdown(registry: dict) -> str:
             f"- Not-run clauses: {summary['not_run_count']}",
             f"- Threshold-endpoint MISS clauses: {summary['threshold_endpoint_miss_count']}",
             f"- Scale/regime MISS clauses: {summary['scale_regime_miss_count']}",
+            f"- Strict-bar MISS clauses: {summary['strict_bar_miss_count']}",
+            f"- Finite-system measurement MISS clauses: {summary['finite_system_measurement_miss_count']}",
+            f"- Qualitative-core-present clauses: {summary['qualitative_core_present_count']}",
         ])
     lines.extend([
         "",
@@ -688,8 +751,8 @@ def main(argv: list[str] | None = None) -> int:
         repo_root = _repo_root(args.repo)
         registry = build_study_registry(args.studies_root, repo=repo_root)
         validation = validate_study_registry(registry, repo=repo_root)
-        registry_out = _artifact_path(args.registry, repo_root)
-        index_out = _artifact_path(args.index, repo_root)
+        registry_out = resolve_output_path(args.registry, repo_root)
+        index_out = resolve_output_path(args.index, repo_root)
         if validation["ok"]:
             write_study_registry(registry, registry_out)
             write_study_index(registry, index_out)
