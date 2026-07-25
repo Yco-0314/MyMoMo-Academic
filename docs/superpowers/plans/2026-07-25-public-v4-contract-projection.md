@@ -36,7 +36,7 @@ RasterSpace, existing GIS gates, pytest.
 - [ ] Port the public-safe deterministic model-contract records, canonical
   digests, strict JSON loading, semantic patch equivalence, and lifecycle
   guards from the private source.
-- [ ] Exclude all GAMA-specific test/adapter surface.
+- [ ] Exclude all external-language-specific test/adapter surface.
 - [ ] Run the dedicated model-contract tests.
 - [ ] Commit the pure contract core.
 

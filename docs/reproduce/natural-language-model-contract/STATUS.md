@@ -58,3 +58,17 @@ runtime, or scientific validation workflow.
 The contract's application lock is an application-level immutability record.
 It is not a scientific prediction lock, Git ancestry proof, or evidentiary
 provenance lock.
+
+## Public v4 Direct GIS Cell
+
+`public-v4-quick-raster-sir.json` is a constructor-generated, unlocked quick
+contract for the synthetic `raster_sir` capability.  The public v4 adapter maps
+this exact contract through MIR to `GISModelSpec`, constructs its fixed 24 by 24
+synthetic raster in process, and invokes the reference SIR runtime directly.
+
+Its receipt is limited to a deterministic gate result and compact infection
+summary under `quick_exploratory`.  This demonstrates one bounded structured
+contract-to-runtime path.  It does not exercise natural-language extraction,
+templates, generated code, external files, a process runner, an external
+language runtime, real data, scientific validation, or a published-study
+reproduction.

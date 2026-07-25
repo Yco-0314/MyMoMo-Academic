@@ -31,8 +31,8 @@ contract -> MIR -> GISModelSpec -> RasterSpace -> run_raster_sir -> gate -> rece
 ```
 
 There is no template rendering, generated-code execution, subprocess, external
-file, network request, natural-language extraction, real-data path, GAMA
-interoperability claim, or scientific-reproduction verdict.
+file, network request, natural-language extraction, real-data path, external
+language-runtime interoperability claim, or scientific-reproduction verdict.
 
 ## Eligibility Contract
 
@@ -57,8 +57,9 @@ stderr, process status, filesystem paths, or arbitrary model output.
 
 Passing the receipt means that this constrained semantic contract selected the
 known synthetic raster-SIR runtime and produced its deterministic gate result.
-It does not prove natural-language understanding, GAMA compatibility, real-data
-fitness, causal validity, or a published-study reproduction.
+It does not prove natural-language understanding, external-runtime
+compatibility, real-data fitness, causal validity, or a published-study
+reproduction.
 
 ## Packaging Decision
 
