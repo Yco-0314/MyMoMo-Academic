@@ -66,6 +66,37 @@ VALID_CONSTRUCT_DIMENSIONS = {
         "unknown",
     },
 }
+VALID_THRESHOLD_ORIGINS = {
+    "analytical_exact",
+    "analytical_asymptotic",
+    "literature_exact",
+    "literature_band",
+    "finite_system_proxy",
+    "empirical_band",
+}
+VALID_ESTIMATOR_FAMILIES = {
+    "activity_band",
+    "box_count",
+    "correlation",
+    "damage_spread",
+    "direct_measure",
+    "mass_radius",
+    "onset_detection",
+    "period_detection",
+    "qualitative_signature",
+    "slope_fit",
+}
+VALID_FINITE_SYSTEM_RISKS = {
+    "boundary_condition",
+    "coarse_grid",
+    "estimator_bias",
+    "finite_size",
+    "insufficient_horizon",
+    "none",
+    "seed_sampling",
+    "stochastic_noise",
+}
+VALID_BAR_FRAGILITIES = {"low", "medium", "high"}
 HARD_MIS_SPECIFIED_DIMENSION_VALUES = {"wrong_proxy", "reversed", "wrong_regime", "confounded"}
 UNCERTAIN_DIMENSION_VALUES = {
     "ambiguous",
@@ -109,6 +140,16 @@ VALID_REALIZATION_DIMENSIONS = {
         "not_applicable",
         "unknown",
     },
+    "bar_outcome": {"met", "missed", "not_applicable", "unknown"},
+    "estimator_status": {
+        "faithful",
+        "finite_size_biased",
+        "boundary_condition_biased",
+        "underresolved",
+        "noisy",
+        "unknown",
+    },
+    "secondary_signature_status": {"present", "absent", "not_declared", "unknown"},
 }
 
 
@@ -149,6 +190,53 @@ def _validate_construct_dimensions(dimensions: Any, prefix: str, issues: list[st
 
     issues.extend(local_issues)
     return not local_issues
+
+
+def _validate_bar_profile(profile: Any, prefix: str, issues: list[str]) -> None:
+    if profile is None:
+        return
+    if not isinstance(profile, dict):
+        issues.append(f"{prefix}.bar_profile must be an object")
+        return
+
+    threshold_origin = profile.get("threshold_origin")
+    if threshold_origin not in VALID_THRESHOLD_ORIGINS:
+        issues.append(f"{prefix}.bar_profile.threshold_origin is invalid")
+
+    estimator_family = profile.get("estimator_family")
+    if estimator_family not in VALID_ESTIMATOR_FAMILIES:
+        issues.append(f"{prefix}.bar_profile.estimator_family is invalid")
+
+    finite_system_risks = profile.get("finite_system_risks")
+    if not isinstance(finite_system_risks, list) or not finite_system_risks:
+        issues.append(f"{prefix}.bar_profile.finite_system_risks must be a non-empty list")
+    else:
+        for risk_idx, risk in enumerate(finite_system_risks):
+            if risk not in VALID_FINITE_SYSTEM_RISKS:
+                issues.append(f"{prefix}.bar_profile.finite_system_risks[{risk_idx}] is invalid")
+        if "none" in finite_system_risks and len(finite_system_risks) > 1:
+            issues.append(f"{prefix}.bar_profile.finite_system_risks cannot mix 'none' with other risks")
+
+    bar_fragility = profile.get("bar_fragility")
+    if bar_fragility not in VALID_BAR_FRAGILITIES:
+        issues.append(f"{prefix}.bar_profile.bar_fragility is invalid")
+    elif bar_fragility == "high" and not _is_nonempty_string(profile.get("secondary_signature")):
+        issues.append(
+            f"{prefix}.bar_profile.secondary_signature is required when bar_fragility is 'high'"
+        )
+
+    if "secondary_signature" in profile and not _is_nonempty_string(profile.get("secondary_signature")):
+        issues.append(f"{prefix}.bar_profile.secondary_signature must be a non-empty string")
+
+    allowed = {
+        "bar_fragility",
+        "estimator_family",
+        "finite_system_risks",
+        "secondary_signature",
+        "threshold_origin",
+    }
+    for key in sorted(set(profile) - allowed):
+        issues.append(f"{prefix}.bar_profile.{key} is unexpected")
 
 
 def _item_issue_kinds(item: dict, prefix: str, issues: list[str]) -> list[str]:
@@ -236,6 +324,11 @@ def derive_evidence_interpretation(
     emergence_level = dimensions.get("emergence_level")
     counterfactual_discrimination = dimensions.get("counterfactual_discrimination")
     metric_robustness = dimensions.get("metric_robustness")
+    bar_profile = review_item.get("bar_profile")
+    if not isinstance(bar_profile, dict):
+        bar_profile = {}
+    finite_system_risks = set(bar_profile.get("finite_system_risks", [])) - {"none"}
+    bar_fragility = bar_profile.get("bar_fragility")
 
     execution_status = realization.get("test_execution_status")
     scale_fidelity = realization.get("scale_fidelity")
@@ -243,6 +336,17 @@ def derive_evidence_interpretation(
     numerical_fidelity = realization.get("numerical_fidelity")
     censoring_status = realization.get("censoring_status")
     qualitative_core_status = realization.get("qualitative_core_status")
+    bar_outcome = realization.get("bar_outcome")
+    estimator_status = realization.get("estimator_status")
+    secondary_signature_status = realization.get("secondary_signature_status")
+
+    qualitative_core_present = qualitative_core_status == "qualitative_core_present"
+    estimator_limited = estimator_status in {
+        "boundary_condition_biased",
+        "finite_size_biased",
+        "noisy",
+        "underresolved",
+    }
 
     failure_kind = "none"
     if passed:
@@ -263,7 +367,23 @@ def derive_evidence_interpretation(
         failure_kind = "not_run"
         evidence_strength = "weak"
     elif (
-        qualitative_core_status == "qualitative_core_present"
+        qualitative_core_present
+        and finite_system_risks
+        and bar_outcome == "missed"
+        and estimator_limited
+    ):
+        failure_kind = "finite_system_measurement_miss"
+        evidence_strength = "moderate"
+    elif (
+        qualitative_core_present
+        and bar_fragility == "high"
+        and bar_outcome == "missed"
+        and secondary_signature_status == "present"
+    ):
+        failure_kind = "strict_bar_miss"
+        evidence_strength = "moderate"
+    elif (
+        qualitative_core_present
         and metric_robustness == "threshold_fragile"
         and numerical_fidelity != "unstable"
     ):
@@ -300,6 +420,7 @@ def derive_evidence_interpretation(
         "evidence_strength": evidence_strength,
         "failure_kind": failure_kind,
         "finding_role": finding_role,
+        "qualitative_core_status": qualitative_core_status,
     }
 
 
@@ -363,6 +484,7 @@ def validate_lock_review(
                 prefix,
                 issues,
             )
+            _validate_bar_profile(item.get("bar_profile"), prefix, issues)
 
         validity = (
             _resolve_review_item_validity(item, prefix, issues)
@@ -426,8 +548,12 @@ __all__ = [
     "SCHEMA_V2",
     "VALID_CONSTRUCT_DIMENSIONS",
     "VALID_CONSTRUCT_VALIDITIES",
+    "VALID_BAR_FRAGILITIES",
     "VALID_ISSUE_KINDS",
+    "VALID_ESTIMATOR_FAMILIES",
+    "VALID_FINITE_SYSTEM_RISKS",
     "VALID_REALIZATION_DIMENSIONS",
+    "VALID_THRESHOLD_ORIGINS",
     "derive_construct_validity",
     "derive_evidence_interpretation",
     "validate_lock_review",

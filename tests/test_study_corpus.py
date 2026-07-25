@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from abm_auto.repro_bundle import build_bundle, write_bundle
+from abm_auto.repro_bundle import build_bundle, validate_repro_bundle_file, write_bundle
 from abm_auto.study_corpus import (
     SCHEMA,
     build_study_registry,
@@ -113,6 +113,63 @@ def _v2_lock_review_json() -> str:
     })
 
 
+def _finite_system_lock_review_json() -> str:
+    return json.dumps({
+        "schema": "abm-auto/lock-review/v2",
+        "study_id": "finite-system-interpretation-demo",
+        "timing": "prospective",
+        "result_visibility": "no_results_seen",
+        "items": [
+            {
+                "clause_id": "P1",
+                "paper_claim": "A finite-grid fractal structure appears.",
+                "locked_metric": "box-count dimension >= 1.4",
+                "validity": "uncertain",
+                "construct_dimensions": _construct_dimensions(
+                    metric_robustness="sample_size_sensitive",
+                    control_quality="no_control_needed",
+                    mechanism_specificity="generic",
+                    load_bearing_role="supporting",
+                    counterfactual_discrimination="weakly_discriminating",
+                ),
+                "bar_profile": {
+                    "threshold_origin": "finite_system_proxy",
+                    "estimator_family": "box_count",
+                    "finite_system_risks": ["finite_size", "boundary_condition"],
+                    "bar_fragility": "high",
+                    "secondary_signature": "mass-radius estimate remains in the expected band",
+                },
+                "issue_kinds": [],
+                "review_rationale": "The strict box-count endpoint is finite-grid sensitive.",
+                "requires_relock": False,
+            },
+            {
+                "clause_id": "P2",
+                "paper_claim": "A fragile activity band is reached.",
+                "locked_metric": "activity between 0.02 and 0.30",
+                "validity": "uncertain",
+                "construct_dimensions": _construct_dimensions(
+                    metric_robustness="threshold_fragile",
+                    control_quality="no_control_needed",
+                    mechanism_specificity="generic",
+                    load_bearing_role="supporting",
+                    counterfactual_discrimination="weakly_discriminating",
+                ),
+                "bar_profile": {
+                    "threshold_origin": "finite_system_proxy",
+                    "estimator_family": "activity_band",
+                    "finite_system_risks": ["seed_sampling"],
+                    "bar_fragility": "high",
+                    "secondary_signature": "ordered class ranking is preserved",
+                },
+                "issue_kinds": [],
+                "review_rationale": "The strict activity band is fragile but the ranking is meaningful.",
+                "requires_relock": False,
+            },
+        ],
+    })
+
+
 def _run_git(repo: Path, *args: str) -> str:
     result = subprocess.run(
         ["git", *args],
@@ -143,6 +200,35 @@ def _commit_all(repo: Path, message: str) -> str:
         text=True,
     )
     return _run_git(repo, "rev-parse", "HEAD")
+
+
+def _write_valid_bundle(repo: Path, bundle_path: Path) -> Path:
+    artifacts = repo / "artifacts"
+    artifacts.mkdir(parents=True, exist_ok=True)
+    bundle_path.parent.mkdir(parents=True, exist_ok=True)
+    docs = {}
+    for name in ("predictions_locked", "findings", "design_spec"):
+        path = artifacts / f"{name}.md"
+        path.write_text(f"# {name}\n", encoding="utf-8")
+        docs[name] = path
+    data = artifacts / "results.json"
+    data.write_text("{}\n", encoding="utf-8")
+    bundle = build_bundle(
+        paper={"title": "Path boundary demo", "authors": "x", "year": 2026},
+        headline="A valid in-repository bundle",
+        verdicts=[
+            Verdict(
+                passed=True,
+                tier="refutation",
+                gate_name="P1",
+                salient_number=(1.0, 0.5),
+            ),
+        ],
+        data_artifacts={"results": data},
+        doc_artifacts=docs,
+        repo=repo,
+    )
+    return write_bundle(bundle, bundle_path)
 
 
 def test_discovers_complete_bundles_and_prediction_only_pending_studies():
@@ -276,6 +362,64 @@ def test_registry_counts_miss_lock_separately_from_model_miss(tmp_path: Path):
     assert registry["summary"]["unclassified_miss_count"] == 0
 
 
+def test_registry_does_not_admit_an_edited_working_tree_lock_review(tmp_path: Path):
+    _run_git(tmp_path, "init")
+    study_dir = tmp_path / "docs/studies/edited-lock-review-demo"
+    study_dir.mkdir(parents=True)
+    docs = {}
+    for name in ("predictions_locked", "findings", "design_spec"):
+        path = study_dir / f"{name}.md"
+        path.write_text(f"# {name}\n", encoding="utf-8")
+        docs[name] = path
+    lock_commit = _commit_all(tmp_path, "lock predictions")
+    lock_review = study_dir / "LOCK-REVIEW.json"
+    lock_review.write_text(_lock_review_json(clauses=("P1",)), encoding="utf-8")
+    lock_review_commit = _commit_all(tmp_path, "review lock")
+    data = study_dir / "results.json"
+    data.write_text("{}\n", encoding="utf-8")
+    implementation_commit = _commit_all(tmp_path, "implement model")
+    (study_dir / "run.log").write_text("first run\n", encoding="utf-8")
+    first_run_commit = _commit_all(tmp_path, "run model")
+
+    bundle = build_bundle(
+        paper={"title": "Edited lock review demo", "authors": "x", "year": 2026},
+        headline="A later edit cannot reclassify a historical MISS",
+        verdicts=[
+            Verdict(
+                passed=False,
+                tier="refutation",
+                gate_name="P1",
+                salient_number=(0.87, 0.90),
+                construct_validity="mis_specified",
+            ),
+        ],
+        data_artifacts={"results": data},
+        doc_artifacts=docs,
+        repo=tmp_path,
+        lock_review=lock_review,
+        lock_provenance={
+            "lock_commit": lock_commit,
+            "lock_review_commit": lock_review_commit,
+            "implementation_commit": implementation_commit,
+            "first_run_commit": first_run_commit,
+        },
+    )
+    write_bundle(bundle, study_dir / "verdict-bundle.json")
+    _commit_all(tmp_path, "commit bundle")
+
+    lock_review.write_text(
+        _lock_review_json(clauses=("P1",)).replace("P1 rationale", "edited P1 rationale"),
+        encoding="utf-8",
+    )
+    registry = build_study_registry(tmp_path / "docs/studies", repo=tmp_path)
+
+    entry = registry["entries"][0]
+    assert entry["miss_lock_count"] == 0
+    assert entry["unclassified_miss_count"] == 1
+    assert registry["summary"]["miss_lock_count"] == 0
+    assert registry["summary"]["unclassified_miss_count"] == 1
+
+
 def test_registry_summarizes_v2_evidence_interpretation_counts(tmp_path: Path):
     study_dir = tmp_path / "docs/studies/v2-interpretation-demo"
     study_dir.mkdir(parents=True)
@@ -350,6 +494,96 @@ def test_registry_summarizes_v2_evidence_interpretation_counts(tmp_path: Path):
     assert registry["summary"]["threshold_endpoint_miss_count"] == 1
 
 
+def test_registry_summarizes_finite_system_interpretation_counts(tmp_path: Path):
+    _run_git(tmp_path, "init")
+    study_dir = tmp_path / "docs/studies/finite-system-interpretation-demo"
+    study_dir.mkdir(parents=True)
+    docs = {}
+    for name in ("predictions_locked", "design_spec"):
+        path = study_dir / f"{name}.md"
+        path.write_text(f"# {name}\n", encoding="utf-8")
+        docs[name] = path
+    lock_commit = _commit_all(tmp_path, "lock predictions")
+    lock_review = study_dir / "LOCK-REVIEW.json"
+    lock_review.write_text(_finite_system_lock_review_json(), encoding="utf-8")
+    lock_review_commit = _commit_all(tmp_path, "review lock")
+    (study_dir / "implementation.txt").write_text("implemented\n", encoding="utf-8")
+    implementation_commit = _commit_all(tmp_path, "implement model")
+    findings = study_dir / "findings.md"
+    findings.write_text("# findings\n", encoding="utf-8")
+    docs["findings"] = findings
+    data = study_dir / "results.json"
+    data.write_text("{}\n", encoding="utf-8")
+    first_run_commit = _commit_all(tmp_path, "run model")
+
+    bundle = build_bundle(
+        paper={"title": "Finite system interpretation demo", "authors": "x", "year": 2026},
+        headline="Strict bars missed with qualitative cores present",
+        verdicts=[
+            Verdict(
+                passed=False,
+                tier="refutation",
+                gate_name="P1",
+                salient_number=(1.37, 1.40),
+                construct_validity="uncertain",
+            ),
+            Verdict(
+                passed=False,
+                tier="refutation",
+                gate_name="P2",
+                salient_number=(0.424, 0.30),
+                construct_validity="uncertain",
+            ),
+        ],
+        data_artifacts={"results": data},
+        doc_artifacts=docs,
+        repo=tmp_path,
+        lock_review=lock_review,
+        lock_provenance={
+            "lock_commit": lock_commit,
+            "lock_review_commit": lock_review_commit,
+            "implementation_commit": implementation_commit,
+            "first_run_commit": first_run_commit,
+        },
+    )
+    bundle["verdicts"][0]["realization_dimensions"] = {
+        "test_execution_status": "executed",
+        "scale_fidelity": "right_sized_proxy",
+        "mechanism_fidelity": "complete",
+        "numerical_fidelity": "stable",
+        "censoring_status": "uncensored",
+        "qualitative_core_status": "qualitative_core_present",
+        "bar_outcome": "missed",
+        "estimator_status": "finite_size_biased",
+        "secondary_signature_status": "present",
+    }
+    bundle["verdicts"][1]["realization_dimensions"] = {
+        "test_execution_status": "executed",
+        "scale_fidelity": "faithful_scale",
+        "mechanism_fidelity": "complete",
+        "numerical_fidelity": "stable",
+        "censoring_status": "uncensored",
+        "qualitative_core_status": "qualitative_core_present",
+        "bar_outcome": "missed",
+        "estimator_status": "faithful",
+        "secondary_signature_status": "present",
+    }
+    write_bundle(bundle, study_dir / "verdict-bundle.json")
+    _commit_all(tmp_path, "commit bundle")
+
+    registry = build_study_registry(tmp_path / "docs/studies", repo=tmp_path)
+    validation = validate_study_registry(registry, repo=tmp_path)
+
+    entry = registry["entries"][0]
+    assert validation["ok"], validation["issues"]
+    assert entry["finite_system_measurement_miss_count"] == 1
+    assert entry["strict_bar_miss_count"] == 1
+    assert entry["qualitative_core_present_count"] == 2
+    assert registry["summary"]["finite_system_measurement_miss_count"] == 1
+    assert registry["summary"]["strict_bar_miss_count"] == 1
+    assert registry["summary"]["qualitative_core_present_count"] == 2
+
+
 def test_registry_does_not_emit_construct_validity_summary_without_lock_review(tmp_path: Path):
     study_dir = tmp_path / "docs/studies/unreviewed-default-sound-demo"
     study_dir.mkdir(parents=True)
@@ -404,6 +638,143 @@ def test_registry_validator_rejects_duplicate_ids_and_absolute_paths():
     absolute_result = validate_study_registry(absolute_path, repo=REPO_ROOT)
     assert absolute_result["ok"] is False
     assert any("study_dir must be a repo-relative path" in issue for issue in absolute_result["issues"])
+
+
+@pytest.mark.parametrize(
+    "studies_root",
+    [
+        "./docs/studies",
+        "docs//studies",
+        "docs/studies/../studies",
+        r"docs\studies",
+        "C:docs/studies",
+    ],
+)
+def test_discovery_rejects_noncanonical_studies_root(studies_root: str):
+    result = discover_study_corpus(studies_root, repo=REPO_ROOT)
+
+    assert result["ok"] is False
+    assert result["issues"] == ["studies root must be a canonical repository-relative path"]
+
+
+@pytest.mark.parametrize(
+    ("field", "path_value"),
+    [
+        ("study_root", "./docs/studies"),
+        ("study_dir", "docs//studies/cont-bouchaud"),
+        ("bundle", "docs/studies/cont-bouchaud/../cont-bouchaud/verdict-bundle.json"),
+        ("predictions", r"docs\studies\cont-bouchaud\PREDICTIONS-locked.md"),
+        ("findings", "C:docs/studies/cont-bouchaud/FINDINGS.md"),
+    ],
+)
+def test_registry_validator_rejects_noncanonical_serialized_paths(field: str, path_value: str):
+    registry = build_study_registry(STUDIES_ROOT, repo=REPO_ROOT)
+    entry = next(item for item in registry["entries"] if item["status"] == "complete")
+    if field == "study_root":
+        registry[field] = path_value
+        expected_prefix = field
+    else:
+        entry[field] = path_value
+        expected_prefix = f"entries[{registry['entries'].index(entry)}].{field}"
+
+    result = validate_study_registry(registry, repo=REPO_ROOT)
+
+    assert result["ok"] is False
+    assert f"{expected_prefix} must be a canonical repository-relative path" in result["issues"]
+
+
+def test_discovery_rejects_studies_root_symlink_escape(tmp_path: Path):
+    repo = tmp_path / "repo"
+    outside_studies = tmp_path / "outside-studies"
+    outside_studies.mkdir(parents=True)
+    (repo / "docs").mkdir(parents=True)
+    (repo / "docs/studies").symlink_to(outside_studies, target_is_directory=True)
+
+    result = discover_study_corpus("docs/studies", repo=repo)
+
+    assert result["ok"] is False
+    assert result["issues"] == ["studies root must be a canonical repository-relative path"]
+
+
+@pytest.mark.parametrize("as_string", [False, True])
+def test_validate_repro_bundle_file_accepts_absolute_in_repo_path(
+    tmp_path: Path,
+    as_string: bool,
+):
+    repo = tmp_path / "repo"
+    bundle_path = _write_valid_bundle(repo, repo / "docs/studies/local/verdict-bundle.json")
+
+    result = validate_repro_bundle_file(
+        str(bundle_path) if as_string else bundle_path,
+        repo=repo,
+        check_data_hashes=True,
+    )
+
+    assert result["ok"], result["issues"]
+
+
+def test_validate_repro_bundle_file_rejects_external_symlink_target(tmp_path: Path):
+    repo = tmp_path / "repo"
+    local_bundle = _write_valid_bundle(repo, repo / "docs/studies/local/verdict-bundle.json")
+    outside_bundle = tmp_path / "outside" / "verdict-bundle.json"
+    outside_bundle.parent.mkdir()
+    outside_bundle.write_text(local_bundle.read_text(encoding="utf-8"), encoding="utf-8")
+    escaped_bundle = repo / "docs/studies/escaped-bundle.json"
+    escaped_bundle.symlink_to(outside_bundle)
+
+    result = validate_repro_bundle_file(escaped_bundle, repo=repo, check_data_hashes=True)
+
+    assert result == {
+        "ok": False,
+        "issues": ["bundle path must resolve inside repository"],
+    }
+
+
+def test_discovery_skips_external_study_directory_without_git_metadata(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    repo = tmp_path / "repo"
+    studies_root = repo / "docs/studies"
+    local_study = studies_root / "local"
+    local_study.mkdir(parents=True)
+    (local_study / "verdict-bundle.json").write_text("{}\n", encoding="utf-8")
+    outside_study = tmp_path / "outside-study"
+    outside_study.mkdir()
+    (outside_study / "verdict-bundle.json").write_text("{}\n", encoding="utf-8")
+    (studies_root / "escaped").symlink_to(outside_study, target_is_directory=True)
+    monkeypatch.setattr("abm_auto.study_corpus._git_tracked_paths_under", lambda *_: None)
+
+    corpus = discover_study_corpus(studies_root, repo=repo)
+
+    assert corpus["ok"] is True
+    assert [entry["id"] for entry in corpus["complete"]] == ["local"]
+
+
+def test_discovery_skips_external_study_directory_with_git_metadata(tmp_path: Path):
+    repo = tmp_path / "repo"
+    studies_root = repo / "docs/studies"
+    local_study = studies_root / "local"
+    local_study.mkdir(parents=True)
+    local_bundle = local_study / "verdict-bundle.json"
+    local_bundle.write_text("{}\n", encoding="utf-8")
+    outside_study = tmp_path / "outside-study"
+    outside_study.mkdir()
+    (outside_study / "verdict-bundle.json").write_text("{}\n", encoding="utf-8")
+    (studies_root / "escaped").symlink_to(outside_study, target_is_directory=True)
+    subprocess.run(["git", "init"], cwd=repo, check=True, capture_output=True, text=True)
+    subprocess.run(
+        ["git", "add", "docs/studies/local/verdict-bundle.json"],
+        cwd=repo,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    corpus = discover_study_corpus(studies_root, repo=repo)
+
+    assert corpus["ok"] is True
+    assert [entry["id"] for entry in corpus["complete"]] == ["local"]
 
 
 def test_doctor_validates_bundles_but_does_not_fail_pending_prediction_locks():
