@@ -26,6 +26,9 @@ jobs:
         python-version: ["3.11"]   # matches local .venv
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Typed outcome sources are verified against committed ancestor blobs.
+          fetch-depth: 0
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
